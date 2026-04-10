@@ -1,0 +1,49 @@
+# Ignore everything by default.
+*
+
+# Keep Git metadata and public root files.
+!.gitignore
+!README.md
+
+# Keep public assets used by the README.
+!assets/
+assets/*
+!assets/umbrella-store-logo.jpg
+
+# Keep only Umbrella Store files inside addons/sourcemod.
+!addons/
+addons/*
+!addons/sourcemod/
+addons/sourcemod/*
+
+!addons/sourcemod/plugins/
+addons/sourcemod/plugins/*
+!addons/sourcemod/plugins/store_*.smx
+
+!addons/sourcemod/scripting/
+addons/sourcemod/scripting/*
+!addons/sourcemod/scripting/store_*.sp
+!addons/sourcemod/scripting/include/
+addons/sourcemod/scripting/include/*
+!addons/sourcemod/scripting/include/umbrella_store.inc
+
+!addons/sourcemod/translations/
+addons/sourcemod/translations/*
+!addons/sourcemod/translations/umbrella_store*.txt
+
+!addons/sourcemod/configs/
+addons/sourcemod/configs/*
+!addons/sourcemod/configs/umbrella_store/
+addons/sourcemod/configs/umbrella_store/*
+!addons/sourcemod/configs/umbrella_store/umbrella_store_items.txt
+
+# Keep internal working files out of the repo.
+release/
+tools/
+addons/metamod/
+RELEASE_CHECKLIST.md
+RELEASE_NOTES.md
+SMOKE_TEST_GUIDE.md
+image.jpg
+image (1).jpg
+image (2).jpg

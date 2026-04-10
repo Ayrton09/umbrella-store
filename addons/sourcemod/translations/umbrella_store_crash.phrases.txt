@@ -1,0 +1,565 @@
+﻿"Phrases"
+{
+    "Crash Title"
+    {
+        "es" "Umbrella Crash"
+        "en" "Umbrella Crash"
+        "ru" "Крушение зонтика"
+        "chi" "雨伞坠毁"
+        "pt" "Quebra de guarda-chuva"
+        "fr" "Crash du parapluie"
+        "de" "Regenschirm-Absturz"
+    }
+
+    "Crash Starting"
+    {
+        "es" "Estado: inicia en %d s"
+        "en" "State: starts in %d s"
+        "ru" "Состояние: начинается через %d с."
+        "chi" "状态：从 %d 秒开始"
+        "pt" "Estado: começa em %d s"
+        "fr" "État : commence dans %d s"
+        "de" "Status: beginnt in %d s"
+    }
+
+    "Crash Multiplier"
+    {
+        "es" "Multiplicador: x%.2f"
+        "en" "Multiplier: x%.2f"
+        "ru" "Множитель: x%.2f"
+        "chi" "乘数：x%.2f"
+        "pt" "Multiplicador: x%.2f"
+        "fr" "Multiplicateur : x%.2f"
+        "de" "Multiplikator: x%.2f"
+    }
+
+    "Crash Crashed At"
+    {
+        "es" "Ultimo crash: x%.2f"
+        "en" "Last crash: x%.2f"
+        "ru" "Последний сбой: x%.2f"
+        "chi" "上次崩溃：x%.2f"
+        "pt" "Última falha: x%.2f"
+        "fr" "Dernier crash : x%.2f"
+        "de" "Letzter Absturz: x%.2f"
+    }
+
+    "Crash Type Chat Bet"
+    {
+        "es" "Usa !crash <apuesta> o las opciones rapidas"
+        "en" "Use !crash <bet> or quick options"
+        "ru" "Используйте !crash <bet> или быстрые параметры."
+        "chi" "使用 !crash <bet> 或快速选项"
+        "pt" "Use !crash <bet> ou opções rápidas"
+        "fr" "Utilisez !crash <bet> ou les options rapides"
+        "de" "Verwenden Sie !crash <Einsatz> oder schnelle Optionen"
+    }
+
+    "Crash Waiting Players"
+    {
+        "es" "Estado: esperando apuestas"
+        "en" "State: waiting for bets"
+        "ru" "Состояние: ожидание ставок"
+        "chi" "状态：等待投注"
+        "pt" "Estado: aguardando apostas"
+        "fr" "Etat : en attente des paris"
+        "de" "Status: Warten auf Wetten"
+    }
+
+    "Crash Auto Line"
+    {
+        "es" "Auto retiro: %s"
+        "en" "Auto cashout: %s"
+        "ru" "Автоматический вывод средств: %s"
+        "chi" "自动提现：%s"
+        "pt" "Saque automático: %s"
+        "fr" "Retrait automatique : %s"
+        "de" "Automatische Auszahlung: %s"
+    }
+
+    "Crash Bet Line"
+    {
+        "es" "Apuesta actual: %s creditos"
+        "en" "Current bet: %s credits"
+        "ru" "Текущая ставка: %s кредитов"
+        "chi" "当前投注：%s 积分"
+        "pt" "Aposta atual: %s créditos"
+        "fr" "Pari actuel : %s crédits"
+        "de" "Aktuelle Wette: %s Credits"
+    }
+
+    "Crash Gained Line"
+    {
+        "es" "Cobro estimado: %s creditos"
+        "en" "Estimated cashout: %s credits"
+        "ru" "Ориентировочная сумма вывода: %s кредитов."
+        "chi" "预计兑现：%s 积分"
+        "pt" "Saque estimado: %s créditos"
+        "fr" "Encaissement estimé : %s crédits"
+        "de" "Geschätzte Auszahlung: %s Credits"
+    }
+
+    "Crash Watching Line"
+    {
+        "es" "Jugadores activos: %d"
+        "en" "Active players: %d"
+        "ru" "Активные игроки: %d"
+        "chi" "活跃玩家：%d"
+        "pt" "Jogadores ativos: %d"
+        "fr" "Joueurs actifs : %d"
+        "de" "Aktive Spieler: %d"
+    }
+
+    "Crash History Line"
+    {
+        "es" "Ultimos crashes: %s"
+        "en" "Recent crashes: %s"
+        "ru" "Недавние сбои: %s"
+        "chi" "最近的崩溃：%s"
+        "pt" "Falhas recentes: %s"
+        "fr" "Crashs récents : %s"
+        "de" "Aktuelle Abstürze: %s"
+    }
+
+    "Crash Choose Option"
+    {
+        "es" "Opciones:"
+        "en" "Options:"
+        "ru" "Опции:"
+        "chi" "选项："
+        "pt" "Opções:"
+        "fr" "Options :"
+        "de" "Optionen:"
+    }
+
+    "Crash Auto Off"
+    {
+        "es" "Apagado"
+        "en" "Off"
+        "ru" "Выкл."
+        "chi" "关闭"
+        "pt" "Desativado"
+        "fr" "Désactivé"
+        "de" "Aus"
+    }
+
+    "Crash Option Close"
+    {
+        "es" "Cerrar panel"
+        "en" "Close panel"
+        "ru" "Закрыть панель"
+        "chi" "关闭面板"
+        "pt" "Fechar painel"
+        "fr" "Fermer le panneau"
+        "de" "Panel schließen"
+    }
+
+    "Crash Option Info"
+    {
+        "es" "Ver ayuda"
+        "en" "View help"
+        "ru" "Посмотреть справку"
+        "chi" "查看帮助"
+        "pt" "Ver ajuda"
+        "fr" "Afficher l'aide"
+        "de" "Hilfe anzeigen"
+    }
+
+    "Crash Option Bet Min"
+    {
+        "es" "Apostar minimo (%d)"
+        "en" "Bet minimum (%d)"
+        "ru" "Минимальная ставка (%d)"
+        "chi" "最低赌注 (%d)"
+        "pt" "Aposta mínima (%d)"
+        "fr" "Pari minimum (%d)"
+        "de" "Mindesteinsatz (%d)"
+    }
+
+    "Crash Option Bet Max"
+    {
+        "es" "Apostar maximo (%d)"
+        "en" "Bet maximum (%d)"
+        "ru" "Максимальная ставка (%d)"
+        "chi" "最大投注 (%d)"
+        "pt" "Aposta máxima (%d)"
+        "fr" "Mise maximale (%d)"
+        "de" "Einsatzmaximum (%d)"
+    }
+
+    "Crash Option Bet Random"
+    {
+        "es" "Apuesta random (%d-%d)"
+        "en" "Random bet (%d-%d)"
+        "ru" "Случайная ставка (%d-%d)"
+        "chi" "随机投注 (%d-%d)"
+        "pt" "Aposta aleatória (%d-%d)"
+        "fr" "Pari aléatoire (%d-%d)"
+        "de" "Zufallswette (%d-%d)"
+    }
+
+    "Crash Option Auto On"
+    {
+        "es" "Configurar auto retiro"
+        "en" "Set auto cashout"
+        "ru" "Установить автоматический вывод средств"
+        "chi" "设置自动提现"
+        "pt" "Definir saque automático"
+        "fr" "Définir le retrait automatique"
+        "de" "Automatische Auszahlung festlegen"
+    }
+
+    "Crash Option Auto Off"
+    {
+        "es" "Quitar auto retiro"
+        "en" "Disable auto cashout"
+        "ru" "Отключить автоматический вывод средств"
+        "chi" "禁用自动提现"
+        "pt" "Desativar saque automático"
+        "fr" "Désactiver le retrait automatique"
+        "de" "Automatische Auszahlung deaktivieren"
+    }
+
+    "Crash Option Cancel Bet"
+    {
+        "es" "Cancelar apuesta"
+        "en" "Cancel bet"
+        "ru" "Отменить ставку"
+        "chi" "取消投注"
+        "pt" "Cancelar aposta"
+        "fr" "Annuler le pari"
+        "de" "Wette abbrechen"
+    }
+
+    "Crash Option Cashout"
+    {
+        "es" "Retirarse ahora"
+        "en" "Cash out now"
+        "ru" "Выведите деньги сейчас"
+        "chi" "立即提现"
+        "pt" "Sacar agora"
+        "fr" "Encaissez maintenant"
+        "de" "Jetzt auszahlen lassen"
+    }
+
+    "Crash Disabled"
+    {
+        "es" "Este módulo está deshabilitado."
+        "en" "This module is disabled."
+        "ru" "Этот модуль отключен."
+        "chi" "该模块已禁用。"
+        "pt" "Este módulo está desabilitado."
+        "fr" "Ce module est désactivé."
+        "de" "Dieses Modul ist deaktiviert."
+    }
+
+    "Crash Store Not Loaded"
+    {
+        "es" "Tu store todavía no terminó de cargar."
+        "en" "Your store has not finished loading yet."
+        "ru" "Ваш магазин еще не завершил загрузку."
+        "chi" "您的商店尚未完成加载。"
+        "pt" "Sua loja ainda não terminou de carregar."
+        "fr" "Votre boutique n'a pas encore fini de se charger."
+        "de" "Ihr Shop wurde noch nicht vollständig geladen."
+    }
+
+    "Crash Input Cancelled"
+    {
+        "es" "Entrada cancelada."
+        "en" "Input cancelled."
+        "ru" "Ввод отменен."
+        "chi" "输入已取消。"
+        "pt" "Entrada cancelada."
+        "fr" "Entrée annulée."
+        "de" "Eingabe abgebrochen."
+    }
+
+    "Crash Auto Disabled"
+    {
+        "es" "Auto retiro desactivado."
+        "en" "Auto cashout disabled."
+        "ru" "Автоматический вывод средств отключен."
+        "chi" "自动提现已禁用。"
+        "pt" "Saque automático desativado."
+        "fr" "Retrait automatique désactivé."
+        "de" "Automatische Auszahlung deaktiviert."
+    }
+
+    "Crash Auto Too Low"
+    {
+        "es" "El auto retiro debe ser al menos x%.2f."
+        "en" "Auto cashout must be at least x%.2f."
+        "ru" "Автоматический вывод средств должен быть не ниже x%.2f."
+        "chi" "自动提现必须至少为 x%.2f。"
+        "pt" "O saque automático deve ser pelo menos x%.2f."
+        "fr" "Le retrait automatique doit être d'au moins x%.2f."
+        "de" "Die automatische Auszahlung muss mindestens x%.2f sein."
+    }
+
+    "Crash Auto Set"
+    {
+        "es" "Auto retiro configurado en x%.2f."
+        "en" "Auto cashout set to x%.2f."
+        "ru" "Для автоматического вывода средств установлено значение x%.2f."
+        "chi" "自动提现设置为 x%.2f。"
+        "pt" "Saque automático definido como x%.2f."
+        "fr" "Encaissement automatique défini sur x%.2f."
+        "de" "Automatische Auszahlung auf x%.2f eingestellt."
+    }
+
+    "Crash Auto Prompt"
+    {
+        "es" "Escribe en chat el multiplicador del auto retiro, por ejemplo 2.00. Escribe 0 para cancelar."
+        "en" "Type the auto cashout multiplier in chat, for example 2.00. Type 0 to cancel."
+        "ru" "Введите в чат множитель автоматического вывода средств, например 2,00. Введите 0 для отмены."
+        "chi" "在聊天中输入自动提现乘数，例如 2.00。输入 0 取消。"
+        "pt" "Digite o multiplicador de saque automático no chat, por exemplo 2,00. Digite 0 para cancelar."
+        "fr" "Saisissez le multiplicateur de retrait automatique dans le chat, par exemple 2,00. Tapez 0 pour annuler."
+        "de" "Geben Sie im Chat den Multiplikator für die automatische Auszahlung ein, zum Beispiel 2,00. Geben Sie 0 ein, um den Vorgang abzubrechen."
+    }
+
+    "Crash Info 1"
+    {
+        "es" "Apuesta con !crash <cantidad> mientras la ronda está esperando."
+        "en" "Bet with !crash <amount> while the round is waiting."
+        "ru" "Сделайте ставку с помощью !crash <сумма> во время ожидания раунда."
+        "chi" "在回合等待期间用 !crash <金额> 下注。"
+        "pt" "Aposte com !crash <amount> enquanto a rodada aguarda."
+        "fr" "Pariez avec !crash <montant> pendant que le tour est en attente."
+        "de" "Setzen Sie mit !crash <Betrag>, während die Runde wartet."
+    }
+
+    "Crash Info 2"
+    {
+        "es" "Cuando el multiplicador sube, puedes retirarte antes del crash para cobrar."
+        "en" "As the multiplier rises, cash out before the crash to win."
+        "ru" "По мере того, как множитель растет, выводите деньги до сбоя, чтобы выиграть."
+        "chi" "随着乘数上升，在崩盘前兑现即可获胜。"
+        "pt" "À medida que o multiplicador aumenta, saque antes da queda para ganhar."
+        "fr" "À mesure que le multiplicateur augmente, encaissez avant le crash pour gagner."
+        "de" "Wenn der Multiplikator steigt, können Sie vor dem Absturz eine Auszahlung vornehmen, um zu gewinnen."
+    }
+
+    "Crash Info 3"
+    {
+        "es" "Si cambia el mapa antes de resolverse la apuesta, se devuelve tu apuesta."
+        "en" "If the map changes before the bet is resolved, your bet is refunded."
+        "ru" "Если карта изменится до того, как ставка будет решена, ваша ставка будет возвращена."
+        "chi" "如果在赌注解决之前地图发生变化，您的赌注将被退还。"
+        "pt" "Se o mapa mudar antes da aposta ser resolvida, sua aposta será reembolsada."
+        "fr" "Si la carte change avant que le pari ne soit résolu, votre pari est remboursé."
+        "de" "Wenn sich die Karte ändert, bevor die Wette ausgewertet wird, wird Ihre Wette zurückerstattet."
+    }
+
+    "Crash Round Already Running"
+    {
+        "es" "La ronda ya está corriendo. Espera la siguiente."
+        "en" "The round is already running. Wait for the next one."
+        "ru" "Раунд уже запущен. Подождите следующего."
+        "chi" "该回合已经开始。等待下一篇。"
+        "pt" "A rodada já está em andamento. Espere pelo próximo."
+        "fr" "Le cycle est déjà en cours. Attendez le prochain."
+        "de" "Die Runde läuft bereits. Warten Sie auf den nächsten."
+    }
+
+    "Crash Already Bet"
+    {
+        "es" "Ya tienes una apuesta activa en esta ronda."
+        "en" "You already have an active bet this round."
+        "ru" "У вас уже есть активная ставка в этом раунде."
+        "chi" "您本轮已有有效投注。"
+        "pt" "Você já tem uma aposta ativa nesta rodada."
+        "fr" "Vous avez déjà une mise active ce tour-ci."
+        "de" "Sie haben in dieser Runde bereits eine aktive Wette."
+    }
+
+    "Crash Bet Prompt"
+    {
+        "es" "Escribe en chat cuánto quieres apostar. Ejemplo: 500"
+        "en" "Type in chat how much you want to bet. Example: 500"
+        "ru" "Введите в чат сумму, которую вы хотите поставить. Пример: 500"
+        "chi" "在聊天中输入您想下注的金额。示例：500"
+        "pt" "Digite no chat quanto deseja apostar. Exemplo: 500"
+        "fr" "Saisissez dans le chat le montant que vous souhaitez parier. Exemple : 500"
+        "de" "Geben Sie im Chat ein, wie viel Sie wetten möchten. Beispiel: 500"
+    }
+
+    "Crash Bet Too Low"
+    {
+        "es" "La apuesta mínima es %d."
+        "en" "The minimum bet is %d."
+        "ru" "Минимальная ставка составляет %d."
+        "chi" "最小赌注为 %d。"
+        "pt" "A aposta mínima é %d."
+        "fr" "La mise minimale est de %d."
+        "de" "Der Mindesteinsatz beträgt %d."
+    }
+
+    "Crash Bet Too High"
+    {
+        "es" "La apuesta máxima disponible es %d."
+        "en" "The maximum available bet is %d."
+        "ru" "Максимальная доступная ставка — %d."
+        "chi" "最大可用赌注为 %d。"
+        "pt" "A aposta máxima disponível é %d."
+        "fr" "La mise maximale disponible est de %d."
+        "de" "Der maximal verfügbare Einsatz beträgt %d."
+    }
+
+    "Crash Not Enough Credits"
+    {
+        "es" "No tienes suficientes créditos para esa apuesta."
+        "en" "You do not have enough credits for that bet."
+        "ru" "У вас недостаточно кредитов для этой ставки."
+        "chi" "您没有足够的积分来进行该投注。"
+        "pt" "Você não tem créditos suficientes para essa aposta."
+        "fr" "Vous n'avez pas assez de crédits pour ce pari."
+        "de" "Sie haben nicht genügend Guthaben für diese Wette."
+    }
+
+    "Crash Bet Placed"
+    {
+        "es" "Apostaste %s créditos."
+        "en" "You bet %s credits."
+        "ru" "Вы ставите %s кредитов."
+        "chi" "您下注 %s 积分。"
+        "pt" "Você apostou %s créditos."
+        "fr" "Vous avez parié %s crédits."
+        "de" "Sie haben %s Credits gewettet."
+    }
+
+    "Crash No Active Bet"
+    {
+        "es" "No tienes una apuesta activa."
+        "en" "You do not have an active bet."
+        "ru" "У вас нет активной ставки."
+        "chi" "您没有有效投注。"
+        "pt" "Você não tem uma aposta ativa."
+        "fr" "Vous n'avez pas de pari actif."
+        "de" "Sie haben keine aktive Wette."
+    }
+
+    "Crash Cannot Cancel Now"
+    {
+        "es" "Ya no puedes cancelar la apuesta en este momento."
+        "en" "You can no longer cancel the bet right now."
+        "ru" "Вы больше не можете отменить ставку прямо сейчас."
+        "chi" "您现在无法再取消投注。"
+        "pt" "Você não pode mais cancelar a aposta agora."
+        "fr" "Vous ne pouvez plus annuler le pari pour le moment."
+        "de" "Sie können die Wette derzeit nicht mehr stornieren."
+    }
+
+    "Crash Cannot Cashout Now"
+    {
+        "es" "No puedes retirarte ahora mismo."
+        "en" "You cannot cash out right now."
+        "ru" "Вы не можете обналичить деньги прямо сейчас."
+        "chi" "您现在无法兑现。"
+        "pt" "Você não pode sacar agora."
+        "fr" "Vous ne pouvez pas effectuer d'encaissement pour le moment."
+        "de" "Eine Auszahlung ist derzeit nicht möglich."
+    }
+
+    "Crash Already Cashed"
+    {
+        "es" "Ya te retiraste de esta ronda."
+        "en" "You already cashed out this round."
+        "ru" "Вы уже обналичили деньги в этом раунде."
+        "chi" "本轮您已兑现。"
+        "pt" "Você já descontou nesta rodada."
+        "fr" "Vous avez déjà encaissé ce tour."
+        "de" "Sie haben diese Runde bereits ausgezahlt."
+    }
+
+    "Crash Cashed Out"
+    {
+        "es" "Te retiraste con %s créditos en x%.2f."
+        "en" "You cashed out with %s credits at x%.2f."
+        "ru" "Вы обналичили кредиты %s в x%.2f."
+        "chi" "You cashed out with %s credits at x%.2f."
+        "pt" "Você sacou %s créditos em x%.2f."
+        "fr" "Vous avez encaissé %s crédits à x%.2f."
+        "de" "Sie haben eine Auszahlung mit %s Credits bei x%.2f vorgenommen."
+    }
+
+    "Crash Lost"
+    {
+        "es" "Perdiste. El crash fue en x%.2f."
+        "en" "You lost. The crash was at x%.2f."
+        "ru" "Вы проиграли. Авария произошла в x%.2f."
+        "chi" "你输了。崩溃发生在 x%.2f。"
+        "pt" "Você perdeu. O acidente ocorreu em x%.2f."
+        "fr" "Vous avez perdu. L'accident s'est produit à x%.2f."
+        "de" "Du hast verloren. Der Absturz ereignete sich um x%.2f."
+    }
+
+    "Crash Bet Cancelled"
+    {
+        "es" "Apuesta cancelada. Se devolvieron %s créditos."
+        "en" "Bet cancelled. %s credits were returned."
+        "ru" "Ставка отменена. %s кредитов возвращено."
+        "chi" "投注已取消。 %s 学分已退还。"
+        "pt" "Aposta cancelada. %s créditos foram devolvidos."
+        "fr" "Pari annulé. Les crédits %s ont été restitués."
+        "de" "Wette abgebrochen. %s Credits wurden zurückgegeben."
+    }
+
+    "Crash Bet Refunded"
+    {
+        "es" "Apuesta devuelta. Recuperaste %s créditos."
+        "en" "%s credits were refunded to you."
+        "ru" "Вам возвращено %s кредитов."
+        "chi" "%s 积分已退还给您。"
+        "pt" "%s créditos foram reembolsados ​​para você."
+        "fr" "Les crédits %s vous ont été remboursés."
+        "de" "%s Credits wurden Ihnen zurückerstattet."
+    }
+
+
+    "Crash Round Started"
+    {
+        "es" "La ronda de Crash comenzó."
+        "en" "The Crash round has started."
+        "ru" "Начался краш-раунд."
+        "chi" "崩溃回合已经开始。"
+        "pt" "A rodada Crash começou."
+        "fr" "Le cycle Crash a commencé."
+        "de" "Die Crash-Runde hat begonnen."
+    }
+
+    "Crash Round Crashed"
+    {
+        "es" "La ronda crasheó en x%.2f."
+        "en" "The round crashed at x%.2f."
+        "ru" "Раунд прервался на x%.2f."
+        "chi" "该回合在 x%.2f 崩溃。"
+        "pt" "A rodada caiu em x%.2f."
+        "fr" "La ronde s'est écrasée à x%.2f."
+        "de" "Die Runde stürzte bei x%.2f ab."
+    }
+
+    "Crash Rare Jackpot"
+    {
+        "es" "¡Atención! Esta ronda puede llegar muy alto."
+        "en" "Heads up! This round may go very high."
+        "ru" "Внимание! Этот раунд может оказаться очень высоким."
+        "chi" "注意！这一轮可能会非常高。"
+        "pt" "Atenção! Esta rodada pode ir muito alto."
+        "fr" "Attention ! Ce tour pourrait aller très haut."
+        "de" "Achtung! In dieser Runde kann es sehr hoch gehen."
+    }
+
+    "Crash Epic Surge"
+    {
+        "es" "Subida epica detectada! El multiplicador acelera fuerte."
+        "en" "Epic surge detected! The multiplier is accelerating hard."
+        "ru" "Обнаружен эпический всплеск! Множитель резко ускоряется."
+        "chi" "检测到史诗般的激增！乘数正在急剧加速。"
+        "pt" "Surto épico detectado! O multiplicador está acelerando fortemente."
+        "fr" "Surtension épique détectée ! Le multiplicateur accélère fort."
+        "de" "Epischer Anstieg erkannt! Der Multiplikator beschleunigt sich stark."
+    }
+
+}

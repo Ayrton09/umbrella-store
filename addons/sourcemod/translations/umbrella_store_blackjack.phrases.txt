@@ -1,0 +1,1861 @@
+﻿"Phrases"
+{
+    "Already In Game"
+    {
+        "es" "Ya estas en una partida de blackjack."
+        "en" "You are already in a blackjack game."
+        "ru" "Вы уже играете в блэкджек."
+        "chi" "您已经进入二十一点游戏。"
+        "pt" "Você já está em um jogo de blackjack."
+        "fr" "Vous êtes déjà dans une partie de blackjack."
+        "de" "Sie befinden sich bereits in einem Blackjack-Spiel."
+    }
+
+    "Announce Big Win"
+    {
+        "es" "%N gano %s en una mano grande."
+        "en" "%N won %s on a big hand."
+        "ru" "%N выиграл %s с крупной раздачей."
+        "chi" "%N 以一手大牌赢得了 %s。"
+        "pt" "%N ganhou %s em uma grande mão."
+        "fr" "%N a gagné %s avec une grosse main."
+        "de" "%N gewann %s mit einer großen Hand."
+    }
+
+    "Announce Natural Blackjack"
+    {
+        "es" "%N saco un blackjack natural."
+        "en" "%N got a natural blackjack."
+        "ru" "%N получил натуральный блэкджек."
+        "chi" "%N 获得了天然的二十一点。"
+        "pt" "%N conseguiu um blackjack natural."
+        "fr" "%N a obtenu un blackjack naturel."
+        "de" "%N hat einen natürlichen Blackjack erhalten."
+    }
+
+    "Announce Win Streak"
+    {
+        "es" "%N llego a una racha de %d victorias."
+        "en" "%N reached a %d-win streak."
+        "ru" "%N достиг серии побед %d."
+        "chi" "%N 达到 %d 连胜。"
+        "pt" "%N alcançou uma seqüência de %d vitórias."
+        "fr" "%N a atteint une séquence de %d-victoires."
+        "de" "%N erreichte eine Siegesserie von %d."
+    }
+
+    "Blackjack Title"
+    {
+        "es" "Blackjack"
+        "en" "Blackjack"
+        "ru" "Блэкджек"
+        "chi" "二十一点"
+        "pt" "Blackjack"
+        "fr" "Blackjack"
+        "de" "Blackjack"
+    }
+
+    "Cooldown Action"
+    {
+        "es" "Espera un momento antes de la siguiente accion."
+        "en" "Wait a moment before the next action."
+        "ru" "Подождите немного перед следующим действием."
+        "chi" "在执行下一步操作之前稍等片刻。"
+        "pt" "Aguarde um momento antes da próxima ação."
+        "fr" "Attendez un instant avant la prochaine action."
+        "de" "Warten Sie einen Moment vor der nächsten Aktion."
+    }
+
+    "Error Max Bet"
+    {
+        "es" "La apuesta maxima es %s creditos."
+        "en" "The maximum bet is %s credits."
+        "ru" "Максимальная ставка составляет %s кредитов."
+        "chi" "最大赌注为 %s 积分。"
+        "pt" "A aposta máxima é de %s créditos."
+        "fr" "La mise maximale est de %s crédits."
+        "de" "Der maximale Einsatz beträgt %s Credits."
+    }
+
+    "Error Min Bet"
+    {
+        "es" "La apuesta minima es %s creditos."
+        "en" "The minimum bet is %s credits."
+        "ru" "Минимальная ставка составляет %s кредитов."
+        "chi" "最低赌注为 %s 积分。"
+        "pt" "A aposta mínima é de %s créditos."
+        "fr" "La mise minimale est de %s crédits."
+        "de" "Der Mindesteinsatz beträgt %s Credits."
+    }
+
+    "Error Missing Core"
+    {
+        "es" "No se pudo contactar con Umbrella Store."
+        "en" "Could not reach Umbrella Store core."
+        "ru" "Не удалось связаться с ядром Umbrella Store."
+        "chi" "无法到达 Umbrella Store 核心。"
+        "pt" "Não foi possível acessar o núcleo da Umbrella Store."
+        "fr" "Impossible d'atteindre le noyau de Umbrella Store."
+        "de" "Der Umbrella Store-Kern konnte nicht erreicht werden."
+    }
+
+    "Error Not Enough Credits"
+    {
+        "es" "No tienes suficientes creditos. Saldo: %s."
+        "en" "You do not have enough credits. Balance: %s."
+        "ru" "У вас недостаточно кредитов. Баланс: %s."
+        "chi" "您没有足够的积分。余额：%s。"
+        "pt" "Você não tem créditos suficientes. Saldo: %s."
+        "fr" "Vous n'avez pas assez de crédits. Solde : %s."
+        "de" "Ihr Guthaben reicht nicht aus. Kontostand: %s."
+    }
+
+    "Error Store Not Loaded"
+    {
+        "es" "Tu perfil de store todavia no termino de cargar."
+        "en" "Your store profile is still loading."
+        "ru" "Профиль вашего магазина все еще загружается."
+        "chi" "您的商店资料仍在加载中。"
+        "pt" "O perfil da sua loja ainda está carregando."
+        "fr" "Le profil de votre boutique est toujours en cours de chargement."
+        "de" "Ihr Shop-Profil wird noch geladen."
+    }
+
+    "Error Take Credits"
+    {
+        "es" "No se pudieron descontar los creditos."
+        "en" "Could not deduct credits."
+        "ru" "Не удалось списать кредиты."
+        "chi" "无法扣除积分。"
+        "pt" "Não foi possível deduzir créditos."
+        "fr" "Impossible de déduire les crédits."
+        "de" "Credits konnten nicht abgezogen werden."
+    }
+
+    "History Empty"
+    {
+        "es" "No hay resultados recientes."
+        "en" "No recent results."
+        "ru" "Недавних результатов нет."
+        "chi" "没有最新结果。"
+        "pt" "Nenhum resultado recente."
+        "fr" "Aucun résultat récent."
+        "de" "Keine aktuellen Ergebnisse."
+    }
+
+    "History PvP Lose"
+    {
+        "es" "PvP contra %N: derrota (-%s)."
+        "en" "PvP vs %N: loss (-%s)."
+        "ru" "PvP против %N: поражение (-%s)."
+        "chi" "PvP vs %N：损失 (-%s)。"
+        "pt" "PvP vs %N: perda (-%s)."
+        "fr" "PvP contre %N : perte (-%s)."
+        "de" "PvP gegen %N: Verlust (-%s)."
+    }
+
+    "History PvP Opponent Left"
+    {
+        "es" "PvP ganado: %N se desconecto."
+        "en" "PvP win: %N disconnected."
+        "ru" "Победа в PvP: %N отключен."
+        "chi" "PvP 胜利：%N 已断开连接。"
+        "pt" "Vitória PvP: %N desconectado."
+        "fr" "Victoire PvP : %N déconnecté."
+        "de" "PvP-Sieg: %N getrennt."
+    }
+
+    "History PvP Push"
+    {
+        "es" "PvP contra %N: empate."
+        "en" "PvP vs %N: push."
+        "ru" "PvP против %N: пуш."
+        "chi" "PvP vs %N：推。"
+        "pt" "PvP vs %N: empurrar."
+        "fr" "PvP contre %N : poussez."
+        "de" "PvP gegen %N: Push."
+    }
+
+    "History PvP Win"
+    {
+        "es" "PvP contra %N: victoria (+%s)."
+        "en" "PvP vs %N: win (+%s)."
+        "ru" "PvP против %N: победа (+%s)."
+        "chi" "PvP vs %N：获胜（+%s）。"
+        "pt" "PvP vs %N: vitória (+%s)."
+        "fr" "PvP contre %N : victoire (+%s)."
+        "de" "PvP gegen %N: Sieg (+%s)."
+    }
+
+    "History Table Blackjack"
+    {
+        "es" "Mesa: blackjack natural (+%s)."
+        "en" "Table: natural blackjack (+%s)."
+        "ru" "Стол: натуральный блэкджек (+%s)."
+        "chi" "牌桌：自然二十一点 (+%s)。"
+        "pt" "Tabela: blackjack natural (+%s)."
+        "fr" "Tableau : blackjack naturel (+%s)."
+        "de" "Tabelle: Natürlicher Blackjack (+%s)."
+    }
+
+    "History Table Lose"
+    {
+        "es" "Mesa: derrota (-%s)."
+        "en" "Table: loss (-%s)."
+        "ru" "Таблица: потери (-%s)."
+        "chi" "表：损失 (-%s)。"
+        "pt" "Tabela: perda (-%s)."
+        "fr" "Tableau : perte (-%s)."
+        "de" "Tabelle: Verlust (-%s)."
+    }
+
+    "History Table Push"
+    {
+        "es" "Mesa: empate."
+        "en" "Table: push."
+        "ru" "Таблица: push."
+        "chi" "表：推送。"
+        "pt" "Tabela: empurrar."
+        "fr" "Tableau : pousser."
+        "de" "Tabelle: push."
+    }
+
+    "History Table Win"
+    {
+        "es" "Mesa: victoria (+%s)."
+        "en" "Table: win (+%s)."
+        "ru" "Таблица: победа (+%s)."
+        "chi" "表：获胜 (+%s)。"
+        "pt" "Tabela: vitória (+%s)."
+        "fr" "Tableau : victoire (+%s)."
+        "de" "Tabelle: Sieg (+%s)."
+    }
+
+    "History Title"
+    {
+        "es" "Historial de Blackjack"
+        "en" "Blackjack History"
+        "ru" "История блэкджека"
+        "chi" "二十一点历史"
+        "pt" "História do Blackjack"
+        "fr" "Historique du Blackjack"
+        "de" "Blackjack-Geschichte"
+    }
+
+    "Main Menu Title"
+    {
+        "es" "Blackjack\nSaldo: %s\nRacha actual: %d\n "
+        "en" "Blackjack\nBalance: %s\nCurrent streak: %d\n "
+        "ru" "Блэкджек\nБаланс: %s\nТекущая серия: %d\n "
+        "chi" "二十一点\n余额：%s\n当前连胜：%d\n "
+        "pt" "Blackjack\nSaldo: %s\nSequência atual: %d\n "
+        "fr" "Blackjack\nSolde : %s\nSérie actuelle : %d\n "
+        "de" "Blackjack\nGuthaben: %s\nAktueller Streak: %d\n "
+    }
+
+    "Menu Section Quick Bets"
+    {
+        "es" "---- Apuestas rapidas ----"
+        "en" "---- Quick bets ----"
+        "ru" "---- Быстрые ставки ----"
+        "chi" "---- 快速投注 ----"
+        "pt" "---- Apostas rápidas ----"
+        "fr" "---- Paris rapides ----"
+        "de" "---- Schnellwetten ----"
+    }
+
+    "Menu Quick Bet Min"
+    {
+        "es" "Minima: %s"
+        "en" "Minimum: %s"
+        "ru" "Минимум: %s"
+        "chi" "最小值：%s"
+        "pt" "Mínimo: %s"
+        "fr" "Minimum : %s"
+        "de" "Minimum: %s"
+    }
+
+    "Menu Quick Bet Low"
+    {
+        "es" "Baja: %s"
+        "en" "Low: %s"
+        "ru" "Низкий: %s"
+        "chi" "低：%s"
+        "pt" "Baixo: %s"
+        "fr" "Faible : %s"
+        "de" "Niedrig: %s"
+    }
+
+    "Menu Quick Bet Medium"
+    {
+        "es" "Media: %s"
+        "en" "Medium: %s"
+        "ru" "Средний: %s"
+        "chi" "介质：%s"
+        "pt" "Meio: %s"
+        "fr" "Support : %s"
+        "de" "Medium: %s"
+    }
+
+    "Menu Quick Bet High"
+    {
+        "es" "Alta: %s"
+        "en" "High: %s"
+        "ru" "Высокий: %s"
+        "chi" "高：%s"
+        "pt" "Alto: %s"
+        "fr" "Élevé : %s"
+        "de" "Hoch: %s"
+    }
+
+    "Menu Quick Bet AllIn"
+    {
+        "es" "All-in: %s"
+        "en" "All-in: %s"
+        "ru" "Олл-ин: %s"
+        "chi" "全押：%s"
+        "pt" "Tudo incluído: %s"
+        "fr" "Tout compris : %s"
+        "de" "All-in: %s"
+    }
+
+    "Menu Quick Bet Unavailable"
+    {
+        "es" "No tienes creditos suficientes para una apuesta rapida."
+        "en" "You do not have enough credits for a quick bet."
+        "ru" "У вас недостаточно кредитов для быстрой ставки."
+        "chi" "您没有足够的积分来进行快速投注。"
+        "pt" "Você não tem créditos suficientes para uma aposta rápida."
+        "fr" "Vous n'avez pas assez de crédits pour un pari rapide."
+        "de" "Ihr Guthaben reicht für eine schnelle Wette nicht aus."
+    }
+
+    "Menu Section Modes"
+    {
+        "es" "---- Modos ----"
+        "en" "---- Modes ----"
+        "ru" "---- Режимы ----"
+        "chi" "---- 模式 ----"
+        "pt" "---- Modos ----"
+        "fr" "---- Modes ----"
+        "de" "---- Modi ----"
+    }
+
+    "Menu Section Utilities"
+    {
+        "es" "---- Utilidades ----"
+        "en" "---- Utilities ----"
+        "ru" "---- Утилиты ----"
+        "chi" "---- 公用事业 ----"
+        "pt" "---- Utilitários ----"
+        "fr" "---- Utilitaires ----"
+        "de" "---- Dienstprogramme ----"
+    }
+
+    "Menu Double"
+    {
+        "es" "Doblar (+%s)"
+        "en" "Double (+%s)"
+        "ru" "Двойной (+%s)"
+        "chi" "双 (+%s)"
+        "pt" "Duplo (+%s)"
+        "fr" "Double (+%s)"
+        "de" "Doppelt (+%s)"
+    }
+
+    "Menu Double Disabled"
+    {
+        "es" "Doblar (no disponible)"
+        "en" "Double (unavailable)"
+        "ru" "Двойной (недоступен)"
+        "chi" "双倍（不可用）"
+        "pt" "Duplo (indisponível)"
+        "fr" "Double (indisponible)"
+        "de" "Double (nicht verfügbar)"
+    }
+
+    "Menu Example Command Info"
+    {
+        "es" "Escribe un numero en chat para jugar (ej: 1000)"
+        "en" "Type a number in chat to play (ex: 1000)"
+        "ru" "Введите в чате номер для игры (например: 1000)"
+        "chi" "在聊天中输入要玩的号码（例如：1000）"
+        "pt" "Digite um número no chat para jogar (ex: 1000)"
+        "fr" "Tapez un numéro dans le chat pour jouer (ex : 1000)"
+        "de" "Geben Sie im Chat eine Zahl ein, um abzuspielen (z. B. 1000)."
+    }
+
+    "Menu History"
+    {
+        "es" "Ver historial"
+        "en" "View history"
+        "ru" "Просмотр истории"
+        "chi" "查看历史记录"
+        "pt" "Ver histórico"
+        "fr" "Afficher l'historique"
+        "de" "Verlauf anzeigen"
+    }
+
+    "Menu Hit"
+    {
+        "es" "Pedir carta"
+        "en" "Hit"
+        "ru" "Хит"
+        "chi" "命中"
+        "pt" "Acerto"
+        "fr" "Coup"
+        "de" "Treffer"
+    }
+
+    "Menu Play Command Info"
+    {
+        "es" "Escribe tu apuesta en chat para comenzar"
+        "en" "Type your bet in chat to start"
+        "ru" "Чтобы начать, введите свою ставку в чате."
+        "chi" "在聊天中输入您的赌注即可开始"
+        "pt" "Digite sua aposta no chat para começar"
+        "fr" "Tapez votre pari dans le chat pour commencer"
+        "de" "Geben Sie Ihre Wette im Chat ein, um zu beginnen"
+    }
+
+    "Menu PvP Disabled"
+    {
+        "es" "Modo PvP desactivado"
+        "en" "PvP mode disabled"
+        "ru" "Режим PvP отключен."
+        "chi" "PvP 模式已禁用"
+        "pt" "Modo PvP desativado"
+        "fr" "Mode PvP désactivé"
+        "de" "PvP-Modus deaktiviert"
+    }
+
+    "Menu PvP Help"
+    {
+        "es" "Ayuda PvP"
+        "en" "PvP help"
+        "ru" "Помощь в PvP"
+        "chi" "PvP 帮助"
+        "pt" "Ajuda PvP"
+        "fr" "Aide PvP"
+        "de" "PvP-Hilfe"
+    }
+
+    "Menu PvP Challenge"
+    {
+        "es" "Jugar PvP"
+        "en" "Play PvP"
+        "ru" "Играть в PvP"
+        "chi" "玩 PvP"
+        "pt" "Jogar PvP"
+        "fr" "Jouer au PvP"
+        "de" "Spiele PvP"
+    }
+
+    "Menu Split"
+    {
+        "es" "Split (+%s)"
+        "en" "Split (+%s)"
+        "ru" "Сплит (+%s)"
+        "chi" "拆分 (+%s)"
+        "pt" "Divisão (+%s)"
+        "fr" "Fractionner (+%s)"
+        "de" "Split (+%s)"
+    }
+
+    "Menu Split Disabled"
+    {
+        "es" "Split (no disponible)"
+        "en" "Split (unavailable)"
+        "ru" "Сплит (недоступно)"
+        "chi" "拆分（不可用）"
+        "pt" "Divisão (indisponível)"
+        "fr" "Fractionné (indisponible)"
+        "de" "Split (nicht verfügbar)"
+    }
+
+    "Menu Stand"
+    {
+        "es" "Plantarse"
+        "en" "Stand"
+        "ru" "Стенд"
+        "chi" "支架"
+        "pt" "Suporte"
+        "fr" "Support"
+        "de" "Stand"
+    }
+
+    "Menu Stats"
+    {
+        "es" "Ver estadisticas"
+        "en" "View stats"
+        "ru" "Посмотреть статистику"
+        "chi" "查看统计数据"
+        "pt" "Ver estatísticas"
+        "fr" "Afficher les statistiques"
+        "de" "Statistiken anzeigen"
+    }
+
+    "Menu Table"
+    {
+        "es" "Mesa multiplayer"
+        "en" "Multiplayer table"
+        "ru" "Многопользовательский стол"
+        "chi" "多人游戏桌"
+        "pt" "Mesa multijogador"
+        "fr" "Tableau multijoueur"
+        "de" "Multiplayer-Tisch"
+    }
+
+    "PvP Accept Busy"
+    {
+        "es" "No puedes aceptar ahora. Ya estas en otra partida."
+        "en" "You cannot accept now. You are already in another match."
+        "ru" "Вы не можете принять сейчас. Вы уже участвуете в другом матче."
+        "chi" "您现在无法接受。您已经在参加另一场比赛了。"
+        "pt" "Você não pode aceitar agora. Você já está em outra partida."
+        "fr" "Vous ne pouvez pas accepter maintenant. Vous êtes déjà dans un autre match."
+        "de" "Sie können jetzt nicht akzeptieren. Du bist bereits in einem anderen Spiel."
+    }
+
+    "PvP Accept Busy Challenger"
+    {
+        "es" "%N no puede aceptar ahora."
+        "en" "%N cannot accept right now."
+        "ru" "%N сейчас не может принять."
+        "chi" "%N 现在无法接受。"
+        "pt" "%N não pode aceitar agora."
+        "fr" "%N ne peut pas accepter pour le moment."
+        "de" "%N kann derzeit nicht annehmen."
+    }
+
+    "PvP Accept Failed Challenger"
+    {
+        "es" "%N no tiene creditos suficientes para aceptar."
+        "en" "%N does not have enough credits to accept."
+        "ru" "У %N недостаточно кредитов для принятия."
+        "chi" "%N 没有足够的学分来接受。"
+        "pt" "%N não tem créditos suficientes para aceitar."
+        "fr" "%N n'a pas suffisamment de crédits pour accepter."
+        "de" "%N verfügt nicht über genügend Credits zum Akzeptieren."
+    }
+
+    "PvP Accept Failed Credits"
+    {
+        "es" "No tienes creditos suficientes para aceptar."
+        "en" "You do not have enough credits to accept."
+        "ru" "У вас недостаточно кредитов для принятия."
+        "chi" "您没有足够的积分来接受。"
+        "pt" "Você não tem créditos suficientes para aceitar."
+        "fr" "Vous n'avez pas suffisamment de crédits pour accepter."
+        "de" "Ihr Guthaben reicht nicht aus, um es zu akzeptieren."
+    }
+
+    "PvP Disabled"
+    {
+        "es" "El modo PvP esta desactivado."
+        "en" "PvP mode is disabled."
+        "ru" "Режим PvP отключен."
+        "chi" "PvP 模式已禁用。"
+        "pt" "O modo PvP está desativado."
+        "fr" "Le mode PvP est désactivé."
+        "de" "Der PvP-Modus ist deaktiviert."
+    }
+
+    "PvP Help Line 1"
+    {
+        "es" "Usa 'Jugar PvP' en el menu para retar."
+        "en" "Use 'Play PvP' in the menu to challenge."
+        "ru" "Используйте «Играть в PvP» в меню, чтобы бросить вызов."
+        "chi" "使用菜单中的“Play PvP”进行挑战。"
+        "pt" "Use 'Play PvP' no menu para desafiar."
+        "fr" "Utilisez « Jouer en PvP » dans le menu pour défier."
+        "de" "Benutze „PvP spielen“ im Menü, um herauszufordern."
+    }
+
+    "PvP Help Line 2"
+    {
+        "es" "El rival tiene tiempo limitado para aceptar."
+        "en" "The opponent has limited time to accept."
+        "ru" "У оппонента есть ограниченное время для принятия."
+        "chi" "对手接受的时间有限。"
+        "pt" "O oponente tem tempo limitado para aceitar."
+        "fr" "L'adversaire dispose d'un temps limité pour accepter."
+        "de" "Der Gegner hat nur begrenzte Zeit zur Annahme."
+    }
+
+    "PvP Help Line 3"
+    {
+        "es" "Ambos ponen la misma apuesta."
+        "en" "Both players put in the same bet."
+        "ru" "Оба игрока сделали одинаковую ставку."
+        "chi" "两名玩家下了相同的赌注。"
+        "pt" "Ambos os jogadores fizeram a mesma aposta."
+        "fr" "Les deux joueurs ont misé le même pari."
+        "de" "Beide Spieler haben den gleichen Einsatz getätigt."
+    }
+
+    "PvP Help Line 4"
+    {
+        "es" "Gana la mano mas alta sin pasarse de 21."
+        "en" "Highest hand wins without going over 21."
+        "ru" "Выигрывает наибольшая комбинация, не превышающая 21."
+        "chi" "在不超过 21 点的情况下，最高手牌获胜。"
+        "pt" "A mão mais alta vence sem ultrapassar 21."
+        "fr" "La main la plus élevée gagne sans dépasser 21."
+        "de" "Die höchste Hand gewinnt, ohne 21 zu überschreiten."
+    }
+
+    "PvP Help Title"
+    {
+        "es" "Ayuda PvP Blackjack"
+        "en" "Blackjack PvP Help"
+        "ru" "Помощь в блэкджеке PvP"
+        "chi" "二十一点 PvP 帮助"
+        "pt" "Ajuda PvP de Blackjack"
+        "fr" "Aide PvP au Blackjack"
+        "de" "Blackjack PvP-Hilfe"
+    }
+
+    "PvP Player Menu Title"
+    {
+        "es" "Blackjack PvP\nElige un jugador\n "
+        "en" "Blackjack PvP\nChoose a player\n "
+        "ru" "Блэкджек PvP\nВыберите игрока\n "
+        "chi" "二十一点 PvP\n选择玩家\n "
+        "pt" "Blackjack PvP\nEscolha um jogador\n "
+        "fr" "Blackjack PvP\nChoisissez un joueur\n "
+        "de" "Blackjack PvP\nWähle einen Spieler\n "
+    }
+
+    "PvP Player Menu Entry"
+    {
+        "es" "%N (%s)"
+        "en" "%N (%s)"
+        "ru" "%N (%s)"
+        "chi" "%N (%s)"
+        "pt" "%N (%s)"
+        "fr" "%N (%s)"
+        "de" "%N (%s)"
+    }
+
+    "PvP Player Menu Empty"
+    {
+        "es" "No hay jugadores disponibles para PvP."
+        "en" "No players available for PvP."
+        "ru" "Нет доступных игроков для PvP."
+        "chi" "没有可参加 PvP 的玩家。"
+        "pt" "Nenhum jogador disponível para PvP."
+        "fr" "Aucun joueur disponible pour le PvP."
+        "de" "Keine Spieler für PvP verfügbar."
+    }
+
+    "PvP Bet Menu Title"
+    {
+        "es" "Blackjack PvP\nRival: %N\nTus creditos: %s\nElige apuesta\n "
+        "en" "Blackjack PvP\nOpponent: %N\nYour credits: %s\nChoose a bet\n "
+        "ru" "Блэкджек PvP\nПротивник: %N\nВаши кредиты: %s\nВыберите ставку\n "
+        "chi" "二十一点 PvP\n对手：%N\n您的积分：%s\n选择赌注\n "
+        "pt" "Blackjack PvP\nOponente: %N\nSeus créditos: %s\nEscolha uma aposta\n "
+        "fr" "Blackjack PvP\nAdversaire : %N\nVos crédits : %s\nChoisissez un pari\n "
+        "de" "Blackjack PvP\nGegner: %N\nIhre Credits: %s\nWählen Sie eine Wette\n "
+    }
+
+    "PvP Bet Menu Back"
+    {
+        "es" "Volver a jugadores"
+        "en" "Back to players"
+        "ru" "Вернуться к игрокам"
+        "chi" "返回玩家"
+        "pt" "Voltar aos jogadores"
+        "fr" "Retour aux joueurs"
+        "de" "Zurück zu den Spielern"
+    }
+
+    "PvP Bet Menu Custom"
+    {
+        "es" "Apuesta personalizada"
+        "en" "Custom bet"
+        "ru" "Пользовательская ставка"
+        "chi" "自定义下注"
+        "pt" "Aposta personalizada"
+        "fr" "Pari personnalisé"
+        "de" "Benutzerdefinierte Wette"
+    }
+
+    "PvP Custom Bet Prompt"
+    {
+        "es" "Escribe tu apuesta en chat (ej: 5000). Escribe 'cancelar' para volver."
+        "en" "Type your bet in chat (ex: 5000). Type 'cancel' to go back."
+        "ru" "Введите свою ставку в чате (например: 5000). Введите 'cancel', чтобы вернуться."
+        "chi" "在聊天中输入您的赌注（例如：5000）。输入 'cancel' 返回。"
+        "pt" "Digite sua aposta no chat (ex: 5000). Digite 'cancel' para voltar."
+        "fr" "Tapez votre mise dans le chat (ex : 5000). Tapez 'cancel' pour revenir en arrière."
+        "de" "Geben Sie Ihre Wette im Chat ein (z. B. 5000). Geben Sie 'cancel' ein, um zurückzukehren."
+    }
+
+    "PvP Custom Bet Invalid"
+    {
+        "es" "Apuesta invalida. Escribe solo numeros (ej: 5000) o 'cancelar'."
+        "en" "Invalid bet. Type only numbers (ex: 5000) or 'cancel'."
+        "ru" "Недействительная ставка. Введите только цифры (например: 5000) или 'cancel'."
+        "chi" "投注无效。仅键入数字（例如：5000）或 'cancel'。"
+        "pt" "Aposta inválida. Digite apenas números (ex: 5000) ou 'cancel'."
+        "fr" "Pari invalide. Tapez uniquement des chiffres (ex : 5000) ou 'cancel'."
+        "de" "Ungültige Wette. Geben Sie nur Zahlen (z. B. 5000) oder 'cancel' ein."
+    }
+
+    "PvP Custom Bet Cancelled"
+    {
+        "es" "Apuesta personalizada cancelada."
+        "en" "Custom bet entry cancelled."
+        "ru" "Ввод пользовательской ставки отменен."
+        "chi" "已取消自定义下注输入。"
+        "pt" "Entrada de aposta personalizada cancelada."
+        "fr" "Saisie du pari personnalisé annulée."
+        "de" "Eingabe der benutzerdefinierten Wette abgebrochen."
+    }
+
+    "PvP Invite Cancelled Left"
+    {
+        "es" "Reto cancelado: %N se desconecto."
+        "en" "Challenge cancelled: %N disconnected."
+        "ru" "Вызов отменен: %N отключен."
+        "chi" "挑战已取消：%N 已断开连接。"
+        "pt" "Desafio cancelado: %N desconectado."
+        "fr" "Défi annulé : %N déconnecté."
+        "de" "Challenge abgebrochen: %N getrennt."
+    }
+
+    "PvP Invite Commands"
+    {
+        "es" "Usa !bj accept para aceptar o !bj decline para rechazar."
+        "en" "Use !bj accept to accept or !bj decline to decline."
+        "ru" "Используйте !bj «принять», чтобы принять, или !bj «отклонить», чтобы отклонить предложение."
+        "chi" "使用 !bj 接受 接受或 !bj 拒绝 拒绝。"
+        "pt" "Use !bj aceitar para aceitar ou !bj recusar para recusar."
+        "fr" "Utilisez !bj accepter pour accepter ou !bj refuser pour refuser."
+        "de" "Verwenden Sie !bj Accept zum Akzeptieren oder !bj Decline zum Ablehnen."
+    }
+
+    "PvP Invite Declined"
+    {
+        "es" "%N rechazo tu reto."
+        "en" "%N declined your challenge."
+        "ru" "%N отклонил ваш вызов."
+        "chi" "%N 拒绝了您的挑战。"
+        "pt" "%N recusou seu desafio."
+        "fr" "%N a décliné votre défi."
+        "de" "%N hat Ihre Herausforderung abgelehnt."
+    }
+
+    "PvP Invite Expired Challenger"
+    {
+        "es" "%N no respondio a tiempo."
+        "en" "%N did not respond in time."
+        "ru" "%N не ответил вовремя."
+        "chi" "%N 未及时回复。"
+        "pt" "%N não respondeu a tempo."
+        "fr" "%N n'a pas répondu à temps."
+        "de" "%N hat nicht rechtzeitig geantwortet."
+    }
+
+    "PvP Invite Expired Target"
+    {
+        "es" "El reto de blackjack expiro."
+        "en" "The blackjack challenge expired."
+        "ru" "Срок действия испытания в блэкджеке истек."
+        "chi" "二十一点挑战已过期。"
+        "pt" "O desafio de blackjack expirou."
+        "fr" "Le défi du blackjack a expiré."
+        "de" "Die Blackjack-Herausforderung ist abgelaufen."
+    }
+
+    "PvP Invite Received"
+    {
+        "es" "%N te reto a PvP por %s creditos."
+        "en" "%N challenged you to PvP for %s credits."
+        "ru" "%N вызвал вас на PvP за %s кредитов."
+        "chi" "%N 向您发起 PvP 挑战，以获得 %s 积分。"
+        "pt" "%N desafiou você para PvP por %s créditos."
+        "fr" "%N vous a mis au défi en PvP pour %s crédits."
+        "de" "%N hat dich zum PvP für %s Credits herausgefordert."
+    }
+
+    "PvP Invite Sent"
+    {
+        "es" "Reto enviado a %N por %s creditos."
+        "en" "Challenge sent to %N for %s credits."
+        "ru" "Задание отправлено на %N за %s кредитов."
+        "chi" "挑战已发送至 %N，以获得 %s 积分。"
+        "pt" "Desafio enviado para %N para %s créditos."
+        "fr" "Défi envoyé à %N pour %s crédits."
+        "de" "Challenge sent to %N for %s credits."
+    }
+
+    "PvP Menu Title Turn"
+    {
+        "es" "Blackjack PvP\nRival: %N\nApuesta: %s\nTu mano: %s\nRival: %s\nTu turno\n "
+        "en" "Blackjack PvP\nOpponent: %N\nBet: %s\nYour hand: %s\nOpponent: %s\nYour turn\n "
+        "ru" "Блэкджек PvP\nОппонент: %N\nСтавка: %s\nВаша рука: %s\nОпонент: %s\nВаша очередь\n"
+        "chi" "二十一点 PvP\n 对手： %N\n 下注： %s\n 你的手牌： %s\n 对手： %s\n 轮到你\n"
+        "pt" "Blackjack PvP\nOponente: %N\nAposta: %s\nSua mão: %s\nOponente: %s\nSua vez\n"
+        "fr" "Blackjack PvP\nAdversaire : %N\nMise : %s\nVotre main : %s\nAdversaire : %s\nVotre tour\n"
+        "de" "Blackjack PvP\nGegner: %N\nEinsatz: %s\nDeine Hand: %s\nGegner: %s\nDein Zug\n"
+    }
+
+    "PvP Menu Title Wait"
+    {
+        "es" "Blackjack PvP\nRival: %N\nApuesta: %s\nTu mano: %s\nRival: %s\nEsperando turno\n "
+        "en" "Blackjack PvP\nOpponent: %N\nBet: %s\nYour hand: %s\nOpponent: %s\nWaiting for turn\n "
+        "ru" "Блэкджек PvP\nОппонент: %N\nСтавка: %s\nВаша рука: %s\nОпонент: %s\nОжидание хода\n "
+        "chi" "二十一点 PvP\n对手：%N\n下注：%s\n你的手牌：%s\n对手：%s\n等待回合\n "
+        "pt" "Blackjack PvP\nOponente: %N\nAposta: %s\nSua mão: %s\nOponente: %s\nAguardando a vez\n "
+        "fr" "Blackjack PvP\nAdversaire : %N\nMise : %s\nVotre main : %s\nAdversaire : %s\nEn attente du tour\n "
+        "de" "Blackjack PvP\nGegner: %N\nEinsatz: %s\nIhre Hand: %s\nGegner: %s\nWarten auf Zug\n "
+    }
+
+    "PvP Menu Waiting Disabled"
+    {
+        "es" "Esperando al rival..."
+        "en" "Waiting for opponent..."
+        "ru" "Ожидание оппонента..."
+        "chi" "等待对手..."
+        "pt" "Esperando pelo oponente..."
+        "fr" "En attendant l'adversaire..."
+        "de" "Warten auf Gegner..."
+    }
+
+    "PvP No Invite"
+    {
+        "es" "No tienes invitaciones pendientes."
+        "en" "You have no pending invites."
+        "ru" "У вас нет ожидающих приглашений."
+        "chi" "您没有待处理的邀请。"
+        "pt" "Você não tem convites pendentes."
+        "fr" "Vous n'avez aucune invitation en attente."
+        "de" "Sie haben keine ausstehenden Einladungen."
+    }
+
+    "PvP Not Your Turn"
+    {
+        "es" "No es tu turno."
+        "en" "It is not your turn."
+        "ru" "Сейчас не твоя очередь."
+        "chi" "还没轮到你。"
+        "pt" "Não é a sua vez."
+        "fr" "Ce n'est pas votre tour."
+        "de" "Du bist nicht an der Reihe."
+    }
+
+    "PvP Opponent Left"
+    {
+        "es" "%N se desconecto. Partida finalizada."
+        "en" "%N disconnected. Match ended."
+        "ru" "%N отключен. Матч окончен."
+        "chi" "%N 已断开连接。比赛结束。"
+        "pt" "%N desconectado. A partida terminou."
+        "fr" "%N déconnecté. Match terminé."
+        "de" "%N getrennt. Spiel beendet."
+    }
+
+    "PvP Result Lose"
+    {
+        "es" "Perdiste contra %N. Pozo: %s | Tu mano: %s | Rival: %s"
+        "en" "You lost to %N. Pot: %s | Your hand: %s | Opponent: %s"
+        "ru" "Вы проиграли %N. Горшок: %s | Ваша рука: %s | Соперник: %s"
+        "chi" "您输给了 %N。锅：%s |你的手：%s |对手：%s"
+        "pt" "Você perdeu para %N. Pote: %s | Sua mão: %s | Oponente: %s"
+        "fr" "Vous avez perdu contre %N. Pot : %s | Votre main : %s | Adversaire : %s"
+        "de" "Du hast gegen %N verloren. Topf: %s | Deine Hand: %s | Gegner: %s"
+    }
+
+    "PvP Result Push"
+    {
+        "es" "Empate contra %N. Tu mano: %s | Rival: %s"
+        "en" "Push vs %N. Your hand: %s | Opponent: %s"
+        "ru" "Push против %N. Ваша рука: %s | Соперник: %s"
+        "chi" "推送与 %N。你的手牌：%s |对手：%s"
+        "pt" "Empurrar versus %N. Sua mão: %s | Oponente: %s"
+        "fr" "Poussez contre %N. Votre main : %s | Adversaire : %s"
+        "de" "Push gegen %N. Deine Hand: %s | Gegner: %s"
+    }
+
+    "PvP Result Win"
+    {
+        "es" "Le ganaste a %N. Pozo: %s | Tu mano: %s | Rival: %s"
+        "en" "You beat %N. Pot: %s | Your hand: %s | Opponent: %s"
+        "ru" "Вы победили %N. Горшок: %s | Ваша рука: %s | Соперник: %s"
+        "chi" "你击败了 %N。锅：%s |你的手：%s |对手：%s"
+        "pt" "Você venceu %N. Pote: %s | Sua mão: %s | Oponente: %s"
+        "fr" "Vous avez battu %N. Pot : %s | Votre main : %s | Adversaire : %s"
+        "de" "Du hast %N geschlagen. Topf: %s | Deine Hand: %s | Gegner: %s"
+    }
+
+    "PvP Round Started Challenger"
+    {
+        "es" "PvP iniciado contra %N. Apuesta: %s."
+        "en" "PvP started vs %N. Bet: %s."
+        "ru" "Начался PvP против %N. Ставка: %s."
+        "chi" "PvP 对阵 %N 开始。投注：%s。"
+        "pt" "PvP iniciado vs %N. Aposta: %s."
+        "fr" "Le PvP a commencé contre %N. Pari : %s."
+        "de" "PvP gegen %N gestartet. Wette: %s."
+    }
+
+    "PvP Round Started Opponent"
+    {
+        "es" "PvP iniciado contra %N. Apuesta: %s."
+        "en" "PvP started vs %N. Bet: %s."
+        "ru" "Начался PvP против %N. Ставка: %s."
+        "chi" "PvP 对阵 %N 开始。投注：%s。"
+        "pt" "PvP iniciado vs %N. Aposta: %s."
+        "fr" "Le PvP a commencé contre %N. Pari : %s."
+        "de" "PvP gegen %N gestartet. Wette: %s."
+    }
+
+    "PvP Self Challenge"
+    {
+        "es" "No puedes retarte a ti mismo."
+        "en" "You cannot challenge yourself."
+        "ru" "Вы не можете бросить вызов самому себе."
+        "chi" "你无法挑战自己。"
+        "pt" "Você não pode desafiar a si mesmo."
+        "fr" "Vous ne pouvez pas vous mettre au défi."
+        "de" "Du kannst dich nicht selbst herausfordern."
+    }
+
+    "PvP Target Busy"
+    {
+        "es" "%N ya esta jugando otra partida."
+        "en" "%N is already playing another game."
+        "ru" "%N уже играет в другую игру."
+        "chi" "%N 已经在玩另一个游戏。"
+        "pt" "%N já está jogando outro jogo."
+        "fr" "%N joue déjà à un autre jeu."
+        "de" "%N spielt bereits ein anderes Spiel."
+    }
+
+    "PvP Target Has Invite"
+    {
+        "es" "%N ya tiene un reto pendiente."
+        "en" "%N already has a pending challenge."
+        "ru" "%N уже имеет ожидающий вызов."
+        "chi" "%N 已有待处理的挑战。"
+        "pt" "%N já tem um desafio pendente."
+        "fr" "%N a déjà un défi en attente."
+        "de" "%N hat bereits eine ausstehende Herausforderung."
+    }
+
+    "PvP Target Not Loaded"
+    {
+        "es" "Ese jugador no tiene la store cargada."
+        "en" "That player does not have store data loaded yet."
+        "ru" "В этот плеер еще не загружены данные хранилища."
+        "chi" "该玩家尚未加载商店数据。"
+        "pt" "Esse player ainda não possui dados armazenados carregados."
+        "fr" "Ce lecteur n'a pas encore de données de stockage chargées."
+        "de" "Für diesen Player sind noch keine Speicherdaten geladen."
+    }
+
+    "PvP Target Invalid"
+    {
+        "es" "Ese jugador ya no es valido."
+        "en" "That player is no longer valid."
+        "ru" "Этот игрок больше не действителен."
+        "chi" "该玩家不再有效。"
+        "pt" "Esse jogador não é mais válido."
+        "fr" "Ce joueur n'est plus valide."
+        "de" "Dieser Spieler ist nicht mehr gültig."
+    }
+
+    "PvP Usage"
+    {
+        "es" "El PvP se inicia desde el menu: !bj -> Jugar PvP."
+        "en" "PvP starts from the menu: !bj -> Play PvP."
+        "ru" "PvP запускается из меню: !bj -> Play PvP."
+        "chi" "PvP 从菜单开始：!bj -> 玩 PvP。"
+        "pt" "O PvP começa no menu: !bj -> Jogar PvP."
+        "fr" "Le PvP démarre à partir du menu : !bj -> Jouer en PvP."
+        "de" "PvP startet über das Menü: !bj -> PvP spielen."
+    }
+
+    "PvP Menu Only"
+    {
+        "es" "El PvP se crea solo desde el menu: !bj -> Jugar PvP."
+        "en" "Create PvP only from the menu: !bj -> Play PvP."
+        "ru" "Создавайте PvP только из меню: !bj -> Играть в PvP."
+        "chi" "仅从菜单创建 PvP：!bj -> 玩 PvP。"
+        "pt" "Crie PvP apenas no menu: !bj -> Jogar PvP."
+        "fr" "Créez du PvP uniquement à partir du menu : !bj -> Jouer en PvP."
+        "de" "PvP nur über das Menü erstellen: !bj -> PvP spielen."
+    }
+
+    "PvP Turn Timeout Opponent"
+    {
+        "es" "%N se quedo sin tiempo y se planto automaticamente."
+        "en" "%N ran out of time and stood automatically."
+        "ru" "%N истекло время, и он автоматически остановился."
+        "chi" "%N 时间耗尽并自动站立。"
+        "pt" "%N ficou sem tempo e parou automaticamente."
+        "fr" "%N a manqué de temps et s'est levé automatiquement."
+        "de" "%N hatte keine Zeit mehr und blieb automatisch stehen."
+    }
+
+    "PvP Turn Timeout Self"
+    {
+        "es" "Se acabo tu tiempo. Te plantaste automaticamente."
+        "en" "Time is up. You stood automatically."
+        "ru" "Время вышло. Ты автоматически встал."
+        "chi" "时间到了。你自动站了起来。"
+        "pt" "O tempo acabou. Você se levantou automaticamente."
+        "fr" "Le temps est écoulé. Vous vous êtes levé automatiquement."
+        "de" "Die Zeit ist abgelaufen. Du bist automatisch aufgestanden."
+    }
+
+    "PvP You Declined"
+    {
+        "es" "Rechazaste el reto."
+        "en" "You declined the challenge."
+        "ru" "Вы отклонили вызов."
+        "chi" "您拒绝了挑战。"
+        "pt" "Você recusou o desafio."
+        "fr" "Vous avez décliné le défi."
+        "de" "Sie haben die Herausforderung abgelehnt."
+    }
+
+    "PvP Your Turn"
+    {
+        "es" "Es tu turno."
+        "en" "It is your turn."
+        "ru" "Ваша очередь."
+        "chi" "轮到你了。"
+        "pt" "É a sua vez."
+        "fr" "C'est votre tour."
+        "de" "Du bist an der Reihe."
+    }
+
+    "Round Balance Line"
+    {
+        "es" "Saldo actual: %s creditos"
+        "en" "Current balance: %s credits"
+        "ru" "Текущий баланс: %s кредитов"
+        "chi" "当前余额：%s 积分"
+        "pt" "Saldo atual: %s créditos"
+        "fr" "Solde actuel : %s crédits"
+        "de" "Aktueller Kontostand: %s Credits"
+    }
+
+    "Round Bust"
+    {
+        "es" "Te pasaste (%d). Pierdes la ronda."
+        "en" "You busted (%d). You lose the round."
+        "ru" "Вы арестовали (%d). Вы проигрываете раунд."
+        "chi" "你失败了 (%d)。你输掉了这一轮。"
+        "pt" "Você flagrou (%d). Você perde a rodada."
+        "fr" "Vous avez éclaté (%d). Vous perdez la manche."
+        "de" "Du bist kaputt gegangen (%d). Du verlierst die Runde."
+    }
+
+    "Round Compare Lose"
+    {
+        "es" "Pierdes. Tu mano %d vs dealer %d."
+        "en" "You lose. Your hand %d vs dealer %d."
+        "ru" "Вы проиграли. Ваша рука %d против дилера %d."
+        "chi" "你输了。您的手牌 %d 对阵庄家 %d。"
+        "pt" "Você perde. Sua mão %d vs dealer %d."
+        "fr" "Vous perdez. Votre main %d contre le croupier %d."
+        "de" "Du verlierst. Ihre Hand %d vs. Dealer %d."
+    }
+
+    "Round Compare Push"
+    {
+        "es" "Empate. Tu mano %d."
+        "en" "Push. Your hand %d."
+        "ru" "Нажмите. Ваша рука %d."
+        "chi" "推。你的手%d。"
+        "pt" "Empurre. Sua mão %d."
+        "fr" "Appuyez. Votre main %d."
+        "de" "Drücken. Deine Hand %d."
+    }
+
+    "Round Compare Win"
+    {
+        "es" "Ganaste %s. Tu mano %d vs dealer %d."
+        "en" "You won %s. Your hand %d vs dealer %d."
+        "ru" "Вы выиграли %s. Ваша рука %d против дилера %d."
+        "chi" "您赢得了 %s。您的手牌 %d 对阵庄家 %d。"
+        "pt" "Você ganhou %s. Sua mão %d vs dealer %d."
+        "fr" "Vous avez gagné %s. Votre main %d contre le croupier %d."
+        "de" "Du hast %s gewonnen. Ihre Hand %d vs. Dealer %d."
+    }
+
+    "Round Dealer Blackjack"
+    {
+        "es" "El dealer tiene blackjack natural."
+        "en" "Dealer has natural blackjack."
+        "ru" "У дилера натуральный блэкджек."
+        "chi" "庄家拥有天然二十一点。"
+        "pt" "O dealer tem blackjack natural."
+        "fr" "Le croupier a un blackjack naturel."
+        "de" "Der Dealer hat natürlichen Blackjack."
+    }
+
+    "Round Dealer Bust Win"
+    {
+        "es" "Dealer se paso (%d). Ganaste %s."
+        "en" "Dealer busted (%d). You won %s."
+        "ru" "Задержан дилер (%d). Вы выиграли %s."
+        "chi" "经销商被抓获 (%d)。您赢得了 %s。"
+        "pt" "Revendedor preso (%d). Você ganhou %s."
+        "fr" "Le concessionnaire a été arrêté (%d). Vous avez gagné %s."
+        "de" "Dealer pleite (%d). Du hast %s gewonnen."
+    }
+
+    "Round Double Bust"
+    {
+        "es" "Te pasaste al doblar (%d)."
+        "en" "You busted on double (%d)."
+        "ru" "Вас арестовали по двойному делу (%d)."
+        "chi" "你在双倍 (%d) 上失败。"
+        "pt" "Você foi eliminado em dobro (%d)."
+        "fr" "Vous avez réussi un doublé (%d)."
+        "de" "Du bist bei Double (%d) pleite gegangen."
+    }
+
+    "Round Double Bust Continue"
+    {
+        "es" "Te pasaste en mano %d, pasas a la siguiente mano."
+        "en" "You busted on hand %d, moving to the next hand."
+        "ru" "Вы проиграли раздачу %d и переходите к следующей раздаче."
+        "chi" "您在这手牌 %d 上爆牌，进入下一手牌。"
+        "pt" "Você quebrou na mão %d, passando para a próxima mão."
+        "fr" "Vous avez éliminé la main %d, passant à la main suivante."
+        "de" "Sie haben die Hand %d überkauft und sind zur nächsten Hand übergegangen."
+    }
+
+    "Round Hand One Bust Continue"
+    {
+        "es" "La mano 1 se paso (%d). Sigue mano 2."
+        "en" "Hand 1 busted (%d). Continue with hand 2."
+        "ru" "Раздача 1 заблокирована (%d). Продолжайте рукой 2."
+        "chi" "第 1 手牌失败 (%d)。继续第 2 手。"
+        "pt" "Mão 1 quebrada (%d). Continue com a mão 2."
+        "fr" "Main 1 cassée (%d). Continuez avec la main 2."
+        "de" "Hand 1 kaputt (%d). Fahren Sie mit Hand 2 fort."
+    }
+
+    "Round Invalid Start State"
+    {
+        "es" "Estado invalido al iniciar la mano. Se devolvio la apuesta."
+        "en" "Invalid state while starting the hand. Your bet was refunded."
+        "ru" "Недопустимое состояние при запуске раздачи. Ваша ставка была возвращена."
+        "chi" "开始牌局时状态无效。您的赌注已退还。"
+        "pt" "Estado inválido ao iniciar a mão. Sua aposta foi reembolsada."
+        "fr" "État invalide lors du démarrage de la main. Votre pari a été remboursé."
+        "de" "Ungültiger Status beim Starten der Hand. Ihre Wette wurde zurückerstattet."
+    }
+
+    "Round Move To Hand Two"
+    {
+        "es" "Ahora juegas la mano 2."
+        "en" "Now playing hand 2."
+        "ru" "Сейчас разыгрывается раздача 2."
+        "chi" "现在玩第 2 手牌。"
+        "pt" "Agora jogando a mão 2."
+        "fr" "Je joue actuellement la main 2."
+        "de" "Spielt jetzt Hand 2."
+    }
+
+    "Round Natural Blackjack Win"
+    {
+        "es" "Blackjack natural. Cobras %s."
+        "en" "Natural blackjack. You get %s."
+        "ru" "Натуральный блэкджек. Вы получаете %s."
+        "chi" "自然二十一点。你得到%s。"
+        "pt" "Blackjack natural. Você obtém %s."
+        "fr" "Blackjack naturel. Vous obtenez %s."
+        "de" "Natürlicher Blackjack. Sie erhalten %s."
+    }
+
+    "Round No Credits Double"
+    {
+        "es" "No tienes creditos para doblar."
+        "en" "You do not have enough credits to double."
+        "ru" "У вас недостаточно кредитов для удвоения."
+        "chi" "您没有足够的积分来加倍。"
+        "pt" "Você não tem créditos suficientes para dobrar."
+        "fr" "Vous n'avez pas assez de crédits pour doubler."
+        "de" "Sie haben nicht genügend Credits zum Verdoppeln."
+    }
+
+    "Round No Credits Split"
+    {
+        "es" "No tienes creditos para hacer split."
+        "en" "You do not have enough credits to split."
+        "ru" "У вас недостаточно кредитов для разделения."
+        "chi" "您没有足够的积分来分割。"
+        "pt" "Você não tem créditos suficientes para dividir."
+        "fr" "Vous n'avez pas suffisamment de crédits à partager."
+        "de" "Sie haben nicht genügend Credits zum Teilen."
+    }
+
+    "Round Push Both Blackjack"
+    {
+        "es" "Ambos tienen blackjack. Empate."
+        "en" "Both have blackjack. Push."
+        "ru" "У обоих есть блэкджек. Толкать."
+        "chi" "两人都有二十一点。推。"
+        "pt" "Ambos têm blackjack. Empurrar."
+        "fr" "Les deux ont du blackjack. Pousser."
+        "de" "Beide haben Blackjack. Drücken."
+    }
+
+    "Round Split Done"
+    {
+        "es" "Split realizado. Se repartio la segunda mano."
+        "en" "Split done. Second hand was dealt."
+        "ru" "Разделение выполнено. Была сдана подержанная сделка."
+        "chi" "分割完成。二手的已经处理了。"
+        "pt" "Divisão concluída. Segunda mão foi negociada."
+        "fr" "Séparation effectuée. Une seconde main a été distribuée."
+        "de" "Teilung abgeschlossen. Es wurde aus zweiter Hand gehandelt."
+    }
+
+    "Round Summary Line"
+    {
+        "es" "Dealer: %s | Jugador: %s"
+        "en" "Dealer: %s | Player: %s"
+        "ru" "Дилер: %s | Игрок: %s"
+        "chi" "经销商：%s |玩家：%s"
+        "pt" "Revendedor: %s | Jogador: %s"
+        "fr" "Concessionnaire : %s | Joueur : %s"
+        "de" "Händler: %s | Spieler: %s"
+    }
+
+    "Single Menu Title"
+    {
+        "es" "Blackjack Solo\nApuesta: %s | Saldo: %s | Racha: %d\nDealer: %s\nTu mano: %s\n "
+        "en" "Blackjack Solo\nBet: %s | Balance: %s | Streak: %d\nDealer: %s\nYour hand: %s\n "
+        "ru" "Соло в блэкджеке\nСтавка: %s | Баланс: %s | Полоса: %d\nДилер: %s\nВаша рука: %s\n "
+        "chi" "二十一点独奏\n投注：%s |余额：%s |连胜：%d\n庄家：%s\n你的牌：%s\n "
+        "pt" "Blackjack Solo\nAposta: %s | Saldo: %s | Sequência: %d\nDealer: %s\nSua mão: %s\n "
+        "fr" "Blackjack Solo\nPari : %s | Solde : %s | Série : %d\nDealer : %s\nVotre main : %s\n "
+        "de" "Blackjack Solo\nEinsatz: %s | Kontostand: %s | Streak: %d\nHändler: %s\nIhre Hand: %s\n "
+    }
+
+    "Single Menu Title Split"
+    {
+        "es" "Blackjack Solo (Split)\nApuesta: %s | Saldo: %s | Racha: %d\nMano activa: %d\nDealer: %s\nMano 1: %s\nMano 2: %s\n "
+        "en" "Blackjack Solo (Split)\nBet: %s | Balance: %s | Streak: %d\nActive hand: %d\nDealer: %s\nHand 1: %s\nHand 2: %s\n "
+        "ru" "Соло-блэкджек (сплит)\nСтавка: %s | Баланс: %s | Полоса: %d\nАктивная рука: %d\nДилер: %s\nРука 1: %s\nРука 2: %s\n "
+        "chi" "二十一点独奏（分割）\n投注：%s |余额：%s |连胜：%d\n活跃牌：%d\n庄家：%s\n第一手牌：%s\n第二手牌：%s\n "
+        "pt" "Blackjack Solo (Dividido)\nAposta: %s | Saldo: %s | Sequência: %d\nMão ativa: %d\nDealer: %s\nMão 1: %s\nMão 2: %s\n "
+        "fr" "Blackjack Solo (Split)\nPari : %s | Solde : %s | Série : %d\nMain active : %d\nDealer : %s\nMain 1 : %s\nMain 2 : %s\n "
+        "de" "Blackjack Solo (Split)\nEinsatz: %s | Kontostand: %s | Streak: %d\nAktive Hand: %d\nDealer: %s\nHand 1: %s\nHand 2: %s\n "
+    }
+
+    "Split Dealer Bust Summary"
+    {
+        "es" "Dealer se paso (%d). Resultado: %s"
+        "en" "Dealer busted (%d). Result: %s"
+        "ru" "Задержан дилер (%d). Результат: %s"
+        "chi" "经销商被抓获 (%d)。结果：%s"
+        "pt" "Revendedor preso (%d). Resultado: %s"
+        "fr" "Le concessionnaire a été arrêté (%d). Résultat : %s"
+        "de" "Dealer pleite (%d). Ergebnis: %s"
+    }
+
+    "Split Dealer Summary"
+    {
+        "es" "Resultado: %s | Dealer: %d"
+        "en" "Result: %s | Dealer: %d"
+        "ru" "Результат: %s | Дилер: %d"
+        "chi" "结果：%s |经销商：%d"
+        "pt" "Resultado: %s | Revendedor: %d"
+        "fr" "Résultat : %s | Concessionnaire : %d"
+        "de" "Ergebnis: %s | Händler: %d"
+    }
+
+    "Split Result Lose"
+    {
+        "es" "Mano %d: pierde (%d)."
+        "en" "Hand %d: lose (%d)."
+        "ru" "Раздача %d: проигрыш (%d)."
+        "chi" "手牌 %d：输 (%d)。"
+        "pt" "Mão %d: perde (%d)."
+        "fr" "Main %d : perdre (%d)."
+        "de" "Hand %d: verlieren (%d)."
+    }
+
+    "Split Result Push"
+    {
+        "es" "Mano %d: empate (%d)."
+        "en" "Hand %d: push (%d)."
+        "ru" "Рука %d: нажмите (%d)."
+        "chi" "手 %d：推 (%d)。"
+        "pt" "Mão %d: empurre (%d)."
+        "fr" "Main %d : pousser (%d)."
+        "de" "Hand %d: drücken (%d)."
+    }
+
+    "Split Result Win"
+    {
+        "es" "Mano %d: gana (%d)."
+        "en" "Hand %d: win (%d)."
+        "ru" "Раздача %d: выигрыш (%d)."
+        "chi" "手牌 %d：获胜 (%d)。"
+        "pt" "Mão %d: vitória (%d)."
+        "fr" "Main %d : victoire (%d)."
+        "de" "Hand %d: Sieg (%d)."
+    }
+
+    "Stats Hint"
+    {
+        "es" "Consejo: las rachas suben con victorias consecutivas."
+        "en" "Tip: streaks grow with consecutive wins."
+        "ru" "Совет: серии растут с увеличением последовательных побед."
+        "chi" "提示：连续获胜次数会随着连续获胜而增加。"
+        "pt" "Dica: as sequências aumentam com vitórias consecutivas."
+        "fr" "Astuce : les séquences augmentent avec des victoires consécutives."
+        "de" "Tipp: Streaks wachsen mit aufeinanderfolgenden Siegen."
+    }
+
+    "Stats Title"
+    {
+        "es" "Estadisticas Blackjack\nPartidas: %d | Victorias: %d | Derrotas: %d | Empates: %d\nBlackjacks: %d | Ganancia neta: %s\nRacha actual: %d | Mejor racha: %d | Winrate: %d%%\n "
+        "en" "Blackjack Stats\nGames: %d | Wins: %d | Losses: %d | Pushes: %d\nBlackjacks: %d | Net profit: %s\nCurrent streak: %d | Best streak: %d | Win rate: %d%%\n "
+        "ru" "Статистика блэкджека\nИгры: %d | Победы: %d | Потери: %d | Пуши: %d\nБлекджеки: %d | Чистая прибыль: %s\nТекущая серия: %d | Лучшая серия: %d | Процент побед: %d%%\n "
+        "chi" "二十一点统计\n游戏：%d |获胜：%d |损失：%d |全押：%d\n二十一点：%d |净利润：%s\n当前连续盈利：%d |最佳连胜：%d |胜率：%d%%\n "
+        "pt" "Estatísticas de Blackjack\nJogos: %d | Vitórias: %d | Perdas: %d | Empurra: %d\nBlackjacks: %d | Lucro líquido: %s\nSérie atual: %d | Melhor sequência: %d | Taxa de vitórias: %d%%\n "
+        "fr" "Statistiques du Blackjack\nJeux : %d | Victoires : %d | Pertes : %d | Poussées : %d\nBlackjacks : %d | Bénéfice net : %s\nSérie actuelle : %d | Meilleure séquence : %d | Taux de victoire : %d%%\n "
+        "de" "Blackjack-Statistiken\nSpiele: %d | Siege: %d | Verluste: %d | Pushs: %d\nBlackjacks: %d | Nettogewinn: %s\nAktueller Streak: %d | Beste Serie: %d | Gewinnrate: %d%%\n "
+    }
+
+    "Summary Player"
+    {
+        "es" "Tu mano: %s"
+        "en" "Your hand: %s"
+        "ru" "Ваша рука: %s"
+        "chi" "你的手牌：%s"
+        "pt" "Sua mão: %s"
+        "fr" "Votre main : %s"
+        "de" "Deine Hand: %s"
+    }
+
+    "Summary Split"
+    {
+        "es" "Mano 1: %s | Mano 2: %s"
+        "en" "Hand 1: %s | Hand 2: %s"
+        "ru" "Раздача 1: %s | Раздача 2: %s"
+        "chi" "第 1 手牌：%s |第 2 手牌：%s"
+        "pt" "Mão 1: %s | Mão 2: %s"
+        "fr" "Main 1 : %s | Main 2 : %s"
+        "de" "Hand 1: %s | Hand 2: %s"
+    }
+
+    "Table Action Hit"
+    {
+        "es" "Pedir"
+        "en" "Hit"
+        "ru" "Хит"
+        "chi" "命中"
+        "pt" "Acerto"
+        "fr" "Coup"
+        "de" "Treffer"
+    }
+
+    "Table Action Stand"
+    {
+        "es" "Plantarse"
+        "en" "Stand"
+        "ru" "Стенд"
+        "chi" "支架"
+        "pt" "Suporte"
+        "fr" "Support"
+        "de" "Stand"
+    }
+
+    "Table Already Seated"
+    {
+        "es" "Ya estas sentado en la mesa."
+        "en" "You are already seated at the table."
+        "ru" "Вы уже сидите за столом."
+        "chi" "您已经坐在桌旁。"
+        "pt" "Você já está sentado à mesa."
+        "fr" "Vous êtes déjà assis à table."
+        "de" "Sie sitzen bereits am Tisch."
+    }
+
+    "Table Bust"
+    {
+        "es" "Te pasaste. Quedas fuera de la mano."
+        "en" "You busted. You are out of the hand."
+        "ru" "Вас арестовали. Вы вышли из-под контроля."
+        "chi" "你失败了。你已经失控了。"
+        "pt" "Você estourou. Você está fora de controle."
+        "fr" "Vous avez éclaté. Vous êtes hors de contrôle."
+        "de" "Du bist kaputt gegangen. Du bist außer Kontrolle."
+    }
+
+    "Table Busy"
+    {
+        "es" "La mesa esta en partida. Espera la siguiente ronda."
+        "en" "Table is in a live round. Wait for the next one."
+        "ru" "Стол находится в активном раунде. Подождите следующего."
+        "chi" "牌桌正在进行现场比赛。等待下一篇。"
+        "pt" "A mesa está em rodada ao vivo. Espere pelo próximo."
+        "fr" "La table est dans un tour en direct. Attendez le prochain."
+        "de" "Der Tisch befindet sich in einer Live-Runde. Warten Sie auf den nächsten."
+    }
+
+    "Table Cannot Leave"
+    {
+        "es" "No puedes salir durante una ronda activa."
+        "en" "You cannot leave during an active round."
+        "ru" "Вы не можете выйти во время активного раунда."
+        "chi" "在进行中的回合中您不能离开。"
+        "pt" "Você não pode sair durante uma rodada ativa."
+        "fr" "Vous ne pouvez pas quitter pendant un tour actif."
+        "de" "Sie können während einer aktiven Runde nicht gehen."
+    }
+
+    "Table Full"
+    {
+        "es" "Mesa llena"
+        "en" "Table full"
+        "ru" "Таблица заполнена"
+        "chi" "表已满"
+        "pt" "Tabela cheia"
+        "fr" "Tableau plein"
+        "de" "Tabelle voll"
+    }
+
+    "Table Full Chat"
+    {
+        "es" "La mesa esta llena."
+        "en" "The table is full."
+        "ru" "Таблица заполнена."
+        "chi" "表已满。"
+        "pt" "A tabela está cheia."
+        "fr" "La table est pleine."
+        "de" "Die Tabelle ist voll."
+    }
+
+    "Table Hand Summary"
+    {
+        "es" "Dealer: %s | Tu mano: %s"
+        "en" "Dealer: %s | Your hand: %s"
+        "ru" "Дилер: %s | Ваша рука: %s"
+        "chi" "经销商：%s |你的手牌：%s"
+        "pt" "Revendedor: %s | Sua mão: %s"
+        "fr" "Concessionnaire : %s | Votre main : %s"
+        "de" "Händler: %s | Deine Hand: %s"
+    }
+
+    "Table Idle"
+    {
+        "es" "Sin partida"
+        "en" "Idle"
+        "ru" "Простой"
+        "chi" "空闲"
+        "pt" "Inativo"
+        "fr" "Inactif"
+        "de" "Leerlauf"
+    }
+
+    "Table Join Info"
+    {
+        "es" "Unete a la mesa para jugar"
+        "en" "Join the table to play"
+        "ru" "Присоединяйтесь к столу, чтобы играть"
+        "chi" "加入桌子玩"
+        "pt" "Entre na mesa para jogar"
+        "fr" "Rejoignez la table pour jouer"
+        "de" "Setzen Sie sich zum Spielen an den Tisch"
+    }
+
+    "Table Join Usage"
+    {
+        "es" "Usa !bj join <cantidad>"
+        "en" "Use !bj join <amount>"
+        "ru" "Используйте !bj join <сумма>"
+        "chi" "使用 !bj 加入 <金额>"
+        "pt" "Use !bj juntar <quantidade>"
+        "fr" "Utilisez !bj pour rejoindre <montant>"
+        "de" "Verwenden Sie !bj join <amount>"
+    }
+
+    "Table Leave"
+    {
+        "es" "Salir de la mesa"
+        "en" "Leave table"
+        "ru" "Покинуть стол"
+        "chi" "离开餐桌"
+        "pt" "Sair da mesa"
+        "fr" "Quitter la table"
+        "de" "Tabelle verlassen"
+    }
+
+    "Table Player Line"
+    {
+        "es" "%N - %s - %s"
+        "en" "%N - %s - %s"
+        "ru" "%N - %s - %s"
+        "chi" "%N - %s - %s"
+        "pt" "%N - %s - %s"
+        "fr" "%N - %s - %s"
+        "de" "%N - %s - %s"
+    }
+
+    "Table Player Line Status"
+    {
+        "es" "%N - %s - %s - %s"
+        "en" "%N - %s - %s - %s"
+        "ru" "%N - %s - %s - %s"
+        "chi" "%N - %s - %s - %s"
+        "pt" "%N - %s - %s - %s"
+        "fr" "%N - %s - %s - %s"
+        "de" "%N - %s - %s - %s"
+    }
+
+    "Table Player Status Bust"
+    {
+        "es" "BUST"
+        "en" "BUST"
+        "ru" "БЮСТ"
+        "chi" "胸围"
+        "pt" "BUSTO"
+        "fr" "BUSTE"
+        "de" "BÜSTE"
+    }
+
+    "Table Player Status Stand"
+    {
+        "es" "PLANTADO"
+        "en" "STOOD"
+        "ru" "СТОЯЛ"
+        "chi" "站立"
+        "pt" "ESTOU"
+        "fr" "DEBOUT"
+        "de" "STAND"
+    }
+
+    "Table Need Players"
+    {
+        "es" "Faltan jugadores para iniciar"
+        "en" "More players needed to start"
+        "ru" "Для начала нужно больше игроков"
+        "chi" "需要更多玩家才能开始"
+        "pt" "Precisavam de mais jogadores para começar"
+        "fr" "Il faut plus de joueurs pour commencer"
+        "de" "Es mussten mehr Spieler starten"
+    }
+
+    "Table Need Two"
+    {
+        "es" "Se necesitan al menos 2 jugadores."
+        "en" "At least 2 players are required."
+        "ru" "Требуется как минимум 2 игрока."
+        "chi" "至少需要 2 名玩家。"
+        "pt" "São necessários pelo menos 2 jogadores."
+        "fr" "Au moins 2 joueurs sont requis."
+        "de" "Es sind mindestens 2 Spieler erforderlich."
+    }
+
+    "Table Not Seated"
+    {
+        "es" "No estas sentado en la mesa."
+        "en" "You are not seated at the table."
+        "ru" "Вы не сидите за столом."
+        "chi" "您没有坐在桌子旁。"
+        "pt" "Você não está sentado à mesa."
+        "fr" "Vous n'êtes pas assis à table."
+        "de" "Sie sitzen nicht am Tisch."
+    }
+
+    "Table Not Waiting"
+    {
+        "es" "La mesa ya no esta esperando jugadores."
+        "en" "The table is no longer waiting for players."
+        "ru" "Стол больше не ждет игроков."
+        "chi" "桌子不再等待玩家。"
+        "pt" "A mesa não está mais esperando por jogadores."
+        "fr" "La table n'attend plus les joueurs."
+        "de" "Der Tisch wartet nicht mehr auf Spieler."
+    }
+
+    "Table Resolving"
+    {
+        "es" "Resolviendo resultados..."
+        "en" "Resolving results..."
+        "ru" "Разрешение результатов..."
+        "chi" "正在解决结果..."
+        "pt" "Resolvendo resultados..."
+        "fr" "Résolution des résultats..."
+        "de" "Ergebnisse werden aufgelöst..."
+    }
+
+    "Table Result Lose"
+    {
+        "es" "Perdiste %s en la mesa."
+        "en" "You lost %s at the table."
+        "ru" "Вы проиграли %s за столом."
+        "chi" "您在牌桌上输了 %s。"
+        "pt" "Você perdeu %s na mesa."
+        "fr" "Vous avez perdu %s à la table."
+        "de" "Sie haben %s am Tisch verloren."
+    }
+
+    "Table Result Natural"
+    {
+        "es" "Blackjack natural en mesa. Ganancia neta: %s."
+        "en" "Natural blackjack at the table. Net gain: %s."
+        "ru" "Натуральный блэкджек за столом. Чистая прибыль: %s."
+        "chi" "牌桌上的自然二十一点。净收益：%s。"
+        "pt" "Blackjack natural à mesa. Ganho líquido: %s."
+        "fr" "Blackjack naturel à table. Gain net : %s."
+        "de" "Natürlicher Blackjack am Tisch. Nettogewinn: %s."
+    }
+
+    "Table Result Push"
+    {
+        "es" "Empate en la mesa."
+        "en" "Push at the table."
+        "ru" "Толкните стол."
+        "chi" "推桌子。"
+        "pt" "Empurre na mesa."
+        "fr" "Poussez à la table."
+        "de" "Am Tisch drängen."
+    }
+
+    "Table Result Win"
+    {
+        "es" "Ganaste %s en la mesa."
+        "en" "You won %s at the table."
+        "ru" "Вы выиграли %s за столом."
+        "chi" "您在牌桌上赢了 %s。"
+        "pt" "Você ganhou %s na mesa."
+        "fr" "Vous avez gagné %s à la table."
+        "de" "Sie haben %s am Tisch gewonnen."
+    }
+
+    "Table Start"
+    {
+        "es" "Iniciar ronda"
+        "en" "Start round"
+        "ru" "Начать раунд"
+        "chi" "开始回合"
+        "pt" "Rodada inicial"
+        "fr" "Tour de départ"
+        "de" "Runde starten"
+    }
+
+    "Table Timeout"
+    {
+        "es" "Se acabo tu tiempo. Te plantaste automaticamente."
+        "en" "Time is up. You stood automatically."
+        "ru" "Время вышло. Ты автоматически встал."
+        "chi" "时间到了。你自动站了起来。"
+        "pt" "O tempo acabou. Você se levantou automaticamente."
+        "fr" "Le temps est écoulé. Vous vous êtes levé automatiquement."
+        "de" "Die Zeit ist abgelaufen. Du bist automatisch aufgestanden."
+    }
+
+    "Table Title Playing"
+    {
+        "es" "Mesa Blackjack\nEstado: %s\nDealer: %s\nJugadores:\n%s\n "
+        "en" "Blackjack Table\nState: %s\nDealer: %s\nPlayers:\n%s\n "
+        "ru" "Стол для блэкджека\nСостояние: %s\nДилер: %s\nИгроки:\n%s\n "
+        "chi" "二十一点桌\n州：%s\n庄家：%s\n玩家：\n%s\n "
+        "pt" "Mesa de Blackjack\nEstado: %s\nDealer: %s\nJogadores:\n%s\n "
+        "fr" "Table de Blackjack\nÉtat : %s\nConcessionnaire : %s\nJoueurs :\n%s\n "
+        "de" "Blackjack-Tisch\nStatus: %s\nHändler: %s\nSpieler:\n%s\n "
+    }
+
+    "Table Title Waiting"
+    {
+        "es" "Mesa Blackjack\nEstado: %s\nAsientos: %d/%d\nJugadores: %s\n "
+        "en" "Blackjack Table\nState: %s\nSeats: %d/%d\nPlayers: %s\n "
+        "ru" "Стол для блэкджека\nШтат: %s\nМеста: %d/%d\nИгроки: %s\n "
+        "chi" "二十一点桌\n州：%s\n座位：%d/%d\n玩家：%s\n "
+        "pt" "Mesa de Blackjack\nEstado: %s\nAssentos: %d/%d\nJogadores: %s\n "
+        "fr" "Table de Blackjack\nÉtat : %s\nSièges : %d/%d\nJoueurs : %s\n "
+        "de" "Blackjack-Tisch\nStatus: %s\nPlätze: %d/%d\nSpieler: %s\n "
+    }
+
+    "Table Turn"
+    {
+        "es" "Turno de %N"
+        "en" "Turn: %N"
+        "ru" "Очередь: %N"
+        "chi" "回合：%N"
+        "pt" "Turno: %N"
+        "fr" "Tour : %N"
+        "de" "Turn: %N"
+    }
+
+    "Table TwentyOne"
+    {
+        "es" "21 exactos."
+        "en" "Exact 21."
+        "ru" "Ровно 21."
+        "chi" "正好 21。"
+        "pt" "Exato 21."
+        "fr" "Exactement 21."
+        "de" "Genau 21."
+    }
+
+    "Table Waiting"
+    {
+        "es" "Esperando jugadores"
+        "en" "Waiting for players"
+        "ru" "Ожидание игроков"
+        "chi" "等待玩家"
+        "pt" "Esperando por jogadores"
+        "fr" "En attente des joueurs"
+        "de" "Warten auf Spieler"
+    }
+
+    "Table Waiting Turn"
+    {
+        "es" "Esperando turno..."
+        "en" "Waiting for turn..."
+        "ru" "Ожидание очереди..."
+        "chi" "等待转弯..."
+        "pt" "Esperando a vez..."
+        "fr" "En attente du tour..."
+        "de" "Ich warte darauf, an die Reihe zu kommen..."
+    }
+
+    "Table Countdown"
+    {
+        "es" "La mesa comienza en %d segundos."
+        "en" "The table starts in %d seconds."
+        "ru" "Таблица начнется через %d секунд."
+        "chi" "该表在 %d 秒后开始。"
+        "pt" "A tabela começa em %d segundos."
+        "fr" "Le tableau démarre dans %d secondes."
+        "de" "Die Tabelle beginnt in %d Sekunden."
+    }
+
+    "Table Join Notice"
+    {
+        "es" "%N se unio a la mesa con apuesta %s."
+        "en" "%N joined the table with a %s bet."
+        "ru" "%N присоединился к столу со ставкой %s."
+        "chi" "%N 通过 %s 下注加入牌桌。"
+        "pt" "%N entrou na mesa com uma aposta %s."
+        "fr" "%N a rejoint la table avec une mise %s."
+        "de" "%N kam mit einer %s-Wette zum Tisch."
+    }
+
+    "Table Left"
+    {
+        "es" "%N salio de la mesa."
+        "en" "%N left the table."
+        "ru" "%N вышел из-за стола."
+        "chi" "%N 离开了桌子。"
+        "pt" "%N saiu da mesa."
+        "fr" "%N a quitté la table."
+        "de" "%N hat den Tisch verlassen."
+    }
+
+    "Table Removed No Credits"
+    {
+        "es" "%N fue removido de la mesa porque ya no podia pagar la apuesta."
+        "en" "%N was removed from the table because they could no longer pay the bet."
+        "ru" "%N был удален из-за стола, потому что больше не мог оплатить ставку."
+        "chi" "%N 已从牌桌移除，因为其已无法支付该赌注。"
+        "pt" "%N foi removido da mesa porque não podia mais pagar a aposta."
+        "fr" "%N a été retiré de la table car il ne pouvait plus payer la mise."
+        "de" "%N wurde vom Tisch entfernt, weil der Einsatz nicht mehr bezahlt werden konnte."
+    }
+
+    "Table Round End"
+    {
+        "es" "La ronda de mesa termino."
+        "en" "The table round ended."
+        "ru" "Раунд стола завершился."
+        "chi" "桌面回合结束。"
+        "pt" "A rodada da mesa terminou."
+        "fr" "Le tour de table s'est terminé."
+        "de" "Die Tischrunde ist beendet."
+    }
+
+    "Table Round Started"
+    {
+        "es" "La ronda de mesa comenzo."
+        "en" "The table round started."
+        "ru" "Начался настольный раунд."
+        "chi" "圆桌比赛开始。"
+        "pt" "A rodada da mesa começou."
+        "fr" "Le tour de table a commencé."
+        "de" "Die Tischrunde hat begonnen."
+    }
+
+    "Table Turn Notice"
+    {
+        "es" "Turno de %N en la mesa."
+        "en" "It is %N's turn at the table."
+        "ru" "Настала очередь %N за столом."
+        "chi" "现在轮到 %N 上桌了。"
+        "pt" "É a vez de %N na mesa."
+        "fr" "C'est au tour de %N à table."
+        "de" "Am Tisch ist %N an der Reihe."
+    }
+
+    "Value Dash"
+    {
+        "es" "-"
+        "en" "-"
+        "ru" "-"
+        "chi" "-"
+        "pt" "-"
+        "fr" "-"
+        "de" "-"
+    }
+
+    "Hand Value Zero"
+    {
+        "es" " (0)"
+        "en" " (0)"
+        "ru" "(0)"
+        "chi" "(0)"
+        "pt" "(0)"
+        "fr" "(0)"
+        "de" "(0)"
+    }
+
+    "Hand Value Soft"
+    {
+        "es" " (%d/%d)"
+        "en" " (%d/%d)"
+        "ru" "(%d/%d)"
+        "chi" "(%d/%d)"
+        "pt" "(%d/%d)"
+        "fr" "(%d/%d)"
+        "de" "(%d/%d)"
+    }
+
+    "Hand Value Hard"
+    {
+        "es" " (%d)"
+        "en" " (%d)"
+        "ru" "(%d)"
+        "chi" "(%d)"
+        "pt" "(%d)"
+        "fr" "(%d)"
+        "de" "(%d)"
+    }
+
+    "Table Seat Player"
+    {
+        "es" "%N (%s)"
+        "en" "%N (%s)"
+        "ru" "%N (%s)"
+        "chi" "%N (%s)"
+        "pt" "%N (%s)"
+        "fr" "%N (%s)"
+        "de" "%N (%s)"
+    }
+}

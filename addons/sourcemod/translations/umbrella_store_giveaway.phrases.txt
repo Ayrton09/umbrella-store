@@ -1,0 +1,300 @@
+﻿"Phrases"
+{
+    "Giveaway Cancelled Store Missing"
+    {
+        "es" "El giveaway fue cancelado porque umbrella_store no esta disponible."
+        "en" "The giveaway was cancelled because umbrella_store is unavailable."
+        "ru" "Розыгрыш был отменен, поскольку зонтик_магазин недоступен."
+        "chi" "由于伞店不可用，赠品已取消。"
+        "pt" "O sorteio foi cancelado porque guarda-chuva_store não está disponível."
+        "fr" "Le concours a été annulé car parapluie_store n'est pas disponible."
+        "de" "Das Gewinnspiel wurde abgesagt, da Umbrella_store nicht verfügbar ist."
+    }
+
+    "Giveaway Cancelled No Players"
+    {
+        "es" "El giveaway fue cancelado porque ya no hay jugadores validos."
+        "en" "The giveaway was cancelled because there are no valid players."
+        "ru" "Розыгрыш был отменен из-за отсутствия действительных игроков."
+        "chi" "由于没有有效玩家，赠品已取消。"
+        "pt" "O sorteio foi cancelado porque não há jogadores válidos."
+        "fr" "Le concours a été annulé car il n'y a aucun joueur valide."
+        "de" "Das Gewinnspiel wurde abgesagt, da keine gültigen Spieler vorhanden sind."
+    }
+
+    "Giveaway Reward Failed Store Missing"
+    {
+        "es" "No se pudo entregar el premio del giveaway porque umbrella_store no esta disponible."
+        "en" "Could not deliver the giveaway prize because umbrella_store is unavailable."
+        "ru" "Не удалось доставить приз, поскольку зонтик_магазин недоступен."
+        "chi" "由于伞店不可用，因此无法交付赠品。"
+        "pt" "Não foi possível entregar o prêmio do sorteio porque guarda-chuva_store não está disponível."
+        "fr" "Impossible de remettre le prix car parapluie_store n'est pas disponible."
+        "de" "Der Giveaway-Preis konnte nicht geliefert werden, da der Umbrella_Store nicht verfügbar ist."
+    }
+
+    "Giveaway Reward Failed"
+    {
+        "es" "No se pudo entregar el premio del giveaway."
+        "en" "Could not deliver the giveaway prize."
+        "ru" "Не удалось доставить приз."
+        "chi" "无法交付赠品。"
+        "pt" "Não foi possível entregar o prêmio do sorteio."
+        "fr" "Impossible de remettre le prix."
+        "de" "Der Giveaway-Preis konnte nicht übermittelt werden."
+    }
+
+    "Giveaway Winner Broadcast"
+    {
+        "es" "Ganador del giveaway: %s - Premio: %d creditos."
+        "en" "Giveaway winner: %s - Prize: %d credits."
+        "ru" "Победитель розыгрыша: %s — Приз: кредитов %d."
+        "chi" "赠品获奖者：%s - 奖品：%d 积分。"
+        "pt" "Vencedor do sorteio: %s - Prêmio: %d créditos."
+        "fr" "Gagnant du concours : %s - Prix : %d crédits."
+        "de" "Gewinner des Gewinnspiels: %s – Preis: %d Credits."
+    }
+
+    "Giveaway Disabled"
+    {
+        "es" "El modulo giveaway esta deshabilitado."
+        "en" "The giveaway module is disabled."
+        "ru" "Модуль раздачи отключен."
+        "chi" "赠品模块已禁用。"
+        "pt" "O módulo de brindes está desabilitado."
+        "fr" "Le module de cadeaux est désactivé."
+        "de" "Das Giveaway-Modul ist deaktiviert."
+    }
+
+    "Giveaway No Access"
+    {
+        "es" "No tienes acceso a este comando."
+        "en" "You do not have access to this command."
+        "ru" "У вас нет доступа к этой команде."
+        "chi" "您无权访问此命令。"
+        "pt" "Você não tem acesso a este comando."
+        "fr" "Vous n'avez pas accès à cette commande."
+        "de" "Sie haben keinen Zugriff auf diesen Befehl."
+    }
+
+    "Giveaway Usage"
+    {
+        "es" "Uso: sm_giveaway <creditos>"
+        "en" "Usage: sm_giveaway <credits>"
+        "ru" "Использование: sm_giveaway <кредиты>"
+        "chi" "用法：sm_giveaway <学分>"
+        "pt" "Uso: sm_giveaway <créditos>"
+        "fr" "Utilisation : sm_giveaway <crédits>"
+        "de" "Verwendung: sm_giveaway <credits>"
+    }
+
+    "Giveaway Already Active"
+    {
+        "es" "Ya hay un giveaway en curso."
+        "en" "There is already a giveaway running."
+        "ru" "Уже проводится розыгрыш призов."
+        "chi" "已经有赠品活动正在运行。"
+        "pt" "Já existe um sorteio em andamento."
+        "fr" "Un concours est déjà en cours."
+        "de" "Es läuft bereits ein Gewinnspiel."
+    }
+
+    "Giveaway Store Missing"
+    {
+        "es" "umbrella_store no esta disponible."
+        "en" "umbrella_store is unavailable."
+        "ru" "Зонтик_магазин недоступен."
+        "chi" "伞店不可用。"
+        "pt" "guarda-chuva_store não está disponível."
+        "fr" "parapluie_store n'est pas disponible."
+        "de" "Umbrella_store ist nicht verfügbar."
+    }
+
+    "Giveaway Invalid Amount"
+    {
+        "es" "La cantidad debe ser mayor a 0."
+        "en" "The amount must be greater than 0."
+        "ru" "Сумма должна быть больше 0."
+        "chi" "金额必须大于 0。"
+        "pt" "O valor deve ser maior que 0."
+        "fr" "Le montant doit être supérieur à 0."
+        "de" "Der Betrag muss größer als 0 sein."
+    }
+
+    "Giveaway Not Enough Players"
+    {
+        "es" "No hay suficientes jugadores validos. Requeridos: %d | Actuales: %d"
+        "en" "Not enough valid players. Required: %d | Current: %d"
+        "ru" "Недостаточно действительных игроков. Требуется: %d | Текущий: %d"
+        "chi" "有效玩家不足。必填：%d |当前：%d"
+        "pt" "Não há jogadores válidos suficientes. Obrigatório: %d | Atual: %d"
+        "fr" "Pas assez de joueurs valides. Obligatoire : %d | Actuel : %d"
+        "de" "Nicht genügend gültige Spieler. Erforderlich: %d | Aktuell: %d"
+    }
+
+    "Giveaway Started"
+    {
+        "es" "Giveaway iniciado por %s. Premio: %d creditos."
+        "en" "Giveaway started by %s. Prize: %d credits."
+        "ru" "Розыгрыш стартовал %s. Приз: %d кредитов."
+        "chi" "赠品由 %s 发起。奖品：%d 学分。"
+        "pt" "Sorteio iniciado por %s. Prêmio: %d créditos."
+        "fr" "Concours lancé par %s. Prix : %d crédits."
+        "de" "Werbegeschenk gestartet von %s. Preis: %d Credits."
+    }
+
+    "Giveaway Participants"
+    {
+        "es" "Participan %d jugadores. El sorteo comienza en %.0f segundos..."
+        "en" "%d players are participating. The draw starts in %.0f seconds..."
+        "ru" "Участвуют %d игроков. Розыгрыш начнется через %.0f секунд..."
+        "chi" "%d 玩家正在参加。抽奖将在 %.0f 秒后开始..."
+        "pt" "%d jogadores estão participando. O sorteio começa em %.0f segundos..."
+        "fr" "Les joueurs %d participent. Le tirage au sort commence dans %.0f secondes..."
+        "de" "%d Spieler nehmen teil. Die Ziehung beginnt in %.0f Sekunden..."
+    }
+
+    "Giveaway None Active"
+    {
+        "es" "No hay ningun giveaway en curso."
+        "en" "There is no active giveaway."
+        "ru" "Активной раздачи нет."
+        "chi" "没有主动赠品。"
+        "pt" "Não há sorteio ativo."
+        "fr" "Il n'y a aucun cadeau actif."
+        "de" "Es gibt kein aktives Giveaway."
+    }
+
+    "Giveaway Cancelled"
+    {
+        "es" "El giveaway fue cancelado."
+        "en" "The giveaway was cancelled."
+        "ru" "Розыгрыш был отменен."
+        "chi" "赠品已取消。"
+        "pt" "O sorteio foi cancelado."
+        "fr" "Le concours a été annulé."
+        "de" "Das Gewinnspiel wurde abgesagt."
+    }
+
+    "Giveaway Cancelled Not Enough Players"
+    {
+        "es" "El giveaway fue cancelado porque ya no hay suficientes jugadores validos."
+        "en" "The giveaway was cancelled because there are no longer enough valid players."
+        "ru" "Розыгрыш был отменен, поскольку действительных игроков уже недостаточно."
+        "chi" "由于不再有足够的有效玩家，赠品被取消。"
+        "pt" "O sorteio foi cancelado porque não há mais jogadores válidos suficientes."
+        "fr" "Le concours a été annulé car il n'y a plus assez de joueurs valides."
+        "de" "Das Gewinnspiel wurde abgesagt, da nicht mehr genügend gültige Spieler vorhanden sind."
+    }
+
+    "Giveaway Rolling"
+    {
+        "es" "Sorteando..."
+        "en" "Rolling..."
+        "ru" "Катится..."
+        "chi" "滚动..."
+        "pt" "Rolando..."
+        "fr" "Rouler..."
+        "de" "Rollend..."
+    }
+
+    "Giveaway HUD Title"
+    {
+        "es" "UMBRELLA GIVEAWAY"
+        "en" "UMBRELLA GIVEAWAY"
+        "ru" "Розыгрыш зонтиков"
+        "chi" "雨伞赠品"
+        "pt" "SORTEIO DE GUARDA-CHUVA"
+        "fr" "CONCOURS PARAPLUIE"
+        "de" "REGENSCHIRM-GEWINNSPIEL"
+    }
+
+    "Giveaway HUD Preparing"
+    {
+        "es" "Preparando sorteo..."
+        "en" "Preparing draw..."
+        "ru" "Подготовка розыгрыша..."
+        "chi" "正在准备抽奖..."
+        "pt" "Preparando sorteio..."
+        "fr" "Préparation du tirage..."
+        "de" "Zeichnung wird vorbereitet..."
+    }
+
+    "Giveaway HUD Good Luck"
+    {
+        "es" "Buena suerte"
+        "en" "Good luck"
+        "ru" "Удачи"
+        "chi" "祝你好运"
+        "pt" "Boa sorte"
+        "fr" "Bonne chance"
+        "de" "Viel Glück"
+    }
+
+    "Giveaway HUD Prize"
+    {
+        "es" "Premio: %d creditos"
+        "en" "Prize: %d credits"
+        "ru" "Приз: %d кредитов"
+        "chi" "奖品：%d 学分"
+        "pt" "Prêmio: %d créditos"
+        "fr" "Prix : %d crédits"
+        "de" "Preis: %d Credits"
+    }
+
+    "Giveaway HUD Winner Title"
+    {
+        "es" "GANADOR DEL GIVEAWAY"
+        "en" "GIVEAWAY WINNER"
+        "ru" "ПОБЕДИТЕЛЬ РОЗЫГРЫША"
+        "chi" "赠品获奖者"
+        "pt" "VENCEDOR DO SORTEIO"
+        "fr" "GAGNANT DU CONCOURS"
+        "de" "GEWINNSPIEL-GEWINNER"
+    }
+
+    "Giveaway HUD Winner Name"
+    {
+        "es" "GANADOR: %s"
+        "en" "WINNER: %s"
+        "ru" "ПОБЕДИТЕЛЬ: %s"
+        "chi" "获胜者：%s"
+        "pt" "VENCEDOR: %s"
+        "fr" "GAGNANT : %s"
+        "de" "GEWINNER: %s"
+    }
+
+    "Giveaway Starter Console"
+    {
+        "es" "Consola"
+        "en" "Console"
+        "ru" "Консоль"
+        "chi" "控制台"
+        "pt" "Consola"
+        "fr" "Console"
+        "de" "Konsole"
+    }
+
+    "Giveaway Cmd Help"
+    {
+        "es" "sm_giveaway <creditos>"
+        "en" "sm_giveaway <credits>"
+        "ru" "sm_giveaway <кредиты>"
+        "chi" "sm_giveaway <制作人员>"
+        "pt" "sm_giveaway <créditos>"
+        "fr" "sm_giveaway <crédits>"
+        "de" "sm_giveaway <Credits>"
+    }
+
+    "Giveaway Cmd Cancel Help"
+    {
+        "es" "Cancela el giveaway actual"
+        "en" "Cancels the current giveaway"
+        "ru" "Отменяет текущую раздачу подарков."
+        "chi" "取消当前赠品"
+        "pt" "Cancela o sorteio atual"
+        "fr" "Annule le cadeau en cours"
+        "de" "Bricht die aktuelle Verlosung ab"
+    }
+}
+

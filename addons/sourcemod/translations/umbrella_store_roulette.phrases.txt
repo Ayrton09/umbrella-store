@@ -1,0 +1,519 @@
+﻿"Phrases"
+{
+    "Roulette Casino Title"
+    {
+        "es" "Ruleta"
+        "en" "Roulette"
+        "ru" "Рулетка"
+        "chi" "轮盘赌"
+        "pt" "Roleta"
+        "fr" "Roulette"
+        "de" "Roulette"
+    }
+
+    "Roulette Disabled"
+    {
+        "es" "La ruleta esta desactivada."
+        "en" "Roulette is disabled."
+        "ru" "Рулетка отключена."
+        "chi" "轮盘赌已禁用。"
+        "pt" "A roleta está desativada."
+        "fr" "La roulette est désactivée."
+        "de" "Roulette ist deaktiviert."
+    }
+
+    "Roulette Store Not Loaded"
+    {
+        "es" "Tus datos de la store aun no cargaron."
+        "en" "Your store data is not loaded yet."
+        "ru" "Данные вашего магазина еще не загружены."
+        "chi" "您的商店数据尚未加载。"
+        "pt" "Os dados da sua loja ainda não foram carregados."
+        "fr" "Les données de votre boutique ne sont pas encore chargées."
+        "de" "Ihre Shop-Daten sind noch nicht geladen."
+    }
+
+    "Roulette Cooldown"
+    {
+        "es" "Espera %.1f segundos para volver a usar ruleta."
+        "en" "Wait %.1f seconds before using roulette again."
+        "ru" "Подождите %.1f секунд, прежде чем снова использовать рулетку."
+        "chi" "再次使用轮盘赌之前请等待 %.1f 秒。"
+        "pt" "Aguarde %.1f segundos antes de usar a roleta novamente."
+        "fr" "Attendez %.1f secondes avant d'utiliser à nouveau la roulette."
+        "de" "Warten Sie %.1f Sekunden, bevor Sie Roulette erneut verwenden."
+    }
+
+    "Roulette Command Help"
+    {
+        "es" "Usa !roulette o !ruleta para abrir el menu."
+        "en" "Use !roulette to open the menu."
+        "ru" "Используйте !roulette, чтобы открыть меню."
+        "chi" "使用 !roulette 打开菜单。"
+        "pt" "Use !roulette para abrir o menu."
+        "fr" "Utilisez !roulette pour ouvrir le menu."
+        "de" "Verwenden Sie !roulette, um das Menü zu öffnen."
+    }
+
+    "Roulette Invalid Bet Type"
+    {
+        "es" "Seleccion de apuesta invalida."
+        "en" "Invalid bet selection."
+        "ru" "Неверный выбор ставки."
+        "chi" "投注选择无效。"
+        "pt" "Seleção de aposta inválida."
+        "fr" "Sélection de pari invalide."
+        "de" "Ungültige Wettauswahl."
+    }
+
+    "Roulette Number Invalid"
+    {
+        "es" "Numero invalido. Debe estar entre 0 y 36."
+        "en" "Invalid number. It must be between 0 and 36."
+        "ru" "Неверный номер. Оно должно быть между 0 и 36."
+        "chi" "号码无效。它必须介于 0 到 36 之间。"
+        "pt" "Número inválido. Deve estar entre 0 e 36."
+        "fr" "Numéro invalide. Il doit être compris entre 0 et 36."
+        "de" "Ungültige Nummer. Er muss zwischen 0 und 36 liegen."
+    }
+
+    "Roulette Custom Invalid"
+    {
+        "es" "Monto invalido. Escribe solo numeros (ej: 5000)."
+        "en" "Invalid amount. Type only numbers (ex: 5000)."
+        "ru" "Неверная сумма. Введите только цифры (например: 5000)."
+        "chi" "金额无效。仅键入数字（例如：5000）。"
+        "pt" "Valor inválido. Digite apenas números (ex: 5000)."
+        "fr" "Montant invalide. Tapez uniquement des chiffres (ex : 5000)."
+        "de" "Ungültiger Betrag. Geben Sie nur Zahlen ein (z. B. 5000)."
+    }
+
+    "Roulette Custom Cancelled"
+    {
+        "es" "Entrada de apuesta personalizada cancelada."
+        "en" "Custom bet input cancelled."
+        "ru" "Ввод пользовательской ставки отменен."
+        "chi" "自定义投注输入已取消。"
+        "pt" "Entrada de aposta personalizada cancelada."
+        "fr" "Saisie de pari personnalisé annulée."
+        "de" "Eingabe der benutzerdefinierten Wette abgebrochen."
+    }
+
+    "Roulette Custom Prompt"
+    {
+        "es" "Escribe tu apuesta en chat (min: %d, max: %d). Usa 'cancelar' para salir."
+        "en" "Type your bet in chat (min: %d, max: %d). Use 'cancel' to leave."
+        "ru" "Введите свою ставку в чат (мин: %d, макс: %d). Используйте 'cancel', чтобы уйти."
+        "chi" "在聊天中输入您的赌注（最小：%d，最大：%d）。使用 'cancel' 离开。"
+        "pt" "Digite sua aposta no chat (min: %d, max: %d). Use 'cancel' para sair."
+        "fr" "Saisissez votre pari dans le chat (min : %d, max : %d). Utilisez 'cancel' pour partir."
+        "de" "Geben Sie Ihre Wette im Chat ein (Min.: %d, Max: %d). Verwenden Sie 'cancel', um zu gehen."
+    }
+
+    "Roulette Menu Title"
+    {
+        "es" "Ruleta\nCreditos: %s\nMin: %s | Max: %s\n "
+        "en" "Roulette\nCredits: %s\nMin: %s | Max: %s\n "
+        "ru" "Рулетка\nКредиты: %s\nМин: %s | Макс: %s\n "
+        "chi" "轮盘\n 积分：%s\n 分钟：%s |最大：%s\n "
+        "pt" "Roleta\nCréditos: %s\nMin: %s | Máx.: %s\n "
+        "fr" "Roulette\nCrédits : %s\nMin : %s | Maximum : %s\n "
+        "de" "Roulette\nCredits: %s\nMin: %s | Maximal: %s\n "
+    }
+
+    "Roulette Menu Red"
+    {
+        "es" "Apostar Rojo (x2)"
+        "en" "Bet Red (x2)"
+        "ru" "Ставка на красное (x2)"
+        "chi" "赌红 (x2)"
+        "pt" "Aposta Vermelha (x2)"
+        "fr" "Parier Rouge (x2)"
+        "de" "Wette Rot (x2)"
+    }
+
+    "Roulette Menu Black"
+    {
+        "es" "Apostar Negro (x2)"
+        "en" "Bet Black (x2)"
+        "ru" "Ставка на черное (x2)"
+        "chi" "赌黑 (x2)"
+        "pt" "Aposta Preta (x2)"
+        "fr" "Parier Noir (x2)"
+        "de" "Wette auf Schwarz (x2)"
+    }
+
+    "Roulette Menu Green"
+    {
+        "es" "Apostar Verde (x14)"
+        "en" "Bet Green (x14)"
+        "ru" "Ставка на зеленое (x14)"
+        "chi" "赌绿色 (x14)"
+        "pt" "Aposta Verde (x14)"
+        "fr" "Parier Vert (x14)"
+        "de" "Wette Grün (x14)"
+    }
+
+    "Roulette Menu Number"
+    {
+        "es" "Apostar Numero (x36)"
+        "en" "Bet Number (x36)"
+        "ru" "Номер ставки (x36)"
+        "chi" "投注号码 (x36)"
+        "pt" "Número da aposta (x36)"
+        "fr" "Numéro de pari (x36)"
+        "de" "Wettnummer (x36)"
+    }
+
+    "Roulette Menu Info"
+    {
+        "es" "Como jugar"
+        "en" "How to play"
+        "ru" "Как играть"
+        "chi" "怎么玩"
+        "pt" "Como jogar"
+        "fr" "Comment jouer"
+        "de" "Spielanleitung"
+    }
+
+    "Roulette Info 1"
+    {
+        "es" "Rojo/Negro pagan x2. Verde paga x14. Numero exacto paga x36."
+        "en" "Red/Black pays x2. Green pays x14. Exact number pays x36."
+        "ru" "Красный/Черный платит x2. Зеленый платит х14. Точное число выплачивает х36."
+        "chi" "红/黑支付 x2。绿色支付x14。确切的数字支付 x36。"
+        "pt" "Vermelho/Preto paga x2. Verde paga x14. O número exato paga x36."
+        "fr" "Rouge/Noir paie x2. Le vert paie x14. Le nombre exact paie x36."
+        "de" "Rot/Schwarz zahlt x2. Grün zahlt x14. Genaue Zahl zahlt x36."
+    }
+
+    "Roulette Info 2"
+    {
+        "es" "Puedes usar montos rapidos o elegir una apuesta personalizada."
+        "en" "You can use quick amounts or choose a custom bet."
+        "ru" "Вы можете использовать быстрые суммы или выбрать собственную ставку."
+        "chi" "您可以使用快速金额或选择自定义投注。"
+        "pt" "Você pode usar valores rápidos ou escolher uma aposta personalizada."
+        "fr" "Vous pouvez utiliser des montants rapides ou choisir un pari personnalisé."
+        "de" "Sie können schnelle Beträge verwenden oder eine benutzerdefinierte Wette wählen."
+    }
+
+    "Roulette Info 3"
+    {
+        "es" "Comandos: !roulette, !ruleta, !ru."
+        "en" "Commands: !roulette, !ruleta, !ru."
+        "ru" "Команды: !roulette, !ruleta, !ru."
+        "chi" "命令：!roulette、!ruleta、!ru。"
+        "pt" "Comandos: !roulette, !ruleta, !ru."
+        "fr" "Commandes : !roulette, !ruleta, !ru."
+        "de" "Befehle: !roulette, !ruleta, !ru."
+    }
+
+    "Roulette Number Menu Title"
+    {
+        "es" "Ruleta\nElige un numero (0-36)\n "
+        "en" "Roulette\nChoose a number (0-36)\n "
+        "ru" "Рулетка\nВыберите число (0-36)\n "
+        "chi" "轮盘\n选择一个数字（0-36）\n "
+        "pt" "Roleta\nEscolha um número (0-36)\n "
+        "fr" "Roulette\nChoisissez un numéro (0-36)\n "
+        "de" "Roulette\nWähle eine Zahl (0-36)\n "
+    }
+
+    "Roulette Number Entry"
+    {
+        "es" "Numero %d"
+        "en" "Number %d"
+        "ru" "Номер %d"
+        "chi" "号码 %d"
+        "pt" "Número %d"
+        "fr" "Numéro %d"
+        "de" "Nummer %d"
+    }
+
+    "Roulette Bet Menu Title"
+    {
+        "es" "Ruleta\nSeleccion: %s\nCreditos: %s\nElige apuesta\n "
+        "en" "Roulette\nSelection: %s\nCredits: %s\nChoose bet\n "
+        "ru" "Рулетка\nВыбор: %s\nКредиты: %s\nВыбрать ставку\n "
+        "chi" "轮盘\n选择：%s\n积分：%s\n选择投注\n "
+        "pt" "Roleta\nSeleção: %s\nCréditos: %s\nEscolher aposta\n "
+        "fr" "Roulette\nSélection : %s\nCrédits : %s\nChoisir un pari\n "
+        "de" "Roulette\nAuswahl: %s\nCredits: %s\nWette wählen\n "
+    }
+
+    "Roulette Quick Bet Min"
+    {
+        "es" "Minima: %s"
+        "en" "Minimum: %s"
+        "ru" "Минимум: %s"
+        "chi" "最小值：%s"
+        "pt" "Mínimo: %s"
+        "fr" "Minimum : %s"
+        "de" "Minimum: %s"
+    }
+
+    "Roulette Quick Bet Low"
+    {
+        "es" "Baja: %s"
+        "en" "Low: %s"
+        "ru" "Низкий: %s"
+        "chi" "低：%s"
+        "pt" "Baixo: %s"
+        "fr" "Faible : %s"
+        "de" "Niedrig: %s"
+    }
+
+    "Roulette Quick Bet Medium"
+    {
+        "es" "Media: %s"
+        "en" "Medium: %s"
+        "ru" "Средний: %s"
+        "chi" "介质：%s"
+        "pt" "Meio: %s"
+        "fr" "Support : %s"
+        "de" "Medium: %s"
+    }
+
+    "Roulette Quick Bet High"
+    {
+        "es" "Alta: %s"
+        "en" "High: %s"
+        "ru" "Высокий: %s"
+        "chi" "高：%s"
+        "pt" "Alto: %s"
+        "fr" "Élevé : %s"
+        "de" "Hoch: %s"
+    }
+
+    "Roulette Quick Bet AllIn"
+    {
+        "es" "All-in: %s"
+        "en" "All-in: %s"
+        "ru" "Олл-ин: %s"
+        "chi" "全押：%s"
+        "pt" "Tudo incluído: %s"
+        "fr" "Tout compris : %s"
+        "de" "All-in: %s"
+    }
+
+    "Roulette Quick Bet Unavailable"
+    {
+        "es" "No tienes creditos suficientes para apostar."
+        "en" "You do not have enough credits to bet."
+        "ru" "У вас недостаточно кредитов для ставки."
+        "chi" "您没有足够的积分来投注。"
+        "pt" "Você não tem créditos suficientes para apostar."
+        "fr" "Vous n'avez pas assez de crédits pour parier."
+        "de" "Sie haben nicht genügend Guthaben, um zu wetten."
+    }
+
+    "Roulette Bet Menu Custom"
+    {
+        "es" "Apuesta personalizada"
+        "en" "Custom bet"
+        "ru" "Пользовательская ставка"
+        "chi" "自定义投注"
+        "pt" "Aposta personalizada"
+        "fr" "Pari personnalisé"
+        "de" "Benutzerdefinierte Wette"
+    }
+
+    "Roulette Bet Menu Back"
+    {
+        "es" "Volver"
+        "en" "Back"
+        "ru" "Назад"
+        "chi" "返回"
+        "pt" "Voltar"
+        "fr" "Retour"
+        "de" "Zurück"
+    }
+
+    "Roulette Bet Too Low"
+    {
+        "es" "La apuesta minima es %s creditos."
+        "en" "Minimum bet is %s credits."
+        "ru" "Минимальная ставка составляет %s кредитов."
+        "chi" "最低赌注为 %s 积分。"
+        "pt" "A aposta mínima é de %s créditos."
+        "fr" "La mise minimale est de %s crédits."
+        "de" "Der Mindesteinsatz beträgt %s Credits."
+    }
+
+    "Roulette Bet Too High"
+    {
+        "es" "La apuesta maxima permitida es %s creditos."
+        "en" "Maximum allowed bet is %s credits."
+        "ru" "Максимально допустимая ставка составляет %s кредитов."
+        "chi" "允许的最大赌注为 %s 积分。"
+        "pt" "A aposta máxima permitida é de %s créditos."
+        "fr" "La mise maximale autorisée est de %s crédits."
+        "de" "Der maximal zulässige Einsatz beträgt %s Credits."
+    }
+
+    "Roulette Not Enough Credits"
+    {
+        "es" "No tienes creditos suficientes."
+        "en" "You do not have enough credits."
+        "ru" "У вас недостаточно кредитов."
+        "chi" "您没有足够的积分。"
+        "pt" "Você não tem créditos suficientes."
+        "fr" "Vous n'avez pas assez de crédits."
+        "de" "Sie haben nicht genügend Credits."
+    }
+
+    "Roulette Bet Choice Red"
+    {
+        "es" "Rojo"
+        "en" "Red"
+        "ru" "Красный"
+        "chi" "红色"
+        "pt" "Vermelho"
+        "fr" "Rouge"
+        "de" "Rot"
+    }
+
+    "Roulette Bet Choice Black"
+    {
+        "es" "Negro"
+        "en" "Black"
+        "ru" "Черный"
+        "chi" "黑色"
+        "pt" "Preto"
+        "fr" "Noir"
+        "de" "Schwarz"
+    }
+
+    "Roulette Bet Choice Green"
+    {
+        "es" "Verde"
+        "en" "Green"
+        "ru" "Зеленый"
+        "chi" "绿色"
+        "pt" "Verde"
+        "fr" "Vert"
+        "de" "Grün"
+    }
+
+    "Roulette Bet Choice Number"
+    {
+        "es" "Numero %d"
+        "en" "Number %d"
+        "ru" "Номер %d"
+        "chi" "号码 %d"
+        "pt" "Número %d"
+        "fr" "Numéro %d"
+        "de" "Nummer %d"
+    }
+
+    "Roulette Color Green"
+    {
+        "es" "Verde"
+        "en" "Green"
+        "ru" "Зеленый"
+        "chi" "绿色"
+        "pt" "Verde"
+        "fr" "Vert"
+        "de" "Grün"
+    }
+
+    "Roulette Color Red"
+    {
+        "es" "Rojo"
+        "en" "Red"
+        "ru" "Красный"
+        "chi" "红色"
+        "pt" "Vermelho"
+        "fr" "Rouge"
+        "de" "Rot"
+    }
+
+    "Roulette Color Black"
+    {
+        "es" "Negro"
+        "en" "Black"
+        "ru" "Черный"
+        "chi" "黑色"
+        "pt" "Preto"
+        "fr" "Noir"
+        "de" "Schwarz"
+    }
+
+    "Roulette Result Win"
+    {
+        "es" "Ganaste. Seleccion: %s | Salio: %d (%s) | Cobraste: %s (x%.2f)."
+        "en" "You won. Selection: %s | Result: %d (%s) | Payout: %s (x%.2f)."
+        "ru" "Вы выиграли. Выбор: %s | Результат: %d (%s) | Выплата: %s (x%.2f)."
+        "chi" "你赢了。选择：%s |结果：%d (%s) |支出：%s (x%.2f)。"
+        "pt" "Você ganhou. Seleção: %s | Resultado: %d (%s) | Pagamento: %s (x%.2f)."
+        "fr" "Vous avez gagné. Sélection : %s | Résultat : %d (%s) | Paiement : %s (x%.2f)."
+        "de" "Du hast gewonnen. Auswahl: %s | Ergebnis: %d (%s) | Auszahlung: %s (x%.2f)."
+    }
+
+    "Roulette Result Lose"
+    {
+        "es" "Perdiste. Seleccion: %s | Salio: %d (%s) | Apostaste: %s."
+        "en" "You lost. Selection: %s | Result: %d (%s) | Bet: %s."
+        "ru" "Вы проиграли. Выбор: %s | Результат: %d (%s) | Ставка: %s."
+        "chi" "你输了。选择：%s |结果：%d (%s) |投注：%s。"
+        "pt" "Você perdeu. Seleção: %s | Resultado: %d (%s) | Aposta: %s."
+        "fr" "Vous avez perdu. Sélection : %s | Résultat : %d (%s) | Pari : %s."
+        "de" "Du hast verloren. Auswahl: %s | Ergebnis: %d (%s) | Wette: %s."
+    }
+
+    "Roulette Big Win Announce"
+    {
+        "es" "%N gano +%s en ruleta con %s. Salio %d (%s)."
+        "en" "%N won +%s in roulette with %s. Result %d (%s)."
+        "ru" "%N выиграл +%s в рулетке с %s. Результат %d (%s)."
+        "chi" "%N 在轮盘赌中与 %s 一起赢得了 +%s。结果 %d (%s)。"
+        "pt" "%N ganhou +%s na roleta com %s. Resultado %d (%s)."
+        "fr" "%N a gagné +%s à la roulette avec %s. Résultat %d (%s)."
+        "de" "%N hat +%s beim Roulette mit %s gewonnen. Ergebnis %d (%s)."
+    }
+
+    "Roulette Already Spinning"
+    {
+        "es" "La ruleta ya esta girando, espera el resultado."
+        "en" "Roulette is already spinning, wait for the result."
+        "ru" "Рулетка уже крутится, дождитесь результата."
+        "chi" "轮盘已经开始旋转，等待结果。"
+        "pt" "A roleta já está girando, aguarde o resultado."
+        "fr" "La roulette tourne déjà, attendez le résultat."
+        "de" "Roulette dreht sich bereits, warten Sie auf das Ergebnis."
+    }
+
+    "Roulette Spin HUD Header"
+    {
+        "es" "Ruleta | Seleccion: %s | Apuesta: %s"
+        "en" "Roulette | Selection: %s | Bet: %s"
+        "ru" "Рулетка | Выбор: %s | Ставка: %s"
+        "chi" "轮盘 |选择：%s |投注：%s"
+        "pt" "Roleta | Seleção: %s | Aposta: %s"
+        "fr" "Roulette | Sélection : %s | Pari : %s"
+        "de" "Roulette | Auswahl: %s | Wette: %s"
+    }
+
+    "Roulette Spin HUD Rolling"
+    {
+        "es" "Girando... %d (%s)"
+        "en" "Spinning... %d (%s)"
+        "ru" "Вращение... %d (%s)"
+        "chi" "旋转... %d (%s)"
+        "pt" "Girando... %d (%s)"
+        "fr" "Tournage... %d (%s)"
+        "de" "Spinnen... %d (%s)"
+    }
+
+    "Roulette Spin HUD Final"
+    {
+        "es" "Resultado: %d (%s)"
+        "en" "Result: %d (%s)"
+        "ru" "Результат: %d (%s)"
+        "chi" "结果：%d (%s)"
+        "pt" "Resultado: %d (%s)"
+        "fr" "Résultat : %d (%s)"
+        "de" "Ergebnis: %d (%s)"
+    }
+}

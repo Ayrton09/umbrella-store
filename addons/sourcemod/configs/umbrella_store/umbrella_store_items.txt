@@ -1,0 +1,193 @@
+"Items"
+{
+    // =========================================================================
+    // Umbrella Store item config
+    // =========================================================================
+    //
+    // This file uses standard SourceMod KeyValues format.
+    // Every item needs a unique section name, for example:
+    //
+    // "my_unique_item_id"
+    // {
+    //     "name"  "Visible Name"
+    //     "type"  "tag"
+    //     "value" "{PURPLE}[VIP]{DEFAULT}"
+    //     "price" "5000"
+    //     "team"  "0"
+    //     "flag"  ""
+    // }
+    //
+    // Supported item types in Umbrella Store core:
+    //   - "skin"
+    //   - "tag"
+    //   - "namecolor"
+    //   - "chatcolor"
+    //
+    // Supported keys:
+    //   "name"   = item display name in the store menu
+    //   "type"   = item type
+    //   "model"  = player model path (required for "skin")
+    //   "arms"   = arms model path (optional for "skin")
+    //   "value"  = text/color value used by chat items
+    //   "price"  = credits price
+    //   "team"   = 0 for any / 2 for T / 3 for CT
+    //   "flag"   = admin flag restriction, empty = everyone
+    //
+    // Important behavior notes:
+    //   - Skin items require a real existing model path or they will be skipped.
+    //   - Arms are optional. If the path is invalid, the item still loads without arms.
+    //   - "tag", "namecolor" and "chatcolor" use the "value" key.
+    //   - Equip is exclusive per category:
+    //       skin: one per team
+    //       tag: one active tag
+    //       namecolor: one active name color
+    //       chatcolor: one active chat color
+    //   - "flag" uses SourceMod admin flags, for example:
+    //       "b" = generic admin
+    //       "o" = custom6
+    //       "z" = root
+    //
+    // Chat color tags supported by the core:
+    //   Basic compatibility tags:
+    //       {DEFAULT} {TEAM} {GREEN}
+    //   Extended tags when store_chat_extended_colors = 1:
+    //       {RED} {LIME} {LIGHTGREEN} {LIGHTRED} {GRAY}
+    //       {YELLOW} {LIGHTBLUE} {BLUE} {PURPLE}
+    //
+    // =========================================================================
+    // SKIN EXAMPLE - Terrorist only
+    // =========================================================================
+    //
+    // "skin_t_example"
+    // {
+    //     "name"  "Example Terror Skin"
+    //     "type"  "skin"
+    //     "model" "models/player/custom/example_t/example_t.mdl"
+    //     "arms"  "models/weapons/t_arms_example.mdl"
+    //     "value" ""
+    //     "price" "12000"
+    //     "team"  "2"
+    //     "flag"  ""
+    // }
+
+    // =========================================================================
+    // SKIN EXAMPLE - Counter-Terrorist only, admin restricted
+    // =========================================================================
+    //
+    // "skin_ct_admin_example"
+    // {
+    //     "name"  "Example CT Admin Skin"
+    //     "type"  "skin"
+    //     "model" "models/player/custom/example_ct/example_ct.mdl"
+    //     "arms"  ""
+    //     "value" ""
+    //     "price" "25000"
+    //     "team"  "3"
+    //     "flag"  "b"
+    // }
+
+    // =========================================================================
+    // TAG EXAMPLES
+    // =========================================================================
+    //
+    // "tag_vip_gold"
+    // {
+    //     "name"  "VIP Gold Tag"
+    //     "type"  "tag"
+    //     "model" ""
+    //     "arms"  ""
+    //     "value" "{YELLOW}[VIP]{DEFAULT}"
+    //     "price" "5000"
+    //     "team"  "0"
+    //     "flag"  ""
+    // }
+    //
+    // "tag_event_purple"
+    // {
+    //     "name"  "Event Tag"
+    //     "type"  "tag"
+    //     "model" ""
+    //     "arms"  ""
+    //     "value" "{PURPLE}[EVENT]{DEFAULT}"
+    //     "price" "8000"
+    //     "team"  "0"
+    //     "flag"  ""
+    // }
+
+    // =========================================================================
+    // NAME COLOR EXAMPLES
+    // =========================================================================
+    //
+    // "namecolor_red"
+    // {
+    //     "name"  "Red Name"
+    //     "type"  "namecolor"
+    //     "model" ""
+    //     "arms"  ""
+    //     "value" "{RED}"
+    //     "price" "3000"
+    //     "team"  "0"
+    //     "flag"  ""
+    // }
+    //
+    // "namecolor_orchid"
+    // {
+    //     "name"  "Purple Name"
+    //     "type"  "namecolor"
+    //     "model" ""
+    //     "arms"  ""
+    //     "value" "{PURPLE}"
+    //     "price" "4500"
+    //     "team"  "0"
+    //     "flag"  ""
+    // }
+
+    // =========================================================================
+    // CHAT COLOR EXAMPLES
+    // =========================================================================
+    //
+    // "chatcolor_green"
+    // {
+    //     "name"  "Green Chat"
+    //     "type"  "chatcolor"
+    //     "model" ""
+    //     "arms"  ""
+    //     "value" "{GREEN}"
+    //     "price" "3000"
+    //     "team"  "0"
+    //     "flag"  ""
+    // }
+    //
+    // "chatcolor_blue"
+    // {
+    //     "name"  "Blue Chat"
+    //     "type"  "chatcolor"
+    //     "model" ""
+    //     "arms"  ""
+    //     "value" "{BLUE}"
+    //     "price" "4500"
+    //     "team"  "0"
+    //     "flag"  ""
+    // }
+
+    // =========================================================================
+    // COMBINED CHAT SET EXAMPLE
+    // =========================================================================
+    //
+    // To create a full chat setup, you normally add:
+    //   1. one tag item
+    //   2. one namecolor item
+    //   3. one chatcolor item
+    //
+    // Example combo:
+    //   tag       = "{PURPLE}[Umbrella]{DEFAULT}"
+    //   namecolor = "{LIGHTBLUE}"
+    //   chatcolor = "{DEFAULT}"
+
+    // =========================================================================
+    // START HERE
+    // =========================================================================
+    //
+    // Replace the commented examples above with your real items.
+    // Keep every item id unique.
+}

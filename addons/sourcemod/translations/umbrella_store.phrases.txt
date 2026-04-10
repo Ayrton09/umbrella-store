@@ -1,0 +1,1453 @@
+﻿"Phrases"
+{
+    "Store Prefix"
+    {
+        "es" "{TEAM}[Umbrella Store]{DEFAULT}"
+        "en" "{TEAM}[Umbrella Store]{DEFAULT}"
+        "ru" "{TEAM}[Магазин Umbrella]{DEFAULT}"
+        "chi" "{TEAM}[伞店]{DEFAULT}"
+        "pt" "{TEAM}[Loja Umbrella]{DEFAULT}"
+        "fr" "{TEAM}[Magasin de parapluies]{DEFAULT}"
+        "de" "{TEAM}[Umbrella Store]{DEFAULT}"
+    }
+    "Menu Main Title"
+    {
+        "es" "Tienda de Umbrella"
+        "en" "Umbrella Store"
+        "ru" "Магазин зонтиков"
+        "chi" "雨伞店"
+        "pt" "Loja de guarda-chuvas"
+        "fr" "Magasin de parapluies"
+        "de" "Umbrella Store"
+    }
+    "Credits Label"
+    {
+        "es" "Créditos"
+        "en" "Credits"
+        "ru" "Кредиты"
+        "chi" "制作人员"
+        "pt" "Créditos"
+        "fr" "Crédits"
+        "de" "Credits"
+    }
+    "Credits Current Command"
+    {
+        "es" "Créditos actuales: {LIGHTBLUE}%s{DEFAULT}"
+        "en" "Current credits: {LIGHTBLUE}%s{DEFAULT}"
+        "ru" "Текущие кредиты: {LIGHTBLUE}%s{DEFAULT}"
+        "chi" "当前积分：{LIGHTBLUE}%s{DEFAULT}"
+        "pt" "Créditos atuais: {LIGHTBLUE}%s{DEFAULT}"
+        "fr" "Crédits actuels : {LIGHTBLUE}%s{DEFAULT}"
+        "de" "Aktuelle Credits: {LIGHTBLUE}%s{DEFAULT}"
+    }
+    "Credits Current"
+    {
+        "es" "Tienes {LIGHTBLUE}%s{DEFAULT} créditos."
+        "en" "You have {LIGHTBLUE}%s{DEFAULT} credits."
+        "ru" "У вас есть кредиты {LIGHTBLUE}%s{DEFAULT}."
+        "chi" "您有 {LIGHTBLUE}%s{DEFAULT} 积分。"
+        "pt" "Você tem créditos {LIGHTBLUE}%s{DEFAULT}."
+        "fr" "Vous disposez de {LIGHTBLUE}%s{DEFAULT} crédits."
+        "de" "Sie haben {LIGHTBLUE}%s{DEFAULT} Credits."
+    }
+    "Credits Time"
+    {
+        "es" "Obtuviste {LIGHTBLUE}%s{DEFAULT} créditos por jugar en el server!"
+        "en" "You received {LIGHTBLUE}%s{DEFAULT} credits for playing on the server!"
+        "ru" "Вы получили кредиты {LIGHTBLUE}%s{DEFAULT} за игру на сервере!"
+        "chi" "您因在服务器上玩游戏而获得了 {LIGHTBLUE}%s{DEFAULT} 积分！"
+        "pt" "Você recebeu {LIGHTBLUE}%s{DEFAULT} créditos por jogar no servidor!"
+        "fr" "Vous avez reçu des crédits {LIGHTBLUE}%s{DEFAULT} pour avoir joué sur le serveur !"
+        "de" "Du hast {LIGHTBLUE}%s{DEFAULT} Credits für das Spielen auf dem Server erhalten!"
+    }
+    "Credits Kill"
+    {
+        "es" "Créditos ganados: {LIGHTBLUE}%s{DEFAULT} por eliminar a un enemigo."
+        "en" "Credits earned: {LIGHTBLUE}%s{DEFAULT} for killing an enemy."
+        "ru" "Заработано кредитов: {LIGHTBLUE}%s{DEFAULT} за убийство врага."
+        "chi" "杀死敌人获得的积分：{LIGHTBLUE}%s{DEFAULT}。"
+        "pt" "Créditos ganhos: {LIGHTBLUE}%s{DEFAULT} por matar um inimigo."
+        "fr" "Crédits gagnés : {LIGHTBLUE}%s{DEFAULT} pour avoir tué un ennemi."
+        "de" "Verdiente Credits: {LIGHTBLUE}%s{DEFAULT} für das Töten eines Feindes."
+    }
+    "Credits Kill Headshot"
+    {
+        "es" "Créditos ganados: {LIGHTBLUE}%s{DEFAULT} por headshot."
+        "en" "Credits earned: {LIGHTBLUE}%s{DEFAULT} for a headshot."
+        "ru" "Заработано кредитов: {LIGHTBLUE}%s{DEFAULT} за выстрел в голову."
+        "chi" "爆头获得的积分：{LIGHTBLUE}%s{DEFAULT}。"
+        "pt" "Créditos ganhos: {LIGHTBLUE}%s{DEFAULT} por um tiro na cabeça."
+        "fr" "Crédits gagnés : {LIGHTBLUE}%s{DEFAULT} pour une photo dans la tête."
+        "de" "Verdiente Credits: {LIGHTBLUE}%s{DEFAULT} für einen Kopfschuss."
+    }
+    "Credits Round Win"
+    {
+        "es" "Créditos ganados: {LIGHTBLUE}%s{DEFAULT} por ganar la ronda."
+        "en" "Credits earned: {LIGHTBLUE}%s{DEFAULT} for winning the round."
+        "ru" "Заработано кредитов: {LIGHTBLUE}%s{DEFAULT} за победу в раунде."
+        "chi" "赢得回合获得的积分：{LIGHTBLUE}%s{DEFAULT}。"
+        "pt" "Créditos ganhos: {LIGHTBLUE}%s{DEFAULT} por vencer a rodada."
+        "fr" "Crédits gagnés : {LIGHTBLUE}%s{DEFAULT} pour avoir remporté la manche."
+        "de" "Verdiente Credits: {LIGHTBLUE}%s{DEFAULT} für den Gewinn der Runde."
+    }
+    "Credits Plant"
+    {
+        "es" "Créditos ganados: {LIGHTBLUE}%s{DEFAULT} por plantar la bomba."
+        "en" "Credits earned: {LIGHTBLUE}%s{DEFAULT} for planting the bomb."
+        "ru" "За установку бомбы заработано кредитов: {LIGHTBLUE}%s{DEFAULT}."
+        "chi" "放置炸弹获得的积分：{LIGHTBLUE}%s{DEFAULT}。"
+        "pt" "Créditos ganhos: {LIGHTBLUE}%s{DEFAULT} por plantar a bomba."
+        "fr" "Crédits gagnés : {LIGHTBLUE}%s{DEFAULT} pour avoir posé la bombe."
+        "de" "Verdiente Credits: {LIGHTBLUE}%s{DEFAULT} für das Platzieren der Bombe."
+    }
+    "Credits Defuse"
+    {
+        "es" "Créditos ganados: {LIGHTBLUE}%s{DEFAULT} por desactivar la bomba."
+        "en" "Credits earned: {LIGHTBLUE}%s{DEFAULT} for defusing the bomb."
+        "ru" "Заработано кредитов: {LIGHTBLUE}%s{DEFAULT} за обезвреживание бомбы."
+        "chi" "拆除炸弹所获得的积分：{LIGHTBLUE}%s{DEFAULT}。"
+        "pt" "Créditos ganhos: {LIGHTBLUE}%s{DEFAULT} por desarmar a bomba."
+        "fr" "Crédits gagnés : {LIGHTBLUE}%s{DEFAULT} pour avoir désamorcé la bombe."
+        "de" "Verdiente Credits: {LIGHTBLUE}%s{DEFAULT} für die Entschärfung der Bombe."
+    }
+    "Credits Mixed Total"
+    {
+        "es" "Obtuviste {LIGHTBLUE}%s{DEFAULT} créditos."
+        "en" "You received {LIGHTBLUE}%s{DEFAULT} credits."
+        "ru" "Вы получили кредиты {LIGHTBLUE}%s{DEFAULT}."
+        "chi" "您收到了 {LIGHTBLUE}%s{DEFAULT} 积分。"
+        "pt" "Você recebeu créditos {LIGHTBLUE}%s{DEFAULT}."
+        "fr" "Vous avez reçu des crédits {LIGHTBLUE}%s{DEFAULT}."
+        "de" "Sie haben {LIGHTBLUE}%s{DEFAULT} Credits erhalten."
+    }
+    "Cannot Self"
+    {
+        "es" "No puedes hacerlo contigo mismo."
+        "en" "You can't do that to yourself."
+        "ru" "Вы не можете сделать это с собой."
+        "chi" "你不能这样对自己。"
+        "pt" "Você não pode fazer isso consigo mesmo."
+        "fr" "Vous ne pouvez pas vous faire ça."
+        "de" "Das kannst du dir nicht antun."
+    }
+    "Target Inventory Not Loaded"
+    {
+        "es" "El otro jugador todavía no cargó su inventario."
+        "en" "The other player's inventory hasn't loaded yet."
+        "ru" "Инвентарь другого игрока еще не загружен."
+        "chi" "其他玩家的物品栏尚未加载。"
+        "pt" "O inventário do outro jogador ainda não foi carregado."
+        "fr" "L'inventaire de l'autre joueur n'a pas encore été chargé."
+        "de" "Das Inventar des anderen Spielers wurde noch nicht geladen."
+    }
+    "Item Not Found"
+    {
+        "es" "No se encontró ese ítem."
+        "en" "That item was not found."
+        "ru" "Этот элемент не найден."
+        "chi" "未找到该项目。"
+        "pt" "Esse item não foi encontrado."
+        "fr" "Cet élément n'a pas été trouvé."
+        "de" "Dieses Element wurde nicht gefunden."
+    }
+    "Item Not Owned"
+    {
+        "es" "No tienes ese ítem."
+        "en" "You don't own that item."
+        "ru" "Вы не являетесь владельцем этого предмета."
+        "chi" "您不拥有该物品。"
+        "pt" "Você não possui esse item."
+        "fr" "Vous ne possédez pas cet objet."
+        "de" "Sie besitzen diesen Artikel nicht."
+    }
+    "Target Already Has Item"
+    {
+        "es" "%N ya tiene ese ítem."
+        "en" "%N already has that item."
+        "ru" "%N уже имеет этот элемент."
+        "chi" "%N 已经有该项目。"
+        "pt" "%N já possui esse item."
+        "fr" "%N possède déjà cet élément."
+        "de" "%N hat dieses Element bereits."
+    }
+    "Target No Access Item"
+    {
+        "es" "%N no tiene acceso a ese ítem."
+        "en" "%N does not have access to that item."
+        "ru" "%N не имеет доступа к этому элементу."
+        "chi" "%N 无权访问该项目。"
+        "pt" "%N não tem acesso a esse item."
+        "fr" "%N n'a pas accès à cet élément."
+        "de" "%N hat keinen Zugriff auf dieses Element."
+    }
+    "No Access Item"
+    {
+        "es" "No tienes acceso a este ítem."
+        "en" "You do not have access to this item."
+        "ru" "У вас нет доступа к этому элементу."
+        "chi" "您无权访问该项目。"
+        "pt" "Você não tem acesso a este item."
+        "fr" "Vous n'avez pas accès à cet élément."
+        "de" "Sie haben keinen Zugriff auf dieses Element."
+    }
+    "Skin Wrong Team"
+    {
+        "es" "Esa skin corresponde al otro equipo."
+        "en" "That skin belongs to the other team."
+        "ru" "Этот скин принадлежит другой команде."
+        "chi" "该皮肤属于其他团队。"
+        "pt" "Essa skin pertence ao outro time."
+        "fr" "Ce skin appartient à l'autre équipe."
+        "de" "Dieser Skin gehört dem anderen Team."
+    }
+    "Preview Need Alive"
+    {
+        "es" "Debes estar vivo para previsualizar."
+        "en" "You must be alive to preview."
+        "ru" "Для просмотра вы должны быть живы."
+        "chi" "您必须活着才能预览。"
+        "pt" "Você deve estar vivo para visualizar."
+        "fr" "Vous devez être en vie pour prévisualiser."
+        "de" "Für die Vorschau müssen Sie am Leben sein."
+    }
+    "Preview Missing Model"
+    {
+        "es" "Ese modelo no existe en el servidor."
+        "en" "That model does not exist on the server."
+        "ru" "Эта модель не существует на сервере."
+        "chi" "服务器上不存在该模型。"
+        "pt" "Esse modelo não existe no servidor."
+        "fr" "Ce modèle n'existe pas sur le serveur."
+        "de" "Dieses Modell ist auf dem Server nicht vorhanden."
+    }
+    "Preview Failed Create"
+    {
+        "es" "No se pudo crear la preview."
+        "en" "The preview could not be created."
+        "ru" "Не удалось создать предварительный просмотр."
+        "chi" "无法创建预览。"
+        "pt" "A visualização não pôde ser criada."
+        "fr" "L'aperçu n'a pas pu être créé."
+        "de" "Die Vorschau konnte nicht erstellt werden."
+    }
+    "Preview Started"
+    {
+        "es" "Previsualizando por %s segundos..."
+        "en" "Previewing for %s seconds..."
+        "ru" "Предварительный просмотр в течение %s секунд..."
+        "chi" "预览 %s 秒..."
+        "pt" "Pré-visualização por %s segundos..."
+        "fr" "Aperçu pendant %s secondes..."
+        "de" "Vorschau für %s Sekunden..."
+    }
+    "Item Equipped"
+    {
+        "es" "Equipado exitosamente."
+        "en" "Equipped successfully."
+        "ru" "Оборудован успешно."
+        "chi" "装备成功。"
+        "pt" "Equipado com sucesso."
+        "fr" "Équipé avec succès."
+        "de" "Erfolgreich ausgerüstet."
+    }
+    "Item Unequipped"
+    {
+        "es" "Desequipado."
+        "en" "Unequipped."
+        "ru" "Не оборудован."
+        "chi" "未装备。"
+        "pt" "Desequipado."
+        "fr" "Non équipé."
+        "de" "Nicht ausgerüstet."
+    }
+    "Item Missing Config"
+    {
+        "es" "El ítem ya no existe en el config."
+        "en" "That item no longer exists in the config."
+        "ru" "Этот элемент больше не существует в конфигурации."
+        "chi" "该项目不再存在于配置中。"
+        "pt" "Esse item não existe mais na configuração."
+        "fr" "Cet élément n'existe plus dans la configuration."
+        "de" "Dieses Element ist in der Konfiguration nicht mehr vorhanden."
+    }
+    "Already Owns Item"
+    {
+        "es" "Ya tienes ese ítem."
+        "en" "You already own that item."
+        "ru" "Этот предмет уже есть у вас."
+        "chi" "您已经拥有该物品。"
+        "pt" "Você já possui esse item."
+        "fr" "Vous possédez déjà cet article."
+        "de" "Sie besitzen diesen Artikel bereits."
+    }
+    "Not Enough Credits"
+    {
+        "es" "No tienes suficientes créditos para comprar este ítem."
+        "en" "You do not have enough credits to buy this item."
+        "ru" "У вас недостаточно кредитов для покупки этого предмета."
+        "chi" "您没有足够的积分来购买该物品。"
+        "pt" "Você não tem créditos suficientes para comprar este item."
+        "fr" "Vous n'avez pas assez de crédits pour acheter cet article."
+        "de" "Sie haben nicht genügend Credits, um diesen Artikel zu kaufen."
+    }
+    "Item Bought"
+    {
+        "es" "Compraste {PURPLE}%s{DEFAULT} por {LIGHTBLUE}%s{DEFAULT} créditos."
+        "en" "You bought {PURPLE}%s{DEFAULT} for {LIGHTBLUE}%s{DEFAULT} credits."
+        "ru" "Вы купили {PURPLE}%s{DEFAULT} за кредиты {LIGHTBLUE}%s{DEFAULT}."
+        "chi" "您使用 {LIGHTBLUE}%s{DEFAULT} 积分购买了 {PURPLE}%s{DEFAULT}。"
+        "pt" "Você comprou {PURPLE}%s{DEFAULT} por {LIGHTBLUE}%s{DEFAULT} créditos."
+        "fr" "Vous avez acheté {PURPLE}%s{DEFAULT} pour des crédits {LIGHTBLUE}%s{DEFAULT}."
+        "de" "Sie haben {PURPLE}%s{DEFAULT} für {LIGHTBLUE}%s{DEFAULT} Credits gekauft."
+    }
+    "Balance Current"
+    {
+        "es" "Saldo actual: {LIGHTBLUE}%s{DEFAULT}"
+        "en" "Current balance: {LIGHTBLUE}%s{DEFAULT}"
+        "ru" "Текущий баланс: {LIGHTBLUE}%s{DEFAULT}"
+        "chi" "当前余额：{LIGHTBLUE}%s{DEFAULT}"
+        "pt" "Saldo atual: {LIGHTBLUE}%s{DEFAULT}"
+        "fr" "Solde actuel : {LIGHTBLUE}%s{DEFAULT}"
+        "de" "Aktueller Kontostand: {LIGHTBLUE}%s{DEFAULT}"
+    }
+    "Item Sold"
+    {
+        "es" "Vendiste {PURPLE}%s{DEFAULT} por {LIGHTBLUE}%s{DEFAULT} créditos."
+        "en" "You sold {PURPLE}%s{DEFAULT} for {LIGHTBLUE}%s{DEFAULT} credits."
+        "ru" "Вы продали {PURPLE}%s{DEFAULT} за кредиты {LIGHTBLUE}%s{DEFAULT}."
+        "chi" "您以 {LIGHTBLUE}%s{DEFAULT} 积分出售了 {PURPLE}%s{DEFAULT}。"
+        "pt" "Você vendeu {PURPLE}%s{DEFAULT} por {LIGHTBLUE}%s{DEFAULT} créditos."
+        "fr" "Vous avez vendu {PURPLE}%s{DEFAULT} pour des crédits {LIGHTBLUE}%s{DEFAULT}."
+        "de" "Sie haben {PURPLE}%s{DEFAULT} für {LIGHTBLUE}%s{DEFAULT} Credits verkauft."
+    }
+    "Sell Confirm Title"
+    {
+        "es" "¿Seguro que deseas vender esta skin?"
+        "en" "Are you sure you want to sell this skin?"
+        "ru" "Вы уверены, что хотите продать этот скин?"
+        "chi" "您确定要出售该皮肤吗？"
+        "pt" "Tem certeza de que deseja vender esta skin?"
+        "fr" "Êtes-vous sûr de vouloir vendre ce skin ?"
+        "de" "Sind Sie sicher, dass Sie diesen Skin verkaufen möchten?"
+    }
+    "Sell Receive Label"
+    {
+        "es" "Recibirás"
+        "en" "You will receive"
+        "ru" "Вы получите"
+        "chi" "您将收到"
+        "pt" "Você receberá"
+        "fr" "Vous recevrez"
+        "de" "Sie erhalten"
+    }
+    "Gift Sent"
+    {
+        "es" "Regalaste {PURPLE}%s{DEFAULT} a {LIGHTBLUE}%N{DEFAULT}."
+        "en" "You gifted {PURPLE}%s{DEFAULT} to {LIGHTBLUE}%N{DEFAULT}."
+        "ru" "Вы подарили {PURPLE}%s{DEFAULT} пользователю {LIGHTBLUE}%N{DEFAULT}."
+        "chi" "您将 {PURPLE}%s{DEFAULT} 赠送给了 {LIGHTBLUE}%N{DEFAULT}。"
+        "pt" "Você presenteou {PURPLE}%s{DEFAULT} para {LIGHTBLUE}%N{DEFAULT}."
+        "fr" "Vous avez offert {PURPLE}%s{DEFAULT} à {LIGHTBLUE}%N{DEFAULT}."
+        "de" "Du hast {PURPLE}%s{DEFAULT} an {LIGHTBLUE}%N{DEFAULT} geschenkt."
+    }
+    "Gift Received"
+    {
+        "es" "{LIGHTBLUE}%N{DEFAULT} te regaló {PURPLE}%s{DEFAULT}."
+        "en" "{LIGHTBLUE}%N{DEFAULT} gifted you {PURPLE}%s{DEFAULT}."
+        "ru" "{LIGHTBLUE}%N{DEFAULT} подарил вам {PURPLE}%s{DEFAULT}."
+        "chi" "{LIGHTBLUE}%N{DEFAULT} 送给您 {PURPLE}%s{DEFAULT}。"
+        "pt" "{LIGHTBLUE}%N{DEFAULT} presenteou você com {PURPLE}%s{DEFAULT}."
+        "fr" "{LIGHTBLUE}%N{DEFAULT} vous a offert {PURPLE}%s{DEFAULT}."
+        "de" "{LIGHTBLUE}%N{DEFAULT} hat dir {PURPLE}%s{DEFAULT} geschenkt."
+    }
+    "Trade Request Sent"
+    {
+        "es" "Enviaste una solicitud de trade a {LIGHTBLUE}%N{DEFAULT}."
+        "en" "You sent a trade request to {LIGHTBLUE}%N{DEFAULT}."
+        "ru" "Вы отправили запрос на обмен на {LIGHTBLUE}%N{DEFAULT}."
+        "chi" "您向 {LIGHTBLUE}%N{DEFAULT} 发送了交易请求。"
+        "pt" "Você enviou uma solicitação de negociação para {LIGHTBLUE}%N{DEFAULT}."
+        "fr" "Vous avez envoyé une demande d'échange à {LIGHTBLUE}%N{DEFAULT}."
+        "de" "Sie haben eine Handelsanfrage an {LIGHTBLUE}%N{DEFAULT} gesendet."
+    }
+    "Trade Request Received"
+    {
+        "es" "{LIGHTBLUE}%N{DEFAULT} quiere tradear contigo: te da {PURPLE}%s{DEFAULT} por tu {PURPLE}%s{DEFAULT}."
+        "en" "{LIGHTBLUE}%N{DEFAULT} wants to trade with you: offering {PURPLE}%s{DEFAULT} for your {PURPLE}%s{DEFAULT}."
+        "ru" "{LIGHTBLUE}%N{DEFAULT} хочет торговать с вами: предлагает {PURPLE}%s{DEFAULT} за ваш {PURPLE}%s{DEFAULT}."
+        "chi" "{LIGHTBLUE}%N{DEFAULT} 希望与您进行交易：为您的 {PURPLE}%s{DEFAULT} 提供 {PURPLE}%s{DEFAULT}。"
+        "pt" "{LIGHTBLUE}%N{DEFAULT} quer negociar com você: oferecendo {PURPLE}%s{DEFAULT} pelo seu {PURPLE}%s{DEFAULT}."
+        "fr" "{LIGHTBLUE}%N{DEFAULT} souhaite échanger avec vous : il vous propose {PURPLE}%s{DEFAULT} contre votre {PURPLE}%s{DEFAULT}."
+        "de" "{LIGHTBLUE}%N{DEFAULT} möchte mit Ihnen handeln: bietet {PURPLE}%s{DEFAULT} für Ihr {PURPLE}%s{DEFAULT} an."
+    }
+    "Trade Request Invalid"
+    {
+        "es" "La solicitud ya no es válida."
+        "en" "The request is no longer valid."
+        "ru" "Запрос больше не действителен."
+        "chi" "该请求不再有效。"
+        "pt" "A solicitação não é mais válida."
+        "fr" "La demande n'est plus valide."
+        "de" "Die Anfrage ist nicht mehr gültig."
+    }
+    "Trade Completed Sender"
+    {
+        "es" "Trade completado con {LIGHTBLUE}%N{DEFAULT}: entregaste {PURPLE}%s{DEFAULT} y recibiste {PURPLE}%s{DEFAULT}."
+        "en" "Trade completed with {LIGHTBLUE}%N{DEFAULT}: you gave {PURPLE}%s{DEFAULT} and received {PURPLE}%s{DEFAULT}."
+        "ru" "Сделка завершена с помощью {LIGHTBLUE}%N{DEFAULT}: вы отдали {PURPLE}%s{DEFAULT} и получили {PURPLE}%s{DEFAULT}."
+        "chi" "交易已完成，金额为 {LIGHTBLUE}%N{DEFAULT}：您给出了 {PURPLE}%s{DEFAULT}，并收到了 {PURPLE}%s{DEFAULT}。"
+        "pt" "Negociação concluída com {LIGHTBLUE}%N{DEFAULT}: você deu {PURPLE}%s{DEFAULT} e recebeu {PURPLE}%s{DEFAULT}."
+        "fr" "Échange terminé avec {LIGHTBLUE}%N{DEFAULT} : vous avez donné {PURPLE}%s{DEFAULT} et reçu {PURPLE}%s{DEFAULT}."
+        "de" "Der Handel wurde mit {LIGHTBLUE}%N{DEFAULT} abgeschlossen: Sie haben {PURPLE}%s{DEFAULT} gegeben und {PURPLE}%s{DEFAULT} erhalten."
+    }
+    "Trade Completed Target"
+    {
+        "es" "Trade completado con {LIGHTBLUE}%N{DEFAULT}: entregaste {PURPLE}%s{DEFAULT} y recibiste {PURPLE}%s{DEFAULT}."
+        "en" "Trade completed with {LIGHTBLUE}%N{DEFAULT}: you gave {PURPLE}%s{DEFAULT} and received {PURPLE}%s{DEFAULT}."
+        "ru" "Сделка завершена с помощью {LIGHTBLUE}%N{DEFAULT}: вы отдали {PURPLE}%s{DEFAULT} и получили {PURPLE}%s{DEFAULT}."
+        "chi" "交易已完成，金额为 {LIGHTBLUE}%N{DEFAULT}：您给出了 {PURPLE}%s{DEFAULT}，并收到了 {PURPLE}%s{DEFAULT}。"
+        "pt" "Negociação concluída com {LIGHTBLUE}%N{DEFAULT}: você deu {PURPLE}%s{DEFAULT} e recebeu {PURPLE}%s{DEFAULT}."
+        "fr" "Échange terminé avec {LIGHTBLUE}%N{DEFAULT} : vous avez donné {PURPLE}%s{DEFAULT} et reçu {PURPLE}%s{DEFAULT}."
+        "de" "Der Handel wurde mit {LIGHTBLUE}%N{DEFAULT} abgeschlossen: Sie haben {PURPLE}%s{DEFAULT} gegeben und {PURPLE}%s{DEFAULT} erhalten."
+    }
+    "Trade Failed"
+    {
+        "es" "No se pudo completar el trade. Verifica que ambos sigan teniendo los ítems."
+        "en" "The trade could not be completed. Make sure both players still have the items."
+        "ru" "Не удалось завершить сделку. Убедитесь, что предметы остались у обоих игроков."
+        "chi" "交易无法完成。确保两名玩家仍然拥有物品。"
+        "pt" "A negociação não pôde ser concluída. Certifique-se de que ambos os jogadores ainda tenham os itens."
+        "fr" "L'échange n'a pas pu être finalisé. Assurez-vous que les deux joueurs ont toujours les objets."
+        "de" "Der Handel konnte nicht abgeschlossen werden. Stellen Sie sicher, dass beide Spieler die Gegenstände noch haben."
+    }
+    "Trade Rejected Sender"
+    {
+        "es" "{LIGHTBLUE}%N{DEFAULT} rechazó tu trade."
+        "en" "{LIGHTBLUE}%N{DEFAULT} rejected your trade."
+        "ru" "{LIGHTBLUE}%N{DEFAULT} отклонил вашу сделку."
+        "chi" "{LIGHTBLUE}%N{DEFAULT} 拒绝了您的交易。"
+        "pt" "{LIGHTBLUE}%N{DEFAULT} rejeitou sua negociação."
+        "fr" "{LIGHTBLUE}%N{DEFAULT} a rejeté votre échange."
+        "de" "{LIGHTBLUE}%N{DEFAULT} hat Ihren Handel abgelehnt."
+    }
+    "Trade Rejected Target"
+    {
+        "es" "Rechazaste la solicitud de trade de {LIGHTBLUE}%N{DEFAULT}."
+        "en" "You rejected the trade request from {LIGHTBLUE}%N{DEFAULT}."
+        "ru" "Вы отклонили запрос на обмен от {LIGHTBLUE}%N{DEFAULT}."
+        "chi" "您拒绝了来自 {LIGHTBLUE}%N{DEFAULT} 的交易请求。"
+        "pt" "Você rejeitou a solicitação de negociação de {LIGHTBLUE}%N{DEFAULT}."
+        "fr" "Vous avez rejeté la demande d'échange de {LIGHTBLUE}%N{DEFAULT}."
+        "de" "Sie haben die Handelsanfrage von {LIGHTBLUE}%N{DEFAULT} abgelehnt."
+    }
+    "Open Item To Gift"
+    {
+        "es" "Abre un ítem de tu inventario y elige {PURPLE}Regalar{DEFAULT}."
+        "en" "Open an item from your inventory and choose {PURPLE}Gift{DEFAULT}."
+        "ru" "Откройте предмет из своего инвентаря и выберите {PURPLE}Подарок{DEFAULT}."
+        "chi" "从您的库存中打开一件商品，然后选择{PURPLE}礼物{DEFAULT}。"
+        "pt" "Abra um item do seu inventário e escolha {PURPLE}Presente{DEFAULT}."
+        "fr" "Ouvrez un article de votre inventaire et choisissez {PURPLE}Cadeau{DEFAULT}."
+        "de" "Öffnen Sie einen Artikel aus Ihrem Inventar und wählen Sie {PURPLE}Geschenk{DEFAULT}."
+    }
+    "Open Item To Trade"
+    {
+        "es" "Abre un ítem de tu inventario y elige {PURPLE}Trade{DEFAULT}."
+        "en" "Open an item from your inventory and choose {PURPLE}Trade{DEFAULT}."
+        "ru" "Откройте предмет из своего инвентаря и выберите {PURPLE}Обмен{DEFAULT}."
+        "chi" "从您的库存中打开一件商品，然后选择{PURPLE}交易{DEFAULT}。"
+        "pt" "Abra um item do seu inventário e escolha {PURPLE}Trade{DEFAULT}."
+        "fr" "Ouvrez un objet de votre inventaire et choisissez {PURPLE}Échanger{DEFAULT}."
+        "de" "Öffne einen Artikel aus deinem Inventar und wähle {PURPLE}Handel{DEFAULT}."
+    }
+    "Top Credits Title"
+    {
+        "es" "Top Créditos"
+        "en" "Top Credits"
+        "ru" "Лучшие авторы"
+        "chi" "最高制作人员"
+        "pt" "Principais créditos"
+        "fr" "Meilleurs crédits"
+        "de" "Top-Credits"
+    }
+    "Top Credits Subtitle"
+    {
+        "es" "Los 10 jugadores con más créditos"
+        "en" "Top 10 players with the most credits"
+        "ru" "Топ-10 игроков с наибольшим количеством кредитов"
+        "chi" "积分最多的前 10 名玩家"
+        "pt" "Os 10 melhores jogadores com mais créditos"
+        "fr" "Top 10 des joueurs avec le plus de crédits"
+        "de" "Top 10 Spieler mit den meisten Credits"
+    }
+    "Top Credits Load Failed"
+    {
+        "es" "No se pudo cargar el top de créditos."
+        "en" "The top credits list could not be loaded."
+        "ru" "Не удалось загрузить список лучших авторов."
+        "chi" "无法加载顶部制作人员列表。"
+        "pt" "Não foi possível carregar a lista de créditos principais."
+        "fr" "La liste des principaux crédits n'a pas pu être chargée."
+        "de" "Die Top-Credits-Liste konnte nicht geladen werden."
+    }
+    "Gift Credits Sent"
+    {
+        "es" "Regalaste {LIGHTBLUE}%d{DEFAULT} créditos a {LIGHTGREEN}%N{DEFAULT}."
+        "en" "You gifted {LIGHTBLUE}%d{DEFAULT} credits to {LIGHTGREEN}%N{DEFAULT}."
+        "ru" "Вы подарили кредиты {LIGHTBLUE}%d{DEFAULT} пользователю {LIGHTGREEN}%N{DEFAULT}."
+        "chi" "You gifted {LIGHTBLUE}%d{DEFAULT} credits to {LIGHTGREEN}%N{DEFAULT}."
+        "pt" "Você presenteou {LIGHTBLUE}%d{DEFAULT} créditos para {LIGHTGREEN}%N{DEFAULT}."
+        "fr" "Vous avez offert des crédits {LIGHTBLUE}%d{DEFAULT} à {LIGHTGREEN}%N{DEFAULT}."
+        "de" "Sie haben {LIGHTBLUE}%d{DEFAULT} Credits an {LIGHTGREEN}%N{DEFAULT} verschenkt."
+    }
+    "Gift Credits Received"
+    {
+        "es" "{LIGHTGREEN}%N{DEFAULT} te regaló {LIGHTBLUE}%d{DEFAULT} créditos."
+        "en" "{LIGHTGREEN}%N{DEFAULT} gifted you {LIGHTBLUE}%d{DEFAULT} credits."
+        "ru" "{LIGHTGREEN}%N{DEFAULT} подарил вам кредиты {LIGHTBLUE}%d{DEFAULT}."
+        "chi" "{LIGHTGREEN}%N{DEFAULT} 赠送给您 {LIGHTBLUE}%d{DEFAULT} 积分。"
+        "pt" "{LIGHTGREEN}%N{DEFAULT} presenteou você com {LIGHTBLUE}%d{DEFAULT} créditos."
+        "fr" "{LIGHTGREEN}%N{DEFAULT} vous a offert des crédits {LIGHTBLUE}%d{DEFAULT}."
+        "de" "{LIGHTGREEN}%N{DEFAULT} hat Ihnen {LIGHTBLUE}%d{DEFAULT} Credits geschenkt."
+    }
+    "Gift Credits Invalid Amount"
+    {
+        "es" "La cantidad debe ser mayor a {LIGHTBLUE}0{DEFAULT}."
+        "en" "The amount must be greater than {LIGHTBLUE}0{DEFAULT}."
+        "ru" "Сумма должна быть больше {LIGHTBLUE}0{DEFAULT}."
+        "chi" "金额必须大于 {LIGHTBLUE}0{DEFAULT}。"
+        "pt" "O valor deve ser maior que {LIGHTBLUE}0{DEFAULT}."
+        "fr" "Le montant doit être supérieur à {LIGHTBLUE}0{DEFAULT}."
+        "de" "Der Betrag muss größer als {LIGHTBLUE}0{DEFAULT} sein."
+    }
+    "Gift Credits Usage"
+    {
+        "es" "También puedes usar {PURPLE}!gift <créditos> <jugador>{DEFAULT} o {PURPLE}!gift <jugador> <créditos>{DEFAULT}."
+        "en" "You can also use {PURPLE}!gift <credits> <player>{DEFAULT} or {PURPLE}!gift <player> <credits>{DEFAULT}."
+        "ru" "Вы также можете использовать {PURPLE}!gift <кредиты> <игрок>{DEFAULT} или {PURPLE}!gift <игрок> <кредиты>{DEFAULT}."
+        "chi" "您还可以使用 {PURPLE}!gift <credits> <player>{DEFAULT} 或 {PURPLE}!gift <player> <credits>{DEFAULT}。"
+        "pt" "Você também pode usar {PURPLE}!gift <credits> <player>{DEFAULT} ou {PURPLE}!gift <player> <credits>{DEFAULT}."
+        "fr" "Vous pouvez également utiliser {PURPLE}!gift <credits> <player>{DEFAULT} ou {PURPLE}!gift <player> <credits>{DEFAULT}."
+        "de" "Sie können auch {PURPLE}!gift <credits> <player>{DEFAULT} oder {PURPLE}!gift <player> <credits>{DEFAULT} verwenden."
+    }
+    "Gift Credits Not Enough"
+    {
+        "es" "No tienes suficientes créditos para regalar esa cantidad."
+        "en" "You do not have enough credits to gift that amount."
+        "ru" "У вас недостаточно кредитов, чтобы подарить такую ​​сумму."
+        "chi" "您没有足够的积分来赠送该金额。"
+        "pt" "Você não tem créditos suficientes para doar esse valor."
+        "fr" "Vous ne disposez pas de suffisamment de crédits pour offrir ce montant."
+        "de" "Ihr Guthaben reicht nicht aus, um diesen Betrag zu verschenken."
+    }
+    "Gift Credits Target Max"
+    {
+        "es" "{LIGHTGREEN}%N{DEFAULT} ya alcanzó el máximo de créditos ({LIGHTBLUE}%d{DEFAULT})."
+        "en" "{LIGHTGREEN}%N{DEFAULT} already reached the maximum credits ({LIGHTBLUE}%d{DEFAULT})."
+        "ru" "{LIGHTGREEN}%N{DEFAULT} уже достиг максимального количества кредитов ({LIGHTBLUE}%d{DEFAULT})."
+        "chi" "{LIGHTGREEN}%N{DEFAULT} 已达到最大积分 ({LIGHTBLUE}%d{DEFAULT})。"
+        "pt" "{LIGHTGREEN}%N{DEFAULT} já atingiu o máximo de créditos ({LIGHTBLUE}%d{DEFAULT})."
+        "fr" "{LIGHTGREEN}%N{DEFAULT} a déjà atteint le maximum de crédits ({LIGHTBLUE}%d{DEFAULT})."
+        "de" "{LIGHTGREEN}%N{DEFAULT} hat bereits die maximale Anzahl an Credits erreicht ({LIGHTBLUE}%d{DEFAULT})."
+    }
+    "Gift Credits Too Many"
+    {
+        "es" "Solo puedes regalar hasta {LIGHTBLUE}%d{DEFAULT} créditos a {LIGHTGREEN}%N{DEFAULT} por el tope actual."
+        "en" "You can only gift up to {LIGHTBLUE}%d{DEFAULT} credits to {LIGHTGREEN}%N{DEFAULT} because of the current cap."
+        "ru" "Вы можете подарить кредиты {LIGHTBLUE}%d{DEFAULT} только пользователю {LIGHTGREEN}%N{DEFAULT} из-за текущего ограничения."
+        "chi" "You can only gift up to {LIGHTBLUE}%d{DEFAULT} credits to {LIGHTGREEN}%N{DEFAULT} because of the current cap."
+        "pt" "Você só pode doar até {LIGHTBLUE}%d{DEFAULT} créditos para {LIGHTGREEN}%N{DEFAULT} devido ao limite atual."
+        "fr" "Vous ne pouvez offrir que {LIGHTBLUE}%d{DEFAULT} crédits à {LIGHTGREEN}%N{DEFAULT} en raison du plafond actuel."
+        "de" "Aufgrund der aktuellen Obergrenze können Sie nur bis zu {LIGHTBLUE}%d{DEFAULT} Credits an {LIGHTGREEN}%N{DEFAULT} verschenken."
+    }
+    "Inventory Changed Reopen"
+    {
+        "es" "Tu inventario cambió. Vuelve a abrir el menú."
+        "en" "Your inventory changed. Open the menu again."
+        "ru" "Ваш инвентарь изменился. Откройте меню еще раз."
+        "chi" "您的库存已更改。再次打开菜单。"
+        "pt" "Seu inventário foi alterado. Abra o menu novamente."
+        "fr" "Votre inventaire a changé. Ouvrez à nouveau le menu."
+        "de" "Ihr Inventar hat sich geändert. Öffnen Sie das Menü erneut."
+    }
+    "Trade Inventory Changed"
+    {
+        "es" "El inventario cambió. Vuelve a iniciar el trade."
+        "en" "The inventory changed. Start the trade again."
+        "ru" "Изменился инвентарь. Начните торговлю снова."
+        "chi" "库存发生变化。再次开始交易。"
+        "pt" "O inventário mudou. Inicie a negociação novamente."
+        "fr" "L'inventaire a changé. Recommencez l'échange."
+        "de" "Der Bestand hat sich geändert. Starten Sie den Handel erneut."
+    }
+    "Item Not In Inventory"
+    {
+        "es" "No tienes ese ítem en tu inventario."
+        "en" "You do not have that item in your inventory."
+        "ru" "У вас нет этого предмета в вашем инвентаре."
+        "chi" "您的库存中没有该物品。"
+        "pt" "Você não possui esse item em seu inventário."
+        "fr" "Vous n'avez pas cet objet dans votre inventaire."
+        "de" "Sie haben diesen Gegenstand nicht in Ihrem Inventar."
+    }
+    "Item No Longer Exists"
+    {
+        "es" "El ítem ya no existe."
+        "en" "That item no longer exists."
+        "ru" "Этот элемент больше не существует."
+        "chi" "该项目不再存在。"
+        "pt" "Esse item não existe mais."
+        "fr" "Cet élément n'existe plus."
+        "de" "Dieses Element existiert nicht mehr."
+    }
+    "Credits Kill Combo"
+    {
+        "es" "Créditos ganados: {LIGHTBLUE}%s{DEFAULT} por kills y headshot."
+        "en" "Credits earned: {LIGHTBLUE}%s{DEFAULT} for kills and headshot."
+        "ru" "Заработанные кредиты: {LIGHTBLUE}%s{DEFAULT} за убийства и выстрелы в голову."
+        "chi" "击杀和爆头获得的积分：{LIGHTBLUE}%s{DEFAULT}。"
+        "pt" "Créditos ganhos: {LIGHTBLUE}%s{DEFAULT} por mortes e tiros na cabeça."
+        "fr" "Crédits gagnés : {LIGHTBLUE}%s{DEFAULT} pour les frags et les tirs à la tête."
+        "de" "Verdiente Credits: {LIGHTBLUE}%s{DEFAULT} für Kills und Kopfschüsse."
+    }
+    "Credits Mixed Breakdown"
+    {
+        "es" "Créditos ganados: {LIGHTBLUE}%s{DEFAULT} (%s{DEFAULT})"
+        "en" "Credits earned: {LIGHTBLUE}%s{DEFAULT} (%s{DEFAULT})"
+        "ru" "Получено кредитов: {LIGHTBLUE}%s{DEFAULT} (%s{DEFAULT})"
+        "chi" "获得的积分：{LIGHTBLUE}%s{DEFAULT} (%s{DEFAULT})"
+        "pt" "Créditos ganhos: {LIGHTBLUE}%s{DEFAULT} (%s{DEFAULT})"
+        "fr" "Crédits gagnés : {LIGHTBLUE}%s{DEFAULT} (%s{DEFAULT})"
+        "de" "Verdiente Credits: {LIGHTBLUE}%s{DEFAULT} (%s{DEFAULT})"
+    }
+    "Credits Detail Time"
+    {
+        "es" "jugar {LIGHTBLUE}+%s{DEFAULT}"
+        "en" "play time {LIGHTBLUE}+%s{DEFAULT}"
+        "ru" "время воспроизведения {LIGHTBLUE}+%s{DEFAULT}"
+        "chi" "播放时间 {LIGHTBLUE}+%s{DEFAULT}"
+        "pt" "tempo de reprodução {LIGHTBLUE}+%s{DEFAULT}"
+        "fr" "temps de lecture {LIGHTBLUE}+%s{DEFAULT}"
+        "de" "Spielzeit {LIGHTBLUE}+%s{DEFAULT}"
+    }
+    "Credits Detail Kill"
+    {
+        "es" "kills {LIGHTBLUE}+%s{DEFAULT}"
+        "en" "kills {LIGHTBLUE}+%s{DEFAULT}"
+        "ru" "убивает {LIGHTBLUE}+%s{DEFAULT}"
+        "chi" "杀死 {LIGHTBLUE}+%s{DEFAULT}"
+        "pt" "mata {LIGHTBLUE}+%s{DEFAULT}"
+        "fr" "tue {LIGHTBLUE}+%s{DEFAULT}"
+        "de" "tötet {LIGHTBLUE}+%s{DEFAULT}"
+    }
+    "Credits Detail Headshot"
+    {
+        "es" "headshot {LIGHTBLUE}+%s{DEFAULT}"
+        "en" "headshot {LIGHTBLUE}+%s{DEFAULT}"
+        "ru" "снимок головы {LIGHTBLUE}+%s{DEFAULT}"
+        "chi" "爆头 {LIGHTBLUE}+%s{DEFAULT}"
+        "pt" "foto na cabeça {LIGHTBLUE}+%s{DEFAULT}"
+        "fr" "tir à la tête {LIGHTBLUE}+%s{DEFAULT}"
+        "de" "Kopfschuss {LIGHTBLUE}+%s{DEFAULT}"
+    }
+    "Credits Detail Round Win"
+    {
+        "es" "ronda {LIGHTBLUE}+%s{DEFAULT}"
+        "en" "round win {LIGHTBLUE}+%s{DEFAULT}"
+        "ru" "победа в раунде {LIGHTBLUE}+%s{DEFAULT}"
+        "chi" "回合获胜 {LIGHTBLUE}+%s{DEFAULT}"
+        "pt" "vitória na rodada {LIGHTBLUE}+%s{DEFAULT}"
+        "fr" "victoire du tour {LIGHTBLUE}+%s{DEFAULT}"
+        "de" "Rundensieg {LIGHTBLUE}+%s{DEFAULT}"
+    }
+    "Credits Detail Plant"
+    {
+        "es" "plantar {LIGHTBLUE}+%s{DEFAULT}"
+        "en" "plant bomb {LIGHTBLUE}+%s{DEFAULT}"
+        "ru" "заложить бомбу {LIGHTBLUE}+%s{DEFAULT}"
+        "chi" "植物炸弹{LIGHTBLUE}+%s{DEFAULT}"
+        "pt" "planta bomba {LIGHTBLUE}+%s{DEFAULT}"
+        "fr" "bombe végétale {LIGHTBLUE}+%s{DEFAULT}"
+        "de" "Pflanzenbombe {LIGHTBLUE}+%s{DEFAULT}"
+    }
+    "Credits Detail Defuse"
+    {
+        "es" "defusear {LIGHTBLUE}+%s{DEFAULT}"
+        "en" "defuse bomb {LIGHTBLUE}+%s{DEFAULT}"
+        "ru" "обезвредить бомбу {LIGHTBLUE}+%s{DEFAULT}"
+        "chi" "拆除炸弹 {LIGHTBLUE}+%s{DEFAULT}"
+        "pt" "desarmar bomba {LIGHTBLUE}+%s{DEFAULT}"
+        "fr" "désamorcer la bombe {LIGHTBLUE}+%s{DEFAULT}"
+        "de" "Bombe entschärfen {LIGHTBLUE}+%s{DEFAULT}"
+    }
+    "Store Reloaded"
+    {
+        "es" "{TEAM}[Umbrella Store]{DEFAULT} Config recargado. Ítems: {LIGHTBLUE}%d{DEFAULT}"
+        "en" "{TEAM}[Umbrella Store]{DEFAULT} Config reloaded. Items: {LIGHTBLUE}%d{DEFAULT}"
+        "ru" "{TEAM}[Umbrella Store]{DEFAULT} Конфигурация перезагружена. Предметы: {LIGHTBLUE}%d{DEFAULT}"
+        "chi" "{TEAM}[Umbrella Store]{DEFAULT} 配置已重新加载。项目：{LIGHTBLUE}%d{DEFAULT}"
+        "pt" "{TEAM}[Umbrella Store]{DEFAULT} Configuração recarregada. Itens: {LIGHTBLUE}%d{DEFAULT}"
+        "fr" "{TEAM}[Umbrella Store]{DEFAULT} Configuration rechargée. Articles : {LIGHTBLUE}%d{DEFAULT}"
+        "de" "{TEAM}[Umbrella Store]{DEFAULT} Konfiguration neu geladen. Artikel: {LIGHTBLUE}%d{DEFAULT}"
+    }
+    "Store Main Menu Title"
+    {
+        "es" "Umbrella Store | Créditos: %s"
+        "en" "Umbrella Store | Credits: %s"
+        "ru" "Магазин зонтиков | Кредиты: %s"
+        "chi" "雨伞店|学分：%s"
+        "pt" "Loja de guarda-chuvas | Créditos: %s"
+        "fr" "Magasin de parapluies | Crédits : %s"
+        "de" "Umbrella Store | Credits: %s"
+    }
+    "Store Category Skins"
+    {
+        "es" "Skins de Jugador"
+        "en" "Player Skins"
+        "ru" "Скины игроков"
+        "chi" "玩家皮肤"
+        "pt" "Skins de jogador"
+        "fr" "Skins de joueurs"
+        "de" "Spieler-Skins"
+    }
+    "Store Category Chat"
+    {
+        "es" "Chat y Personalización"
+        "en" "Chat and Personalization"
+        "ru" "Чат и персонализация"
+        "chi" "聊天和个性化"
+        "pt" "Bate-papo e Personalização"
+        "fr" "Chat et personnalisation"
+        "de" "Chat und Personalisierung"
+    }
+    "Store Category Top Credits"
+    {
+        "es" "Ranking de Créditos"
+        "en" "Credits Ranking"
+        "ru" "Рейтинг кредитов"
+        "chi" "学分排名"
+        "pt" "Classificação de Créditos"
+        "fr" "Classement des crédits"
+        "de" "Credits-Ranking"
+    }
+    "Store Category Inventory"
+    {
+        "es" "Inventario"
+        "en" "Inventory"
+        "ru" "Инвентарь"
+        "chi" "库存"
+        "pt" "Inventário"
+        "fr" "Inventaire"
+        "de" "Inventar"
+    }
+    "Store Category Casino"
+    {
+        "es" "Casino"
+        "en" "Casino"
+        "ru" "Казино"
+        "chi" "赌场"
+        "pt" "Cassino"
+        "fr" "Casino"
+        "de" "Kasino"
+    }
+    "Store DB Not Ready"
+    {
+        "es" "{TEAM}[Umbrella Store]{DEFAULT} La base de datos no está lista todavía."
+        "en" "{TEAM}[Umbrella Store]{DEFAULT} The database is not ready yet."
+        "ru" "{TEAM}[Umbrella Store]{DEFAULT} База данных еще не готова."
+        "chi" "{TEAM}[Umbrella Store]{DEFAULT} 数据库尚未准备好。"
+        "pt" "{TEAM}[Umbrella Store]{DEFAULT} O banco de dados ainda não está pronto."
+        "fr" "{TEAM}[Umbrella Store]{DEFAULT} La base de données n'est pas encore prête."
+        "de" "{TEAM}[Umbrella Store]{DEFAULT} Die Datenbank ist noch nicht bereit."
+    }
+    "Casino Menu Title"
+    {
+        "es" "Casino Umbrella | Elige un juego"
+        "en" "Umbrella Casino | Choose a game"
+        "ru" "Казино Амбрелла | Выберите игру"
+        "chi" "伞赌场 |选择游戏"
+        "pt" "Cassino Guarda-chuva | Escolha um jogo"
+        "fr" "Casino Parapluie | Choisissez un jeu"
+        "de" "Umbrella Casino | Wählen Sie ein Spiel"
+    }
+    "Casino Menu Soon"
+    {
+        "es" "Próximamente"
+        "en" "Coming soon"
+        "ru" "Скоро"
+        "chi" "即将推出"
+        "pt" "Em breve"
+        "fr" "Bientôt disponible"
+        "de" "Demnächst erhältlich"
+    }
+    "Preview Cooldown"
+    {
+        "es" "Espera {LIGHTBLUE}%s{DEFAULT}s para volver a previsualizar."
+        "en" "Wait {LIGHTBLUE}%s{DEFAULT}s before previewing again."
+        "ru" "Подождите {LIGHTBLUE}%s{DEFAULT} сек. перед повторным предварительным просмотром."
+        "chi" "等待 {LIGHTBLUE}%s{DEFAULT} 秒后再预览。"
+        "pt" "Aguarde {LIGHTBLUE}%s{DEFAULT}s antes de visualizar novamente."
+        "fr" "Attendez {LIGHTBLUE}%s{DEFAULT}s avant de prévisualiser à nouveau."
+        "de" "Warten Sie {LIGHTBLUE}%s{DEFAULT}s, bevor Sie die Vorschau erneut anzeigen."
+    }
+    "Equip Cooldown"
+    {
+        "es" "Espera {LIGHTBLUE}%s{DEFAULT}s antes de equipar o desequipar de nuevo."
+        "en" "Wait {LIGHTBLUE}%s{DEFAULT}s before equipping or unequipping again."
+        "ru" "Подождите {LIGHTBLUE}%s{DEFAULT} сек., прежде чем снова надевать или снимать снаряжение."
+        "chi" "再次装备或取消装备之前，请等待 {LIGHTBLUE}%s{DEFAULT} 秒。"
+        "pt" "Aguarde {LIGHTBLUE}%s{DEFAULT}s antes de equipar ou desequipar novamente."
+        "fr" "Attendez {LIGHTBLUE}%s{DEFAULT}s avant d'équiper ou de déséquiper à nouveau."
+        "de" "Warten Sie {LIGHTBLUE}%s{DEFAULT}s, bevor Sie sich erneut ausrüsten oder ausrüsten."
+    }
+    "Player Skins Disabled"
+    {
+        "es" "Las skins de jugadores están desactivadas en este mapa."
+        "en" "Player skins are disabled on this map."
+        "ru" "На этой карте отключены скины игроков."
+        "chi" "玩家皮肤在此地图上被禁用。"
+        "pt" "As skins dos jogadores estão desativadas neste mapa."
+        "fr" "Les skins des joueurs sont désactivés sur cette carte."
+        "de" "Spieler-Skins sind auf dieser Karte deaktiviert."
+    }
+    "Admin Target Not Found"
+    {
+        "es" "No se encontró ningún jugador que coincida con {LIGHTBLUE}%s{DEFAULT}."
+        "en" "No player matching {LIGHTBLUE}%s{DEFAULT} was found."
+        "ru" "Игрок, соответствующий {LIGHTBLUE}%s{DEFAULT}, не найден."
+        "chi" "未找到与 {LIGHTBLUE}%s{DEFAULT} 匹配的玩家。"
+        "pt" "Nenhum jogador correspondente a {LIGHTBLUE}%s{DEFAULT} foi encontrado."
+        "fr" "Aucun joueur correspondant à {LIGHTBLUE}%s{DEFAULT} n'a été trouvé."
+        "de" "Es wurde kein Spieler gefunden, der mit {LIGHTBLUE}%s{DEFAULT} übereinstimmt."
+    }
+    "Credits Broadcast"
+    {
+        "es" "{LIGHTBLUE}%N{DEFAULT} tiene {LIGHTBLUE}%s{DEFAULT} créditos."
+        "en" "{LIGHTBLUE}%N{DEFAULT} has {LIGHTBLUE}%s{DEFAULT} credits."
+        "ru" "{LIGHTBLUE}%N{DEFAULT} имеет кредиты {LIGHTBLUE}%s{DEFAULT}."
+        "chi" "{LIGHTBLUE}%N{DEFAULT} 拥有 {LIGHTBLUE}%s{DEFAULT} 积分。"
+        "pt" "{LIGHTBLUE}%N{DEFAULT} tem {LIGHTBLUE}%s{DEFAULT} créditos."
+        "fr" "{LIGHTBLUE}%N{DEFAULT} dispose de {LIGHTBLUE}%s{DEFAULT} crédits."
+        "de" "{LIGHTBLUE}%N{DEFAULT} hat {LIGHTBLUE}%s{DEFAULT} Credits."
+    }
+    "Credits Amount"
+    {
+        "es" "%s Créditos"
+        "en" "%s Credits"
+        "ru" "%s Кредиты"
+        "chi" "%s 积分"
+        "pt" "%s Créditos"
+        "fr" "%s Crédits"
+        "de" "%s Credits"
+    }
+    "Teams Menu Title"
+    {
+        "es" "=== Skins de Jugador ===\nSelecciona un equipo:\n "
+        "en" "=== Player Skins ===\nSelect a team:\n "
+        "ru" "=== Скины игроков ===\nВыберите команду:\n"
+        "chi" "=== 玩家皮肤 ===\n 选择队伍：\n"
+        "pt" "=== Skins de jogadores ===\nSelecione um time:\n"
+        "fr" "=== Skins de joueur ===\nSélectionnez une équipe :\n"
+        "de" "=== Spieler-Skins ===\nWählen Sie ein Team aus:\n"
+    }
+    "Teams Menu TT"
+    {
+        "es" "Skins Terrorista (TT)"
+        "en" "Terrorist Skins (TT)"
+        "ru" "Скины террористов (TT)"
+        "chi" "恐怖分子皮肤 (TT)"
+        "pt" "Skins Terroristas (TT)"
+        "fr" "Skins de terroriste (TT)"
+        "de" "Terroristen-Skins (TT)"
+    }
+    "Teams Menu CT"
+    {
+        "es" "Skins Counter-Terrorista (CT)"
+        "en" "Counter-Terrorist Skins (CT)"
+        "ru" "Антитеррористические облики (CT)"
+        "chi" "反恐皮肤 (CT)"
+        "pt" "Skins Contra-Terroristas (CT)"
+        "fr" "Skins antiterroristes (CT)"
+        "de" "Anti-Terror-Skins (CT)"
+    }
+    "Chat Menu Title"
+    {
+        "es" "=== Chat y Personalización ===\nElige una categoría:\n "
+        "en" "=== Chat and Personalization ===\nChoose a category:\n "
+        "ru" "=== Чат и персонализация ===\nВыберите категорию:\n "
+        "chi" "=== 聊天和个性化 ===\n选择类别：\n "
+        "pt" "=== Bate-papo e Personalização ===\nEscolha uma categoria:\n "
+        "fr" "=== Chat et personnalisation ===\nChoisissez une catégorie :\n "
+        "de" "=== Chat und Personalisierung ===\nWählen Sie eine Kategorie:\n "
+    }
+    "Chat Menu Tags"
+    {
+        "es" "Tags de Chat"
+        "en" "Chat Tags"
+        "ru" "Теги чата"
+        "chi" "聊天标签"
+        "pt" "Tags de bate-papo"
+        "fr" "Balises de discussion"
+        "de" "Chat-Tags"
+    }
+    "Chat Menu Name Colors"
+    {
+        "es" "Colores de Nombre"
+        "en" "Name Colors"
+        "ru" "Цвета имени"
+        "chi" "名称颜色"
+        "pt" "Nome Cores"
+        "fr" "Couleurs du nom"
+        "de" "Namensfarben"
+    }
+    "Chat Menu Chat Colors"
+    {
+        "es" "Colores de Chat"
+        "en" "Chat Colors"
+        "ru" "Цвета чата"
+        "chi" "聊天颜色"
+        "pt" "Cores do bate-papo"
+        "fr" "Couleurs de discussion"
+        "de" "Chat-Farben"
+    }
+    "Items List Menu Title"
+    {
+        "es" "--- Artículos Disponibles ---\nCréditos: %s\n "
+        "en" "--- Available Items ---\nCredits: %s\n "
+        "ru" "--- Доступные предметы ---\nКредиты: %s\n "
+        "chi" "--- 可用项目 ---\n 来源：%s\n "
+        "pt" "--- Itens disponíveis ---\nCréditos: %s\n "
+        "fr" "--- Articles disponibles ---\nCrédits : %s\n "
+        "de" "--- Verfügbare Artikel ---\nCredits: %s\n "
+    }
+    "Items List VIP Suffix"
+    {
+        "es" "[VIP]"
+        "en" "[VIP]"
+        "ru" "[ВИП]"
+        "chi" "[贵宾]"
+        "pt" "[VIP]"
+        "fr" "[VIP]"
+        "de" "[VIP]"
+    }
+    "Items List Inventory Suffix"
+    {
+        "es" "[EN INVENTARIO]"
+        "en" "[IN INVENTORY]"
+        "ru" "[В ИНВЕНТАРЕ]"
+        "chi" "[在库存中]"
+        "pt" "[NO INVENTÁRIO]"
+        "fr" "[EN INVENTAIRE]"
+        "de" "[IM INVENTAR]"
+    }
+    "Items List Empty"
+    {
+        "es" "No hay artículos aquí"
+        "en" "There are no items here"
+        "ru" "Здесь нет товаров"
+        "chi" "这里没有物品"
+        "pt" "Não há itens aqui"
+        "fr" "Il n'y a aucun élément ici"
+        "de" "Hier sind keine Elemente vorhanden"
+    }
+    "Sell Confirm Title Menu"
+    {
+        "es" "¿Seguro que deseas vender esta skin?\n\n%s: %s\n "
+        "en" "Are you sure you want to sell this skin?\n\n%s: %s\n "
+        "ru" "Вы уверены, что хотите продать этот скин?\n\n%s: %s\n "
+        "chi" "您确定要出售此皮肤吗？\n\n%s: %s\n "
+        "pt" "Tem certeza de que deseja vender esta skin?\n\n%s: %s\n "
+        "fr" "Êtes-vous sûr de vouloir vendre ce skin ?\n\n%s : %s\n "
+        "de" "Sind Sie sicher, dass Sie diesen Skin verkaufen möchten?\n\n%s: %s\n "
+    }
+    "Sell Confirm Yes"
+    {
+        "es" "Sí, vender"
+        "en" "Yes, sell"
+        "ru" "Да, продать"
+        "chi" "是的，出售"
+        "pt" "Sim, vender"
+        "fr" "Oui, vends"
+        "de" "Ja, verkaufen"
+    }
+    "Sell Confirm No"
+    {
+        "es" "No, volver"
+        "en" "No, go back"
+        "ru" "Нет, вернись назад."
+        "chi" "不，回去"
+        "pt" "Não, volte"
+        "fr" "Non, reviens en arrière"
+        "de" "Nein, geh zurück"
+    }
+    "Item State Equipped"
+    {
+        "es" "Equipado"
+        "en" "Equipped"
+        "ru" "Оборудовано"
+        "chi" "已装备"
+        "pt" "Equipado"
+        "fr" "Équipé"
+        "de" "Ausgestattet"
+    }
+    "Item State Inventory"
+    {
+        "es" "Inventario"
+        "en" "Inventory"
+        "ru" "Инвентарь"
+        "chi" "库存"
+        "pt" "Inventário"
+        "fr" "Inventaire"
+        "de" "Inventar"
+    }
+    "Item Details Owned Title"
+    {
+        "es" "--- %s ---\nEstado: %s\n "
+        "en" "--- %s ---\nState: %s\n "
+        "ru" "--- %s ---\nСостояние: %s\n "
+        "chi" "--- %s ---\n 状态： %s\n "
+        "pt" "--- %s ---\nEstado: %s\n "
+        "fr" "--- %s ---\nÉtat : %s\n "
+        "de" "--- %s ---\nStatus: %s\n "
+    }
+    "Item Details Buy Title"
+    {
+        "es" "--- %s ---\nPrecio: %s\n "
+        "en" "--- %s ---\nPrice: %s\n "
+        "ru" "--- %s ---\nЦена: %s\n"
+        "chi" "--- %s ---\n 价格： %s\n"
+        "pt" "--- %s ---\nPreço: %s\n"
+        "fr" "--- %s ---\nPrix : %s\n"
+        "de" "--- %s ---\nPreis: %s\n"
+    }
+    "Item Details Buy"
+    {
+        "es" "Comprar Ítem"
+        "en" "Buy Item"
+        "ru" "Купить предмет"
+        "chi" "购买物品"
+        "pt" "Comprar item"
+        "fr" "Acheter un article"
+        "de" "Artikel kaufen"
+    }
+    "Item Details Equip"
+    {
+        "es" "Equipar Ítem"
+        "en" "Equip Item"
+        "ru" "Предмет экипировки"
+        "chi" "装备物品"
+        "pt" "Equipar item"
+        "fr" "Objet d'équipement"
+        "de" "Ausrüstungsgegenstand"
+    }
+    "Item Details Unequip"
+    {
+        "es" "Desequipar Ítem"
+        "en" "Unequip Item"
+        "ru" "Снять предмет"
+        "chi" "取消装备物品"
+        "pt" "Desequipar item"
+        "fr" "Déséquiper un objet"
+        "de" "Gegenstand ausrüsten"
+    }
+    "Item Details Sell"
+    {
+        "es" "Vender Ítem (+%s)"
+        "en" "Sell Item (+%s)"
+        "ru" "Продать предмет (+%s)"
+        "chi" "出售物品 (+%s)"
+        "pt" "Item de venda (+%s)"
+        "fr" "Vendre un objet (+%s)"
+        "de" "Artikel verkaufen (+%s)"
+    }
+    "Item Details Gift"
+    {
+        "es" "Regalar a un jugador"
+        "en" "Gift to a player"
+        "ru" "Подарок игроку"
+        "chi" "给玩家的礼物"
+        "pt" "Presente para um jogador"
+        "fr" "Cadeau à un joueur"
+        "de" "Geschenk an einen Spieler"
+    }
+    "Item Details Trade"
+    {
+        "es" "Tradear con un jugador"
+        "en" "Trade with a player"
+        "ru" "Торговля с игроком"
+        "chi" "与玩家交易"
+        "pt" "Negocie com um jogador"
+        "fr" "Échanger avec un joueur"
+        "de" "Handeln Sie mit einem Spieler"
+    }
+    "Item Details Preview"
+    {
+        "es" "Previsualizar Skin"
+        "en" "Preview Skin"
+        "ru" "Предварительный просмотр скина"
+        "chi" "预览皮肤"
+        "pt" "Visualização do tema"
+        "fr" "Aperçu du skin"
+        "de" "Vorschau der Skin"
+    }
+    "Gift Target Menu Title"
+    {
+        "es" "--- Regalar ítem ---\nVas a regalar: %s\nSelecciona un jugador:\n "
+        "en" "--- Gift Item ---\nYou are gifting: %s\nSelect a player:\n "
+        "ru" "--- Подарочный предмет ---\nВы дарите: %s\nВыберите игрока:\n "
+        "chi" "--- 礼物物品 ---\n您正在赠送：%s\n选择一名玩家：\n "
+        "pt" "--- Item para presente ---\nVocê está presenteando: %s\nSelecione um jogador:\n "
+        "fr" "--- Article cadeau ---\nVous offrez : %s\nSélectionnez un joueur :\n "
+        "de" "--- Geschenkartikel ---\nSie verschenken: %s\nWählen Sie einen Spieler aus:\n "
+    }
+    "Trade Target Menu Title"
+    {
+        "es" "--- Trade: elegir jugador ---\nTu ítem: %s\nSelecciona un jugador:\n "
+        "en" "--- Trade: choose player ---\nYour item: %s\nSelect a player:\n "
+        "ru" "--- Обмен: выберите игрока ---\nВаш предмет: %s\nВыберите игрока:\n "
+        "chi" "--- 交易：选择玩家 ---\n您的物品：%s\n选择玩家：\n "
+        "pt" "--- Troca: escolha o jogador ---\nSeu item: %s\nSelecione um jogador:\n "
+        "fr" "--- Échange : choisissez un joueur ---\nVotre objet : %s\nSélectionnez un joueur :\n "
+        "de" "--- Handel: Spieler auswählen ---\nIhr Artikel: %s\nWählen Sie einen Spieler:\n "
+    }
+    "Trade Target Menu Empty"
+    {
+        "es" "No hay jugadores válidos para tradear"
+        "en" "There are no valid players to trade with"
+        "ru" "Нет подходящих игроков для обмена"
+        "chi" "没有可以交易的有效玩家"
+        "pt" "Não há jogadores válidos para negociar"
+        "fr" "Il n'y a aucun joueur valide avec lequel échanger"
+        "de" "Es gibt keine gültigen Spieler, mit denen man handeln kann"
+    }
+    "Trade Target Items Menu Title"
+    {
+        "es" "--- Trade con %N ---\nTu ítem: %s\nElige lo que quieres recibir:\n "
+        "en" "--- Trade with %N ---\nYour item: %s\nChoose what you want to receive:\n "
+        "ru" "--- Торгуйте с %N ---\nВаш предмет: %s\nВыберите, что вы хотите получить:\n "
+        "chi" "--- 与 %N 交易 ---\n您的物品：%s\n选择您想要收到的物品：\n "
+        "pt" "--- Negocie com %N ---\nSeu item: %s\nEscolha o que deseja receber:\n "
+        "fr" "--- Échangez avec %N ---\nVotre article : %s\nChoisissez ce que vous souhaitez recevoir :\n "
+        "de" "--- Handeln Sie mit %N ---\nIhr Artikel: %s\nWählen Sie, was Sie erhalten möchten:\n "
+    }
+    "Trade Target Items Empty"
+    {
+        "es" "Ese jugador no tiene ítems compatibles"
+        "en" "That player has no compatible items"
+        "ru" "У этого плеера нет совместимых предметов"
+        "chi" "该玩家没有兼容的物品"
+        "pt" "Esse jogador não tem itens compatíveis"
+        "fr" "Ce lecteur n'a aucun élément compatible"
+        "de" "Dieser Spieler hat keine kompatiblen Gegenstände"
+    }
+    "Trade Receive Menu Title"
+    {
+        "es" "Solicitud de trade\n\n%N te ofrece: %s\nA cambio de tu: %s\n "
+        "en" "Trade request\n\n%N offers you: %s\nIn exchange for your: %s\n "
+        "ru" "Торговый запрос\n\n%N предлагает вам: %s\nВ обмен на ваш: %s\n "
+        "chi" "交易请求\n\n%N 为您提供：%s\n 换取您的：%s\n "
+        "pt" "A solicitação de negociação\n\n%N oferece a você: %s\nEm troca de: %s\n "
+        "fr" "La demande d'échange\n\n%N vous propose : %s\nEn échange de votre : %s\n "
+        "de" "Handelsanfrage\n\n%N bietet Ihnen: %s\nIm Austausch für: %s\n "
+    }
+    "Trade Receive Accept"
+    {
+        "es" "Aceptar trade"
+        "en" "Accept trade"
+        "ru" "Принять обмен"
+        "chi" "接受交易"
+        "pt" "Aceitar negociação"
+        "fr" "Accepter l'échange"
+        "de" "Handel akzeptieren"
+    }
+    "Trade Receive Deny"
+    {
+        "es" "Rechazar trade"
+        "en" "Reject trade"
+        "ru" "Отклонить сделку"
+        "chi" "拒绝交易"
+        "pt" "Rejeitar negociação"
+        "fr" "Rejeter l'échange"
+        "de" "Handel ablehnen"
+    }
+    "Inventory Category Menu Title"
+    {
+        "es" "--- Mi Inventario ---\nElige una categoría:\n "
+        "en" "--- My Inventory ---\nChoose a category:\n "
+        "ru" "--- Мой инвентарь ---\nВыберите категорию:\n "
+        "chi" "--- 我的库存 ---\n选择类别：\n "
+        "pt" "--- Meu Inventário ---\nEscolha uma categoria:\n "
+        "fr" "--- Mon inventaire ---\nChoisissez une catégorie :\n "
+        "de" "--- Mein Inventar ---\nWählen Sie eine Kategorie:\n "
+    }
+    "Inventory Category Skins"
+    {
+        "es" "Mis Skins"
+        "en" "My Skins"
+        "ru" "Мои скины"
+        "chi" "我的皮肤"
+        "pt" "Minhas skins"
+        "fr" "Mes skins"
+        "de" "Meine Skins"
+    }
+    "Inventory Category Chat"
+    {
+        "es" "Mis Cosas de Chat"
+        "en" "My Chat Items"
+        "ru" "Мои сообщения в чате"
+        "chi" "我的聊天项目"
+        "pt" "Meus itens de bate-papo"
+        "fr" "Mes éléments de discussion"
+        "de" "Meine Chat-Elemente"
+    }
+    "Inventory Teams Menu Title"
+    {
+        "es" "--- Inventario: Skins ---\nSelecciona un equipo:\n "
+        "en" "--- Inventory: Skins ---\nSelect a team:\n "
+        "ru" "--- Инвентарь: Скины ---\nВыберите команду:\n "
+        "chi" "--- 库存：皮肤 ---\n选择队伍：\n "
+        "pt" "--- Inventário: Skins ---\nSelecione uma equipe:\n "
+        "fr" "--- Inventaire : Skins ---\nSélectionner une équipe :\n "
+        "de" "--- Inventar: Skins ---\nWählen Sie ein Team aus:\n "
+    }
+    "Inventory Teams Menu TT"
+    {
+        "es" "Skins Terroristas (TT)"
+        "en" "Terrorist Skins (TT)"
+        "ru" "Скины террористов (TT)"
+        "chi" "恐怖分子皮肤 (TT)"
+        "pt" "Skins Terroristas (TT)"
+        "fr" "Skins de terroriste (TT)"
+        "de" "Terroristen-Skins (TT)"
+    }
+    "Inventory Teams Menu CT"
+    {
+        "es" "Skins Anti-Terroristas (CT)"
+        "en" "Counter-Terrorist Skins (CT)"
+        "ru" "Антитеррористические облики (CT)"
+        "chi" "反恐皮肤 (CT)"
+        "pt" "Skins Contra-Terroristas (CT)"
+        "fr" "Skins antiterroristes (CT)"
+        "de" "Anti-Terror-Skins (CT)"
+    }
+    "Inventory Chat Menu Title"
+    {
+        "es" "--- Inventario: Chat ---\nElige una categoría:\n "
+        "en" "--- Inventory: Chat ---\nChoose a category:\n "
+        "ru" "--- Инвентарь: Чат ---\nВыберите категорию:\n "
+        "chi" "--- 库存：聊天 ---\n选择类别：\n "
+        "pt" "--- Inventário: Bate-papo ---\nEscolha uma categoria:\n "
+        "fr" "--- Inventaire : Chat ---\nChoisissez une catégorie :\n "
+        "de" "--- Inventar: Chat ---\nWählen Sie eine Kategorie:\n "
+    }
+    "Inventory Equipped Suffix"
+    {
+        "es" "[Equipado]"
+        "en" "[Equipped]"
+        "ru" "[Оборудовано]"
+        "chi" "[已装备]"
+        "pt" "[Equipado]"
+        "fr" "[Équipé]"
+        "de" "[Ausgerüstet]"
+    }
+    "Inventory List Menu Title"
+    {
+        "es" "--- Inventario ---\nSelecciona un item para ver acciones\nLos equipados aparecen primero\n "
+        "en" "--- Inventory ---\nSelect an item to view actions\nEquipped items appear first\n "
+        "ru" "--- Инвентарь ---\nВыберите предмет, чтобы просмотреть действия\nОборудованные предметы отображаются первыми\n "
+        "chi" "--- 库存 ---\n选择一个项目以查看操作\n装备的项目首先出现\n "
+        "pt" "--- Inventário ---\nSelecione um item para visualizar as ações\nOs itens equipados aparecem primeiro\n "
+        "fr" "--- Inventaire ---\nSélectionnez un élément pour afficher les actions\nLes éléments équipés apparaissent en premier\n "
+        "de" "--- Inventar ---\nWählen Sie einen Artikel aus, um Aktionen anzuzeigen\nAusgerüstete Artikel werden zuerst angezeigt\n "
+    }
+    "Inventory List Empty"
+    {
+        "es" "No tienes ítems en esta categoría"
+        "en" "You have no items in this category"
+        "ru" "У вас нет товаров в этой категории."
+        "chi" "您在此类别中没有商品"
+        "pt" "Você não possui itens nesta categoria"
+        "fr" "Vous n'avez aucun élément dans cette catégorie"
+        "de" "Sie haben keine Artikel in dieser Kategorie"
+    }
+    "Top Credits Menu Title"
+    {
+        "es" "--- Top Créditos Umbrella ---\nLos 10 jugadores con más créditos\n "
+        "en" "--- Umbrella Top Credits ---\nTop 10 players with the most credits\n "
+        "ru" "--- Лучшие кредиты Umbrella ---\n10 лучших игроков с наибольшим количеством кредитов\n "
+        "chi" "--- Umbrella 最高积分 ---\n积分最多的前 10 名玩家\n "
+        "pt" "--- Principais créditos da Umbrella ---\nTop 10 jogadores com mais créditos\n "
+        "fr" "--- Umbrella Top Credits ---\nTop 10 des joueurs avec le plus de crédits\n "
+        "de" "--- Umbrella Top Credits ---\nTop 10 Spieler mit den meisten Credits\n "
+    }
+    "Top Credits Entry"
+    {
+        "es" "#%d %s - %s Créditos"
+        "en" "#%d %s - %s Credits"
+        "ru" "#%d %s - %s Кредиты"
+        "chi" "#%d %s - %s 制作人员"
+        "pt" "#%d %s - %s Créditos"
+        "fr" "#%d %s - %s Crédits"
+        "de" "#%d %s - %s Credits"
+    }
+    "Top Credits Empty"
+    {
+        "es" "No hay datos todavía."
+        "en" "There is no data yet."
+        "ru" "Данных пока нет."
+        "chi" "还没有数据。"
+        "pt" "Ainda não há dados."
+        "fr" "Il n'y a pas encore de données."
+        "de" "Es liegen noch keine Daten vor."
+    }
+    "Admin Give Usage"
+    {
+        "es" "Uso: sm_givecredits <jugador|@all|@t|@ct|@me> <cantidad>"
+        "en" "Usage: sm_givecredits <player|@all|@t|@ct|@me> <amount>"
+        "ru" "Использование: sm_givecredits <player|@all|@t|@ct|@me> <количество>"
+        "chi" "用法：sm_givecredits <玩家|@all|@t|@ct|@me> <金额>"
+        "pt" "Uso: sm_givecredits <player|@all|@t|@ct|@me> <amount>"
+        "fr" "Utilisation : sm_givecredits <joueur|@all|@t|@ct|@me> <montant>"
+        "de" "Verwendung: sm_givecredits <player|@all|@t|@ct|@me> <amount>"
+    }
+    "Admin Amount Positive"
+    {
+        "es" "La cantidad debe ser mayor a 0."
+        "en" "The amount must be greater than 0."
+        "ru" "Сумма должна быть больше 0."
+        "chi" "金额必须大于 0。"
+        "pt" "O valor deve ser maior que 0."
+        "fr" "Le montant doit être supérieur à 0."
+        "de" "Der Betrag muss größer als 0 sein."
+    }
+    "Admin Give Single"
+    {
+        "es" "Diste %s Créditos a %N."
+        "en" "You gave %s credits to %N."
+        "ru" "Вы предоставили %s кредитов %N."
+        "chi" "您已将 %s 学分授予 %N。"
+        "pt" "Você deu créditos de %s a %N."
+        "fr" "Vous avez donné %s crédits à %N."
+        "de" "Sie haben %s Credits an %N gegeben."
+    }
+    "Admin Give Multi"
+    {
+        "es" "Diste %s Créditos a %d jugadores."
+        "en" "You gave %s credits to %d players."
+        "ru" "Вы дали %s кредитов игрокам %d."
+        "chi" "You gave %s credits to %d players."
+        "pt" "Você deu %s créditos a %d jogadores."
+        "fr" "Vous avez donné des crédits %s à %d joueurs."
+        "de" "Du hast %s Credits an %d Spieler vergeben."
+    }
+    "Admin Set Usage"
+    {
+        "es" "Uso: sm_setcredits <jugador|@all|@t|@ct|@me> <cantidad>"
+        "en" "Usage: sm_setcredits <player|@all|@t|@ct|@me> <amount>"
+        "ru" "Использование: sm_setcredits <player|@all|@t|@ct|@me> <количество>"
+        "chi" "用法：sm_setcredits <玩家|@all|@t|@ct|@me> <金额>"
+        "pt" "Uso: sm_setcredits <player|@all|@t|@ct|@me> <amount>"
+        "fr" "Utilisation : sm_setcredits <joueur|@all|@t|@ct|@me> <montant>"
+        "de" "Verwendung: sm_setcredits <player|@all|@t|@ct|@me> <amount>"
+    }
+    "Admin Amount NonNegative"
+    {
+        "es" "La cantidad no puede ser negativa."
+        "en" "The amount cannot be negative."
+        "ru" "Сумма не может быть отрицательной."
+        "chi" "金额不能为负数。"
+        "pt" "O valor não pode ser negativo."
+        "fr" "Le montant ne peut pas être négatif."
+        "de" "Der Betrag darf nicht negativ sein."
+    }
+    "Admin Set Single"
+    {
+        "es" "Seteaste %s Créditos para %N."
+        "en" "You set %s credits for %N."
+        "ru" "Вы установили кредиты %s для %N."
+        "chi" "You set %s credits for %N."
+        "pt" "Você definiu %s créditos para %N."
+        "fr" "Vous avez défini des crédits %s pour %N."
+        "de" "Sie haben %s Credits für %N festgelegt."
+    }
+    "Admin Set Multi"
+    {
+        "es" "Seteaste %s Créditos para %d jugadores."
+        "en" "You set %s credits for %d players."
+        "ru" "Вы установили %s кредитов для %d игроков."
+        "chi" "You set %s credits for %d players."
+        "pt" "Você definiu %s créditos para %d jogadores."
+        "fr" "Vous avez défini %s crédits pour %d joueurs."
+        "de" "Sie haben %s Credits für %d Spieler festgelegt."
+    }
+    "Gift Target Menu Empty"
+    {
+        "es" "No hay jugadores válidos para regalar"
+        "en" "No valid players to gift"
+        "ru" "Нет подходящих игроков для подарков"
+        "chi" "没有有效的玩家可以赠送礼物"
+        "pt" "Nenhum jogador válido para presentear"
+        "fr" "Aucun joueur valide à offrir"
+        "de" "Keine gültigen Spieler zum Verschenken"
+    }
+    "Gift Confirm Menu Title"
+    {
+        "es" "¿Seguro que deseas regalar este ítem?\n\nÍtem: %s\nDestino: %N\n "
+        "en" "Are you sure you want to gift this item?\n\nItem: %s\nTarget: %N\n "
+        "ru" "Вы уверены, что хотите подарить этот предмет?\n\nПредмет: %s\nЦель: %N\n "
+        "chi" "您确定要赠送此物品吗？\n\n物品：%s\n目标：%N\n "
+        "pt" "Tem certeza de que deseja presentear este item?\n\nItem: %s\nAlvo: %N\n "
+        "fr" "Êtes-vous sûr de vouloir offrir cet article ?\n\nArticle : %s\nCible : %N\n "
+        "de" "Sind Sie sicher, dass Sie diesen Artikel verschenken möchten?\n\nArtikel: %s\nZiel: %N\n "
+    }
+    "Gift Confirm Yes"
+    {
+        "es" "Sí, regalar"
+        "en" "Yes, gift"
+        "ru" "Да, подарок"
+        "chi" "是的，礼物"
+        "pt" "Sim, presente"
+        "fr" "Oui, cadeau"
+        "de" "Ja, Geschenk"
+    }
+    "Gift Confirm No"
+    {
+        "es" "No, volver"
+        "en" "No, go back"
+        "ru" "Нет, вернись назад."
+        "chi" "不，回去"
+        "pt" "Não, volte"
+        "fr" "Non, reviens en arrière"
+        "de" "Nein, geh zurück"
+    }
+    "Trade Equipped Prefix"
+    {
+        "es" "[E] "
+        "en" "[E] "
+        "ru" "[Е] "
+        "chi" "[E]"
+        "pt" "[E]"
+        "fr" "[E]"
+        "de" "[E]"
+    }
+    "Store Disabled"
+    {
+        "es" "La tienda esta desactivada en este momento."
+        "en" "The store is currently disabled."
+        "ru" "В настоящее время магазин отключен."
+        "chi" "该商店当前已被禁用。"
+        "pt" "A loja está atualmente desativada."
+        "fr" "La boutique est actuellement désactivée."
+        "de" "Der Shop ist derzeit deaktiviert."
+    }
+    "Store Transaction Failed"
+    {
+        "es" "No se pudo completar la operacion. Intentalo de nuevo."
+        "en" "The operation could not be completed. Please try again."
+        "ru" "Не удалось выполнить операцию. Попробуйте снова."
+        "chi" "无法完成该操作。请再试一次。"
+        "pt" "Não foi possível concluir a operação. Tente novamente."
+        "fr" "L'opération n'a pas pu être terminée. Veuillez réessayer."
+        "de" "Der Vorgang konnte nicht abgeschlossen werden. Bitte versuchen Sie es erneut."
+    }
+}

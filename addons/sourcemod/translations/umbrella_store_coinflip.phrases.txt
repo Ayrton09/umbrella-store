@@ -1,0 +1,663 @@
+﻿"Phrases"
+{
+    "CF Casino Title"
+    {
+        "es" "Coinflip"
+        "en" "Coinflip"
+        "ru" "Койнфлип"
+        "chi" "硬币翻转"
+        "pt" "Coinflip"
+        "fr" "Coinflip"
+        "de" "Münzwurf"
+    }
+
+    "CF PvP Disabled"
+    {
+        "es" "El Coinflip vs jugador esta deshabilitado."
+        "en" "Coinflip versus player is disabled."
+        "ru" "Коинфлип против игрока отключен."
+        "chi" "与玩家进行 Coinflip 已被禁用。"
+        "pt" "Coinflip versus player está desabilitado."
+        "fr" "Coinflip contre joueur est désactivé."
+        "de" "Coinflip gegen Spieler ist deaktiviert."
+    }
+
+    "CF No Pending Challenge"
+    {
+        "es" "No tienes ningun desafio pendiente."
+        "en" "You do not have any pending challenge."
+        "ru" "У вас нет ожидающих испытаний."
+        "chi" "您没有任何待处理的挑战。"
+        "pt" "Você não tem nenhum desafio pendente."
+        "fr" "Vous n'avez aucun défi en attente."
+        "de" "Sie haben keine ausstehende Herausforderung."
+    }
+
+    "CF Accept Not Enough"
+    {
+        "es" "No puedes aceptar: no te alcanzan los creditos."
+        "en" "You cannot accept: you do not have enough credits."
+        "ru" "Вы не можете принять: у вас недостаточно кредитов."
+        "chi" "您无法接受：您没有足够的积分。"
+        "pt" "Você não pode aceitar: você não tem créditos suficientes."
+        "fr" "Vous ne pouvez pas accepter : vous n'avez pas assez de crédits."
+        "de" "Sie können nicht akzeptieren: Sie haben nicht genügend Credits."
+    }
+
+    "CF Opponent Cannot Pay"
+    {
+        "es" "El rival ya no puede pagar esa apuesta."
+        "en" "The opponent can no longer pay that bet."
+        "ru" "Оппонент больше не может оплатить эту ставку."
+        "chi" "对手不能再支付该赌注。"
+        "pt" "O adversário não pode mais pagar essa aposta."
+        "fr" "L'adversaire ne peut plus payer cette mise."
+        "de" "Der Gegner kann diesen Einsatz nicht mehr bezahlen."
+    }
+
+    "CF Duel Cancelled Vs"
+    {
+        "es" "El duelo contra %N fue cancelado."
+        "en" "The duel against %N was cancelled."
+        "ru" "Дуэль против %N была отменена."
+        "chi" "与 %N 的决斗被取消。"
+        "pt" "O duelo contra %N foi cancelado."
+        "fr" "Le duel contre %N a été annulé."
+        "de" "Das Duell gegen %N wurde abgesagt."
+    }
+
+    "CF Opponent Debit Failed"
+    {
+        "es" "No se pudo descontar la apuesta del rival."
+        "en" "Could not deduct the opponent bet."
+        "ru" "Не удалось вычесть ставку противника."
+        "chi" "无法扣除对手的赌注。"
+        "pt" "Não foi possível deduzir a aposta do adversário."
+        "fr" "Impossible de déduire la mise de l'adversaire."
+        "de" "Die Wette des Gegners konnte nicht abgezogen werden."
+    }
+
+    "CF Not Enough Credits"
+    {
+        "es" "No tienes creditos suficientes."
+        "en" "You do not have enough credits."
+        "ru" "У вас недостаточно кредитов."
+        "chi" "您没有足够的积分。"
+        "pt" "Você não tem créditos suficientes."
+        "fr" "Vous n'avez pas assez de crédits."
+        "de" "Ihr Guthaben reicht nicht aus."
+    }
+
+    "CF PvP Start Broadcast"
+    {
+        "es" "Coinflip VS: %N vs %N por %d creditos cada uno."
+        "en" "Coinflip VS: %N vs %N for %d credits each."
+        "ru" "Coinflip VS: %N против %N по %d кредитов каждый."
+        "chi" "Coinflip VS：%N 与 %N 各获得 %d 学分。"
+        "pt" "Coinflip VS: %N vs %N para %d créditos cada."
+        "fr" "Coinflip VS : %N contre %N pour %d crédits chacun."
+        "de" "Coinflip VS: %N vs. %N für jeweils %d Credits."
+    }
+
+    "CF Invalid Bet Input"
+    {
+        "es" "Escribe un monto valido, 'all' o 'cancel'."
+        "en" "Type a valid amount, 'all' or 'cancel'."
+        "ru" "Введите действительную сумму: 'all' или 'cancel'."
+        "chi" "输入有效金额 'all' 或 'cancel'。"
+        "pt" "Digite um valor válido, 'all' ou 'cancel'."
+        "fr" "Saisissez un montant valide, 'all' ou 'cancel'."
+        "de" "Geben Sie einen gültigen Betrag ein, 'all' oder 'cancel'."
+    }
+
+    "CF Selected Player Unavailable"
+    {
+        "es" "El jugador seleccionado ya no esta disponible."
+        "en" "The selected player is no longer available."
+        "ru" "Выбранный игрок больше недоступен."
+        "chi" "所选播放器不再可用。"
+        "pt" "O player selecionado não está mais disponível."
+        "fr" "Le joueur sélectionné n'est plus disponible."
+        "de" "Der ausgewählte Player ist nicht mehr verfügbar."
+    }
+
+    "CF Main Menu Title"
+    {
+        "es" "Coinflip\nTus creditos: %d\nElige un modo\n "
+        "en" "Coinflip\nYour credits: %d\nChoose a mode\n "
+        "ru" "Coinflip\nВаши кредиты: %d\nВыберите режим\n "
+        "chi" "Coinflip\n您的学分：%d\n选择模式\n "
+        "pt" "Coinflip\nSeus créditos: %d\nEscolha um modo\n "
+        "fr" "Coinflip\nVos crédits : %d\nChoisissez un mode\n "
+        "de" "Coinflip\nIhre Credits: %d\nWählen Sie einen Modus\n "
+    }
+
+    "CF Mode House"
+    {
+        "es" "Contra la casa"
+        "en" "House mode"
+        "ru" "Домашний режим"
+        "chi" "房屋模式"
+        "pt" "Modo doméstico"
+        "fr" "Mode maison"
+        "de" "Hausmodus"
+    }
+
+    "CF Mode PvP"
+    {
+        "es" "Vs jugador"
+        "en" "Versus player"
+        "ru" "Против игрока"
+        "chi" "与玩家对战"
+        "pt" "Contra jogador"
+        "fr" "Contre le joueur"
+        "de" "Versus-Spieler"
+    }
+
+    "CF Player Select Title"
+    {
+        "es" "Coinflip VS\nElige un jugador\n "
+        "en" "Coinflip VS\nChoose a player\n "
+        "ru" "Coinflip VS\nВыберите игрока\n "
+        "chi" "Coinflip VS\n选择玩家\n "
+        "pt" "Coinflip VS\nEscolha um jogador\n "
+        "fr" "Coinflip VS\nChoisissez un joueur\n "
+        "de" "Coinflip VS\nWähle einen Spieler\n "
+    }
+
+    "CF Player Select Empty"
+    {
+        "es" "No hay jugadores disponibles"
+        "en" "No players available"
+        "ru" "Нет доступных игроков"
+        "chi" "没有可用的玩家"
+        "pt" "Nenhum jogador disponível"
+        "fr" "Aucun joueur disponible"
+        "de" "Keine Spieler verfügbar"
+    }
+
+    "CF Bet Menu PvP Title"
+    {
+        "es" "Coinflip VS\nRival: %N\nTus creditos: %d\nElige una apuesta\n "
+        "en" "Coinflip VS\nOpponent: %N\nYour credits: %d\nChoose a bet\n "
+        "ru" "Coinflip VS\nОппонент: %N\nВаши кредиты: %d\nВыберите ставку\n "
+        "chi" "Coinflip VS\n对手：%N\n您的积分：%d\n选择赌注\n "
+        "pt" "Coinflip VS\nOponente: %N\nSeus créditos: %d\nEscolha uma aposta\n "
+        "fr" "Coinflip VS\nAdversaire : %N\nVos crédits : %d\nChoisissez un pari\n "
+        "de" "Coinflip VS\nGegner: %N\nIhre Credits: %d\nWählen Sie eine Wette\n "
+    }
+
+    "CF Bet Menu Title"
+    {
+        "es" "Coinflip\nTus creditos: %d\nElige una apuesta\n "
+        "en" "Coinflip\nYour credits: %d\nChoose a bet\n "
+        "ru" "Coinflip\nВаши кредиты: %d\nВыберите ставку\n "
+        "chi" "Coinflip\n您的积分：%d\n选择赌注\n "
+        "pt" "Coinflip\nSeus créditos: %d\nEscolha uma aposta\n "
+        "fr" "Coinflip\nVos crédits : %d\nChoisissez un pari\n "
+        "de" "Coinflip\nIhre Credits: %d\nWählen Sie eine Wette\n "
+    }
+
+    "CF Bet All"
+    {
+        "es" "Todo"
+        "en" "All"
+        "ru" "Все"
+        "chi" "全部"
+        "pt" "Todos"
+        "fr" "Tous"
+        "de" "Alle"
+    }
+
+    "CF Bet Custom"
+    {
+        "es" "Ingresar monto por chat"
+        "en" "Type amount in chat"
+        "ru" "Введите сумму в чате"
+        "chi" "在聊天中输入金额"
+        "pt" "Digite o valor no chat"
+        "fr" "Saisir le montant dans le chat"
+        "de" "Geben Sie den Betrag im Chat ein"
+    }
+
+    "CF Bet Amount"
+    {
+        "es" "%d creditos"
+        "en" "%d credits"
+        "ru" "%d кредитов"
+        "chi" "%d 积分"
+        "pt" "%d créditos"
+        "fr" "%d crédits"
+        "de" "%d Credits"
+    }
+
+    "CF Enter Bet Chat"
+    {
+        "es" "Escribe tu apuesta en el chat. Puedes poner un numero, 'all' o 'cancel'."
+        "en" "Type your bet in chat. You can type a number, 'all' or 'cancel'."
+        "ru" "Введите свою ставку в чат. Вы можете ввести номер 'all' или 'cancel'."
+        "chi" "在聊天中输入您的赌注。您可以键入数字 'all' 或 'cancel'。"
+        "pt" "Digite sua aposta no chat. Você pode digitar um número, 'all' ou 'cancel'."
+        "fr" "Saisissez votre pari dans le chat. Vous pouvez saisir un numéro, 'all' ou 'cancel'."
+        "de" "Geben Sie Ihre Wette im Chat ein. Sie können eine Zahl eingeben, 'all' oder 'cancel'."
+    }
+
+    "CF Side Menu Title"
+    {
+        "es" "Coinflip\nApuesta: %d creditos\nElige un lado\n "
+        "en" "Coinflip\nBet: %d credits\nChoose a side\n "
+        "ru" "Coinflip\nСтавка: %d кредитов\nВыберите сторону\n "
+        "chi" "Coinflip\n投注：%d 积分\n选择一方\n "
+        "pt" "Coinflip\nAposta: %d créditos\nEscolha um lado\n "
+        "fr" "Coinflip\nPari : %d crédits\nChoisissez un camp\n "
+        "de" "Coinflip\nEinsatz: %d Credits\nWählen Sie eine Seite\n "
+    }
+
+    "CF Side Heads"
+    {
+        "es" "Cara"
+        "en" "Heads"
+        "ru" "Головы"
+        "chi" "头像"
+        "pt" "Cabeças"
+        "fr" "Têtes"
+        "de" "Köpfe"
+    }
+
+    "CF Side Tails"
+    {
+        "es" "Cruz"
+        "en" "Tails"
+        "ru" "Решка"
+        "chi" "尾巴"
+        "pt" "Caudas"
+        "fr" "Queues"
+        "de" "Schwänze"
+    }
+
+    "CF Challenge Status Can Accept"
+    {
+        "es" "1. Aceptar / 2. Rechazar"
+        "en" "1. Accept / 2. Decline"
+        "ru" "1. Принять / 2. Отклонить"
+        "chi" "1. 接受/2. 拒绝"
+        "pt" "1. Aceitar / 2. Recusar"
+        "fr" "1. Accepter / 2. Refuser"
+        "de" "1. Akzeptieren / 2. Ablehnen"
+    }
+
+    "CF Challenge Status No Credits"
+    {
+        "es" "No te alcanzan los creditos"
+        "en" "You do not have enough credits"
+        "ru" "У вас недостаточно кредитов"
+        "chi" "您没有足够的积分"
+        "pt" "Você não tem créditos suficientes"
+        "fr" "Vous n'avez pas assez de crédits"
+        "de" "Ihr Guthaben reicht nicht aus"
+    }
+
+    "CF Challenge Menu Title"
+    {
+        "es" "Solicitud de Coinflip VS\nRival: %N\nApuesta: %d creditos\nTus creditos: %d\n\n%s\n "
+        "en" "Coinflip VS Request\nOpponent: %N\nBet: %d credits\nYour credits: %d\n\n%s\n "
+        "ru" "Coinflip VS Запрос\nОппонент: %N\nСтавка: %d кредитов\nВаши кредиты: %d\n\n%s\n "
+        "chi" "Coinflip VS 请求\n对手：%N\n投注：%d 积分\n您的积分：%d\n\n%s\n "
+        "pt" "Coinflip VS Request\nOponente: %N\nAposta: %d créditos\nSeus créditos: %d\n\n%s\n "
+        "fr" "Coinflip VS Demande\nAdversaire : %N\nPari : %d crédits\nVos crédits : %d\n\n%s\n "
+        "de" "Coinflip VS Request\nGegner: %N\nWette: %d Credits\nIhre Credits: %d\n\n%s\n "
+    }
+
+    "CF Challenge Accept"
+    {
+        "es" "Aceptar"
+        "en" "Accept"
+        "ru" "Принять"
+        "chi" "接受"
+        "pt" "Aceitar"
+        "fr" "Accepter"
+        "de" "Akzeptieren"
+    }
+
+    "CF Challenge Deny"
+    {
+        "es" "Rechazar"
+        "en" "Decline"
+        "ru" "Отклонение"
+        "chi" "拒绝"
+        "pt" "Recusar"
+        "fr" "Refus"
+        "de" "Ablehnen"
+    }
+
+    "CF Cannot Challenge Self"
+    {
+        "es" "No puedes desafiarte a ti mismo."
+        "en" "You cannot challenge yourself."
+        "ru" "Вы не можете бросить вызов самому себе."
+        "chi" "你无法挑战自己。"
+        "pt" "Você não pode desafiar a si mesmo."
+        "fr" "Vous ne pouvez pas vous mettre au défi."
+        "de" "Du kannst dich nicht selbst herausfordern."
+    }
+
+    "CF Invalid Target"
+    {
+        "es" "Ese jugador no es valido."
+        "en" "That player is not valid."
+        "ru" "Этот проигрыватель недействителен."
+        "chi" "该玩家无效。"
+        "pt" "Esse jogador não é válido."
+        "fr" "Ce joueur n'est pas valide."
+        "de" "Dieser Player ist ungültig."
+    }
+
+    "CF Target Not Enough Credits"
+    {
+        "es" "%N no tiene creditos suficientes para esa apuesta."
+        "en" "%N does not have enough credits for that bet."
+        "ru" "У %N недостаточно кредитов для этой ставки."
+        "chi" "%N 没有足够的积分来进行该投注。"
+        "pt" "%N não tem créditos suficientes para essa aposta."
+        "fr" "%N n'a pas assez de crédits pour ce pari."
+        "de" "%N verfügt nicht über genügend Credits für diese Wette."
+    }
+
+    "CF Someone Already Rolling"
+    {
+        "es" "Uno de los dos ya tiene un Coinflip en curso."
+        "en" "One of the two already has a Coinflip running."
+        "ru" "На одном из двух уже запущен Coinflip."
+        "chi" "两者之一已经运行了 Coinflip。"
+        "pt" "Um dos dois já tem um Coinflip rodando."
+        "fr" "L'un des deux a déjà un Coinflip en cours d'exécution."
+        "de" "Bei einem der beiden läuft bereits ein Coinflip."
+    }
+
+    "CF Target Has Pending Challenge"
+    {
+        "es" "Ese jugador ya tiene un desafio pendiente."
+        "en" "That player already has a pending challenge."
+        "ru" "У этого игрока уже есть ожидающее испытание."
+        "chi" "该玩家已经有一个待处理的挑战。"
+        "pt" "Esse jogador já tem um desafio pendente."
+        "fr" "Ce joueur a déjà un défi en attente."
+        "de" "Dieser Spieler hat bereits eine ausstehende Herausforderung."
+    }
+
+    "CF You Already Challenged"
+    {
+        "es" "Ya enviaste un desafio y aun no fue respondido."
+        "en" "You already sent a challenge and it has not been answered yet."
+        "ru" "Вы уже отправили вызов, но на него еще не ответили."
+        "chi" "您已发送挑战，但尚未得到答复。"
+        "pt" "Você já enviou um desafio e ele ainda não foi respondido."
+        "fr" "Vous avez déjà envoyé un défi et il n'a pas encore reçu de réponse."
+        "de" "Sie haben bereits eine Herausforderung gesendet und diese wurde noch nicht beantwortet."
+    }
+
+    "CF Challenge Cooldown"
+    {
+        "es" "Espera %.1f segundos para volver a desafiar."
+        "en" "Wait %.1f seconds before challenging again."
+        "ru" "Подождите %.1f секунд, прежде чем повторить вызов."
+        "chi" "等待 %.1f 秒，然后再次挑战。"
+        "pt" "Aguarde %.1f segundos antes de desafiar novamente."
+        "fr" "Attendez %.1f secondes avant de lancer un nouveau défi."
+        "de" "Warten Sie %.1f Sekunden, bevor Sie erneut herausfordern."
+    }
+
+    "CF Challenge Sent"
+    {
+        "es" "Desafiaste a %N por %d creditos."
+        "en" "You challenged %N for %d credits."
+        "ru" "Вы бросили вызов %N на %d кредитов."
+        "chi" "您向 %N 发起挑战，获得 %d 学分。"
+        "pt" "Você desafiou %N por %d créditos."
+        "fr" "Vous avez défié %N pour %d crédits."
+        "de" "Sie haben %N um %d Credits herausgefordert."
+    }
+
+    "CF Challenge Received"
+    {
+        "es" "%N te desafio a un Coinflip por %d creditos."
+        "en" "%N challenged you to Coinflip for %d credits."
+        "ru" "%N предложил вам сыграть в Coinflip на %d кредитов."
+        "chi" "%N 向您向 Coinflip 发起挑战，要求获得 %d 积分。"
+        "pt" "%N desafiou você para o Coinflip por %d créditos."
+        "fr" "%N vous a mis au défi de jouer à Coinflip pour %d crédits."
+        "de" "%N hat Sie zum Coinflip für %d Credits herausgefordert."
+    }
+
+    "CF Challenge Expired"
+    {
+        "es" "El desafio de Coinflip expiro."
+        "en" "The Coinflip challenge expired."
+        "ru" "Срок действия конкурса Coinflip истек."
+        "chi" "Coinflip 挑战已过期。"
+        "pt" "O desafio Coinflip expirou."
+        "fr" "Le défi Coinflip a expiré."
+        "de" "Die Coinflip-Herausforderung ist abgelaufen."
+    }
+
+    "CF Challenge No Response"
+    {
+        "es" "%N no respondio a tiempo el desafio."
+        "en" "%N did not answer the challenge in time."
+        "ru" "%N не ответил на вызов вовремя."
+        "chi" "%N 没有及时回答挑战。"
+        "pt" "%N não respondeu ao desafio a tempo."
+        "fr" "%N n'a pas répondu au défi à temps."
+        "de" "%N hat die Herausforderung nicht rechtzeitig beantwortet."
+    }
+
+    "CF Challenge Cancelled"
+    {
+        "es" "El desafio fue cancelado."
+        "en" "The challenge was cancelled."
+        "ru" "Соревнование было отменено."
+        "chi" "挑战已取消。"
+        "pt" "O desafio foi cancelado."
+        "fr" "Le défi a été annulé."
+        "de" "Die Herausforderung wurde abgebrochen."
+    }
+
+    "CF Challenge ToTarget Cancelled"
+    {
+        "es" "El desafio a %N fue cancelado."
+        "en" "The challenge to %N was cancelled."
+        "ru" "Вызов %N был отменен."
+        "chi" "对 %N 的挑战已取消。"
+        "pt" "O desafio para %N foi cancelado."
+        "fr" "Le défi de %N a été annulé."
+        "de" "Die Herausforderung an %N wurde abgebrochen."
+    }
+
+    "CF House Win"
+    {
+        "es" "Elegiste %s, salio %s. Ganaste %d creditos."
+        "en" "You picked %s, it landed on %s. You won %d credits."
+        "ru" "Вы выбрали %s, он приземлился на %s. Вы выиграли %d кредитов."
+        "chi" "您选择了 %s，它落在 %s 上。您赢得了 %d 学分。"
+        "pt" "Você escolheu %s, ele pousou em %s. Você ganhou %d créditos."
+        "fr" "Vous avez choisi %s, il a atterri sur %s. Vous avez gagné %d crédits."
+        "de" "Sie haben %s ausgewählt, es ist auf %s gelandet. Sie haben %d Credits gewonnen."
+    }
+
+    "CF Big Win Broadcast"
+    {
+        "es" "%N gano %d creditos en Coinflip."
+        "en" "%N won %d credits in Coinflip."
+        "ru" "%N выиграл %d кредитов в Coinflip."
+        "chi" "%N 在 Coinflip 中赢得了 %d 积分。"
+        "pt" "%N ganhou %d créditos no Coinflip."
+        "fr" "%N a gagné %d crédits dans Coinflip."
+        "de" "%N hat %d Credits in Coinflip gewonnen."
+    }
+
+    "CF House Lose"
+    {
+        "es" "Elegiste %s, salio %s. Perdiste %d creditos."
+        "en" "You picked %s, it landed on %s. You lost %d credits."
+        "ru" "Вы выбрали %s, он приземлился на %s. Вы потеряли %d кредитов."
+        "chi" "您选择了 %s，它落在 %s 上。您失去了 %d 学分。"
+        "pt" "Você escolheu %s, ele pousou em %s. Você perdeu %d créditos."
+        "fr" "Vous avez choisi %s, il a atterri sur %s. Vous avez perdu %d crédits."
+        "de" "Sie haben %s ausgewählt, es ist auf %s gelandet. Sie haben %d Credits verloren."
+    }
+
+    "CF PvP Winner Broadcast"
+    {
+        "es" "Coinflip VS: %N le gano a %N y se llevo %d creditos."
+        "en" "Coinflip VS: %N beat %N and took %d credits."
+        "ru" "Coinflip VS: %N победил %N и получил %d кредитов."
+        "chi" "Coinflip VS：%N 击败 %N 并获得 %d 学分。"
+        "pt" "Coinflip VS: %N venceu %N e recebeu %d créditos."
+        "fr" "Coinflip VS : %N a battu %N et a pris %d crédits."
+        "de" "Coinflip VS: %N besiegte %N und nahm %d Credits."
+    }
+
+    "CF PvP Opponent Disconnected"
+    {
+        "es" "Tu rival se desconecto. Recuperaste el pozo de %d creditos."
+        "en" "Your opponent disconnected. You received the full pot of %d credits."
+        "ru" "Ваш противник отключился. Вы получили весь банк в размере %d кредитов."
+        "chi" "您的对手已断开连接。您获得了全部奖池，共 %d 积分。"
+        "pt" "Seu adversário desconectou. Você recebeu o pote completo de %d créditos."
+        "fr" "Votre adversaire s'est déconnecté. Vous avez reçu le pot complet de %d crédits."
+        "de" "Ihr Gegner hat die Verbindung getrennt. Sie haben den gesamten Pot von %d Credits erhalten."
+    }
+
+    "CF HUD House Final"
+    {
+        "es" "COINFLIP\n\nApuesta: %d creditos\nElegiste: %s\n\nResultado: %s"
+        "en" "COINFLIP\n\nBet: %d credits\nYou picked: %s\n\nResult: %s"
+        "ru" "COINFLIP\n\nСтавка: %d кредитов\nВы выбрали: %s\n\nРезультат: %s"
+        "chi" "COINFLIP\n\n投注：%d 积分\n您选择：%s\n\n结果：%s"
+        "pt" "COINFLIP\n\nAposta: %d créditos\nVocê escolheu: %s\n\nResultado: %s"
+        "fr" "COINFLIP\n\nPari : %d crédits\nVous avez choisi : %s\n\nRésultat : %s"
+        "de" "COINFLIP\n\nEinsatz: %d Credits\nSie haben ausgewählt: %s\n\nErgebnis: %s"
+    }
+
+    "CF HUD House Rolling"
+    {
+        "es" "COINFLIP\n\nApuesta: %d creditos\nElegiste: %s\n\nGirando... %s"
+        "en" "COINFLIP\n\nBet: %d credits\nYou picked: %s\n\nRolling... %s"
+        "ru" "COINFLIP\n\nСтавка: %d кредитов\nВы выбрали: %s\n\nРоллинг... %s"
+        "chi" "COINFLIP\n\n投注：%d 积分\n您选择：%s\n\n滚动... %s"
+        "pt" "COINFLIP\n\nAposta: %d créditos\nVocê escolheu: %s\n\nRolando... %s"
+        "fr" "COINFLIP\n\nPari : %d crédits\nVous avez choisi : %s\n\nRolling... %s"
+        "de" "COINFLIP\n\nEinsatz: %d Credits\nSie haben ausgewählt: %s\n\nRollend... %s"
+    }
+
+    "CF HUD PvP Final"
+    {
+        "es" "COINFLIP VS\n\nRival: %N\nApuesta: %d creditos\n\nResultado: %s"
+        "en" "COINFLIP VS\n\nOpponent: %N\nBet: %d credits\n\nResult: %s"
+        "ru" "COINFLIP VS\n\nПротивник: %N\nСтавка: %d кредитов\n\nРезультат: %s"
+        "chi" "COINFLIP VS\n\n对手：%N\n投注：%d 积分\n\n结果：%s"
+        "pt" "COINFLIP VS\n\nOponente: %N\nAposta: %d créditos\n\nResultado: %s"
+        "fr" "COINFLIP VS\n\nAdversaire : %N\nPari : %d crédits\n\nRésultat : %s"
+        "de" "COINFLIP VS\n\nGegner: %N\nEinsatz: %d Credits\n\nErgebnis: %s"
+    }
+
+    "CF HUD PvP Rolling"
+    {
+        "es" "COINFLIP VS\n\nRival: %N\nApuesta: %d creditos\n\nLanzando... %s"
+        "en" "COINFLIP VS\n\nOpponent: %N\nBet: %d credits\n\nFlipping... %s"
+        "ru" "COINFLIP VS\n\nПротивник: %N\nСтавка: %d кредитов\n\nПереворот... %s"
+        "chi" "COINFLIP VS\n\n对手：%N\n投注：%d 积分\n\n翻转... %s"
+        "pt" "COINFLIP VS\n\nOponente: %N\nAposta: %d créditos\n\nInversão... %s"
+        "fr" "COINFLIP VS\n\nAdversaire : %N\nPari : %d crédits\n\nFlipping... %s"
+        "de" "COINFLIP VS\n\nGegner: %N\nEinsatz: %d Credits\n\nFlipping... %s"
+    }
+
+    "CF Result Win"
+    {
+        "es" "GANASTE"
+        "en" "YOU WIN"
+        "ru" "ВЫ ВЫИГРАЛИ"
+        "chi" "你赢了"
+        "pt" "VOCÊ GANHA"
+        "fr" "VOUS GAGNEZ"
+        "de" "SIE GEWINNEN"
+    }
+
+    "CF Result Lose"
+    {
+        "es" "PERDISTE"
+        "en" "YOU LOSE"
+        "ru" "ВЫ ПРОИГРАЛИ"
+        "chi" "你输了"
+        "pt" "VOCÊ PERDE"
+        "fr" "VOUS PERDEZ"
+        "de" "DU VERLIERT"
+    }
+
+    "CF Disabled"
+    {
+        "es" "El Coinflip esta deshabilitado."
+        "en" "Coinflip is disabled."
+        "ru" "Койнфлип отключен."
+        "chi" "Coinflip 已禁用。"
+        "pt" "Coinflip está desativado."
+        "fr" "Coinflip est désactivé."
+        "de" "Coinflip ist deaktiviert."
+    }
+
+    "CF Already Rolling"
+    {
+        "es" "Ya tienes un Coinflip en curso."
+        "en" "You already have a Coinflip running."
+        "ru" "У вас уже запущен Coinflip."
+        "chi" "您已经运行了 Coinflip。"
+        "pt" "Você já tem um Coinflip em execução."
+        "fr" "Vous avez déjà un Coinflip en cours d'exécution."
+        "de" "Sie haben bereits einen Coinflip ausgeführt."
+    }
+
+    "CF Cooldown"
+    {
+        "es" "Espera antes de usar Coinflip otra vez."
+        "en" "Wait before using Coinflip again."
+        "ru" "Подождите, прежде чем снова использовать Coinflip."
+        "chi" "再次使用 Coinflip 之前请等待。"
+        "pt" "Aguarde antes de usar o Coinflip novamente."
+        "fr" "Attendez avant d'utiliser à nouveau Coinflip."
+        "de" "Warten Sie, bevor Sie Coinflip erneut verwenden."
+    }
+
+    "CF Bet Invalid"
+    {
+        "es" "Debes ingresar una apuesta valida."
+        "en" "You must enter a valid bet."
+        "ru" "Вы должны ввести действительную ставку."
+        "chi" "您必须输入有效的赌注。"
+        "pt" "Você deve inserir uma aposta válida."
+        "fr" "Vous devez saisir un pari valide."
+        "de" "Sie müssen eine gültige Wette eingeben."
+    }
+
+    "CF Bet Min"
+    {
+        "es" "Apuesta minima: %d"
+        "en" "Minimum bet: %d"
+        "ru" "Минимальная ставка: %d"
+        "chi" "最低赌注：%d"
+        "pt" "Aposta mínima: %d"
+        "fr" "Mise minimale : %d"
+        "de" "Mindesteinsatz: %d"
+    }
+
+    "CF Bet Max"
+    {
+        "es" "Apuesta maxima: %d"
+        "en" "Maximum bet: %d"
+        "ru" "Максимальная ставка: %d"
+        "chi" "最大赌注：%d"
+        "pt" "Aposta máxima: %d"
+        "fr" "Mise maximale : %d"
+        "de" "Maximaler Einsatz: %d"
+    }
+}
+

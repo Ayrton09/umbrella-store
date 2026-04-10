@@ -1,0 +1,102 @@
+﻿"Phrases"
+{
+    "Daily Announce"
+    {
+        "es" "Usa !daily para reclamar tu recompensa diaria."
+        "en" "Use !daily to claim your daily reward."
+        "ru" "Используйте !daily, чтобы получить ежедневную награду."
+        "chi" "使用 !daily 领取每日奖励。"
+        "pt" "Use !daily para resgatar sua recompensa diária."
+        "fr" "Utilisez !daily pour réclamer votre récompense quotidienne."
+        "de" "Verwenden Sie !daily, um Ihre tägliche Belohnung einzufordern."
+    }
+
+    "Daily Disabled"
+    {
+        "es" "El sistema diario esta deshabilitado."
+        "en" "The daily system is disabled."
+        "ru" "Ежедневная система отключена."
+        "chi" "日常系统被禁用。"
+        "pt" "O sistema diário está desabilitado."
+        "fr" "Le système quotidien est désactivé."
+        "de" "Das Tagessystem ist deaktiviert."
+    }
+
+    "Daily Not Ready"
+    {
+        "es" "Daily aun no esta listo."
+        "en" "Daily is not ready yet."
+        "ru" "Daily еще не готов."
+        "chi" "每日尚未准备好。"
+        "pt" "Diário ainda não está pronto."
+        "fr" "Le quotidien n'est pas encore prêt."
+        "de" "Daily ist noch nicht fertig."
+    }
+
+    "Daily Busy"
+    {
+        "es" "Ya estas procesando tu recompensa diaria."
+        "en" "Your daily reward is already being processed."
+        "ru" "Ваше ежедневное вознаграждение уже обрабатывается."
+        "chi" "您的每日奖励已在处理中。"
+        "pt" "Sua recompensa diária já está sendo processada."
+        "fr" "Votre récompense quotidienne est déjà en cours de traitement."
+        "de" "Ihre tägliche Belohnung wird bereits verarbeitet."
+    }
+
+    "Daily SteamId Error"
+    {
+        "es" "No se pudo obtener tu SteamID."
+        "en" "Could not get your SteamID."
+        "ru" "Не удалось получить ваш SteamID."
+        "chi" "无法获取您的 SteamID。"
+        "pt" "Não foi possível obter seu SteamID."
+        "fr" "Impossible d'obtenir votre SteamID."
+        "de" "Ihre SteamID konnte nicht abgerufen werden."
+    }
+
+    "Daily Load Error"
+    {
+        "es" "No se pudo cargar tu progreso diario."
+        "en" "Could not load your daily progress."
+        "ru" "Не удалось загрузить ваш ежедневный прогресс."
+        "chi" "无法加载您的每日进度。"
+        "pt" "Não foi possível carregar seu progresso diário."
+        "fr" "Impossible de charger votre progression quotidienne."
+        "de" "Ihr täglicher Fortschritt konnte nicht geladen werden."
+    }
+
+    "Daily Cooldown"
+    {
+        "es" "Vuelve en %d h %d m para usar !daily."
+        "en" "Come back in %d h %d m to use !daily."
+        "ru" "Вернитесь через %d ч %d м, чтобы использовать !daily."
+        "chi" "在 %d h %d m 返回以使用 !daily。"
+        "pt" "Volte em %d h %d m para usar !daily."
+        "fr" "Revenez dans %d h %d m pour utiliser !daily."
+        "de" "Kommen Sie in %d h %d m zurück, um !daily zu verwenden."
+    }
+
+    "Daily Add Credits Error"
+    {
+        "es" "No se pudieron agregar tus creditos diarios."
+        "en" "Could not add your daily credits."
+        "ru" "Не удалось добавить ежедневные кредиты."
+        "chi" "无法添加您的每日积分。"
+        "pt" "Não foi possível adicionar seus créditos diários."
+        "fr" "Impossible d'ajouter vos crédits quotidiens."
+        "de" "Ihr tägliches Guthaben konnte nicht hinzugefügt werden."
+    }
+
+    "Daily Claimed"
+    {
+        "es" "Reclamaste !daily: +%d creditos. Racha: %d dias."
+        "en" "You claimed !daily: +%d credits. Streak: %d days."
+        "ru" "Вы запросили !daily: +%d кредитов. Серия: %d дней."
+        "chi" "您已领取 !daily：+%d 积分。连续：%d 天。"
+        "pt" "Você reivindicou !daily: +%d créditos. Sequência: %d dias."
+        "fr" "Vous avez réclamé !daily : +%d crédits. Séquence : %d jours."
+        "de" "Sie haben !daily: +%d Credits beansprucht. Streak: %d Tage."
+    }
+}
+

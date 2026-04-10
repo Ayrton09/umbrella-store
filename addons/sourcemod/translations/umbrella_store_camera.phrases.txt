@@ -1,0 +1,112 @@
+﻿"Phrases"
+{
+    "Camera Announce Commands"
+    {
+        "es" "Usa !tp, !mirror o !fp para ver tu personaje."
+        "en" "Use !tp, !mirror or !fp to view your character."
+        "ru" "Используйте !tp, !mirror или !fp, чтобы просмотреть своего персонажа."
+        "chi" "使用 !tp、!mirror 或 !fp 查看您的角色。"
+        "pt" "Use !tp, !mirror ou !fp para visualizar seu personagem."
+        "fr" "Utilisez !tp, !mirror ou !fp pour afficher votre personnage."
+        "de" "Verwenden Sie !tp, !mirror oder !fp, um Ihren Charakter anzuzeigen."
+    }
+
+    "Camera Thirdperson On"
+    {
+        "es" "Tercera persona activada."
+        "en" "Thirdperson enabled."
+        "ru" "Третье лицо включено."
+        "chi" "已启用第三人称。"
+        "pt" "Terceira pessoa habilitada."
+        "fr" "Troisième personne activée."
+        "de" "Thirdperson aktiviert."
+    }
+
+    "Camera Thirdperson Off"
+    {
+        "es" "Tercera persona desactivada."
+        "en" "Thirdperson disabled."
+        "ru" "Третье лицо отключено."
+        "chi" "第三人称已禁用。"
+        "pt" "Terceira pessoa desabilitada."
+        "fr" "Tiers désactivé."
+        "de" "Dritte Person deaktiviert."
+    }
+
+    "Camera Mirror On"
+    {
+        "es" "Mirror activado."
+        "en" "Mirror enabled."
+        "ru" "Зеркало включено."
+        "chi" "镜像已启用。"
+        "pt" "Espelho habilitado."
+        "fr" "Miroir activé."
+        "de" "Spiegelung aktiviert."
+    }
+
+    "Camera Mirror Off"
+    {
+        "es" "Mirror desactivado."
+        "en" "Mirror disabled."
+        "ru" "Зеркало отключено."
+        "chi" "镜像已禁用。"
+        "pt" "Espelho desativado."
+        "fr" "Miroir désactivé."
+        "de" "Spiegel deaktiviert."
+    }
+
+    "Camera Firstperson On"
+    {
+        "es" "Volviste a primera persona."
+        "en" "Back to firstperson."
+        "ru" "Назад к виду от первого лица."
+        "chi" "回到第一人称。"
+        "pt" "De volta à primeira pessoa."
+        "fr" "Retour à la première personne."
+        "de" "Zurück zur Ich-Perspektive."
+    }
+
+    "Camera Disabled"
+    {
+        "es" "Esta funcion esta desactivada."
+        "en" "This feature is disabled."
+        "ru" "Эта функция отключена."
+        "chi" "此功能已禁用。"
+        "pt" "Este recurso está desativado."
+        "fr" "Cette fonctionnalité est désactivée."
+        "de" "Diese Funktion ist deaktiviert."
+    }
+
+    "Camera Map Disabled"
+    {
+        "es" "Esta funcion esta desactivada en este mapa."
+        "en" "This feature is disabled on this map."
+        "ru" "Эта функция отключена на этой карте."
+        "chi" "此功能在此地图上被禁用。"
+        "pt" "Este recurso está desativado neste mapa."
+        "fr" "Cette fonctionnalité est désactivée sur cette carte."
+        "de" "Diese Funktion ist auf dieser Karte deaktiviert."
+    }
+
+    "Camera Blocked Spectator"
+    {
+        "es" "No puedes usar esta funcion mientras estas en espectador."
+        "en" "You cannot use this feature while in spectator."
+        "ru" "Вы не можете использовать эту функцию в режиме зрителя."
+        "chi" "您在旁观者状态下无法使用此功能。"
+        "pt" "Você não pode usar esse recurso enquanto estiver como espectador."
+        "fr" "Vous ne pouvez pas utiliser cette fonctionnalité en tant que spectateur."
+        "de" "Sie können diese Funktion nicht im Zuschauermodus verwenden."
+    }
+
+    "Camera Blocked Dead"
+    {
+        "es" "No puedes usar esta funcion mientras estas muerto."
+        "en" "You cannot use this feature while dead."
+        "ru" "Вы не можете использовать эту функцию, будучи мертвым."
+        "chi" "你在死亡时无法使用此功能。"
+        "pt" "Você não pode usar esse recurso enquanto estiver morto."
+        "fr" "Vous ne pouvez pas utiliser cette fonctionnalité lorsque vous êtes mort."
+        "de" "Sie können diese Funktion nicht verwenden, während Sie tot sind."
+    }
+}
