@@ -8,13 +8,6 @@ Unlike many public store systems still circulating in the SourceMod scene, Umbre
 
 Umbrella Store is also built for expansion. Third-party plugins can integrate with the core through the public API exposed in `umbrella_store.inc`, making it possible for other developers to build their own modules, casino games, and extensions on top of the same shared credits, inventory, and menu ecosystem.
 
-## Why Umbrella Store
-
-- Built from scratch instead of being another patched legacy store fork
-- Designed as a real modular platform, not a monolithic plugin dump
-- Shared persistent economy handled by one core plugin
-- Public API for third-party modules and casino integrations
-
 ## Included modules
 
 - `store_core`
