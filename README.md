@@ -1,6 +1,9 @@
 # Umbrella Store
 
-<img src="assets/umbrella-store-logo.jpg" alt="Umbrella Store Logo" width="220">
+<p align="center">
+  <img src="assets/umbrella-store-logo.jpg" alt="Umbrella Store Logo" width="280">
+</p>
+
 
 
 Umbrella Store is a next-generation SourceMod store suite built completely from scratch for modern servers, combining persistent credits, inventory, chat customization, player skins, and modular casino systems under one shared core.
