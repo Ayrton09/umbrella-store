@@ -1,4 +1,4 @@
-# Umbrella Store 1.0.0
+# Umbrella Store
 
 <p align="center">
   <img src="assets/umbrella-store-logo.jpg" alt="Umbrella Store Logo" width="280">
