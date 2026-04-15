@@ -4,190 +4,5334 @@
     // Umbrella Store item config
     // =========================================================================
     //
-    // This file uses standard SourceMod KeyValues format.
-    // Every item needs a unique section name, for example:
+    // This file now ships with a full Source 2009 color preset already filled
+    // in so server owners can test tags, name colors, and chat colors without
+    // building a palette from scratch.
     //
-    // "my_unique_item_id"
+    // Supported builtin item types:
+    //   skin
+    //   tag
+    //   namecolor
+    //   chatcolor
+    //
+    // Common supported keys:
+    //   name
+    //   type
+    //   value
+    //   model
+    //   arms
+    //   price
+    //   team
+    //   flag
+    //   category
+    //   description
+    //   rarity
+    //   sort_order
+    //   icon
+    //   sale_price
+    //   sell_percent_override
+    //   starts_at
+    //   ends_at
+    //   requires_item
+    //   bundle_id
+    //   hidden
+    //   metadata
+    //
+    // Notes:
+    //   - `value` must contain the real payload used by the item.
+    //   - For tag items, `value` is the actual chat tag text and color tags.
+    //   - For namecolor and chatcolor, `value` is just the color token.
+    //   - For skin items, `model` is required and `arms` is optional.
+    //   - The color preset below is aimed at Source 2009 games like CS:S.
+    //   - CS:GO only guarantees the classic Multi-Colors subset.
+    //
+    // -------------------------------------------------------------------------
+    // Example: basic tag
+    // -------------------------------------------------------------------------
+    // "tag_vip"
     // {
-    //     "name"  "Visible Name"
-    //     "type"  "tag"
-    //     "value" "{PURPLE}[VIP]{DEFAULT}"
+    //     "name" "VIP"
+    //     "type" "tag"
+    //     "category" "chat"
+    //     "description" "Simple VIP chat tag."
+    //     "value" "{orchid}[VIP]{default}"
     //     "price" "5000"
-    //     "team"  "0"
-    //     "flag"  ""
+    //     "team" "0"
     // }
     //
-    // Supported item types in Umbrella Store core:
-    //   - "skin"
-    //   - "tag"
-    //   - "namecolor"
-    //   - "chatcolor"
-    //
-    // Supported keys:
-    //   "name"   = item display name in the store menu
-    //   "type"   = item type
-    //   "model"  = player model path (required for "skin")
-    //   "arms"   = arms model path (optional for "skin")
-    //   "value"  = text/color value used by chat items
-    //   "price"  = credits price
-    //   "team"   = 0 for any / 2 for T / 3 for CT
-    //   "flag"   = admin flag restriction, empty = everyone
-    //
-    // Important behavior notes:
-    //   - Skin items require a real existing model path or they will be skipped.
-    //   - Arms are optional. If the path is invalid, the item still loads without arms.
-    //   - "tag", "namecolor" and "chatcolor" use the "value" key.
-    //   - Equip is exclusive per category:
-    //       skin: one per team
-    //       tag: one active tag
-    //       namecolor: one active name color
-    //       chatcolor: one active chat color
-    //   - "flag" uses SourceMod admin flags, for example:
-    //       "b" = generic admin
-    //       "o" = custom6
-    //       "z" = root
-    //
-    // Chat color tags supported by the core:
-    //   Basic compatibility tags:
-    //       {DEFAULT} {TEAM} {GREEN}
-    //   Extended tags when store_chat_extended_colors = 1:
-    //       {RED} {LIME} {LIGHTGREEN} {LIGHTRED} {GRAY}
-    //       {YELLOW} {LIGHTBLUE} {BLUE} {PURPLE}
-    //
-    // =========================================================================
-    // SKIN EXAMPLE - Terrorist only
-    // =========================================================================
-    //
-    // "skin_t_example"
+    // -------------------------------------------------------------------------
+    // Example: name color
+    // -------------------------------------------------------------------------
+    // "name_orchid"
     // {
-    //     "name"  "Example Terror Skin"
-    //     "type"  "skin"
-    //     "model" "models/player/custom/example_t/example_t.mdl"
-    //     "arms"  "models/weapons/t_arms_example.mdl"
-    //     "value" ""
-    //     "price" "12000"
-    //     "team"  "2"
-    //     "flag"  ""
+    //     "name" "orchid"
+    //     "type" "namecolor"
+    //     "category" "chat"
+    //     "description" "Applies orchid to the player name in chat."
+    //     "value" "{orchid}"
+    //     "price" "2500"
+    //     "team" "0"
     // }
-
-    // =========================================================================
-    // SKIN EXAMPLE - Counter-Terrorist only, admin restricted
-    // =========================================================================
     //
-    // "skin_ct_admin_example"
+    // -------------------------------------------------------------------------
+    // Example: chat color
+    // -------------------------------------------------------------------------
+    // "chat_lightblue"
     // {
-    //     "name"  "Example CT Admin Skin"
-    //     "type"  "skin"
+    //     "name" "lightblue"
+    //     "type" "chatcolor"
+    //     "category" "chat"
+    //     "description" "Applies light blue to the player chat text."
+    //     "value" "{lightblue}"
+    //     "price" "2500"
+    //     "team" "0"
+    // }
+    //
+    // -------------------------------------------------------------------------
+    // Example: player skin
+    // -------------------------------------------------------------------------
+    // "skin_ct_operator"
+    // {
+    //     "name" "CT Operator"
+    //     "type" "skin"
+    //     "category" "skins"
+    //     "description" "Example Counter-Terrorist player skin."
     //     "model" "models/player/custom/example_ct/example_ct.mdl"
-    //     "arms"  ""
-    //     "value" ""
+    //     "arms" "models/weapons/t_arms_example.mdl"
     //     "price" "25000"
-    //     "team"  "3"
-    //     "flag"  "b"
-    // }
-
-    // =========================================================================
-    // TAG EXAMPLES
-    // =========================================================================
-    //
-    // "tag_vip_gold"
-    // {
-    //     "name"  "VIP Gold Tag"
-    //     "type"  "tag"
-    //     "model" ""
-    //     "arms"  ""
-    //     "value" "{YELLOW}[VIP]{DEFAULT}"
-    //     "price" "5000"
-    //     "team"  "0"
-    //     "flag"  ""
+    //     "sale_price" "12000"
+    //     "team" "3"
+    //     "rarity" "rare"
+    //     "sort_order" "10"
+    //     "icon" "icons/skins/ct_operator"
+    //     "bundle_id" "starter_skins"
+    //     "sell_percent_override" "55"
     // }
     //
-    // "tag_event_purple"
+    // -------------------------------------------------------------------------
+    // Example: seasonal or timed item
+    // -------------------------------------------------------------------------
+    // "tag_halloween"
     // {
-    //     "name"  "Event Tag"
-    //     "type"  "tag"
-    //     "model" ""
-    //     "arms"  ""
-    //     "value" "{PURPLE}[EVENT]{DEFAULT}"
+    //     "name" "Halloween"
+    //     "type" "tag"
+    //     "category" "events"
+    //     "description" "Seasonal event tag."
+    //     "value" "{orange}[HALLOWEEN]{default}"
     //     "price" "8000"
-    //     "team"  "0"
-    //     "flag"  ""
+    //     "team" "0"
+    //     "starts_at" "1790812800"
+    //     "ends_at" "1791763199"
+    //     "rarity" "event"
+    // }
+    //
+    // -------------------------------------------------------------------------
+    // Example: upgrade that requires another item first
+    // -------------------------------------------------------------------------
+    // "tag_vip_elite"
+    // {
+    //     "name" "VIP Elite"
+    //     "type" "tag"
+    //     "category" "chat"
+    //     "description" "Upgrade tag that requires VIP first."
+    //     "value" "{lightblue}[VIP+]{default}"
+    //     "price" "12000"
+    //     "team" "0"
+    //     "requires_item" "tag_vip"
+    // }
+    //
+    // -------------------------------------------------------------------------
+    // Example: hidden/internal item
+    // -------------------------------------------------------------------------
+    // "tag_founder_hidden"
+    // {
+    //     "name" "Founder Hidden"
+    //     "type" "tag"
+    //     "category" "special"
+    //     "description" "Hidden item example."
+    //     "value" "{gold}[FOUNDER]{default}"
+    //     "price" "0"
+    //     "team" "0"
+    //     "hidden" "1"
+    //     "metadata" "grant=manual"
+    // }
+    //
+    // -------------------------------------------------------------------------
+    // Example: third-party custom type
+    // -------------------------------------------------------------------------
+    // A plugin must first register the type through the public API:
+    //   US_RegisterItemType("player_badge", "cosmetics", true, false)
+    //
+    // "badge_founder"
+    // {
+    //     "name" "Founder Badge"
+    //     "type" "player_badge"
+    //     "category" "cosmetics"
+    //     "description" "Example custom item type managed by another module."
+    //     "value" "founder"
+    //     "price" "15000"
+    //     "team" "0"
+    //     "metadata" "tier=founder;color=gold"
     // }
 
-    // =========================================================================
-    // NAME COLOR EXAMPLES
-    // =========================================================================
-    //
-    // "namecolor_red"
-    // {
-    //     "name"  "Red Name"
-    //     "type"  "namecolor"
-    //     "model" ""
-    //     "arms"  ""
-    //     "value" "{RED}"
-    //     "price" "3000"
-    //     "team"  "0"
-    //     "flag"  ""
-    // }
-    //
-    // "namecolor_orchid"
-    // {
-    //     "name"  "Purple Name"
-    //     "type"  "namecolor"
-    //     "model" ""
-    //     "arms"  ""
-    //     "value" "{PURPLE}"
-    //     "price" "4500"
-    //     "team"  "0"
-    //     "flag"  ""
-    // }
-
-    // =========================================================================
-    // CHAT COLOR EXAMPLES
-    // =========================================================================
-    //
-    // "chatcolor_green"
-    // {
-    //     "name"  "Green Chat"
-    //     "type"  "chatcolor"
-    //     "model" ""
-    //     "arms"  ""
-    //     "value" "{GREEN}"
-    //     "price" "3000"
-    //     "team"  "0"
-    //     "flag"  ""
-    // }
-    //
-    // "chatcolor_blue"
-    // {
-    //     "name"  "Blue Chat"
-    //     "type"  "chatcolor"
-    //     "model" ""
-    //     "arms"  ""
-    //     "value" "{BLUE}"
-    //     "price" "4500"
-    //     "team"  "0"
-    //     "flag"  ""
-    // }
-
-    // =========================================================================
-    // COMBINED CHAT SET EXAMPLE
-    // =========================================================================
-    //
-    // To create a full chat setup, you normally add:
-    //   1. one tag item
-    //   2. one namecolor item
-    //   3. one chatcolor item
-    //
-    // Example combo:
-    //   tag       = "{PURPLE}[Umbrella]{DEFAULT}"
-    //   namecolor = "{LIGHTBLUE}"
-    //   chatcolor = "{DEFAULT}"
-
-    // =========================================================================
-    // START HERE
-    // =========================================================================
-    //
-    // Replace the commented examples above with your real items.
-    // Keep every item id unique.
+    "tag_allies"
+    {
+        "name" "allies"
+        "type" "tag"
+        "category" "source2009"
+        "description" "allies"
+        "value" "{allies}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_ancient"
+    {
+        "name" "ancient"
+        "type" "tag"
+        "category" "source2009"
+        "description" "ancient"
+        "value" "{ancient}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_antiquewhite"
+    {
+        "name" "antiquewhite"
+        "type" "tag"
+        "category" "source2009"
+        "description" "antiquewhite"
+        "value" "{antiquewhite}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_aqua"
+    {
+        "name" "aqua"
+        "type" "tag"
+        "category" "source2009"
+        "description" "aqua"
+        "value" "{aqua}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_aquamarine"
+    {
+        "name" "aquamarine"
+        "type" "tag"
+        "category" "source2009"
+        "description" "aquamarine"
+        "value" "{aquamarine}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_arcana"
+    {
+        "name" "arcana"
+        "type" "tag"
+        "category" "source2009"
+        "description" "arcana"
+        "value" "{arcana}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_axis"
+    {
+        "name" "axis"
+        "type" "tag"
+        "category" "source2009"
+        "description" "axis"
+        "value" "{axis}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_azure"
+    {
+        "name" "azure"
+        "type" "tag"
+        "category" "source2009"
+        "description" "azure"
+        "value" "{azure}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_beige"
+    {
+        "name" "beige"
+        "type" "tag"
+        "category" "source2009"
+        "description" "beige"
+        "value" "{beige}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_bisque"
+    {
+        "name" "bisque"
+        "type" "tag"
+        "category" "source2009"
+        "description" "bisque"
+        "value" "{bisque}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_black"
+    {
+        "name" "black"
+        "type" "tag"
+        "category" "source2009"
+        "description" "black"
+        "value" "{black}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_blanchedalmond"
+    {
+        "name" "blanchedalmond"
+        "type" "tag"
+        "category" "source2009"
+        "description" "blanchedalmond"
+        "value" "{blanchedalmond}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_blue"
+    {
+        "name" "blue"
+        "type" "tag"
+        "category" "source2009"
+        "description" "blue"
+        "value" "{blue}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_blueviolet"
+    {
+        "name" "blueviolet"
+        "type" "tag"
+        "category" "source2009"
+        "description" "blueviolet"
+        "value" "{blueviolet}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_brown"
+    {
+        "name" "brown"
+        "type" "tag"
+        "category" "source2009"
+        "description" "brown"
+        "value" "{brown}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_burlywood"
+    {
+        "name" "burlywood"
+        "type" "tag"
+        "category" "source2009"
+        "description" "burlywood"
+        "value" "{burlywood}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_cadetblue"
+    {
+        "name" "cadetblue"
+        "type" "tag"
+        "category" "source2009"
+        "description" "cadetblue"
+        "value" "{cadetblue}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_chartreuse"
+    {
+        "name" "chartreuse"
+        "type" "tag"
+        "category" "source2009"
+        "description" "chartreuse"
+        "value" "{chartreuse}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_chocolate"
+    {
+        "name" "chocolate"
+        "type" "tag"
+        "category" "source2009"
+        "description" "chocolate"
+        "value" "{chocolate}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_collectors"
+    {
+        "name" "collectors"
+        "type" "tag"
+        "category" "source2009"
+        "description" "collectors"
+        "value" "{collectors}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_common"
+    {
+        "name" "common"
+        "type" "tag"
+        "category" "source2009"
+        "description" "common"
+        "value" "{common}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_community"
+    {
+        "name" "community"
+        "type" "tag"
+        "category" "source2009"
+        "description" "community"
+        "value" "{community}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_coral"
+    {
+        "name" "coral"
+        "type" "tag"
+        "category" "source2009"
+        "description" "coral"
+        "value" "{coral}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_cornflowerblue"
+    {
+        "name" "cornflowerblue"
+        "type" "tag"
+        "category" "source2009"
+        "description" "cornflowerblue"
+        "value" "{cornflowerblue}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_cornsilk"
+    {
+        "name" "cornsilk"
+        "type" "tag"
+        "category" "source2009"
+        "description" "cornsilk"
+        "value" "{cornsilk}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_corrupted"
+    {
+        "name" "corrupted"
+        "type" "tag"
+        "category" "source2009"
+        "description" "corrupted"
+        "value" "{corrupted}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_crimson"
+    {
+        "name" "crimson"
+        "type" "tag"
+        "category" "source2009"
+        "description" "crimson"
+        "value" "{crimson}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_cyan"
+    {
+        "name" "cyan"
+        "type" "tag"
+        "category" "source2009"
+        "description" "cyan"
+        "value" "{cyan}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_darkblue"
+    {
+        "name" "darkblue"
+        "type" "tag"
+        "category" "source2009"
+        "description" "darkblue"
+        "value" "{darkblue}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_darkcyan"
+    {
+        "name" "darkcyan"
+        "type" "tag"
+        "category" "source2009"
+        "description" "darkcyan"
+        "value" "{darkcyan}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_darkgoldenrod"
+    {
+        "name" "darkgoldenrod"
+        "type" "tag"
+        "category" "source2009"
+        "description" "darkgoldenrod"
+        "value" "{darkgoldenrod}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_darkgray"
+    {
+        "name" "darkgray"
+        "type" "tag"
+        "category" "source2009"
+        "description" "darkgray"
+        "value" "{darkgray}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_darkgrey"
+    {
+        "name" "darkgrey"
+        "type" "tag"
+        "category" "source2009"
+        "description" "darkgrey"
+        "value" "{darkgrey}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_darkgreen"
+    {
+        "name" "darkgreen"
+        "type" "tag"
+        "category" "source2009"
+        "description" "darkgreen"
+        "value" "{darkgreen}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_darkkhaki"
+    {
+        "name" "darkkhaki"
+        "type" "tag"
+        "category" "source2009"
+        "description" "darkkhaki"
+        "value" "{darkkhaki}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_darkmagenta"
+    {
+        "name" "darkmagenta"
+        "type" "tag"
+        "category" "source2009"
+        "description" "darkmagenta"
+        "value" "{darkmagenta}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_darkolivegreen"
+    {
+        "name" "darkolivegreen"
+        "type" "tag"
+        "category" "source2009"
+        "description" "darkolivegreen"
+        "value" "{darkolivegreen}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_darkorange"
+    {
+        "name" "darkorange"
+        "type" "tag"
+        "category" "source2009"
+        "description" "darkorange"
+        "value" "{darkorange}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_darkorchid"
+    {
+        "name" "darkorchid"
+        "type" "tag"
+        "category" "source2009"
+        "description" "darkorchid"
+        "value" "{darkorchid}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_darkred"
+    {
+        "name" "darkred"
+        "type" "tag"
+        "category" "source2009"
+        "description" "darkred"
+        "value" "{darkred}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_darksalmon"
+    {
+        "name" "darksalmon"
+        "type" "tag"
+        "category" "source2009"
+        "description" "darksalmon"
+        "value" "{darksalmon}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_darkseagreen"
+    {
+        "name" "darkseagreen"
+        "type" "tag"
+        "category" "source2009"
+        "description" "darkseagreen"
+        "value" "{darkseagreen}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_darkslateblue"
+    {
+        "name" "darkslateblue"
+        "type" "tag"
+        "category" "source2009"
+        "description" "darkslateblue"
+        "value" "{darkslateblue}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_darkslategray"
+    {
+        "name" "darkslategray"
+        "type" "tag"
+        "category" "source2009"
+        "description" "darkslategray"
+        "value" "{darkslategray}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_darkslategrey"
+    {
+        "name" "darkslategrey"
+        "type" "tag"
+        "category" "source2009"
+        "description" "darkslategrey"
+        "value" "{darkslategrey}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_darkturquoise"
+    {
+        "name" "darkturquoise"
+        "type" "tag"
+        "category" "source2009"
+        "description" "darkturquoise"
+        "value" "{darkturquoise}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_darkviolet"
+    {
+        "name" "darkviolet"
+        "type" "tag"
+        "category" "source2009"
+        "description" "darkviolet"
+        "value" "{darkviolet}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_deeppink"
+    {
+        "name" "deeppink"
+        "type" "tag"
+        "category" "source2009"
+        "description" "deeppink"
+        "value" "{deeppink}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_deepskyblue"
+    {
+        "name" "deepskyblue"
+        "type" "tag"
+        "category" "source2009"
+        "description" "deepskyblue"
+        "value" "{deepskyblue}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_dimgray"
+    {
+        "name" "dimgray"
+        "type" "tag"
+        "category" "source2009"
+        "description" "dimgray"
+        "value" "{dimgray}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_dimgrey"
+    {
+        "name" "dimgrey"
+        "type" "tag"
+        "category" "source2009"
+        "description" "dimgrey"
+        "value" "{dimgrey}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_dodgerblue"
+    {
+        "name" "dodgerblue"
+        "type" "tag"
+        "category" "source2009"
+        "description" "dodgerblue"
+        "value" "{dodgerblue}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_exalted"
+    {
+        "name" "exalted"
+        "type" "tag"
+        "category" "source2009"
+        "description" "exalted"
+        "value" "{exalted}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_firebrick"
+    {
+        "name" "firebrick"
+        "type" "tag"
+        "category" "source2009"
+        "description" "firebrick"
+        "value" "{firebrick}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_floralwhite"
+    {
+        "name" "floralwhite"
+        "type" "tag"
+        "category" "source2009"
+        "description" "floralwhite"
+        "value" "{floralwhite}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_forestgreen"
+    {
+        "name" "forestgreen"
+        "type" "tag"
+        "category" "source2009"
+        "description" "forestgreen"
+        "value" "{forestgreen}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_frozen"
+    {
+        "name" "frozen"
+        "type" "tag"
+        "category" "source2009"
+        "description" "frozen"
+        "value" "{frozen}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_fuchsia"
+    {
+        "name" "fuchsia"
+        "type" "tag"
+        "category" "source2009"
+        "description" "fuchsia"
+        "value" "{fuchsia}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_fullblue"
+    {
+        "name" "fullblue"
+        "type" "tag"
+        "category" "source2009"
+        "description" "fullblue"
+        "value" "{fullblue}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_fullred"
+    {
+        "name" "fullred"
+        "type" "tag"
+        "category" "source2009"
+        "description" "fullred"
+        "value" "{fullred}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_gainsboro"
+    {
+        "name" "gainsboro"
+        "type" "tag"
+        "category" "source2009"
+        "description" "gainsboro"
+        "value" "{gainsboro}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_genuine"
+    {
+        "name" "genuine"
+        "type" "tag"
+        "category" "source2009"
+        "description" "genuine"
+        "value" "{genuine}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_ghostwhite"
+    {
+        "name" "ghostwhite"
+        "type" "tag"
+        "category" "source2009"
+        "description" "ghostwhite"
+        "value" "{ghostwhite}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_gold"
+    {
+        "name" "gold"
+        "type" "tag"
+        "category" "source2009"
+        "description" "gold"
+        "value" "{gold}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_goldenrod"
+    {
+        "name" "goldenrod"
+        "type" "tag"
+        "category" "source2009"
+        "description" "goldenrod"
+        "value" "{goldenrod}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_gray"
+    {
+        "name" "gray"
+        "type" "tag"
+        "category" "source2009"
+        "description" "gray"
+        "value" "{gray}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_grey"
+    {
+        "name" "grey"
+        "type" "tag"
+        "category" "source2009"
+        "description" "grey"
+        "value" "{grey}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_green"
+    {
+        "name" "green"
+        "type" "tag"
+        "category" "source2009"
+        "description" "green"
+        "value" "{green}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_greenyellow"
+    {
+        "name" "greenyellow"
+        "type" "tag"
+        "category" "source2009"
+        "description" "greenyellow"
+        "value" "{greenyellow}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_haunted"
+    {
+        "name" "haunted"
+        "type" "tag"
+        "category" "source2009"
+        "description" "haunted"
+        "value" "{haunted}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_honeydew"
+    {
+        "name" "honeydew"
+        "type" "tag"
+        "category" "source2009"
+        "description" "honeydew"
+        "value" "{honeydew}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_hotpink"
+    {
+        "name" "hotpink"
+        "type" "tag"
+        "category" "source2009"
+        "description" "hotpink"
+        "value" "{hotpink}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_immortal"
+    {
+        "name" "immortal"
+        "type" "tag"
+        "category" "source2009"
+        "description" "immortal"
+        "value" "{immortal}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_indianred"
+    {
+        "name" "indianred"
+        "type" "tag"
+        "category" "source2009"
+        "description" "indianred"
+        "value" "{indianred}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_indigo"
+    {
+        "name" "indigo"
+        "type" "tag"
+        "category" "source2009"
+        "description" "indigo"
+        "value" "{indigo}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_ivory"
+    {
+        "name" "ivory"
+        "type" "tag"
+        "category" "source2009"
+        "description" "ivory"
+        "value" "{ivory}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_khaki"
+    {
+        "name" "khaki"
+        "type" "tag"
+        "category" "source2009"
+        "description" "khaki"
+        "value" "{khaki}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_lavender"
+    {
+        "name" "lavender"
+        "type" "tag"
+        "category" "source2009"
+        "description" "lavender"
+        "value" "{lavender}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_lavenderblush"
+    {
+        "name" "lavenderblush"
+        "type" "tag"
+        "category" "source2009"
+        "description" "lavenderblush"
+        "value" "{lavenderblush}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_lawngreen"
+    {
+        "name" "lawngreen"
+        "type" "tag"
+        "category" "source2009"
+        "description" "lawngreen"
+        "value" "{lawngreen}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_legendary"
+    {
+        "name" "legendary"
+        "type" "tag"
+        "category" "source2009"
+        "description" "legendary"
+        "value" "{legendary}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_lemonchiffon"
+    {
+        "name" "lemonchiffon"
+        "type" "tag"
+        "category" "source2009"
+        "description" "lemonchiffon"
+        "value" "{lemonchiffon}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_lightblue"
+    {
+        "name" "lightblue"
+        "type" "tag"
+        "category" "source2009"
+        "description" "lightblue"
+        "value" "{lightblue}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_lightcoral"
+    {
+        "name" "lightcoral"
+        "type" "tag"
+        "category" "source2009"
+        "description" "lightcoral"
+        "value" "{lightcoral}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_lightcyan"
+    {
+        "name" "lightcyan"
+        "type" "tag"
+        "category" "source2009"
+        "description" "lightcyan"
+        "value" "{lightcyan}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_lightgoldenrodyellow"
+    {
+        "name" "lightgoldenrodyellow"
+        "type" "tag"
+        "category" "source2009"
+        "description" "lightgoldenrodyellow"
+        "value" "{lightgoldenrodyellow}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_lightgray"
+    {
+        "name" "lightgray"
+        "type" "tag"
+        "category" "source2009"
+        "description" "lightgray"
+        "value" "{lightgray}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_lightgrey"
+    {
+        "name" "lightgrey"
+        "type" "tag"
+        "category" "source2009"
+        "description" "lightgrey"
+        "value" "{lightgrey}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_lightgreen"
+    {
+        "name" "lightgreen"
+        "type" "tag"
+        "category" "source2009"
+        "description" "lightgreen"
+        "value" "{lightgreen}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_lightpink"
+    {
+        "name" "lightpink"
+        "type" "tag"
+        "category" "source2009"
+        "description" "lightpink"
+        "value" "{lightpink}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_lightsalmon"
+    {
+        "name" "lightsalmon"
+        "type" "tag"
+        "category" "source2009"
+        "description" "lightsalmon"
+        "value" "{lightsalmon}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_lightseagreen"
+    {
+        "name" "lightseagreen"
+        "type" "tag"
+        "category" "source2009"
+        "description" "lightseagreen"
+        "value" "{lightseagreen}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_lightskyblue"
+    {
+        "name" "lightskyblue"
+        "type" "tag"
+        "category" "source2009"
+        "description" "lightskyblue"
+        "value" "{lightskyblue}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_lightslategray"
+    {
+        "name" "lightslategray"
+        "type" "tag"
+        "category" "source2009"
+        "description" "lightslategray"
+        "value" "{lightslategray}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_lightslategrey"
+    {
+        "name" "lightslategrey"
+        "type" "tag"
+        "category" "source2009"
+        "description" "lightslategrey"
+        "value" "{lightslategrey}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_lightsteelblue"
+    {
+        "name" "lightsteelblue"
+        "type" "tag"
+        "category" "source2009"
+        "description" "lightsteelblue"
+        "value" "{lightsteelblue}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_lightyellow"
+    {
+        "name" "lightyellow"
+        "type" "tag"
+        "category" "source2009"
+        "description" "lightyellow"
+        "value" "{lightyellow}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_lime"
+    {
+        "name" "lime"
+        "type" "tag"
+        "category" "source2009"
+        "description" "lime"
+        "value" "{lime}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_limegreen"
+    {
+        "name" "limegreen"
+        "type" "tag"
+        "category" "source2009"
+        "description" "limegreen"
+        "value" "{limegreen}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_linen"
+    {
+        "name" "linen"
+        "type" "tag"
+        "category" "source2009"
+        "description" "linen"
+        "value" "{linen}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_magenta"
+    {
+        "name" "magenta"
+        "type" "tag"
+        "category" "source2009"
+        "description" "magenta"
+        "value" "{magenta}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_maroon"
+    {
+        "name" "maroon"
+        "type" "tag"
+        "category" "source2009"
+        "description" "maroon"
+        "value" "{maroon}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_mediumaquamarine"
+    {
+        "name" "mediumaquamarine"
+        "type" "tag"
+        "category" "source2009"
+        "description" "mediumaquamarine"
+        "value" "{mediumaquamarine}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_mediumblue"
+    {
+        "name" "mediumblue"
+        "type" "tag"
+        "category" "source2009"
+        "description" "mediumblue"
+        "value" "{mediumblue}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_mediumorchid"
+    {
+        "name" "mediumorchid"
+        "type" "tag"
+        "category" "source2009"
+        "description" "mediumorchid"
+        "value" "{mediumorchid}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_mediumpurple"
+    {
+        "name" "mediumpurple"
+        "type" "tag"
+        "category" "source2009"
+        "description" "mediumpurple"
+        "value" "{mediumpurple}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_mediumseagreen"
+    {
+        "name" "mediumseagreen"
+        "type" "tag"
+        "category" "source2009"
+        "description" "mediumseagreen"
+        "value" "{mediumseagreen}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_mediumslateblue"
+    {
+        "name" "mediumslateblue"
+        "type" "tag"
+        "category" "source2009"
+        "description" "mediumslateblue"
+        "value" "{mediumslateblue}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_mediumspringgreen"
+    {
+        "name" "mediumspringgreen"
+        "type" "tag"
+        "category" "source2009"
+        "description" "mediumspringgreen"
+        "value" "{mediumspringgreen}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_mediumturquoise"
+    {
+        "name" "mediumturquoise"
+        "type" "tag"
+        "category" "source2009"
+        "description" "mediumturquoise"
+        "value" "{mediumturquoise}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_mediumvioletred"
+    {
+        "name" "mediumvioletred"
+        "type" "tag"
+        "category" "source2009"
+        "description" "mediumvioletred"
+        "value" "{mediumvioletred}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_midnightblue"
+    {
+        "name" "midnightblue"
+        "type" "tag"
+        "category" "source2009"
+        "description" "midnightblue"
+        "value" "{midnightblue}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_mintcream"
+    {
+        "name" "mintcream"
+        "type" "tag"
+        "category" "source2009"
+        "description" "mintcream"
+        "value" "{mintcream}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_mistyrose"
+    {
+        "name" "mistyrose"
+        "type" "tag"
+        "category" "source2009"
+        "description" "mistyrose"
+        "value" "{mistyrose}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_moccasin"
+    {
+        "name" "moccasin"
+        "type" "tag"
+        "category" "source2009"
+        "description" "moccasin"
+        "value" "{moccasin}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_mythical"
+    {
+        "name" "mythical"
+        "type" "tag"
+        "category" "source2009"
+        "description" "mythical"
+        "value" "{mythical}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_navajowhite"
+    {
+        "name" "navajowhite"
+        "type" "tag"
+        "category" "source2009"
+        "description" "navajowhite"
+        "value" "{navajowhite}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_navy"
+    {
+        "name" "navy"
+        "type" "tag"
+        "category" "source2009"
+        "description" "navy"
+        "value" "{navy}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_normal"
+    {
+        "name" "normal"
+        "type" "tag"
+        "category" "source2009"
+        "description" "normal"
+        "value" "{normal}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_oldlace"
+    {
+        "name" "oldlace"
+        "type" "tag"
+        "category" "source2009"
+        "description" "oldlace"
+        "value" "{oldlace}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_olive"
+    {
+        "name" "olive"
+        "type" "tag"
+        "category" "source2009"
+        "description" "olive"
+        "value" "{olive}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_olivedrab"
+    {
+        "name" "olivedrab"
+        "type" "tag"
+        "category" "source2009"
+        "description" "olivedrab"
+        "value" "{olivedrab}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_orange"
+    {
+        "name" "orange"
+        "type" "tag"
+        "category" "source2009"
+        "description" "orange"
+        "value" "{orange}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_orangered"
+    {
+        "name" "orangered"
+        "type" "tag"
+        "category" "source2009"
+        "description" "orangered"
+        "value" "{orangered}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_orchid"
+    {
+        "name" "orchid"
+        "type" "tag"
+        "category" "source2009"
+        "description" "orchid"
+        "value" "{orchid}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_palegoldenrod"
+    {
+        "name" "palegoldenrod"
+        "type" "tag"
+        "category" "source2009"
+        "description" "palegoldenrod"
+        "value" "{palegoldenrod}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_palegreen"
+    {
+        "name" "palegreen"
+        "type" "tag"
+        "category" "source2009"
+        "description" "palegreen"
+        "value" "{palegreen}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_paleturquoise"
+    {
+        "name" "paleturquoise"
+        "type" "tag"
+        "category" "source2009"
+        "description" "paleturquoise"
+        "value" "{paleturquoise}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_palevioletred"
+    {
+        "name" "palevioletred"
+        "type" "tag"
+        "category" "source2009"
+        "description" "palevioletred"
+        "value" "{palevioletred}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_papayawhip"
+    {
+        "name" "papayawhip"
+        "type" "tag"
+        "category" "source2009"
+        "description" "papayawhip"
+        "value" "{papayawhip}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_peachpuff"
+    {
+        "name" "peachpuff"
+        "type" "tag"
+        "category" "source2009"
+        "description" "peachpuff"
+        "value" "{peachpuff}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_peru"
+    {
+        "name" "peru"
+        "type" "tag"
+        "category" "source2009"
+        "description" "peru"
+        "value" "{peru}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_pink"
+    {
+        "name" "pink"
+        "type" "tag"
+        "category" "source2009"
+        "description" "pink"
+        "value" "{pink}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_plum"
+    {
+        "name" "plum"
+        "type" "tag"
+        "category" "source2009"
+        "description" "plum"
+        "value" "{plum}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_powderblue"
+    {
+        "name" "powderblue"
+        "type" "tag"
+        "category" "source2009"
+        "description" "powderblue"
+        "value" "{powderblue}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_purple"
+    {
+        "name" "purple"
+        "type" "tag"
+        "category" "source2009"
+        "description" "purple"
+        "value" "{purple}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_rare"
+    {
+        "name" "rare"
+        "type" "tag"
+        "category" "source2009"
+        "description" "rare"
+        "value" "{rare}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_red"
+    {
+        "name" "red"
+        "type" "tag"
+        "category" "source2009"
+        "description" "red"
+        "value" "{red}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_rosybrown"
+    {
+        "name" "rosybrown"
+        "type" "tag"
+        "category" "source2009"
+        "description" "rosybrown"
+        "value" "{rosybrown}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_royalblue"
+    {
+        "name" "royalblue"
+        "type" "tag"
+        "category" "source2009"
+        "description" "royalblue"
+        "value" "{royalblue}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_saddlebrown"
+    {
+        "name" "saddlebrown"
+        "type" "tag"
+        "category" "source2009"
+        "description" "saddlebrown"
+        "value" "{saddlebrown}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_salmon"
+    {
+        "name" "salmon"
+        "type" "tag"
+        "category" "source2009"
+        "description" "salmon"
+        "value" "{salmon}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_sandybrown"
+    {
+        "name" "sandybrown"
+        "type" "tag"
+        "category" "source2009"
+        "description" "sandybrown"
+        "value" "{sandybrown}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_seagreen"
+    {
+        "name" "seagreen"
+        "type" "tag"
+        "category" "source2009"
+        "description" "seagreen"
+        "value" "{seagreen}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_seashell"
+    {
+        "name" "seashell"
+        "type" "tag"
+        "category" "source2009"
+        "description" "seashell"
+        "value" "{seashell}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_selfmade"
+    {
+        "name" "selfmade"
+        "type" "tag"
+        "category" "source2009"
+        "description" "selfmade"
+        "value" "{selfmade}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_sienna"
+    {
+        "name" "sienna"
+        "type" "tag"
+        "category" "source2009"
+        "description" "sienna"
+        "value" "{sienna}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_silver"
+    {
+        "name" "silver"
+        "type" "tag"
+        "category" "source2009"
+        "description" "silver"
+        "value" "{silver}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_skyblue"
+    {
+        "name" "skyblue"
+        "type" "tag"
+        "category" "source2009"
+        "description" "skyblue"
+        "value" "{skyblue}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_slateblue"
+    {
+        "name" "slateblue"
+        "type" "tag"
+        "category" "source2009"
+        "description" "slateblue"
+        "value" "{slateblue}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_slategray"
+    {
+        "name" "slategray"
+        "type" "tag"
+        "category" "source2009"
+        "description" "slategray"
+        "value" "{slategray}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_slategrey"
+    {
+        "name" "slategrey"
+        "type" "tag"
+        "category" "source2009"
+        "description" "slategrey"
+        "value" "{slategrey}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_snow"
+    {
+        "name" "snow"
+        "type" "tag"
+        "category" "source2009"
+        "description" "snow"
+        "value" "{snow}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_springgreen"
+    {
+        "name" "springgreen"
+        "type" "tag"
+        "category" "source2009"
+        "description" "springgreen"
+        "value" "{springgreen}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_steelblue"
+    {
+        "name" "steelblue"
+        "type" "tag"
+        "category" "source2009"
+        "description" "steelblue"
+        "value" "{steelblue}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_strange"
+    {
+        "name" "strange"
+        "type" "tag"
+        "category" "source2009"
+        "description" "strange"
+        "value" "{strange}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_tan"
+    {
+        "name" "tan"
+        "type" "tag"
+        "category" "source2009"
+        "description" "tan"
+        "value" "{tan}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_teal"
+    {
+        "name" "teal"
+        "type" "tag"
+        "category" "source2009"
+        "description" "teal"
+        "value" "{teal}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_thistle"
+    {
+        "name" "thistle"
+        "type" "tag"
+        "category" "source2009"
+        "description" "thistle"
+        "value" "{thistle}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_tomato"
+    {
+        "name" "tomato"
+        "type" "tag"
+        "category" "source2009"
+        "description" "tomato"
+        "value" "{tomato}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_turquoise"
+    {
+        "name" "turquoise"
+        "type" "tag"
+        "category" "source2009"
+        "description" "turquoise"
+        "value" "{turquoise}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_uncommon"
+    {
+        "name" "uncommon"
+        "type" "tag"
+        "category" "source2009"
+        "description" "uncommon"
+        "value" "{uncommon}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_unique"
+    {
+        "name" "unique"
+        "type" "tag"
+        "category" "source2009"
+        "description" "unique"
+        "value" "{unique}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_unusual"
+    {
+        "name" "unusual"
+        "type" "tag"
+        "category" "source2009"
+        "description" "unusual"
+        "value" "{unusual}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_valve"
+    {
+        "name" "valve"
+        "type" "tag"
+        "category" "source2009"
+        "description" "valve"
+        "value" "{valve}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_vintage"
+    {
+        "name" "vintage"
+        "type" "tag"
+        "category" "source2009"
+        "description" "vintage"
+        "value" "{vintage}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_violet"
+    {
+        "name" "violet"
+        "type" "tag"
+        "category" "source2009"
+        "description" "violet"
+        "value" "{violet}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_wheat"
+    {
+        "name" "wheat"
+        "type" "tag"
+        "category" "source2009"
+        "description" "wheat"
+        "value" "{wheat}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_white"
+    {
+        "name" "white"
+        "type" "tag"
+        "category" "source2009"
+        "description" "white"
+        "value" "{white}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_whitesmoke"
+    {
+        "name" "whitesmoke"
+        "type" "tag"
+        "category" "source2009"
+        "description" "whitesmoke"
+        "value" "{whitesmoke}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_yellow"
+    {
+        "name" "yellow"
+        "type" "tag"
+        "category" "source2009"
+        "description" "yellow"
+        "value" "{yellow}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "tag_yellowgreen"
+    {
+        "name" "yellowgreen"
+        "type" "tag"
+        "category" "source2009"
+        "description" "yellowgreen"
+        "value" "{yellowgreen}[TAG]{default}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_allies"
+    {
+        "name" "allies"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "allies"
+        "value" "{allies}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_ancient"
+    {
+        "name" "ancient"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "ancient"
+        "value" "{ancient}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_antiquewhite"
+    {
+        "name" "antiquewhite"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "antiquewhite"
+        "value" "{antiquewhite}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_aqua"
+    {
+        "name" "aqua"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "aqua"
+        "value" "{aqua}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_aquamarine"
+    {
+        "name" "aquamarine"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "aquamarine"
+        "value" "{aquamarine}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_arcana"
+    {
+        "name" "arcana"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "arcana"
+        "value" "{arcana}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_axis"
+    {
+        "name" "axis"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "axis"
+        "value" "{axis}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_azure"
+    {
+        "name" "azure"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "azure"
+        "value" "{azure}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_beige"
+    {
+        "name" "beige"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "beige"
+        "value" "{beige}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_bisque"
+    {
+        "name" "bisque"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "bisque"
+        "value" "{bisque}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_black"
+    {
+        "name" "black"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "black"
+        "value" "{black}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_blanchedalmond"
+    {
+        "name" "blanchedalmond"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "blanchedalmond"
+        "value" "{blanchedalmond}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_blue"
+    {
+        "name" "blue"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "blue"
+        "value" "{blue}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_blueviolet"
+    {
+        "name" "blueviolet"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "blueviolet"
+        "value" "{blueviolet}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_brown"
+    {
+        "name" "brown"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "brown"
+        "value" "{brown}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_burlywood"
+    {
+        "name" "burlywood"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "burlywood"
+        "value" "{burlywood}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_cadetblue"
+    {
+        "name" "cadetblue"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "cadetblue"
+        "value" "{cadetblue}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_chartreuse"
+    {
+        "name" "chartreuse"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "chartreuse"
+        "value" "{chartreuse}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_chocolate"
+    {
+        "name" "chocolate"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "chocolate"
+        "value" "{chocolate}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_collectors"
+    {
+        "name" "collectors"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "collectors"
+        "value" "{collectors}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_common"
+    {
+        "name" "common"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "common"
+        "value" "{common}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_community"
+    {
+        "name" "community"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "community"
+        "value" "{community}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_coral"
+    {
+        "name" "coral"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "coral"
+        "value" "{coral}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_cornflowerblue"
+    {
+        "name" "cornflowerblue"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "cornflowerblue"
+        "value" "{cornflowerblue}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_cornsilk"
+    {
+        "name" "cornsilk"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "cornsilk"
+        "value" "{cornsilk}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_corrupted"
+    {
+        "name" "corrupted"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "corrupted"
+        "value" "{corrupted}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_crimson"
+    {
+        "name" "crimson"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "crimson"
+        "value" "{crimson}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_cyan"
+    {
+        "name" "cyan"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "cyan"
+        "value" "{cyan}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_darkblue"
+    {
+        "name" "darkblue"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "darkblue"
+        "value" "{darkblue}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_darkcyan"
+    {
+        "name" "darkcyan"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "darkcyan"
+        "value" "{darkcyan}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_darkgoldenrod"
+    {
+        "name" "darkgoldenrod"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "darkgoldenrod"
+        "value" "{darkgoldenrod}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_darkgray"
+    {
+        "name" "darkgray"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "darkgray"
+        "value" "{darkgray}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_darkgrey"
+    {
+        "name" "darkgrey"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "darkgrey"
+        "value" "{darkgrey}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_darkgreen"
+    {
+        "name" "darkgreen"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "darkgreen"
+        "value" "{darkgreen}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_darkkhaki"
+    {
+        "name" "darkkhaki"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "darkkhaki"
+        "value" "{darkkhaki}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_darkmagenta"
+    {
+        "name" "darkmagenta"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "darkmagenta"
+        "value" "{darkmagenta}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_darkolivegreen"
+    {
+        "name" "darkolivegreen"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "darkolivegreen"
+        "value" "{darkolivegreen}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_darkorange"
+    {
+        "name" "darkorange"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "darkorange"
+        "value" "{darkorange}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_darkorchid"
+    {
+        "name" "darkorchid"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "darkorchid"
+        "value" "{darkorchid}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_darkred"
+    {
+        "name" "darkred"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "darkred"
+        "value" "{darkred}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_darksalmon"
+    {
+        "name" "darksalmon"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "darksalmon"
+        "value" "{darksalmon}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_darkseagreen"
+    {
+        "name" "darkseagreen"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "darkseagreen"
+        "value" "{darkseagreen}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_darkslateblue"
+    {
+        "name" "darkslateblue"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "darkslateblue"
+        "value" "{darkslateblue}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_darkslategray"
+    {
+        "name" "darkslategray"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "darkslategray"
+        "value" "{darkslategray}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_darkslategrey"
+    {
+        "name" "darkslategrey"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "darkslategrey"
+        "value" "{darkslategrey}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_darkturquoise"
+    {
+        "name" "darkturquoise"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "darkturquoise"
+        "value" "{darkturquoise}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_darkviolet"
+    {
+        "name" "darkviolet"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "darkviolet"
+        "value" "{darkviolet}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_deeppink"
+    {
+        "name" "deeppink"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "deeppink"
+        "value" "{deeppink}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_deepskyblue"
+    {
+        "name" "deepskyblue"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "deepskyblue"
+        "value" "{deepskyblue}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_dimgray"
+    {
+        "name" "dimgray"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "dimgray"
+        "value" "{dimgray}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_dimgrey"
+    {
+        "name" "dimgrey"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "dimgrey"
+        "value" "{dimgrey}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_dodgerblue"
+    {
+        "name" "dodgerblue"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "dodgerblue"
+        "value" "{dodgerblue}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_exalted"
+    {
+        "name" "exalted"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "exalted"
+        "value" "{exalted}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_firebrick"
+    {
+        "name" "firebrick"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "firebrick"
+        "value" "{firebrick}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_floralwhite"
+    {
+        "name" "floralwhite"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "floralwhite"
+        "value" "{floralwhite}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_forestgreen"
+    {
+        "name" "forestgreen"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "forestgreen"
+        "value" "{forestgreen}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_frozen"
+    {
+        "name" "frozen"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "frozen"
+        "value" "{frozen}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_fuchsia"
+    {
+        "name" "fuchsia"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "fuchsia"
+        "value" "{fuchsia}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_fullblue"
+    {
+        "name" "fullblue"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "fullblue"
+        "value" "{fullblue}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_fullred"
+    {
+        "name" "fullred"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "fullred"
+        "value" "{fullred}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_gainsboro"
+    {
+        "name" "gainsboro"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "gainsboro"
+        "value" "{gainsboro}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_genuine"
+    {
+        "name" "genuine"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "genuine"
+        "value" "{genuine}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_ghostwhite"
+    {
+        "name" "ghostwhite"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "ghostwhite"
+        "value" "{ghostwhite}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_gold"
+    {
+        "name" "gold"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "gold"
+        "value" "{gold}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_goldenrod"
+    {
+        "name" "goldenrod"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "goldenrod"
+        "value" "{goldenrod}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_gray"
+    {
+        "name" "gray"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "gray"
+        "value" "{gray}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_grey"
+    {
+        "name" "grey"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "grey"
+        "value" "{grey}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_green"
+    {
+        "name" "green"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "green"
+        "value" "{green}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_greenyellow"
+    {
+        "name" "greenyellow"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "greenyellow"
+        "value" "{greenyellow}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_haunted"
+    {
+        "name" "haunted"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "haunted"
+        "value" "{haunted}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_honeydew"
+    {
+        "name" "honeydew"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "honeydew"
+        "value" "{honeydew}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_hotpink"
+    {
+        "name" "hotpink"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "hotpink"
+        "value" "{hotpink}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_immortal"
+    {
+        "name" "immortal"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "immortal"
+        "value" "{immortal}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_indianred"
+    {
+        "name" "indianred"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "indianred"
+        "value" "{indianred}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_indigo"
+    {
+        "name" "indigo"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "indigo"
+        "value" "{indigo}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_ivory"
+    {
+        "name" "ivory"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "ivory"
+        "value" "{ivory}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_khaki"
+    {
+        "name" "khaki"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "khaki"
+        "value" "{khaki}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_lavender"
+    {
+        "name" "lavender"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "lavender"
+        "value" "{lavender}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_lavenderblush"
+    {
+        "name" "lavenderblush"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "lavenderblush"
+        "value" "{lavenderblush}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_lawngreen"
+    {
+        "name" "lawngreen"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "lawngreen"
+        "value" "{lawngreen}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_legendary"
+    {
+        "name" "legendary"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "legendary"
+        "value" "{legendary}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_lemonchiffon"
+    {
+        "name" "lemonchiffon"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "lemonchiffon"
+        "value" "{lemonchiffon}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_lightblue"
+    {
+        "name" "lightblue"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "lightblue"
+        "value" "{lightblue}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_lightcoral"
+    {
+        "name" "lightcoral"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "lightcoral"
+        "value" "{lightcoral}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_lightcyan"
+    {
+        "name" "lightcyan"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "lightcyan"
+        "value" "{lightcyan}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_lightgoldenrodyellow"
+    {
+        "name" "lightgoldenrodyellow"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "lightgoldenrodyellow"
+        "value" "{lightgoldenrodyellow}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_lightgray"
+    {
+        "name" "lightgray"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "lightgray"
+        "value" "{lightgray}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_lightgrey"
+    {
+        "name" "lightgrey"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "lightgrey"
+        "value" "{lightgrey}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_lightgreen"
+    {
+        "name" "lightgreen"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "lightgreen"
+        "value" "{lightgreen}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_lightpink"
+    {
+        "name" "lightpink"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "lightpink"
+        "value" "{lightpink}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_lightsalmon"
+    {
+        "name" "lightsalmon"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "lightsalmon"
+        "value" "{lightsalmon}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_lightseagreen"
+    {
+        "name" "lightseagreen"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "lightseagreen"
+        "value" "{lightseagreen}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_lightskyblue"
+    {
+        "name" "lightskyblue"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "lightskyblue"
+        "value" "{lightskyblue}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_lightslategray"
+    {
+        "name" "lightslategray"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "lightslategray"
+        "value" "{lightslategray}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_lightslategrey"
+    {
+        "name" "lightslategrey"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "lightslategrey"
+        "value" "{lightslategrey}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_lightsteelblue"
+    {
+        "name" "lightsteelblue"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "lightsteelblue"
+        "value" "{lightsteelblue}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_lightyellow"
+    {
+        "name" "lightyellow"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "lightyellow"
+        "value" "{lightyellow}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_lime"
+    {
+        "name" "lime"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "lime"
+        "value" "{lime}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_limegreen"
+    {
+        "name" "limegreen"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "limegreen"
+        "value" "{limegreen}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_linen"
+    {
+        "name" "linen"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "linen"
+        "value" "{linen}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_magenta"
+    {
+        "name" "magenta"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "magenta"
+        "value" "{magenta}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_maroon"
+    {
+        "name" "maroon"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "maroon"
+        "value" "{maroon}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_mediumaquamarine"
+    {
+        "name" "mediumaquamarine"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "mediumaquamarine"
+        "value" "{mediumaquamarine}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_mediumblue"
+    {
+        "name" "mediumblue"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "mediumblue"
+        "value" "{mediumblue}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_mediumorchid"
+    {
+        "name" "mediumorchid"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "mediumorchid"
+        "value" "{mediumorchid}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_mediumpurple"
+    {
+        "name" "mediumpurple"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "mediumpurple"
+        "value" "{mediumpurple}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_mediumseagreen"
+    {
+        "name" "mediumseagreen"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "mediumseagreen"
+        "value" "{mediumseagreen}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_mediumslateblue"
+    {
+        "name" "mediumslateblue"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "mediumslateblue"
+        "value" "{mediumslateblue}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_mediumspringgreen"
+    {
+        "name" "mediumspringgreen"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "mediumspringgreen"
+        "value" "{mediumspringgreen}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_mediumturquoise"
+    {
+        "name" "mediumturquoise"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "mediumturquoise"
+        "value" "{mediumturquoise}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_mediumvioletred"
+    {
+        "name" "mediumvioletred"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "mediumvioletred"
+        "value" "{mediumvioletred}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_midnightblue"
+    {
+        "name" "midnightblue"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "midnightblue"
+        "value" "{midnightblue}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_mintcream"
+    {
+        "name" "mintcream"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "mintcream"
+        "value" "{mintcream}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_mistyrose"
+    {
+        "name" "mistyrose"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "mistyrose"
+        "value" "{mistyrose}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_moccasin"
+    {
+        "name" "moccasin"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "moccasin"
+        "value" "{moccasin}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_mythical"
+    {
+        "name" "mythical"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "mythical"
+        "value" "{mythical}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_navajowhite"
+    {
+        "name" "navajowhite"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "navajowhite"
+        "value" "{navajowhite}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_navy"
+    {
+        "name" "navy"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "navy"
+        "value" "{navy}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_normal"
+    {
+        "name" "normal"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "normal"
+        "value" "{normal}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_oldlace"
+    {
+        "name" "oldlace"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "oldlace"
+        "value" "{oldlace}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_olive"
+    {
+        "name" "olive"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "olive"
+        "value" "{olive}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_olivedrab"
+    {
+        "name" "olivedrab"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "olivedrab"
+        "value" "{olivedrab}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_orange"
+    {
+        "name" "orange"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "orange"
+        "value" "{orange}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_orangered"
+    {
+        "name" "orangered"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "orangered"
+        "value" "{orangered}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_orchid"
+    {
+        "name" "orchid"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "orchid"
+        "value" "{orchid}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_palegoldenrod"
+    {
+        "name" "palegoldenrod"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "palegoldenrod"
+        "value" "{palegoldenrod}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_palegreen"
+    {
+        "name" "palegreen"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "palegreen"
+        "value" "{palegreen}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_paleturquoise"
+    {
+        "name" "paleturquoise"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "paleturquoise"
+        "value" "{paleturquoise}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_palevioletred"
+    {
+        "name" "palevioletred"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "palevioletred"
+        "value" "{palevioletred}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_papayawhip"
+    {
+        "name" "papayawhip"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "papayawhip"
+        "value" "{papayawhip}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_peachpuff"
+    {
+        "name" "peachpuff"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "peachpuff"
+        "value" "{peachpuff}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_peru"
+    {
+        "name" "peru"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "peru"
+        "value" "{peru}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_pink"
+    {
+        "name" "pink"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "pink"
+        "value" "{pink}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_plum"
+    {
+        "name" "plum"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "plum"
+        "value" "{plum}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_powderblue"
+    {
+        "name" "powderblue"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "powderblue"
+        "value" "{powderblue}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_purple"
+    {
+        "name" "purple"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "purple"
+        "value" "{purple}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_rare"
+    {
+        "name" "rare"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "rare"
+        "value" "{rare}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_red"
+    {
+        "name" "red"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "red"
+        "value" "{red}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_rosybrown"
+    {
+        "name" "rosybrown"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "rosybrown"
+        "value" "{rosybrown}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_royalblue"
+    {
+        "name" "royalblue"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "royalblue"
+        "value" "{royalblue}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_saddlebrown"
+    {
+        "name" "saddlebrown"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "saddlebrown"
+        "value" "{saddlebrown}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_salmon"
+    {
+        "name" "salmon"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "salmon"
+        "value" "{salmon}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_sandybrown"
+    {
+        "name" "sandybrown"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "sandybrown"
+        "value" "{sandybrown}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_seagreen"
+    {
+        "name" "seagreen"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "seagreen"
+        "value" "{seagreen}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_seashell"
+    {
+        "name" "seashell"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "seashell"
+        "value" "{seashell}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_selfmade"
+    {
+        "name" "selfmade"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "selfmade"
+        "value" "{selfmade}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_sienna"
+    {
+        "name" "sienna"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "sienna"
+        "value" "{sienna}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_silver"
+    {
+        "name" "silver"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "silver"
+        "value" "{silver}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_skyblue"
+    {
+        "name" "skyblue"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "skyblue"
+        "value" "{skyblue}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_slateblue"
+    {
+        "name" "slateblue"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "slateblue"
+        "value" "{slateblue}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_slategray"
+    {
+        "name" "slategray"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "slategray"
+        "value" "{slategray}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_slategrey"
+    {
+        "name" "slategrey"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "slategrey"
+        "value" "{slategrey}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_snow"
+    {
+        "name" "snow"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "snow"
+        "value" "{snow}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_springgreen"
+    {
+        "name" "springgreen"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "springgreen"
+        "value" "{springgreen}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_steelblue"
+    {
+        "name" "steelblue"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "steelblue"
+        "value" "{steelblue}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_strange"
+    {
+        "name" "strange"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "strange"
+        "value" "{strange}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_tan"
+    {
+        "name" "tan"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "tan"
+        "value" "{tan}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_teal"
+    {
+        "name" "teal"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "teal"
+        "value" "{teal}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_thistle"
+    {
+        "name" "thistle"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "thistle"
+        "value" "{thistle}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_tomato"
+    {
+        "name" "tomato"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "tomato"
+        "value" "{tomato}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_turquoise"
+    {
+        "name" "turquoise"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "turquoise"
+        "value" "{turquoise}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_uncommon"
+    {
+        "name" "uncommon"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "uncommon"
+        "value" "{uncommon}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_unique"
+    {
+        "name" "unique"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "unique"
+        "value" "{unique}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_unusual"
+    {
+        "name" "unusual"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "unusual"
+        "value" "{unusual}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_valve"
+    {
+        "name" "valve"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "valve"
+        "value" "{valve}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_vintage"
+    {
+        "name" "vintage"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "vintage"
+        "value" "{vintage}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_violet"
+    {
+        "name" "violet"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "violet"
+        "value" "{violet}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_wheat"
+    {
+        "name" "wheat"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "wheat"
+        "value" "{wheat}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_white"
+    {
+        "name" "white"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "white"
+        "value" "{white}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_whitesmoke"
+    {
+        "name" "whitesmoke"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "whitesmoke"
+        "value" "{whitesmoke}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_yellow"
+    {
+        "name" "yellow"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "yellow"
+        "value" "{yellow}"
+        "price" "100"
+        "team" "0"
+    }
+    "name_yellowgreen"
+    {
+        "name" "yellowgreen"
+        "type" "namecolor"
+        "category" "source2009"
+        "description" "yellowgreen"
+        "value" "{yellowgreen}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_allies"
+    {
+        "name" "allies"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "allies"
+        "value" "{allies}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_ancient"
+    {
+        "name" "ancient"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "ancient"
+        "value" "{ancient}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_antiquewhite"
+    {
+        "name" "antiquewhite"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "antiquewhite"
+        "value" "{antiquewhite}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_aqua"
+    {
+        "name" "aqua"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "aqua"
+        "value" "{aqua}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_aquamarine"
+    {
+        "name" "aquamarine"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "aquamarine"
+        "value" "{aquamarine}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_arcana"
+    {
+        "name" "arcana"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "arcana"
+        "value" "{arcana}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_axis"
+    {
+        "name" "axis"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "axis"
+        "value" "{axis}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_azure"
+    {
+        "name" "azure"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "azure"
+        "value" "{azure}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_beige"
+    {
+        "name" "beige"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "beige"
+        "value" "{beige}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_bisque"
+    {
+        "name" "bisque"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "bisque"
+        "value" "{bisque}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_black"
+    {
+        "name" "black"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "black"
+        "value" "{black}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_blanchedalmond"
+    {
+        "name" "blanchedalmond"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "blanchedalmond"
+        "value" "{blanchedalmond}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_blue"
+    {
+        "name" "blue"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "blue"
+        "value" "{blue}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_blueviolet"
+    {
+        "name" "blueviolet"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "blueviolet"
+        "value" "{blueviolet}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_brown"
+    {
+        "name" "brown"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "brown"
+        "value" "{brown}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_burlywood"
+    {
+        "name" "burlywood"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "burlywood"
+        "value" "{burlywood}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_cadetblue"
+    {
+        "name" "cadetblue"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "cadetblue"
+        "value" "{cadetblue}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_chartreuse"
+    {
+        "name" "chartreuse"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "chartreuse"
+        "value" "{chartreuse}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_chocolate"
+    {
+        "name" "chocolate"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "chocolate"
+        "value" "{chocolate}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_collectors"
+    {
+        "name" "collectors"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "collectors"
+        "value" "{collectors}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_common"
+    {
+        "name" "common"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "common"
+        "value" "{common}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_community"
+    {
+        "name" "community"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "community"
+        "value" "{community}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_coral"
+    {
+        "name" "coral"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "coral"
+        "value" "{coral}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_cornflowerblue"
+    {
+        "name" "cornflowerblue"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "cornflowerblue"
+        "value" "{cornflowerblue}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_cornsilk"
+    {
+        "name" "cornsilk"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "cornsilk"
+        "value" "{cornsilk}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_corrupted"
+    {
+        "name" "corrupted"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "corrupted"
+        "value" "{corrupted}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_crimson"
+    {
+        "name" "crimson"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "crimson"
+        "value" "{crimson}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_cyan"
+    {
+        "name" "cyan"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "cyan"
+        "value" "{cyan}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_darkblue"
+    {
+        "name" "darkblue"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "darkblue"
+        "value" "{darkblue}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_darkcyan"
+    {
+        "name" "darkcyan"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "darkcyan"
+        "value" "{darkcyan}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_darkgoldenrod"
+    {
+        "name" "darkgoldenrod"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "darkgoldenrod"
+        "value" "{darkgoldenrod}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_darkgray"
+    {
+        "name" "darkgray"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "darkgray"
+        "value" "{darkgray}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_darkgrey"
+    {
+        "name" "darkgrey"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "darkgrey"
+        "value" "{darkgrey}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_darkgreen"
+    {
+        "name" "darkgreen"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "darkgreen"
+        "value" "{darkgreen}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_darkkhaki"
+    {
+        "name" "darkkhaki"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "darkkhaki"
+        "value" "{darkkhaki}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_darkmagenta"
+    {
+        "name" "darkmagenta"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "darkmagenta"
+        "value" "{darkmagenta}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_darkolivegreen"
+    {
+        "name" "darkolivegreen"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "darkolivegreen"
+        "value" "{darkolivegreen}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_darkorange"
+    {
+        "name" "darkorange"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "darkorange"
+        "value" "{darkorange}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_darkorchid"
+    {
+        "name" "darkorchid"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "darkorchid"
+        "value" "{darkorchid}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_darkred"
+    {
+        "name" "darkred"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "darkred"
+        "value" "{darkred}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_darksalmon"
+    {
+        "name" "darksalmon"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "darksalmon"
+        "value" "{darksalmon}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_darkseagreen"
+    {
+        "name" "darkseagreen"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "darkseagreen"
+        "value" "{darkseagreen}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_darkslateblue"
+    {
+        "name" "darkslateblue"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "darkslateblue"
+        "value" "{darkslateblue}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_darkslategray"
+    {
+        "name" "darkslategray"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "darkslategray"
+        "value" "{darkslategray}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_darkslategrey"
+    {
+        "name" "darkslategrey"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "darkslategrey"
+        "value" "{darkslategrey}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_darkturquoise"
+    {
+        "name" "darkturquoise"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "darkturquoise"
+        "value" "{darkturquoise}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_darkviolet"
+    {
+        "name" "darkviolet"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "darkviolet"
+        "value" "{darkviolet}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_deeppink"
+    {
+        "name" "deeppink"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "deeppink"
+        "value" "{deeppink}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_deepskyblue"
+    {
+        "name" "deepskyblue"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "deepskyblue"
+        "value" "{deepskyblue}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_dimgray"
+    {
+        "name" "dimgray"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "dimgray"
+        "value" "{dimgray}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_dimgrey"
+    {
+        "name" "dimgrey"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "dimgrey"
+        "value" "{dimgrey}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_dodgerblue"
+    {
+        "name" "dodgerblue"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "dodgerblue"
+        "value" "{dodgerblue}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_exalted"
+    {
+        "name" "exalted"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "exalted"
+        "value" "{exalted}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_firebrick"
+    {
+        "name" "firebrick"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "firebrick"
+        "value" "{firebrick}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_floralwhite"
+    {
+        "name" "floralwhite"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "floralwhite"
+        "value" "{floralwhite}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_forestgreen"
+    {
+        "name" "forestgreen"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "forestgreen"
+        "value" "{forestgreen}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_frozen"
+    {
+        "name" "frozen"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "frozen"
+        "value" "{frozen}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_fuchsia"
+    {
+        "name" "fuchsia"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "fuchsia"
+        "value" "{fuchsia}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_fullblue"
+    {
+        "name" "fullblue"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "fullblue"
+        "value" "{fullblue}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_fullred"
+    {
+        "name" "fullred"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "fullred"
+        "value" "{fullred}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_gainsboro"
+    {
+        "name" "gainsboro"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "gainsboro"
+        "value" "{gainsboro}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_genuine"
+    {
+        "name" "genuine"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "genuine"
+        "value" "{genuine}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_ghostwhite"
+    {
+        "name" "ghostwhite"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "ghostwhite"
+        "value" "{ghostwhite}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_gold"
+    {
+        "name" "gold"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "gold"
+        "value" "{gold}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_goldenrod"
+    {
+        "name" "goldenrod"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "goldenrod"
+        "value" "{goldenrod}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_gray"
+    {
+        "name" "gray"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "gray"
+        "value" "{gray}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_grey"
+    {
+        "name" "grey"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "grey"
+        "value" "{grey}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_green"
+    {
+        "name" "green"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "green"
+        "value" "{green}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_greenyellow"
+    {
+        "name" "greenyellow"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "greenyellow"
+        "value" "{greenyellow}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_haunted"
+    {
+        "name" "haunted"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "haunted"
+        "value" "{haunted}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_honeydew"
+    {
+        "name" "honeydew"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "honeydew"
+        "value" "{honeydew}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_hotpink"
+    {
+        "name" "hotpink"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "hotpink"
+        "value" "{hotpink}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_immortal"
+    {
+        "name" "immortal"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "immortal"
+        "value" "{immortal}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_indianred"
+    {
+        "name" "indianred"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "indianred"
+        "value" "{indianred}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_indigo"
+    {
+        "name" "indigo"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "indigo"
+        "value" "{indigo}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_ivory"
+    {
+        "name" "ivory"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "ivory"
+        "value" "{ivory}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_khaki"
+    {
+        "name" "khaki"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "khaki"
+        "value" "{khaki}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_lavender"
+    {
+        "name" "lavender"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "lavender"
+        "value" "{lavender}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_lavenderblush"
+    {
+        "name" "lavenderblush"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "lavenderblush"
+        "value" "{lavenderblush}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_lawngreen"
+    {
+        "name" "lawngreen"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "lawngreen"
+        "value" "{lawngreen}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_legendary"
+    {
+        "name" "legendary"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "legendary"
+        "value" "{legendary}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_lemonchiffon"
+    {
+        "name" "lemonchiffon"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "lemonchiffon"
+        "value" "{lemonchiffon}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_lightblue"
+    {
+        "name" "lightblue"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "lightblue"
+        "value" "{lightblue}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_lightcoral"
+    {
+        "name" "lightcoral"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "lightcoral"
+        "value" "{lightcoral}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_lightcyan"
+    {
+        "name" "lightcyan"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "lightcyan"
+        "value" "{lightcyan}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_lightgoldenrodyellow"
+    {
+        "name" "lightgoldenrodyellow"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "lightgoldenrodyellow"
+        "value" "{lightgoldenrodyellow}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_lightgray"
+    {
+        "name" "lightgray"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "lightgray"
+        "value" "{lightgray}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_lightgrey"
+    {
+        "name" "lightgrey"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "lightgrey"
+        "value" "{lightgrey}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_lightgreen"
+    {
+        "name" "lightgreen"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "lightgreen"
+        "value" "{lightgreen}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_lightpink"
+    {
+        "name" "lightpink"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "lightpink"
+        "value" "{lightpink}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_lightsalmon"
+    {
+        "name" "lightsalmon"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "lightsalmon"
+        "value" "{lightsalmon}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_lightseagreen"
+    {
+        "name" "lightseagreen"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "lightseagreen"
+        "value" "{lightseagreen}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_lightskyblue"
+    {
+        "name" "lightskyblue"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "lightskyblue"
+        "value" "{lightskyblue}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_lightslategray"
+    {
+        "name" "lightslategray"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "lightslategray"
+        "value" "{lightslategray}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_lightslategrey"
+    {
+        "name" "lightslategrey"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "lightslategrey"
+        "value" "{lightslategrey}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_lightsteelblue"
+    {
+        "name" "lightsteelblue"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "lightsteelblue"
+        "value" "{lightsteelblue}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_lightyellow"
+    {
+        "name" "lightyellow"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "lightyellow"
+        "value" "{lightyellow}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_lime"
+    {
+        "name" "lime"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "lime"
+        "value" "{lime}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_limegreen"
+    {
+        "name" "limegreen"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "limegreen"
+        "value" "{limegreen}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_linen"
+    {
+        "name" "linen"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "linen"
+        "value" "{linen}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_magenta"
+    {
+        "name" "magenta"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "magenta"
+        "value" "{magenta}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_maroon"
+    {
+        "name" "maroon"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "maroon"
+        "value" "{maroon}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_mediumaquamarine"
+    {
+        "name" "mediumaquamarine"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "mediumaquamarine"
+        "value" "{mediumaquamarine}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_mediumblue"
+    {
+        "name" "mediumblue"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "mediumblue"
+        "value" "{mediumblue}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_mediumorchid"
+    {
+        "name" "mediumorchid"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "mediumorchid"
+        "value" "{mediumorchid}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_mediumpurple"
+    {
+        "name" "mediumpurple"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "mediumpurple"
+        "value" "{mediumpurple}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_mediumseagreen"
+    {
+        "name" "mediumseagreen"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "mediumseagreen"
+        "value" "{mediumseagreen}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_mediumslateblue"
+    {
+        "name" "mediumslateblue"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "mediumslateblue"
+        "value" "{mediumslateblue}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_mediumspringgreen"
+    {
+        "name" "mediumspringgreen"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "mediumspringgreen"
+        "value" "{mediumspringgreen}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_mediumturquoise"
+    {
+        "name" "mediumturquoise"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "mediumturquoise"
+        "value" "{mediumturquoise}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_mediumvioletred"
+    {
+        "name" "mediumvioletred"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "mediumvioletred"
+        "value" "{mediumvioletred}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_midnightblue"
+    {
+        "name" "midnightblue"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "midnightblue"
+        "value" "{midnightblue}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_mintcream"
+    {
+        "name" "mintcream"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "mintcream"
+        "value" "{mintcream}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_mistyrose"
+    {
+        "name" "mistyrose"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "mistyrose"
+        "value" "{mistyrose}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_moccasin"
+    {
+        "name" "moccasin"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "moccasin"
+        "value" "{moccasin}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_mythical"
+    {
+        "name" "mythical"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "mythical"
+        "value" "{mythical}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_navajowhite"
+    {
+        "name" "navajowhite"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "navajowhite"
+        "value" "{navajowhite}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_navy"
+    {
+        "name" "navy"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "navy"
+        "value" "{navy}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_normal"
+    {
+        "name" "normal"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "normal"
+        "value" "{normal}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_oldlace"
+    {
+        "name" "oldlace"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "oldlace"
+        "value" "{oldlace}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_olive"
+    {
+        "name" "olive"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "olive"
+        "value" "{olive}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_olivedrab"
+    {
+        "name" "olivedrab"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "olivedrab"
+        "value" "{olivedrab}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_orange"
+    {
+        "name" "orange"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "orange"
+        "value" "{orange}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_orangered"
+    {
+        "name" "orangered"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "orangered"
+        "value" "{orangered}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_orchid"
+    {
+        "name" "orchid"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "orchid"
+        "value" "{orchid}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_palegoldenrod"
+    {
+        "name" "palegoldenrod"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "palegoldenrod"
+        "value" "{palegoldenrod}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_palegreen"
+    {
+        "name" "palegreen"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "palegreen"
+        "value" "{palegreen}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_paleturquoise"
+    {
+        "name" "paleturquoise"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "paleturquoise"
+        "value" "{paleturquoise}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_palevioletred"
+    {
+        "name" "palevioletred"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "palevioletred"
+        "value" "{palevioletred}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_papayawhip"
+    {
+        "name" "papayawhip"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "papayawhip"
+        "value" "{papayawhip}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_peachpuff"
+    {
+        "name" "peachpuff"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "peachpuff"
+        "value" "{peachpuff}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_peru"
+    {
+        "name" "peru"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "peru"
+        "value" "{peru}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_pink"
+    {
+        "name" "pink"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "pink"
+        "value" "{pink}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_plum"
+    {
+        "name" "plum"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "plum"
+        "value" "{plum}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_powderblue"
+    {
+        "name" "powderblue"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "powderblue"
+        "value" "{powderblue}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_purple"
+    {
+        "name" "purple"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "purple"
+        "value" "{purple}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_rare"
+    {
+        "name" "rare"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "rare"
+        "value" "{rare}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_red"
+    {
+        "name" "red"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "red"
+        "value" "{red}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_rosybrown"
+    {
+        "name" "rosybrown"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "rosybrown"
+        "value" "{rosybrown}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_royalblue"
+    {
+        "name" "royalblue"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "royalblue"
+        "value" "{royalblue}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_saddlebrown"
+    {
+        "name" "saddlebrown"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "saddlebrown"
+        "value" "{saddlebrown}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_salmon"
+    {
+        "name" "salmon"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "salmon"
+        "value" "{salmon}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_sandybrown"
+    {
+        "name" "sandybrown"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "sandybrown"
+        "value" "{sandybrown}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_seagreen"
+    {
+        "name" "seagreen"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "seagreen"
+        "value" "{seagreen}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_seashell"
+    {
+        "name" "seashell"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "seashell"
+        "value" "{seashell}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_selfmade"
+    {
+        "name" "selfmade"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "selfmade"
+        "value" "{selfmade}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_sienna"
+    {
+        "name" "sienna"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "sienna"
+        "value" "{sienna}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_silver"
+    {
+        "name" "silver"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "silver"
+        "value" "{silver}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_skyblue"
+    {
+        "name" "skyblue"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "skyblue"
+        "value" "{skyblue}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_slateblue"
+    {
+        "name" "slateblue"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "slateblue"
+        "value" "{slateblue}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_slategray"
+    {
+        "name" "slategray"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "slategray"
+        "value" "{slategray}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_slategrey"
+    {
+        "name" "slategrey"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "slategrey"
+        "value" "{slategrey}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_snow"
+    {
+        "name" "snow"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "snow"
+        "value" "{snow}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_springgreen"
+    {
+        "name" "springgreen"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "springgreen"
+        "value" "{springgreen}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_steelblue"
+    {
+        "name" "steelblue"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "steelblue"
+        "value" "{steelblue}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_strange"
+    {
+        "name" "strange"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "strange"
+        "value" "{strange}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_tan"
+    {
+        "name" "tan"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "tan"
+        "value" "{tan}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_teal"
+    {
+        "name" "teal"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "teal"
+        "value" "{teal}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_thistle"
+    {
+        "name" "thistle"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "thistle"
+        "value" "{thistle}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_tomato"
+    {
+        "name" "tomato"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "tomato"
+        "value" "{tomato}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_turquoise"
+    {
+        "name" "turquoise"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "turquoise"
+        "value" "{turquoise}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_uncommon"
+    {
+        "name" "uncommon"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "uncommon"
+        "value" "{uncommon}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_unique"
+    {
+        "name" "unique"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "unique"
+        "value" "{unique}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_unusual"
+    {
+        "name" "unusual"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "unusual"
+        "value" "{unusual}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_valve"
+    {
+        "name" "valve"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "valve"
+        "value" "{valve}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_vintage"
+    {
+        "name" "vintage"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "vintage"
+        "value" "{vintage}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_violet"
+    {
+        "name" "violet"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "violet"
+        "value" "{violet}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_wheat"
+    {
+        "name" "wheat"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "wheat"
+        "value" "{wheat}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_white"
+    {
+        "name" "white"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "white"
+        "value" "{white}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_whitesmoke"
+    {
+        "name" "whitesmoke"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "whitesmoke"
+        "value" "{whitesmoke}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_yellow"
+    {
+        "name" "yellow"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "yellow"
+        "value" "{yellow}"
+        "price" "100"
+        "team" "0"
+    }
+    "chat_yellowgreen"
+    {
+        "name" "yellowgreen"
+        "type" "chatcolor"
+        "category" "source2009"
+        "description" "yellowgreen"
+        "value" "{yellowgreen}"
+        "price" "100"
+        "team" "0"
+    }
 }
