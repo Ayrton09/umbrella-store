@@ -2,13 +2,13 @@
 {
     "Store Prefix"
     {
-        "es" "{TEAM}[Umbrella Store]{DEFAULT}"
-        "en" "{TEAM}[Umbrella Store]{DEFAULT}"
-        "ru" "{TEAM}[Магазин Umbrella]{DEFAULT}"
-        "chi" "{TEAM}[伞店]{DEFAULT}"
-        "pt" "{TEAM}[Loja Umbrella]{DEFAULT}"
-        "fr" "{TEAM}[Magasin de parapluies]{DEFAULT}"
-        "de" "{TEAM}[Umbrella Store]{DEFAULT}"
+        "es" "{PURPLE}[Umbrella Store]{DEFAULT}"
+        "en" "{PURPLE}[Umbrella Store]{DEFAULT}"
+        "ru" "{PURPLE}[Магазин Umbrella]{DEFAULT}"
+        "chi" "{PURPLE}[伞店]{DEFAULT}"
+        "pt" "{PURPLE}[Loja Umbrella]{DEFAULT}"
+        "fr" "{PURPLE}[Magasin de parapluies]{DEFAULT}"
+        "de" "{PURPLE}[Umbrella Store]{DEFAULT}"
     }
     "Menu Main Title"
     {
@@ -730,6 +730,16 @@
         "fr" "Classement des crédits"
         "de" "Credits-Ranking"
     }
+    "Store Category Leaderboards"
+    {
+        "es" "Rankings"
+        "en" "Leaderboards"
+        "ru" "Рейтинги"
+        "chi" "排行榜"
+        "pt" "Rankings"
+        "fr" "Classements"
+        "de" "Bestenlisten"
+    }
     "Store Category Inventory"
     {
         "es" "Inventario"
@@ -749,6 +759,36 @@
         "pt" "Cassino"
         "fr" "Casino"
         "de" "Kasino"
+    }
+    "Store Category Marketplace"
+    {
+        "es" "Mercado"
+        "en" "Marketplace"
+        "ru" "Маркет"
+        "chi" "市场"
+        "pt" "Mercado"
+        "fr" "Marche"
+        "de" "Marktplatz"
+    }
+    "Store Category Profile"
+    {
+        "es" "Perfil"
+        "en" "Profile"
+        "ru" "Профиль"
+        "chi" "资料"
+        "pt" "Perfil"
+        "fr" "Profil"
+        "de" "Profil"
+    }
+    "Store Category Quests"
+    {
+        "es" "Misiones"
+        "en" "Quests"
+        "ru" "Задания"
+        "chi" "任务"
+        "pt" "Missoes"
+        "fr" "Quetes"
+        "de" "Quests"
     }
     "Store DB Not Ready"
     {
@@ -1380,6 +1420,496 @@
         "fr" "Vous avez défini %s crédits pour %d joueurs."
         "de" "Sie haben %s Credits für %d Spieler festgelegt."
     }
+    "Market Disabled"
+    {
+        "es" "El mercado está desactivado."
+        "en" "The marketplace is disabled."
+        "ru" "Маркетплейс отключен."
+        "chi" "市场已禁用。"
+        "pt" "O mercado está desativado."
+        "fr" "Le marche est desactive."
+        "de" "Der Marktplatz ist deaktiviert."
+    }
+    "Market Menu Title"
+    {
+        "es" "--- Mercado ---\nCompra, publica o gestiona listados\n "
+        "en" "--- Marketplace ---\nBuy, list, or manage listings\n "
+        "ru" "--- Маркет ---\nПокупайте, выставляйте и управляйте лотами\n "
+        "chi" "--- 市场 ---\n购买、发布或管理列表\n "
+        "pt" "--- Mercado ---\nCompre, anuncie ou gerencie listagens\n "
+        "fr" "--- Marche ---\nAchetez, publiez ou gerez des offres\n "
+        "de" "--- Marktplatz ---\nKaufen, listen oder Angebote verwalten\n "
+    }
+    "Market Menu Browse"
+    {
+        "es" "Ver listados"
+        "en" "Browse listings"
+        "ru" "Список лотов"
+        "chi" "浏览列表"
+        "pt" "Ver listagens"
+        "fr" "Voir les offres"
+        "de" "Angebote ansehen"
+    }
+    "Market Menu Sell"
+    {
+        "es" "Publicar item"
+        "en" "List an item"
+        "ru" "Выставить предмет"
+        "chi" "发布物品"
+        "pt" "Anunciar item"
+        "fr" "Mettre un objet en vente"
+        "de" "Gegenstand einstellen"
+    }
+    "Market Menu My Listings"
+    {
+        "es" "Mis listados"
+        "en" "My listings"
+        "ru" "Мои лоты"
+        "chi" "我的列表"
+        "pt" "Minhas listagens"
+        "fr" "Mes offres"
+        "de" "Meine Angebote"
+    }
+    "Market Sell Menu Title"
+    {
+        "es" "--- Publicar en Mercado ---\nElige un item para listar\n "
+        "en" "--- List on Marketplace ---\nChoose an item to list\n "
+        "ru" "--- Выставить на маркет ---\nВыберите предмет для листинга\n "
+        "chi" "--- 发布到市场 ---\n选择要上架的物品\n "
+        "pt" "--- Anunciar no Mercado ---\nEscolha um item para listar\n "
+        "fr" "--- Publier sur le marche ---\nChoisissez un objet a vendre\n "
+        "de" "--- Auf Marktplatz einstellen ---\nWahle einen Gegenstand aus\n "
+    }
+    "Market Sell Empty"
+    {
+        "es" "No tienes items disponibles para publicar."
+        "en" "You have no available items to list."
+        "ru" "У вас нет доступных предметов для продажи."
+        "chi" "你没有可上架的物品。"
+        "pt" "Voce nao tem itens disponiveis para anunciar."
+        "fr" "Vous n'avez aucun objet disponible a publier."
+        "de" "Du hast keine verfugbaren Gegenstande zum Einstellen."
+    }
+    "Market Enter Price"
+    {
+        "es" "Escribe en chat el precio del listado. Min: {LIGHTBLUE}%d{DEFAULT} | Max: {LIGHTBLUE}%d{DEFAULT}. Escribe {PURPLE}cancel{DEFAULT} para cancelar."
+        "en" "Type the listing price in chat. Min: {LIGHTBLUE}%d{DEFAULT} | Max: {LIGHTBLUE}%d{DEFAULT}. Type {PURPLE}cancel{DEFAULT} to cancel."
+        "ru" "Введите цену в чат. Мин: {LIGHTBLUE}%d{DEFAULT} | Макс: {LIGHTBLUE}%d{DEFAULT}. Напишите {PURPLE}cancel{DEFAULT} для отмены."
+        "chi" "请在聊天中输入上架价格。最小: {LIGHTBLUE}%d{DEFAULT} | 最大: {LIGHTBLUE}%d{DEFAULT}。输入 {PURPLE}cancel{DEFAULT} 取消。"
+        "pt" "Digite o preco no chat. Min: {LIGHTBLUE}%d{DEFAULT} | Max: {LIGHTBLUE}%d{DEFAULT}. Digite {PURPLE}cancel{DEFAULT} para cancelar."
+        "fr" "Tapez le prix dans le chat. Min : {LIGHTBLUE}%d{DEFAULT} | Max : {LIGHTBLUE}%d{DEFAULT}. Tapez {PURPLE}cancel{DEFAULT} pour annuler."
+        "de" "Gib den Preis im Chat ein. Min: {LIGHTBLUE}%d{DEFAULT} | Max: {LIGHTBLUE}%d{DEFAULT}. Schreibe {PURPLE}cancel{DEFAULT} zum Abbrechen."
+    }
+    "Market Price Invalid"
+    {
+        "es" "Precio inválido. Debe estar entre {LIGHTBLUE}%d{DEFAULT} y {LIGHTBLUE}%d{DEFAULT}."
+        "en" "Invalid price. It must be between {LIGHTBLUE}%d{DEFAULT} and {LIGHTBLUE}%d{DEFAULT}."
+        "ru" "Неверная цена. Она должна быть между {LIGHTBLUE}%d{DEFAULT} и {LIGHTBLUE}%d{DEFAULT}."
+        "chi" "价格无效。必须在 {LIGHTBLUE}%d{DEFAULT} 和 {LIGHTBLUE}%d{DEFAULT} 之间。"
+        "pt" "Preco invalido. Deve ficar entre {LIGHTBLUE}%d{DEFAULT} e {LIGHTBLUE}%d{DEFAULT}."
+        "fr" "Prix invalide. Il doit etre entre {LIGHTBLUE}%d{DEFAULT} et {LIGHTBLUE}%d{DEFAULT}."
+        "de" "Ungultiger Preis. Er muss zwischen {LIGHTBLUE}%d{DEFAULT} und {LIGHTBLUE}%d{DEFAULT} liegen."
+    }
+    "Market Price Cancelled"
+    {
+        "es" "Cancelaste la publicación del mercado."
+        "en" "Marketplace listing was cancelled."
+        "ru" "Публикация на маркете отменена."
+        "chi" "已取消市场发布。"
+        "pt" "A publicacao no mercado foi cancelada."
+        "fr" "La publication sur le marche a ete annulee."
+        "de" "Die Marktplatz-Einstellung wurde abgebrochen."
+    }
+    "Market Item Equipped"
+    {
+        "es" "Debes desequipar el item antes de publicarlo."
+        "en" "You must unequip the item before listing it."
+        "ru" "Снимите предмет перед размещением."
+        "chi" "上架前必须先取消装备该物品。"
+        "pt" "Voce precisa desequipar o item antes de anunciar."
+        "fr" "Vous devez desequiper l'objet avant de le publier."
+        "de" "Du musst den Gegenstand zuerst ablegen, bevor du ihn einstellst."
+    }
+    "Market Item Listed Already"
+    {
+        "es" "Ese item ya está publicado en el mercado."
+        "en" "That item is already listed on the marketplace."
+        "ru" "Этот предмет уже выставлен на маркете."
+        "chi" "该物品已在市场中上架。"
+        "pt" "Esse item ja esta anunciado no mercado."
+        "fr" "Cet objet est deja publie sur le marche."
+        "de" "Dieser Gegenstand ist bereits auf dem Marktplatz gelistet."
+    }
+    "Market Listing Failed"
+    {
+        "es" "No se pudo crear el listado del mercado."
+        "en" "The marketplace listing could not be created."
+        "ru" "Не удалось создать лот на маркете."
+        "chi" "无法创建市场列表。"
+        "pt" "Nao foi possivel criar a listagem do mercado."
+        "fr" "Impossible de creer l'offre du marche."
+        "de" "Das Marktplatz-Angebot konnte nicht erstellt werden."
+    }
+    "Market Listing Created"
+    {
+        "es" "Publicaste {PURPLE}%s{DEFAULT} por {LIGHTBLUE}%s{DEFAULT} en el mercado."
+        "en" "You listed {PURPLE}%s{DEFAULT} for {LIGHTBLUE}%s{DEFAULT} on the marketplace."
+        "ru" "Вы выставили {PURPLE}%s{DEFAULT} за {LIGHTBLUE}%s{DEFAULT} на маркете."
+        "chi" "你已将 {PURPLE}%s{DEFAULT} 以 {LIGHTBLUE}%s{DEFAULT} 的价格上架到市场。"
+        "pt" "Voce anunciou {PURPLE}%s{DEFAULT} por {LIGHTBLUE}%s{DEFAULT} no mercado."
+        "fr" "Vous avez publie {PURPLE}%s{DEFAULT} pour {LIGHTBLUE}%s{DEFAULT} sur le marche."
+        "de" "Du hast {PURPLE}%s{DEFAULT} fur {LIGHTBLUE}%s{DEFAULT} auf dem Marktplatz eingestellt."
+    }
+    "Market Browse Menu Title"
+    {
+        "es" "--- Mercado Activo ---\nSelecciona un listado\n "
+        "en" "--- Active Marketplace ---\nSelect a listing\n "
+        "ru" "--- Активный маркет ---\nВыберите лот\n "
+        "chi" "--- 活跃市场 ---\n选择一个列表\n "
+        "pt" "--- Mercado Ativo ---\nSelecione uma listagem\n "
+        "fr" "--- Marche actif ---\nSelectionnez une offre\n "
+        "de" "--- Aktiver Marktplatz ---\nWahle ein Angebot\n "
+    }
+    "Market Browse Empty"
+    {
+        "es" "No hay listados activos en este momento."
+        "en" "There are no active listings right now."
+        "ru" "Сейчас нет активных лотов."
+        "chi" "当前没有活跃列表。"
+        "pt" "Nao ha listagens ativas agora."
+        "fr" "Aucune offre active pour le moment."
+        "de" "Derzeit gibt es keine aktiven Angebote."
+    }
+    "Market Listing Entry"
+    {
+        "es" "%s | %s | %s"
+        "en" "%s | %s | %s"
+        "ru" "%s | %s | %s"
+        "chi" "%s | %s | %s"
+        "pt" "%s | %s | %s"
+        "fr" "%s | %s | %s"
+        "de" "%s | %s | %s"
+    }
+    "Market My Listings Title"
+    {
+        "es" "--- Mis Listados ---\nGestiona tus publicaciones activas\n "
+        "en" "--- My Listings ---\nManage your active listings\n "
+        "ru" "--- Мои лоты ---\nУправляйте активными лотами\n "
+        "chi" "--- 我的列表 ---\n管理你的活跃列表\n "
+        "pt" "--- Minhas Listagens ---\nGerencie suas listagens ativas\n "
+        "fr" "--- Mes offres ---\nGerez vos offres actives\n "
+        "de" "--- Meine Angebote ---\nVerwalte deine aktiven Angebote\n "
+    }
+    "Market My Listings Empty"
+    {
+        "es" "No tienes listados activos."
+        "en" "You have no active listings."
+        "ru" "У вас нет активных лотов."
+        "chi" "你没有活跃列表。"
+        "pt" "Voce nao tem listagens ativas."
+        "fr" "Vous n'avez aucune offre active."
+        "de" "Du hast keine aktiven Angebote."
+    }
+    "Market My Listing Entry"
+    {
+        "es" "%s | %s"
+        "en" "%s | %s"
+        "ru" "%s | %s"
+        "chi" "%s | %s"
+        "pt" "%s | %s"
+        "fr" "%s | %s"
+        "de" "%s | %s"
+    }
+    "Market Listing Title"
+    {
+        "es" "--- Detalle de Mercado ---\n%s\n "
+        "en" "--- Marketplace Details ---\n%s\n "
+        "ru" "--- Детали маркета ---\n%s\n "
+        "chi" "--- 市场详情 ---\n%s\n "
+        "pt" "--- Detalhes do Mercado ---\n%s\n "
+        "fr" "--- Details du marche ---\n%s\n "
+        "de" "--- Marktplatz-Details ---\n%s\n "
+    }
+    "Market Listing Seller"
+    {
+        "es" "Vendedor: %s"
+        "en" "Seller: %s"
+        "ru" "Продавец: %s"
+        "chi" "卖家: %s"
+        "pt" "Vendedor: %s"
+        "fr" "Vendeur : %s"
+        "de" "Verkaufer: %s"
+    }
+    "Market Listing Price"
+    {
+        "es" "Precio: %s"
+        "en" "Price: %s"
+        "ru" "Цена: %s"
+        "chi" "价格: %s"
+        "pt" "Preco: %s"
+        "fr" "Prix : %s"
+        "de" "Preis: %s"
+    }
+    "Market Listing Fee"
+    {
+        "es" "Fee: %s (%d%%)"
+        "en" "Fee: %s (%d%%)"
+        "ru" "Комиссия: %s (%d%%)"
+        "chi" "手续费: %s (%d%%)"
+        "pt" "Taxa: %s (%d%%)"
+        "fr" "Frais : %s (%d%%)"
+        "de" "Gebuhr: %s (%d%%)"
+    }
+    "Market Listing Net"
+    {
+        "es" "Neto vendedor: %s"
+        "en" "Seller net: %s"
+        "ru" "Чистая сумма продавца: %s"
+        "chi" "卖家净额: %s"
+        "pt" "Liquido do vendedor: %s"
+        "fr" "Net vendeur : %s"
+        "de" "Verkaufer netto: %s"
+    }
+    "Market Listing Expires"
+    {
+        "es" "Expira: %s"
+        "en" "Expires: %s"
+        "ru" "Истекает: %s"
+        "chi" "到期: %s"
+        "pt" "Expira: %s"
+        "fr" "Expire : %s"
+        "de" "Lauft ab: %s"
+    }
+    "Market Listing Buy"
+    {
+        "es" "Comprar listado"
+        "en" "Buy listing"
+        "ru" "Купить лот"
+        "chi" "购买列表"
+        "pt" "Comprar listagem"
+        "fr" "Acheter l'offre"
+        "de" "Angebot kaufen"
+    }
+    "Market Listing Cancel"
+    {
+        "es" "Cancelar listado"
+        "en" "Cancel listing"
+        "ru" "Отменить лот"
+        "chi" "取消列表"
+        "pt" "Cancelar listagem"
+        "fr" "Annuler l'offre"
+        "de" "Angebot abbrechen"
+    }
+    "Market Listing Bought"
+    {
+        "es" "Compraste {PURPLE}%s{DEFAULT} por {LIGHTBLUE}%s{DEFAULT} a {LIGHTGREEN}%s{DEFAULT}."
+        "en" "You bought {PURPLE}%s{DEFAULT} for {LIGHTBLUE}%s{DEFAULT} from {LIGHTGREEN}%s{DEFAULT}."
+        "ru" "Вы купили {PURPLE}%s{DEFAULT} за {LIGHTBLUE}%s{DEFAULT} у {LIGHTGREEN}%s{DEFAULT}."
+        "chi" "你以 {LIGHTBLUE}%s{DEFAULT} 从 {LIGHTGREEN}%s{DEFAULT} 购买了 {PURPLE}%s{DEFAULT}。"
+        "pt" "Voce comprou {PURPLE}%s{DEFAULT} por {LIGHTBLUE}%s{DEFAULT} de {LIGHTGREEN}%s{DEFAULT}."
+        "fr" "Vous avez achete {PURPLE}%s{DEFAULT} pour {LIGHTBLUE}%s{DEFAULT} a {LIGHTGREEN}%s{DEFAULT}."
+        "de" "Du hast {PURPLE}%s{DEFAULT} fur {LIGHTBLUE}%s{DEFAULT} von {LIGHTGREEN}%s{DEFAULT} gekauft."
+    }
+    "Market Listing Sold Seller"
+    {
+        "es" "Vendiste {PURPLE}%s{DEFAULT} y recibiste {LIGHTBLUE}%s{DEFAULT} de {LIGHTGREEN}%N{DEFAULT}."
+        "en" "You sold {PURPLE}%s{DEFAULT} and received {LIGHTBLUE}%s{DEFAULT} from {LIGHTGREEN}%N{DEFAULT}."
+        "ru" "Вы продали {PURPLE}%s{DEFAULT} и получили {LIGHTBLUE}%s{DEFAULT} от {LIGHTGREEN}%N{DEFAULT}."
+        "chi" "你卖出了 {PURPLE}%s{DEFAULT} 并从 {LIGHTGREEN}%N{DEFAULT} 收到了 {LIGHTBLUE}%s{DEFAULT}。"
+        "pt" "Voce vendeu {PURPLE}%s{DEFAULT} e recebeu {LIGHTBLUE}%s{DEFAULT} de {LIGHTGREEN}%N{DEFAULT}."
+        "fr" "Vous avez vendu {PURPLE}%s{DEFAULT} et recu {LIGHTBLUE}%s{DEFAULT} de {LIGHTGREEN}%N{DEFAULT}."
+        "de" "Du hast {PURPLE}%s{DEFAULT} verkauft und {LIGHTBLUE}%s{DEFAULT} von {LIGHTGREEN}%N{DEFAULT} erhalten."
+    }
+    "Market Buy Own"
+    {
+        "es" "No puedes comprar tu propio listado."
+        "en" "You cannot buy your own listing."
+        "ru" "Вы не можете купить свой собственный лот."
+        "chi" "你不能购买自己的列表。"
+        "pt" "Voce nao pode comprar sua propria listagem."
+        "fr" "Vous ne pouvez pas acheter votre propre offre."
+        "de" "Du kannst dein eigenes Angebot nicht kaufen."
+    }
+    "Market Buy No Credits"
+    {
+        "es" "No tienes créditos suficientes para comprar ese listado."
+        "en" "You do not have enough credits to buy that listing."
+        "ru" "У вас недостаточно кредитов для покупки этого лота."
+        "chi" "你的积分不足，无法购买该列表。"
+        "pt" "Voce nao tem creditos suficientes para comprar essa listagem."
+        "fr" "Vous n'avez pas assez de credits pour acheter cette offre."
+        "de" "Du hast nicht genug Credits, um dieses Angebot zu kaufen."
+    }
+    "Market Buy Failed"
+    {
+        "es" "No se pudo completar la compra del mercado."
+        "en" "The marketplace purchase could not be completed."
+        "ru" "Не удалось завершить покупку на маркете."
+        "chi" "无法完成市场购买。"
+        "pt" "Nao foi possivel concluir a compra no mercado."
+        "fr" "Impossible de finaliser l'achat sur le marche."
+        "de" "Der Marktplatz-Kauf konnte nicht abgeschlossen werden."
+    }
+    "Market Cancel Failed"
+    {
+        "es" "No se pudo cancelar ese listado."
+        "en" "That listing could not be cancelled."
+        "ru" "Не удалось отменить этот лот."
+        "chi" "无法取消该列表。"
+        "pt" "Nao foi possivel cancelar essa listagem."
+        "fr" "Impossible d'annuler cette offre."
+        "de" "Dieses Angebot konnte nicht storniert werden."
+    }
+    "Market Listing Cancelled"
+    {
+        "es" "Cancelaste tu listado del mercado."
+        "en" "You cancelled your marketplace listing."
+        "ru" "Вы отменили свой лот на маркете."
+        "chi" "你已取消自己的市场列表。"
+        "pt" "Voce cancelou sua listagem no mercado."
+        "fr" "Vous avez annule votre offre sur le marche."
+        "de" "Du hast dein Marktplatz-Angebot abgebrochen."
+    }
+    "Admin Debug Usage"
+    {
+        "es" "Uso: sm_storedebug <jugador>"
+        "en" "Usage: sm_storedebug <player>"
+        "ru" "Использование: sm_storedebug <игрок>"
+        "chi" "用法：sm_storedebug <玩家>"
+        "pt" "Uso: sm_storedebug <jogador>"
+        "fr" "Utilisation : sm_storedebug <joueur>"
+        "de" "Verwendung: sm_storedebug <spieler>"
+    }
+    "Admin Quests Debug Usage"
+    {
+        "es" "Uso: sm_storequestsdebug <jugador>"
+        "en" "Usage: sm_storequestsdebug <player>"
+        "ru" "Использование: sm_storequestsdebug <игрок>"
+        "chi" "用法：sm_storequestsdebug <玩家>"
+        "pt" "Uso: sm_storequestsdebug <jogador>"
+        "fr" "Utilisation : sm_storequestsdebug <joueur>"
+        "de" "Verwendung: sm_storequestsdebug <spieler>"
+    }
+    "Admin Export Usage"
+    {
+        "es" "Uso: sm_storeexport <jugador>"
+        "en" "Usage: sm_storeexport <player>"
+        "ru" "Использование: sm_storeexport <игрок>"
+        "chi" "用法：sm_storeexport <玩家>"
+        "pt" "Uso: sm_storeexport <jogador>"
+        "fr" "Utilisation : sm_storeexport <joueur>"
+        "de" "Verwendung: sm_storeexport <spieler>"
+    }
+    "Admin Export Failed"
+    {
+        "es" "No se pudo exportar ese perfil."
+        "en" "That profile could not be exported."
+        "ru" "Не удалось экспортировать этот профиль."
+        "chi" "无法导出该资料。"
+        "pt" "Nao foi possivel exportar esse perfil."
+        "fr" "Impossible d'exporter ce profil."
+        "de" "Dieses Profil konnte nicht exportiert werden."
+    }
+    "Admin Debug Header"
+    {
+        "es" "Debug de Store: %N (%s)"
+        "en" "Store debug: %N (%s)"
+        "ru" "Отладка Store: %N (%s)"
+        "chi" "Store 调试：%N (%s)"
+        "pt" "Debug da Store: %N (%s)"
+        "fr" "Debug Store : %N (%s)"
+        "de" "Store-Debug: %N (%s)"
+    }
+    "Admin Debug Identity"
+    {
+        "es" "Loaded=%d | Loading=%d | Creditos=%d | Objetos=%d | Equipados=%d"
+        "en" "Loaded=%d | Loading=%d | Credits=%d | Items=%d | Equipped=%d"
+        "ru" "Loaded=%d | Loading=%d | Кредиты=%d | Предметы=%d | Надето=%d"
+        "chi" "Loaded=%d | Loading=%d | 积分=%d | 物品=%d | 已装备=%d"
+        "pt" "Loaded=%d | Loading=%d | Creditos=%d | Itens=%d | Equipados=%d"
+        "fr" "Loaded=%d | Loading=%d | Credits=%d | Objets=%d | Equipes=%d"
+        "de" "Loaded=%d | Loading=%d | Credits=%d | Gegenstande=%d | Ausgerustet=%d"
+    }
+    "Admin Debug Economy"
+    {
+        "es" "Economia: ganados=%s | gastados=%s | compras=%d | ventas=%d | regalos=%d/%d | trades=%d"
+        "en" "Economy: earned=%s | spent=%s | purchases=%d | sales=%d | gifts=%d/%d | trades=%d"
+        "ru" "Экономика: заработано=%s | потрачено=%s | покупки=%d | продажи=%d | подарки=%d/%d | трейды=%d"
+        "chi" "经济：获得=%s | 花费=%s | 购买=%d | 出售=%d | 赠送=%d/%d | 交易=%d"
+        "pt" "Economia: ganhos=%s | gastos=%s | compras=%d | vendas=%d | presentes=%d/%d | trocas=%d"
+        "fr" "Economie : gagnes=%s | depenses=%s | achats=%d | ventes=%d | cadeaux=%d/%d | echanges=%d"
+        "de" "Wirtschaft: verdient=%s | ausgegeben=%s | Kaufe=%d | Verkaufe=%d | Geschenke=%d/%d | Trades=%d"
+    }
+    "Admin Debug Progress"
+    {
+        "es" "Progreso: best_daily=%d | misiones=%d | actividad_casino=%d | profit_casino=%s"
+        "en" "Progress: best_daily=%d | quests=%d | casino_activity=%d | casino_profit=%s"
+        "ru" "Прогресс: best_daily=%d | задания=%d | активность_казино=%d | профит_казино=%s"
+        "chi" "进度：best_daily=%d | 任务=%d | 赌场活动=%d | 赌场收益=%s"
+        "pt" "Progresso: best_daily=%d | missoes=%d | atividade_cassino=%d | lucro_cassino=%s"
+        "fr" "Progression : best_daily=%d | quetes=%d | activite_casino=%d | profit_casino=%s"
+        "de" "Fortschritt: best_daily=%d | Quests=%d | Casino-Aktivitat=%d | Casino-Gewinn=%s"
+    }
+    "Admin Debug Casino A"
+    {
+        "es" "Blackjack=%d/%s | Coinflip=%d/%s"
+        "en" "Blackjack=%d/%s | Coinflip=%d/%s"
+        "ru" "Blackjack=%d/%s | Coinflip=%d/%s"
+        "chi" "Blackjack=%d/%s | Coinflip=%d/%s"
+        "pt" "Blackjack=%d/%s | Coinflip=%d/%s"
+        "fr" "Blackjack=%d/%s | Coinflip=%d/%s"
+        "de" "Blackjack=%d/%s | Coinflip=%d/%s"
+    }
+    "Admin Debug Casino B"
+    {
+        "es" "Crash=%d/%s | Roulette=%d/%s"
+        "en" "Crash=%d/%s | Roulette=%d/%s"
+        "ru" "Crash=%d/%s | Roulette=%d/%s"
+        "chi" "Crash=%d/%s | Roulette=%d/%s"
+        "pt" "Crash=%d/%s | Roulette=%d/%s"
+        "fr" "Crash=%d/%s | Roulette=%d/%s"
+        "de" "Crash=%d/%s | Roulette=%d/%s"
+    }
+    "Admin Quests Debug Header"
+    {
+        "es" "Debug de Misiones: %N"
+        "en" "Quest debug: %N"
+        "ru" "Отладка заданий: %N"
+        "chi" "任务调试：%N"
+        "pt" "Debug de Missoes: %N"
+        "fr" "Debug des quetes : %N"
+        "de" "Quest-Debug: %N"
+    }
+    "Admin Quests Debug Summary"
+    {
+        "es" "Misiones registradas=%d | completadas=%d"
+        "en" "Registered quests=%d | completed=%d"
+        "ru" "Зарегистрировано заданий=%d | выполнено=%d"
+        "chi" "已注册任务=%d | 已完成=%d"
+        "pt" "Missoes registradas=%d | concluidas=%d"
+        "fr" "Quetes enregistrees=%d | terminees=%d"
+        "de" "Registrierte Quests=%d | abgeschlossen=%d"
+    }
+    "Admin Quest Debug Entry"
+    {
+        "es" "%s | progreso=%d/%d | done=%d | repeatable=%d | completions=%d | max=%d | bloqueada(ventana=%d req=%d max=%d)"
+        "en" "%s | progress=%d/%d | done=%d | repeatable=%d | completions=%d | max=%d | locked(window=%d req=%d max=%d)"
+        "ru" "%s | прогресс=%d/%d | done=%d | repeatable=%d | completions=%d | max=%d | locked(window=%d req=%d max=%d)"
+        "chi" "%s | 进度=%d/%d | done=%d | repeatable=%d | completions=%d | max=%d | locked(window=%d req=%d max=%d)"
+        "pt" "%s | progresso=%d/%d | done=%d | repeatable=%d | completions=%d | max=%d | locked(window=%d req=%d max=%d)"
+        "fr" "%s | progression=%d/%d | done=%d | repeatable=%d | completions=%d | max=%d | locked(window=%d req=%d max=%d)"
+        "de" "%s | Fortschritt=%d/%d | done=%d | repeatable=%d | completions=%d | max=%d | locked(window=%d req=%d max=%d)"
+    }
+    "Admin Export Target Success"
+    {
+        "es" "Perfil exportado para %N en {LIGHTBLUE}%s{DEFAULT}"
+        "en" "Profile exported for %N to {LIGHTBLUE}%s{DEFAULT}"
+        "ru" "Профиль %N экспортирован в {LIGHTBLUE}%s{DEFAULT}"
+        "chi" "%N 的资料已导出到 {LIGHTBLUE}%s{DEFAULT}"
+        "pt" "Perfil exportado para %N em {LIGHTBLUE}%s{DEFAULT}"
+        "fr" "Profil exporte pour %N vers {LIGHTBLUE}%s{DEFAULT}"
+        "de" "Profil fur %N exportiert nach {LIGHTBLUE}%s{DEFAULT}"
+    }
     "Gift Target Menu Empty"
     {
         "es" "No hay jugadores válidos para regalar"
@@ -1449,5 +1979,825 @@
         "pt" "Não foi possível concluir a operação. Tente novamente."
         "fr" "L'opération n'a pas pu être terminée. Veuillez réessayer."
         "de" "Der Vorgang konnte nicht abgeschlossen werden. Bitte versuchen Sie es erneut."
+    }
+    "Leaderboard Load Failed"
+    {
+        "es" "No se pudo cargar ese ranking."
+        "en" "That leaderboard could not be loaded."
+        "ru" "Не удалось загрузить этот рейтинг."
+        "chi" "无法加载该排行榜。"
+        "pt" "Não foi possível carregar esse ranking."
+        "fr" "Impossible de charger ce classement."
+        "de" "Diese Rangliste konnte nicht geladen werden."
+    }
+    "Top Profit Menu Title"
+    {
+        "es" "--- Top Profit Umbrella ---\nTop 10 jugadores con mayor profit neto\n "
+        "en" "--- Umbrella Top Profit ---\nTop 10 players with the highest net profit\n "
+        "ru" "--- Лучший профит Umbrella ---\n10 лучших игроков по чистой прибыли\n "
+        "chi" "--- Umbrella 利润排行 ---\n净利润最高的前 10 名玩家\n "
+        "pt" "--- Top Lucro Umbrella ---\nTop 10 jogadores com maior lucro líquido\n "
+        "fr" "--- Top Profit Umbrella ---\nTop 10 des joueurs avec le meilleur profit net\n "
+        "de" "--- Umbrella Top Profit ---\nTop 10 Spieler mit dem höchsten Nettogewinn\n "
+    }
+    "Top Profit Entry"
+    {
+        "es" "#%d %s - %s Profit"
+        "en" "#%d %s - %s Profit"
+        "ru" "#%d %s - %s Профит"
+        "chi" "#%d %s - %s 利润"
+        "pt" "#%d %s - %s Lucro"
+        "fr" "#%d %s - %s Profit"
+        "de" "#%d %s - %s Profit"
+    }
+    "Top Daily Menu Title"
+    {
+        "es" "--- Top Daily Umbrella ---\nTop 10 mejores rachas diarias\n "
+        "en" "--- Umbrella Top Daily ---\nTop 10 best daily streaks\n "
+        "ru" "--- Лучший Daily Umbrella ---\n10 лучших ежедневных серий\n "
+        "chi" "--- Umbrella Daily 排行 ---\n最佳每日连击前 10 名\n "
+        "pt" "--- Top Daily Umbrella ---\nTop 10 melhores sequências diárias\n "
+        "fr" "--- Top Daily Umbrella ---\nTop 10 des meilleures séries quotidiennes\n "
+        "de" "--- Umbrella Top Daily ---\nTop 10 beste Daily-Serien\n "
+    }
+    "Top Daily Entry"
+    {
+        "es" "#%d %s - %s Dias"
+        "en" "#%d %s - %s Days"
+        "ru" "#%d %s - %s Дней"
+        "chi" "#%d %s - %s 天"
+        "pt" "#%d %s - %s Dias"
+        "fr" "#%d %s - %s Jours"
+        "de" "#%d %s - %s Tage"
+    }
+    "Top Blackjack Profit Menu Title"
+    {
+        "es" "--- Top Blackjack Umbrella ---\nTop 10 jugadores con mayor profit en blackjack\n "
+        "en" "--- Umbrella Top Blackjack ---\nTop 10 players with the highest blackjack profit\n "
+        "ru" "--- Лучший Blackjack Umbrella ---\n10 лучших игроков по профиту в blackjack\n "
+        "chi" "--- Umbrella Blackjack 排行 ---\nBlackjack 利润最高的前 10 名玩家\n "
+        "pt" "--- Top Blackjack Umbrella ---\nTop 10 jogadores com maior lucro em blackjack\n "
+        "fr" "--- Top Blackjack Umbrella ---\nTop 10 des joueurs avec le meilleur profit au blackjack\n "
+        "de" "--- Umbrella Top Blackjack ---\nTop 10 Spieler mit dem höchsten Blackjack-Profit\n "
+    }
+    "Top Coinflip Profit Menu Title"
+    {
+        "es" "--- Top Coinflip Umbrella ---\nTop 10 jugadores con mayor profit en coinflip\n "
+        "en" "--- Umbrella Top Coinflip ---\nTop 10 players with the highest coinflip profit\n "
+        "ru" "--- Лучший Coinflip Umbrella ---\n10 лучших игроков по профиту в coinflip\n "
+        "chi" "--- Umbrella Coinflip 排行 ---\nCoinflip 利润最高的前 10 名玩家\n "
+        "pt" "--- Top Coinflip Umbrella ---\nTop 10 jogadores com maior lucro em coinflip\n "
+        "fr" "--- Top Coinflip Umbrella ---\nTop 10 des joueurs avec le meilleur profit au coinflip\n "
+        "de" "--- Umbrella Top Coinflip ---\nTop 10 Spieler mit dem höchsten Coinflip-Profit\n "
+    }
+    "Top Crash Profit Menu Title"
+    {
+        "es" "--- Top Crash Umbrella ---\nTop 10 jugadores con mayor profit en crash\n "
+        "en" "--- Umbrella Top Crash ---\nTop 10 players with the highest crash profit\n "
+        "ru" "--- Лучший Crash Umbrella ---\n10 лучших игроков по профиту в crash\n "
+        "chi" "--- Umbrella Crash 排行 ---\nCrash 利润最高的前 10 名玩家\n "
+        "pt" "--- Top Crash Umbrella ---\nTop 10 jogadores com maior lucro em crash\n "
+        "fr" "--- Top Crash Umbrella ---\nTop 10 des joueurs avec le meilleur profit au crash\n "
+        "de" "--- Umbrella Top Crash ---\nTop 10 Spieler mit dem höchsten Crash-Profit\n "
+    }
+    "Top Roulette Profit Menu Title"
+    {
+        "es" "--- Top Roulette Umbrella ---\nTop 10 jugadores con mayor profit en roulette\n "
+        "en" "--- Umbrella Top Roulette ---\nTop 10 players with the highest roulette profit\n "
+        "ru" "--- Лучший Roulette Umbrella ---\n10 лучших игроков по профиту в roulette\n "
+        "chi" "--- Umbrella Roulette 排行 ---\nRoulette 利润最高的前 10 名玩家\n "
+        "pt" "--- Top Roulette Umbrella ---\nTop 10 jogadores com maior lucro em roulette\n "
+        "fr" "--- Top Roulette Umbrella ---\nTop 10 des joueurs con le meilleur profit à la roulette\n "
+        "de" "--- Umbrella Top Roulette ---\nTop 10 Spieler mit dem höchsten Roulette-Profit\n "
+    }
+    "Profile Menu Title"
+    {
+        "es" "--- Perfil Umbrella ---\nSaldo actual: %s\n "
+        "en" "--- Umbrella Profile ---\nCurrent balance: %s\n "
+        "ru" "--- Профиль Umbrella ---\nТекущий баланс: %s\n "
+        "chi" "--- Umbrella 资料 ---\n当前余额: %s\n "
+        "pt" "--- Perfil Umbrella ---\nSaldo atual: %s\n "
+        "fr" "--- Profil Umbrella ---\nSolde actuel: %s\n "
+        "de" "--- Umbrella Profil ---\nAktuelles Guthaben: %s\n "
+    }
+    "Profile Summary Owned"
+    {
+        "es" "Objetos propios: %s"
+        "en" "Owned items: %s"
+        "ru" "Собственных предметов: %s"
+        "chi" "拥有物品: %s"
+        "pt" "Itens possuidos: %s"
+        "fr" "Objets possedes : %s"
+        "de" "Besessene Items: %s"
+    }
+    "Profile Summary Equipped"
+    {
+        "es" "Objetos equipados: %s"
+        "en" "Equipped items: %s"
+        "ru" "Экипировано предметов: %s"
+        "chi" "已装备物品: %s"
+        "pt" "Itens equipados: %s"
+        "fr" "Objets equipes : %s"
+        "de" "Ausgerustete Items: %s"
+    }
+    "Profile Summary Credits Earned"
+    {
+        "es" "Creditos ganados: %s"
+        "en" "Credits earned: %s"
+        "ru" "Получено кредитов: %s"
+        "chi" "获得积分: %s"
+        "pt" "Creditos ganhos: %s"
+        "fr" "Credits gagnes : %s"
+        "de" "Verdiente Credits: %s"
+    }
+    "Profile Summary Credits Spent"
+    {
+        "es" "Creditos gastados: %s"
+        "en" "Credits spent: %s"
+        "ru" "Потрачено кредитов: %s"
+        "chi" "花费积分: %s"
+        "pt" "Creditos gastos: %s"
+        "fr" "Credits depenses : %s"
+        "de" "Ausgegebene Credits: %s"
+    }
+    "Profile Summary Purchases"
+    {
+        "es" "Compras totales: %s"
+        "en" "Total purchases: %s"
+        "ru" "Всего покупок: %s"
+        "chi" "总购买次数: %s"
+        "pt" "Compras totais: %s"
+        "fr" "Achats totaux : %s"
+        "de" "Gesamte Kaufe: %s"
+    }
+    "Profile Summary Sales"
+    {
+        "es" "Ventas totales: %s"
+        "en" "Total sales: %s"
+        "ru" "Всего продаж: %s"
+        "chi" "总出售次数: %s"
+        "pt" "Vendas totais: %s"
+        "fr" "Ventes totales : %s"
+        "de" "Gesamte Verkaufe: %s"
+    }
+    "Profile Summary Gifts"
+    {
+        "es" "Regalos enviados/recibidos: %s / %s"
+        "en" "Gifts sent/received: %s / %s"
+        "ru" "Подарки отправлено/получено: %s / %s"
+        "chi" "赠送/收到礼物: %s / %s"
+        "pt" "Presentes enviados/recebidos: %s / %s"
+        "fr" "Cadeaux envoyes/recus : %s / %s"
+        "de" "Geschenke gesendet/erhalten: %s / %s"
+    }
+    "Profile Summary Trades"
+    {
+        "es" "Trades completados: %s"
+        "en" "Completed trades: %s"
+        "ru" "Завершено обменов: %s"
+        "chi" "完成交易: %s"
+        "pt" "Trocas concluidas: %s"
+        "fr" "Echanges completes : %s"
+        "de" "Abgeschlossene Trades: %s"
+    }
+    "Profile Summary Daily Streak"
+    {
+        "es" "Mejor racha daily: %s"
+        "en" "Best daily streak: %s"
+        "ru" "Лучшая daily-серия: %s"
+        "chi" "最佳每日连击: %s"
+        "pt" "Melhor sequencia daily: %s"
+        "fr" "Meilleure serie daily : %s"
+        "de" "Beste Daily-Serie: %s"
+    }
+    "Profile Summary Quests Completed"
+    {
+        "es" "Misiones completadas: %s"
+        "en" "Completed quests: %s"
+        "ru" "Выполнено заданий: %s"
+        "chi" "完成任务: %s"
+        "pt" "Missoes concluidas: %s"
+        "fr" "Quetes terminees : %s"
+        "de" "Abgeschlossene Quests: %s"
+    }
+    "Profile Summary Casino Activity"
+    {
+        "es" "Actividad casino: %s | Profit total: %s"
+        "en" "Casino activity: %s | Total profit: %s"
+        "ru" "Активность казино: %s | Общий профит: %s"
+        "chi" "赌场活跃度: %s | 总利润: %s"
+        "pt" "Atividade no cassino: %s | Lucro total: %s"
+        "fr" "Activite casino : %s | Profit total : %s"
+        "de" "Casino-Aktivitat: %s | Gesamtprofit: %s"
+    }
+    "Profile Summary Module Profit"
+    {
+        "es" "%s | Partidas: %s | Profit: %s"
+        "en" "%s | Games: %s | Profit: %s"
+        "ru" "%s | Игр: %s | Профит: %s"
+        "chi" "%s | 局数: %s | 利润: %s"
+        "pt" "%s | Partidas: %s | Lucro: %s"
+        "fr" "%s | Parties : %s | Profit : %s"
+        "de" "%s | Spiele: %s | Profit: %s"
+    }
+    "Profile Action Quests"
+    {
+        "es" "Ver misiones"
+        "en" "View quests"
+        "ru" "Посмотреть задания"
+        "chi" "查看任务"
+        "pt" "Ver missoes"
+        "fr" "Voir les quetes"
+        "de" "Quests ansehen"
+    }
+    "Profile Action Inventory"
+    {
+        "es" "Abrir inventario"
+        "en" "Open inventory"
+        "ru" "Открыть инвентарь"
+        "chi" "打开库存"
+        "pt" "Abrir inventario"
+        "fr" "Ouvrir l'inventaire"
+        "de" "Inventar offnen"
+    }
+    "Profile Action Ledger"
+    {
+        "es" "Ver historial economico"
+        "en" "View economy history"
+        "ru" "Посмотреть историю экономики"
+        "chi" "查看经济历史"
+        "pt" "Ver historico economico"
+        "fr" "Voir l'historique economique"
+        "de" "Wirtschaftsverlauf ansehen"
+    }
+    "Profile Action Top Profit"
+    {
+        "es" "Ver top profit"
+        "en" "View top profit"
+        "ru" "Посмотреть топ профита"
+        "chi" "查看利润排行"
+        "pt" "Ver top lucro"
+        "fr" "Voir le top profit"
+        "de" "Top-Profit ansehen"
+    }
+    "Profile Action Top Daily"
+    {
+        "es" "Ver top daily"
+        "en" "View top daily"
+        "ru" "Посмотреть топ daily"
+        "chi" "查看 daily 排行"
+        "pt" "Ver top daily"
+        "fr" "Voir le top daily"
+        "de" "Top-Daily ansehen"
+    }
+    "Profile Action Leaderboards"
+    {
+        "es" "Ver rankings"
+        "en" "View leaderboards"
+        "ru" "Посмотреть рейтинги"
+        "chi" "查看排行榜"
+        "pt" "Ver rankings"
+        "fr" "Voir les classements"
+        "de" "Bestenlisten ansehen"
+    }
+    "Profile Action Export"
+    {
+        "es" "Exportar perfil"
+        "en" "Export profile"
+        "ru" "Экспорт профиля"
+        "chi" "导出资料"
+        "pt" "Exportar perfil"
+        "fr" "Exporter le profil"
+        "de" "Profil exportieren"
+    }
+    "Leaderboards Menu Title"
+    {
+        "es" "--- Rankings Umbrella ---\nElige un ranking para ver\n "
+        "en" "--- Umbrella Leaderboards ---\nChoose a leaderboard to view\n "
+        "ru" "--- Рейтинги Umbrella ---\nВыберите рейтинг\n "
+        "chi" "--- Umbrella 排行榜 ---\n选择一个排行榜查看\n "
+        "pt" "--- Rankings Umbrella ---\nEscolha um ranking para ver\n "
+        "fr" "--- Classements Umbrella ---\nChoisissez un classement a voir\n "
+        "de" "--- Umbrella Bestenlisten ---\nWahle eine Bestenliste aus\n "
+    }
+    "Leaderboards Credits"
+    {
+        "es" "Top creditos"
+        "en" "Top credits"
+        "ru" "Топ кредитов"
+        "chi" "积分排行"
+        "pt" "Top creditos"
+        "fr" "Top credits"
+        "de" "Top Credits"
+    }
+    "Leaderboards Profit"
+    {
+        "es" "Top profit general"
+        "en" "Top overall profit"
+        "ru" "Топ общего профита"
+        "chi" "总利润排行"
+        "pt" "Top lucro geral"
+        "fr" "Top profit global"
+        "de" "Top Gesamtprofit"
+    }
+    "Leaderboards Daily"
+    {
+        "es" "Top daily"
+        "en" "Top daily"
+        "ru" "Топ daily"
+        "chi" "每日排行"
+        "pt" "Top daily"
+        "fr" "Top daily"
+        "de" "Top Daily"
+    }
+    "Leaderboards Blackjack"
+    {
+        "es" "Top blackjack"
+        "en" "Top blackjack"
+        "ru" "Топ blackjack"
+        "chi" "Blackjack 排行"
+        "pt" "Top blackjack"
+        "fr" "Top blackjack"
+        "de" "Top Blackjack"
+    }
+    "Leaderboards Coinflip"
+    {
+        "es" "Top coinflip"
+        "en" "Top coinflip"
+        "ru" "Топ coinflip"
+        "chi" "Coinflip 排行"
+        "pt" "Top coinflip"
+        "fr" "Top coinflip"
+        "de" "Top Coinflip"
+    }
+    "Leaderboards Crash"
+    {
+        "es" "Top crash"
+        "en" "Top crash"
+        "ru" "Топ crash"
+        "chi" "Crash 排行"
+        "pt" "Top crash"
+        "fr" "Top crash"
+        "de" "Top Crash"
+    }
+    "Leaderboards Roulette"
+    {
+        "es" "Top roulette"
+        "en" "Top roulette"
+        "ru" "Топ roulette"
+        "chi" "Roulette 排行"
+        "pt" "Top roulette"
+        "fr" "Top roulette"
+        "de" "Top Roulette"
+    }
+    "Quests Menu Title"
+    {
+        "es" "--- Misiones Umbrella ---\nMisiones registradas: %d\n "
+        "en" "--- Umbrella Quests ---\nRegistered quests: %d\n "
+        "ru" "--- Задания Umbrella ---\nЗарегистрировано заданий: %d\n "
+        "chi" "--- Umbrella 任务 ---\n已注册任务: %d\n "
+        "pt" "--- Missoes Umbrella ---\nMissoes registradas: %d\n "
+        "fr" "--- Quetes Umbrella ---\nQuetes enregistrees : %d\n "
+        "de" "--- Umbrella Quests ---\nRegistrierte Quests: %d\n "
+    }
+    "Quests Category All"
+    {
+        "es" "Todas las misiones"
+        "en" "All quests"
+        "ru" "Все задания"
+        "chi" "全部任务"
+        "pt" "Todas as missoes"
+        "fr" "Toutes les quetes"
+        "de" "Alle Quests"
+    }
+    "Quests Category Menu Title"
+    {
+        "es" "--- Misiones Umbrella ---\nCategoria: %s\n "
+        "en" "--- Umbrella Quests ---\nCategory: %s\n "
+        "ru" "--- Задания Umbrella ---\nКатегория: %s\n "
+        "chi" "--- Umbrella 任务 ---\n分类: %s\n "
+        "pt" "--- Missoes Umbrella ---\nCategoria: %s\n "
+        "fr" "--- Quetes Umbrella ---\nCategorie : %s\n "
+        "de" "--- Umbrella Quests ---\nKategorie: %s\n "
+    }
+    "Quests Empty"
+    {
+        "es" "No hay misiones registradas todavia."
+        "en" "There are no registered quests yet."
+        "ru" "Пока нет зарегистрированных заданий."
+        "chi" "目前还没有注册任务。"
+        "pt" "Ainda nao ha missoes registradas."
+        "fr" "Aucune quete n'est encore enregistree."
+        "de" "Es sind noch keine Quests registriert."
+    }
+    "Quest Entry In Progress"
+    {
+        "es" "%s [%d/%d] - Recompensa: %s"
+        "en" "%s [%d/%d] - Reward: %s"
+        "ru" "%s [%d/%d] - Награда: %s"
+        "chi" "%s [%d/%d] - 奖励: %s"
+        "pt" "%s [%d/%d] - Recompensa: %s"
+        "fr" "%s [%d/%d] - Recompense : %s"
+        "de" "%s [%d/%d] - Belohnung: %s"
+    }
+    "Quest Entry Completed"
+    {
+        "es" "%s [Completada] - Recompensa: %s"
+        "en" "%s [Completed] - Reward: %s"
+        "ru" "%s [Выполнено] - Награда: %s"
+        "chi" "%s [已完成] - 奖励: %s"
+        "pt" "%s [Concluida] - Recompensa: %s"
+        "fr" "%s [Terminee] - Recompense : %s"
+        "de" "%s [Abgeschlossen] - Belohnung: %s"
+    }
+    "Quest Entry Locked"
+    {
+        "es" "%s [%d/%d] [Bloqueada] - Recompensa: %s"
+        "en" "%s [%d/%d] [Locked] - Reward: %s"
+        "ru" "%s [%d/%d] [Заблокировано] - Награда: %s"
+        "chi" "%s [%d/%d] [已锁定] - 奖励: %s"
+        "pt" "%s [%d/%d] [Bloqueada] - Recompensa: %s"
+        "fr" "%s [%d/%d] [Verrouillee] - Recompense : %s"
+        "de" "%s [%d/%d] [Gesperrt] - Belohnung: %s"
+    }
+    "Quest Details Menu Title"
+    {
+        "es" "--- Detalle de Mision ---\n%s\n "
+        "en" "--- Quest Details ---\n%s\n "
+        "ru" "--- Детали задания ---\n%s\n "
+        "chi" "--- 任务详情 ---\n%s\n "
+        "pt" "--- Detalhes da Missao ---\n%s\n "
+        "fr" "--- Details de la quete ---\n%s\n "
+        "de" "--- Quest-Details ---\n%s\n "
+    }
+    "Quest Details Progress"
+    {
+        "es" "Progreso: %d/%d"
+        "en" "Progress: %d/%d"
+        "ru" "Прогресс: %d/%d"
+        "chi" "进度: %d/%d"
+        "pt" "Progresso: %d/%d"
+        "fr" "Progression : %d/%d"
+        "de" "Fortschritt: %d/%d"
+    }
+    "Quest Details Reward"
+    {
+        "es" "Recompensa: %s"
+        "en" "Reward: %s"
+        "ru" "Награда: %s"
+        "chi" "奖励: %s"
+        "pt" "Recompensa: %s"
+        "fr" "Recompense : %s"
+        "de" "Belohnung: %s"
+    }
+    "Quest Details Repeatable Unlimited"
+    {
+        "es" "Repetible: si (completada %d veces)"
+        "en" "Repeatable: yes (%d completions)"
+        "ru" "Повторяемое: да (%d выполнений)"
+        "chi" "可重复: 是（已完成 %d 次）"
+        "pt" "Repetivel: sim (%d conclusoes)"
+        "fr" "Repetable : oui (%d accomplissements)"
+        "de" "Wiederholbar: ja (%d Abschlusse)"
+    }
+    "Quest Details Repeatable Limited"
+    {
+        "es" "Repetible: si (%d/%d)"
+        "en" "Repeatable: yes (%d/%d)"
+        "ru" "Повторяемое: да (%d/%d)"
+        "chi" "可重复: 是（%d/%d）"
+        "pt" "Repetivel: sim (%d/%d)"
+        "fr" "Repetable : oui (%d/%d)"
+        "de" "Wiederholbar: ja (%d/%d)"
+    }
+    "Quest Details Category"
+    {
+        "es" "Categoria: %s"
+        "en" "Category: %s"
+        "ru" "Категория: %s"
+        "chi" "分类: %s"
+        "pt" "Categoria: %s"
+        "fr" "Categorie : %s"
+        "de" "Kategorie: %s"
+    }
+    "Quest Details Description"
+    {
+        "es" "Descripcion: %s"
+        "en" "Description: %s"
+        "ru" "Описание: %s"
+        "chi" "描述: %s"
+        "pt" "Descricao: %s"
+        "fr" "Description : %s"
+        "de" "Beschreibung: %s"
+    }
+    "Quest Details Requires"
+    {
+        "es" "Requiere: %s"
+        "en" "Requires: %s"
+        "ru" "Требуется: %s"
+        "chi" "需要: %s"
+        "pt" "Requer: %s"
+        "fr" "Necessite : %s"
+        "de" "Benotigt: %s"
+    }
+    "Quest Details Window"
+    {
+        "es" "Ventana: %s -> %s"
+        "en" "Window: %s -> %s"
+        "ru" "Окно: %s -> %s"
+        "chi" "时间窗: %s -> %s"
+        "pt" "Janela: %s -> %s"
+        "fr" "Fenetre : %s -> %s"
+        "de" "Fenster: %s -> %s"
+    }
+    "Quest Details State Completed"
+    {
+        "es" "Estado: completada"
+        "en" "State: completed"
+        "ru" "Состояние: выполнено"
+        "chi" "状态: 已完成"
+        "pt" "Estado: concluida"
+        "fr" "Etat : terminee"
+        "de" "Status: abgeschlossen"
+    }
+    "Quest Details State Ready"
+    {
+        "es" "Estado: lista para recompensa"
+        "en" "State: reward granted"
+        "ru" "Состояние: награда выдана"
+        "chi" "状态: 已发放奖励"
+        "pt" "Estado: recompensa entregue"
+        "fr" "Etat : recompense accordee"
+        "de" "Status: Belohnung gewahrt"
+    }
+    "Quest Details State Maxed"
+    {
+        "es" "Estado: completada al maximo"
+        "en" "State: completion cap reached"
+        "ru" "Состояние: достигнут лимит выполнений"
+        "chi" "状态: 已达到完成上限"
+        "pt" "Estado: limite de conclusoes atingido"
+        "fr" "Etat : limite d'accomplissements atteinte"
+        "de" "Status: Abschlusslimit erreicht"
+    }
+    "Quest Details State Locked"
+    {
+        "es" "Estado: bloqueada por requisito"
+        "en" "State: locked by prerequisite"
+        "ru" "Состояние: заблокировано требованием"
+        "chi" "状态: 因前置条件而锁定"
+        "pt" "Estado: bloqueada por requisito"
+        "fr" "Etat : verrouillee par prerequis"
+        "de" "Status: durch Voraussetzung gesperrt"
+    }
+    "Quest Details State Scheduled"
+    {
+        "es" "Estado: fuera de ventana"
+        "en" "State: outside active window"
+        "ru" "Состояние: вне активного окна"
+        "chi" "状态: 不在活动时间窗内"
+        "pt" "Estado: fora da janela ativa"
+        "fr" "Etat : hors de la fenetre active"
+        "de" "Status: ausserhalb des aktiven Fensters"
+    }
+    "Quest Details StateActive"
+    {
+        "es" "Estado: en progreso"
+        "en" "State: in progress"
+        "ru" "Состояние: в процессе"
+        "chi" "状态: 进行中"
+        "pt" "Estado: em progresso"
+        "fr" "Etat : en cours"
+        "de" "Status: in Bearbeitung"
+    }
+    "Profile Ledger Menu Title"
+    {
+        "es" "--- Historial Economico ---\nUltimos 10 movimientos\n "
+        "en" "--- Economy History ---\nLast 10 entries\n "
+        "ru" "--- История экономики ---\nПоследние 10 записей\n "
+        "chi" "--- 经济历史 ---\n最近 10 条记录\n "
+        "pt" "--- Historico Economico ---\nUltimos 10 movimentos\n "
+        "fr" "--- Historique economique ---\n10 dernieres entrees\n "
+        "de" "--- Wirtschaftsverlauf ---\nLetzte 10 Eintrage\n "
+    }
+    "Profile Ledger Entry"
+    {
+        "es" "%s | %s | Saldo: %s | %s"
+        "en" "%s | %s | Balance: %s | %s"
+        "ru" "%s | %s | Баланс: %s | %s"
+        "chi" "%s | %s | 余额: %s | %s"
+        "pt" "%s | %s | Saldo: %s | %s"
+        "fr" "%s | %s | Solde : %s | %s"
+        "de" "%s | %s | Kontostand: %s | %s"
+    }
+    "Profile Ledger Empty"
+    {
+        "es" "No hay movimientos recientes."
+        "en" "There are no recent entries."
+        "ru" "Нет недавних записей."
+        "chi" "没有最近记录。"
+        "pt" "Nao ha movimentos recentes."
+        "fr" "Aucune entree recente."
+        "de" "Keine aktuellen Eintrage."
+    }
+    "Profile Export Saved"
+    {
+        "es" "Perfil exportado en: {LIGHTBLUE}%s{DEFAULT}"
+        "en" "Profile exported to: {LIGHTBLUE}%s{DEFAULT}"
+        "ru" "Профиль экспортирован в: {LIGHTBLUE}%s{DEFAULT}"
+        "chi" "资料已导出到: {LIGHTBLUE}%s{DEFAULT}"
+        "pt" "Perfil exportado para: {LIGHTBLUE}%s{DEFAULT}"
+        "fr" "Profil exporte vers : {LIGHTBLUE}%s{DEFAULT}"
+        "de" "Profil exportiert nach: {LIGHTBLUE}%s{DEFAULT}"
+    }
+    "Profile Export Failed"
+    {
+        "es" "No se pudo exportar tu perfil."
+        "en" "Your profile could not be exported."
+        "ru" "Не удалось экспортировать профиль."
+        "chi" "无法导出你的资料。"
+        "pt" "Nao foi possivel exportar seu perfil."
+        "fr" "Impossible d'exporter votre profil."
+        "de" "Dein Profil konnte nicht exportiert werden."
+    }
+    "Quest Category General"
+    {
+        "es" "General"
+        "en" "General"
+        "ru" "Общее"
+        "chi" "通用"
+        "pt" "Geral"
+        "fr" "General"
+        "de" "Allgemein"
+    }
+    "Quest Category Daily"
+    {
+        "es" "Daily"
+        "en" "Daily"
+        "ru" "Daily"
+        "chi" "每日"
+        "pt" "Daily"
+        "fr" "Daily"
+        "de" "Daily"
+    }
+    "Quest Category Casino"
+    {
+        "es" "Casino"
+        "en" "Casino"
+        "ru" "Казино"
+        "chi" "赌场"
+        "pt" "Cassino"
+        "fr" "Casino"
+        "de" "Kasino"
+    }
+    "Quest Title Daily Claims I"
+    {
+        "es" "Daily Claims I"
+        "en" "Daily Claims I"
+        "ru" "Daily Claims I"
+        "chi" "Daily Claims I"
+        "pt" "Daily Claims I"
+        "fr" "Daily Claims I"
+        "de" "Daily Claims I"
+    }
+    "Quest Title Daily Streak I"
+    {
+        "es" "Daily Streak I"
+        "en" "Daily Streak I"
+        "ru" "Daily Streak I"
+        "chi" "Daily Streak I"
+        "pt" "Daily Streak I"
+        "fr" "Daily Streak I"
+        "de" "Daily Streak I"
+    }
+    "Quest Title Coinflip Wins I"
+    {
+        "es" "Coinflip Wins I"
+        "en" "Coinflip Wins I"
+        "ru" "Coinflip Wins I"
+        "chi" "Coinflip Wins I"
+        "pt" "Coinflip Wins I"
+        "fr" "Coinflip Wins I"
+        "de" "Coinflip Wins I"
+    }
+    "Quest Title Blackjack Wins I"
+    {
+        "es" "Blackjack Wins I"
+        "en" "Blackjack Wins I"
+        "ru" "Blackjack Wins I"
+        "chi" "Blackjack Wins I"
+        "pt" "Blackjack Wins I"
+        "fr" "Blackjack Wins I"
+        "de" "Blackjack Wins I"
+    }
+    "Quest Title Blackjack Streak I"
+    {
+        "es" "Blackjack Streak I"
+        "en" "Blackjack Streak I"
+        "ru" "Blackjack Streak I"
+        "chi" "Blackjack Streak I"
+        "pt" "Blackjack Streak I"
+        "fr" "Blackjack Streak I"
+        "de" "Blackjack Streak I"
+    }
+    "Quest Title Crash Cashouts I"
+    {
+        "es" "Crash Cashouts I"
+        "en" "Crash Cashouts I"
+        "ru" "Crash Cashouts I"
+        "chi" "Crash Cashouts I"
+        "pt" "Crash Cashouts I"
+        "fr" "Crash Cashouts I"
+        "de" "Crash Cashouts I"
+    }
+    "Quest Title Roulette Wins I"
+    {
+        "es" "Roulette Wins I"
+        "en" "Roulette Wins I"
+        "ru" "Roulette Wins I"
+        "chi" "Roulette Wins I"
+        "pt" "Roulette Wins I"
+        "fr" "Roulette Wins I"
+        "de" "Roulette Wins I"
+    }
+    "Quest Desc Daily Claims I"
+    {
+        "es" "Reclama tu recompensa daily varias veces."
+        "en" "Claim your daily reward multiple times."
+        "ru" "Заберите ежедневную награду несколько раз."
+        "chi" "多次领取每日奖励。"
+        "pt" "Resgate sua recompensa daily varias vezes."
+        "fr" "Recuperez votre recompense daily plusieurs fois."
+        "de" "Hole dir deine Daily-Belohnung mehrmals ab."
+    }
+    "Quest Desc Daily Streak I"
+    {
+        "es" "Mantene una racha diaria estable."
+        "en" "Keep a steady daily streak."
+        "ru" "Поддерживайте стабильную ежедневную серию."
+        "chi" "保持稳定的每日连击。"
+        "pt" "Mantenha uma sequencia daily estavel."
+        "fr" "Gardez une serie daily stable."
+        "de" "Halte eine stabile Daily-Serie."
+    }
+    "Quest Desc Coinflip Wins I"
+    {
+        "es" "Gana varias veces en coinflip."
+        "en" "Win several times in coinflip."
+        "ru" "Несколько раз победите в coinflip."
+        "chi" "在 coinflip 中多次获胜。"
+        "pt" "Ganhe varias vezes no coinflip."
+        "fr" "Gagnez plusieurs fois au coinflip."
+        "de" "Gewinne mehrmals beim Coinflip."
+    }
+    "Quest Desc Blackjack Wins I"
+    {
+        "es" "Gana partidas de blackjack."
+        "en" "Win blackjack matches."
+        "ru" "Побеждайте в blackjack."
+        "chi" "赢得 blackjack 对局。"
+        "pt" "Ganhe partidas de blackjack."
+        "fr" "Gagnez des parties de blackjack."
+        "de" "Gewinne Blackjack-Partien."
+    }
+    "Quest Desc Blackjack Streak I"
+    {
+        "es" "Consigue una racha de victorias en blackjack."
+        "en" "Build a blackjack win streak."
+        "ru" "Соберите серию побед в blackjack."
+        "chi" "达成 blackjack 连胜。"
+        "pt" "Monte uma sequencia de vitorias no blackjack."
+        "fr" "Construisez une serie de victoires au blackjack."
+        "de" "Baue eine Siegesserie im Blackjack auf."
+    }
+    "Quest Desc Crash Cashouts I"
+    {
+        "es" "Retirate a tiempo en crash varias veces."
+        "en" "Cash out in crash several times."
+        "ru" "Несколько раз вовремя выходите в crash."
+        "chi" "多次在 crash 中成功提现。"
+        "pt" "Retire no crash varias vezes."
+        "fr" "Encaissez au crash plusieurs fois."
+        "de" "Cashout im Crash mehrmals erfolgreich aus."
+    }
+    "Quest Desc Roulette Wins I"
+    {
+        "es" "Gana varias apuestas en roulette."
+        "en" "Win several roulette bets."
+        "ru" "Выиграйте несколько ставок в roulette."
+        "chi" "赢得多次 roulette 赌注。"
+        "pt" "Ganhe varias apostas na roulette."
+        "fr" "Gagnez plusieurs paris a la roulette."
+        "de" "Gewinne mehrere Roulette-Wetten."
+    }
+    "Quest Rewarded"
+    {
+        "es" "Completaste una mision y recibiste {LIGHTBLUE}%s{DEFAULT}."
+        "en" "You completed a quest and received {LIGHTBLUE}%s{DEFAULT}."
+        "ru" "Вы выполнили задание и получили {LIGHTBLUE}%s{DEFAULT}."
+        "chi" "你完成了一个任务并获得了 {LIGHTBLUE}%s{DEFAULT}。"
+        "pt" "Voce completou uma missao e recebeu {LIGHTBLUE}%s{DEFAULT}."
+        "fr" "Vous avez termine une quete et recu {LIGHTBLUE}%s{DEFAULT}."
+        "de" "Du hast eine Quest abgeschlossen und {LIGHTBLUE}%s{DEFAULT} erhalten."
     }
 }
