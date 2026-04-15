@@ -1,0 +1,120 @@
+"Quests"
+{
+    // =========================================================================
+    // Umbrella Store quest config
+    // =========================================================================
+    //
+    // This file is optional.
+    //
+    // Quests can still be registered directly from plugins through:
+    //   US_RegisterQuest("quest_id", "Quest Title", goal, rewardCredits);
+    //
+    // This config adds file-defined quests on top of that system so server
+    // owners can ship extra progression without editing plugin code.
+    //
+    // Recommended:
+    //   - keep quest ids unique
+    //   - prefer phrase keys in "title" when you want translation support
+    //   - use raw text only for server-specific quests that do not need
+    //     localization
+    //
+    // Supported keys:
+    //   title           = raw quest title or translation phrase key
+    //   category        = raw category label or translation phrase key
+    //   description     = raw description or translation phrase key
+    //   goal            = progress target, must be > 0
+    //   reward_credits  = credits granted once on completion
+    //   reward_item     = optional item id granted once on completion
+    //   reward_item_equip = 1 equips reward_item immediately after grant
+    //   repeatable      = 1 allows the quest to be completed multiple times
+    //   max_completions = max times a repeatable quest can reward (0 = unlimited)
+    //   requires_quest  = optional quest id that must be completed first
+    //   starts_at       = optional unix timestamp for activation start
+    //   ends_at         = optional unix timestamp for activation end
+    //   enabled         = 1 to load, 0 to ignore
+    //
+    "daily_claims_3"
+    {
+        "title"          "Quest Title Daily Claims I"
+        "category"       "Quest Category Daily"
+        "description"    "Quest Desc Daily Claims I"
+        "goal"           "3"
+        "reward_credits" "150"
+        "enabled"        "1"
+    }
+
+    "daily_streak_7"
+    {
+        "title"          "Quest Title Daily Streak I"
+        "category"       "Quest Category Daily"
+        "description"    "Quest Desc Daily Streak I"
+        "goal"           "7"
+        "reward_credits" "300"
+        "enabled"        "1"
+    }
+
+    "coinflip_wins_5"
+    {
+        "title"          "Quest Title Coinflip Wins I"
+        "category"       "Quest Category Casino"
+        "description"    "Quest Desc Coinflip Wins I"
+        "goal"           "5"
+        "reward_credits" "200"
+        "enabled"        "1"
+    }
+
+    "blackjack_wins_5"
+    {
+        "title"          "Quest Title Blackjack Wins I"
+        "category"       "Quest Category Casino"
+        "description"    "Quest Desc Blackjack Wins I"
+        "goal"           "5"
+        "reward_credits" "250"
+        "enabled"        "1"
+    }
+
+    "blackjack_streak_3"
+    {
+        "title"          "Quest Title Blackjack Streak I"
+        "category"       "Quest Category Casino"
+        "description"    "Quest Desc Blackjack Streak I"
+        "goal"           "3"
+        "reward_credits" "200"
+        "enabled"        "1"
+    }
+
+    "crash_cashouts_5"
+    {
+        "title"          "Quest Title Crash Cashouts I"
+        "category"       "Quest Category Casino"
+        "description"    "Quest Desc Crash Cashouts I"
+        "goal"           "5"
+        "reward_credits" "225"
+        "enabled"        "1"
+    }
+
+    "roulette_wins_5"
+    {
+        "title"          "Quest Title Roulette Wins I"
+        "category"       "Quest Category Casino"
+        "description"    "Quest Desc Roulette Wins I"
+        "goal"           "5"
+        "reward_credits" "200"
+        "enabled"        "1"
+    }
+
+    // Example custom quest:
+    // "quest_server_veteran"
+    // {
+    //     "title"          "Play 25 casino rounds"
+    //     "category"       "Quest Category Casino"
+    //     "description"    "Server-defined custom quest example."
+    //     "goal"           "25"
+    //     "reward_credits" "750"
+    //     "reward_item"    "badge_founder"
+    //     "repeatable"     "1"
+    //     "max_completions" "0"
+    //     "requires_quest" "daily_claims_3"
+    //     "enabled"        "1"
+    // }
+}
