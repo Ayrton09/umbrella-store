@@ -1,6 +1,7 @@
 #include <sourcemod>
 #include <sdktools>
 #include <umbrella_store>
+#include <multicolors>
 
 #pragma semicolon 1
 #pragma newdecls required
@@ -10,9 +11,11 @@ public Plugin myinfo =
     name = "[Umbrella Store] Crash",
     author = "Ayrton09",
     description = "Crash module for Umbrella Store",
-    version = "1.0.0",
+    version = "1.1.0",
     url = ""
 };
+
+#define CRASH_CHAT_TAG "{green}[Crash]{default}"
 
 enum CrashState
 {
@@ -84,6 +87,37 @@ float g_fNextActionAt[MAXPLAYERS + 1];
 float g_fNextMenuAt[MAXPLAYERS + 1];
 ArrayList g_History = null;
 
+void TrackCrashResolved(int client, int net, bool cashedOut)
+{
+    if (!IsValidHumanClient(client))
+    {
+        return;
+    }
+
+    US_AddStat(client, "crash_rounds", 1);
+    US_AddStat(client, cashedOut ? "crash_cashouts" : "crash_losses", 1);
+
+    if (net != 0)
+    {
+        US_AddStat(client, "crash_profit", net);
+    }
+
+    if (cashedOut)
+    {
+        US_AdvanceQuestProgress(client, "crash_cashouts_5", 1);
+    }
+}
+
+void RegisterCrashQuests()
+{
+    if (!LibraryExists("umbrella_store"))
+    {
+        return;
+    }
+
+    US_RegisterQuestEx("crash_cashouts_5", "Quest Title Crash Cashouts I", 5, 225, "", false, "Quest Category Casino", "Quest Desc Crash Cashouts I");
+}
+
 public void OnPluginStart()
 {
     LoadTranslations("common.phrases");
@@ -139,6 +173,7 @@ public void OnConfigsExecuted()
 
 public void OnAllPluginsLoaded()
 {
+    RegisterCrashQuests();
     RegisterWithStore();
 }
 
@@ -146,6 +181,7 @@ public void OnLibraryAdded(const char[] name)
 {
     if (StrEqual(name, "umbrella_store"))
     {
+        RegisterCrashQuests();
         g_bRegistered = false;
         RegisterWithStore();
     }
@@ -1135,6 +1171,7 @@ void DoCrash()
         }
 
         CrashReply(client, "%T", "Crash Lost", client, g_fCrashAt);
+        TrackCrashResolved(client, -g_iBet[client], false);
         ResetClientRoundData(client, false);
     }
 
@@ -1160,6 +1197,7 @@ void DoCashout(int client)
     US_AddCredits(client, payout, false);
     g_bCashedOut[client] = true;
     g_iLastPayout[client] = payout;
+    TrackCrashResolved(client, payout - g_iBet[client], true);
 
     char payoutText[32];
     FormatNumberDots(payout, payoutText, sizeof(payoutText));
@@ -1546,7 +1584,7 @@ void AnnouncePhraseSimple(const char[] phrase)
 
         Format(message, sizeof(message), "%T", phrase, client);
         HighlightChatCommands(message, highlighted, sizeof(highlighted));
-        PrintToChat(client, "\x01[\x04Crash\x01] %s", highlighted);
+        CPrintToChat(client, "%s %s", CRASH_CHAT_TAG, highlighted);
     }
 }
 
@@ -1567,7 +1605,7 @@ void AnnouncePhraseFloat(const char[] phrase, float value)
 
         Format(message, sizeof(message), "%T", phrase, client, value);
         HighlightChatCommands(message, highlighted, sizeof(highlighted));
-        PrintToChat(client, "\x01[\x04Crash\x01] %s", highlighted);
+        CPrintToChat(client, "%s %s", CRASH_CHAT_TAG, highlighted);
     }
 }
 
@@ -1635,7 +1673,7 @@ void CrashReply(int client, const char[] fmt, any ...)
     char message[256], highlighted[320];
     VFormat(message, sizeof(message), fmt, 3);
     HighlightChatCommands(message, highlighted, sizeof(highlighted));
-    PrintToChat(client, "\x01[\x04Crash\x01] %s", highlighted);
+    CPrintToChat(client, "%s %s", CRASH_CHAT_TAG, highlighted);
 }
 
 bool IsCommandContinuationChar(int c)
@@ -1648,11 +1686,22 @@ bool IsCommandContinuationChar(int c)
         || c == '/';
 }
 
+void AppendLiteral(char[] output, int maxlen, int &outPos, const char[] literal)
+{
+    int literalLen = strlen(literal);
+    for (int i = 0; i < literalLen && outPos < maxlen - 1; i++)
+    {
+        output[outPos++] = literal[i];
+    }
+}
+
 void HighlightChatCommands(const char[] input, char[] output, int maxlen)
 {
     int inLen = strlen(input);
     int outPos = 0;
     bool inCommand = false;
+    static const char commandStart[] = "{green}";
+    static const char commandEnd[] = "{default}";
 
     for (int i = 0; i < inLen && outPos < maxlen - 1; i++)
     {
@@ -1660,10 +1709,7 @@ void HighlightChatCommands(const char[] input, char[] output, int maxlen)
 
         if (!inCommand && ch == '!' && (i + 1) < inLen && IsCommandContinuationChar(input[i + 1]))
         {
-            if (outPos < maxlen - 1)
-            {
-                output[outPos++] = '\x04';
-            }
+            AppendLiteral(output, maxlen, outPos, commandStart);
             output[outPos++] = ch;
             inCommand = true;
             continue;
@@ -1671,10 +1717,7 @@ void HighlightChatCommands(const char[] input, char[] output, int maxlen)
 
         if (inCommand && !IsCommandContinuationChar(ch))
         {
-            if (outPos < maxlen - 1)
-            {
-                output[outPos++] = '\x01';
-            }
+            AppendLiteral(output, maxlen, outPos, commandEnd);
             inCommand = false;
         }
 
@@ -1686,7 +1729,7 @@ void HighlightChatCommands(const char[] input, char[] output, int maxlen)
 
     if (inCommand && outPos < maxlen - 1)
     {
-        output[outPos++] = '\x01';
+        AppendLiteral(output, maxlen, outPos, commandEnd);
     }
 
     output[outPos] = '\0';

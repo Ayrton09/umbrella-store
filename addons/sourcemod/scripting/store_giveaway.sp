@@ -4,15 +4,16 @@
 #include <sourcemod>
 #include <sdktools>
 #include <umbrella_store>
+#include <multicolors>
 
-#define US_CHAT_TAG " \x03[Umbrella Store]\x01"
+#define US_CHAT_TAG " {purple}[Umbrella Store]{default}"
 
 public Plugin myinfo =
 {
     name = "[Umbrella Store] Giveaway",
     author = "Ayrton09",
     description = "Giveaway global con animacion HUD para Umbrella Store",
-    version = "1.0.0",
+    version = "1.1.0",
     url = ""
 };
 
@@ -36,6 +37,23 @@ ConVar gCvarSlowRollSound;
 ConVar gCvarWinnerSound;
 ConVar gCvarSlowRollSoundVolume;
 ConVar gCvarWinnerSoundVolume;
+ConVar gLegacyCvarEnable;
+ConVar gLegacyCvarMinPlayers;
+ConVar gLegacyCvarTeamOnly;
+ConVar gLegacyCvarAdminFlag;
+ConVar gLegacyCvarStartDelay;
+ConVar gLegacyCvarTickInterval;
+ConVar gLegacyCvarRollTicks;
+ConVar gLegacyCvarWinnerHoldTime;
+ConVar gLegacyCvarAnnounce;
+ConVar gLegacyCvarHudChannel;
+ConVar gLegacyCvarSoundEnable;
+ConVar gLegacyCvarRollSound;
+ConVar gLegacyCvarSlowRollSound;
+ConVar gLegacyCvarWinnerSound;
+ConVar gLegacyCvarSlowRollSoundVolume;
+ConVar gLegacyCvarWinnerSoundVolume;
+bool g_bSyncingCvarAliases = false;
 
 // =========================
 // Giveaway state
@@ -58,6 +76,85 @@ Handle g_hStartTimer = null;
 Handle g_hRollTimer = null;
 Handle g_hWinnerHoldTimer = null;
 
+void SyncGiveawayCvarPair(ConVar source, ConVar target)
+{
+    if (source == null || target == null)
+    {
+        return;
+    }
+
+    char value[PLATFORM_MAX_PATH];
+    source.GetString(value, sizeof(value));
+    target.SetString(value);
+}
+
+void SyncGiveawayLegacyCvarsFromCanonical()
+{
+    g_bSyncingCvarAliases = true;
+    SyncGiveawayCvarPair(gCvarEnable, gLegacyCvarEnable);
+    SyncGiveawayCvarPair(gCvarMinPlayers, gLegacyCvarMinPlayers);
+    SyncGiveawayCvarPair(gCvarTeamOnly, gLegacyCvarTeamOnly);
+    SyncGiveawayCvarPair(gCvarAdminFlag, gLegacyCvarAdminFlag);
+    SyncGiveawayCvarPair(gCvarStartDelay, gLegacyCvarStartDelay);
+    SyncGiveawayCvarPair(gCvarTickInterval, gLegacyCvarTickInterval);
+    SyncGiveawayCvarPair(gCvarRollTicks, gLegacyCvarRollTicks);
+    SyncGiveawayCvarPair(gCvarWinnerHoldTime, gLegacyCvarWinnerHoldTime);
+    SyncGiveawayCvarPair(gCvarAnnounce, gLegacyCvarAnnounce);
+    SyncGiveawayCvarPair(gCvarHudChannel, gLegacyCvarHudChannel);
+    SyncGiveawayCvarPair(gCvarSoundEnable, gLegacyCvarSoundEnable);
+    SyncGiveawayCvarPair(gCvarRollSound, gLegacyCvarRollSound);
+    SyncGiveawayCvarPair(gCvarSlowRollSound, gLegacyCvarSlowRollSound);
+    SyncGiveawayCvarPair(gCvarWinnerSound, gLegacyCvarWinnerSound);
+    SyncGiveawayCvarPair(gCvarSlowRollSoundVolume, gLegacyCvarSlowRollSoundVolume);
+    SyncGiveawayCvarPair(gCvarWinnerSoundVolume, gLegacyCvarWinnerSoundVolume);
+    g_bSyncingCvarAliases = false;
+}
+
+public void OnGiveawayAliasCvarChanged(ConVar convar, const char[] oldValue, const char[] newValue)
+{
+    if (g_bSyncingCvarAliases)
+    {
+        return;
+    }
+
+    g_bSyncingCvarAliases = true;
+
+    if (convar == gCvarEnable) gLegacyCvarEnable.SetString(newValue);
+    else if (convar == gLegacyCvarEnable) gCvarEnable.SetString(newValue);
+    else if (convar == gCvarMinPlayers) gLegacyCvarMinPlayers.SetString(newValue);
+    else if (convar == gLegacyCvarMinPlayers) gCvarMinPlayers.SetString(newValue);
+    else if (convar == gCvarTeamOnly) gLegacyCvarTeamOnly.SetString(newValue);
+    else if (convar == gLegacyCvarTeamOnly) gCvarTeamOnly.SetString(newValue);
+    else if (convar == gCvarAdminFlag) gLegacyCvarAdminFlag.SetString(newValue);
+    else if (convar == gLegacyCvarAdminFlag) gCvarAdminFlag.SetString(newValue);
+    else if (convar == gCvarStartDelay) gLegacyCvarStartDelay.SetString(newValue);
+    else if (convar == gLegacyCvarStartDelay) gCvarStartDelay.SetString(newValue);
+    else if (convar == gCvarTickInterval) gLegacyCvarTickInterval.SetString(newValue);
+    else if (convar == gLegacyCvarTickInterval) gCvarTickInterval.SetString(newValue);
+    else if (convar == gCvarRollTicks) gLegacyCvarRollTicks.SetString(newValue);
+    else if (convar == gLegacyCvarRollTicks) gCvarRollTicks.SetString(newValue);
+    else if (convar == gCvarWinnerHoldTime) gLegacyCvarWinnerHoldTime.SetString(newValue);
+    else if (convar == gLegacyCvarWinnerHoldTime) gCvarWinnerHoldTime.SetString(newValue);
+    else if (convar == gCvarAnnounce) gLegacyCvarAnnounce.SetString(newValue);
+    else if (convar == gLegacyCvarAnnounce) gCvarAnnounce.SetString(newValue);
+    else if (convar == gCvarHudChannel) gLegacyCvarHudChannel.SetString(newValue);
+    else if (convar == gLegacyCvarHudChannel) gCvarHudChannel.SetString(newValue);
+    else if (convar == gCvarSoundEnable) gLegacyCvarSoundEnable.SetString(newValue);
+    else if (convar == gLegacyCvarSoundEnable) gCvarSoundEnable.SetString(newValue);
+    else if (convar == gCvarRollSound) gLegacyCvarRollSound.SetString(newValue);
+    else if (convar == gLegacyCvarRollSound) gCvarRollSound.SetString(newValue);
+    else if (convar == gCvarSlowRollSound) gLegacyCvarSlowRollSound.SetString(newValue);
+    else if (convar == gLegacyCvarSlowRollSound) gCvarSlowRollSound.SetString(newValue);
+    else if (convar == gCvarWinnerSound) gLegacyCvarWinnerSound.SetString(newValue);
+    else if (convar == gLegacyCvarWinnerSound) gCvarWinnerSound.SetString(newValue);
+    else if (convar == gCvarSlowRollSoundVolume) gLegacyCvarSlowRollSoundVolume.SetString(newValue);
+    else if (convar == gLegacyCvarSlowRollSoundVolume) gCvarSlowRollSoundVolume.SetString(newValue);
+    else if (convar == gCvarWinnerSoundVolume) gLegacyCvarWinnerSoundVolume.SetString(newValue);
+    else if (convar == gLegacyCvarWinnerSoundVolume) gCvarWinnerSoundVolume.SetString(newValue);
+
+    g_bSyncingCvarAliases = false;
+}
+
 // =========================
 // Plugin start
 // =========================
@@ -65,25 +162,76 @@ public void OnPluginStart()
 {
     LoadTranslations("umbrella_store_giveaway.phrases");
 
-    gCvarEnable              = CreateConVar("sm_store_giveaway_enable", "1", "Enable giveaway module.", FCVAR_NONE, true, 0.0, true, 1.0);
-    gCvarMinPlayers          = CreateConVar("sm_store_giveaway_min_players", "2", "Minimum valid players required to start giveaway.", FCVAR_NONE, true, 1.0);
-    gCvarTeamOnly            = CreateConVar("sm_store_giveaway_team_only", "1", "1 = TT/CT only, 0 = any in-game player.", FCVAR_NONE, true, 0.0, true, 1.0);
-    gCvarAdminFlag           = CreateConVar("sm_store_giveaway_admin_flag", "z", "Required admin flag to use giveaway.");
-    gCvarStartDelay          = CreateConVar("sm_store_giveaway_start_delay", "3.0", "Seconds before animation starts.");
-    gCvarTickInterval        = CreateConVar("sm_store_giveaway_tick_interval", "0.10", "Base timer interval for animation.");
-    gCvarRollTicks           = CreateConVar("sm_store_giveaway_roll_ticks", "38", "Total number of animation ticks.");
-    gCvarWinnerHoldTime      = CreateConVar("sm_store_giveaway_winner_hold_time", "4.0", "Time to hold winner on screen.");
-    gCvarAnnounce            = CreateConVar("sm_store_giveaway_announce", "1", "Announce messages in chat.");
-    gCvarHudChannel          = CreateConVar("sm_store_giveaway_hud_channel", "4", "HUD channel to use.");
+    gCvarEnable              = CreateConVar("umbrella_store_giveaway_enabled", "1", "Enable giveaway module.", FCVAR_NONE, true, 0.0, true, 1.0);
+    gCvarMinPlayers          = CreateConVar("umbrella_store_giveaway_min_players", "2", "Minimum valid players required to start giveaway.", FCVAR_NONE, true, 1.0);
+    gCvarTeamOnly            = CreateConVar("umbrella_store_giveaway_team_only", "1", "1 = TT/CT only, 0 = any in-game player.", FCVAR_NONE, true, 0.0, true, 1.0);
+    gCvarAdminFlag           = CreateConVar("umbrella_store_giveaway_admin_flag", "z", "Required admin flag to use giveaway.");
+    gCvarStartDelay          = CreateConVar("umbrella_store_giveaway_start_delay", "3.0", "Seconds before animation starts.");
+    gCvarTickInterval        = CreateConVar("umbrella_store_giveaway_tick_interval", "0.10", "Base timer interval for animation.");
+    gCvarRollTicks           = CreateConVar("umbrella_store_giveaway_roll_ticks", "38", "Total number of animation ticks.");
+    gCvarWinnerHoldTime      = CreateConVar("umbrella_store_giveaway_winner_hold_time", "4.0", "Time to hold winner on screen.");
+    gCvarAnnounce            = CreateConVar("umbrella_store_giveaway_announce", "1", "Announce messages in chat.");
+    gCvarHudChannel          = CreateConVar("umbrella_store_giveaway_hud_channel", "4", "HUD channel to use.");
 
-    gCvarSoundEnable         = CreateConVar("sm_store_giveaway_sound_enable", "1", "Enable giveaway sounds.", FCVAR_NONE, true, 0.0, true, 1.0);
-    gCvarRollSound           = CreateConVar("sm_store_giveaway_roll_sound", "", "Roulette roll sound path. Empty = disabled.");
-    gCvarSlowRollSound       = CreateConVar("sm_store_giveaway_slow_roll_sound", "buttons/button17.wav", "Sound played while roulette slows down.");
-    gCvarWinnerSound         = CreateConVar("sm_store_giveaway_winner_sound", "buttons/bell1.wav", "Sound played when winner is selected.");
-        gCvarSlowRollSoundVolume = CreateConVar("sm_store_giveaway_slow_roll_sound_volume", "0.75", "Slowdown sound volume.", FCVAR_NONE, true, 0.0, true, 1.0);
-    gCvarWinnerSoundVolume   = CreateConVar("sm_store_giveaway_winner_sound_volume", "0.95", "Winner sound volume.", FCVAR_NONE, true, 0.0, true, 1.0);
+    gCvarSoundEnable         = CreateConVar("umbrella_store_giveaway_sound_enable", "1", "Enable giveaway sounds.", FCVAR_NONE, true, 0.0, true, 1.0);
+    gCvarRollSound           = CreateConVar("umbrella_store_giveaway_roll_sound", "", "Roulette roll sound path. Empty = disabled.");
+    gCvarSlowRollSound       = CreateConVar("umbrella_store_giveaway_slow_roll_sound", "buttons/button17.wav", "Sound played while roulette slows down.");
+    gCvarWinnerSound         = CreateConVar("umbrella_store_giveaway_winner_sound", "buttons/bell1.wav", "Sound played when winner is selected.");
+    gCvarSlowRollSoundVolume = CreateConVar("umbrella_store_giveaway_slow_roll_sound_volume", "0.75", "Slowdown sound volume.", FCVAR_NONE, true, 0.0, true, 1.0);
+    gCvarWinnerSoundVolume   = CreateConVar("umbrella_store_giveaway_winner_sound_volume", "0.95", "Winner sound volume.", FCVAR_NONE, true, 0.0, true, 1.0);
+
+    gLegacyCvarEnable              = CreateConVar("sm_store_giveaway_enable", "1", "Legacy alias for umbrella_store_giveaway_enabled.", FCVAR_DONTRECORD, true, 0.0, true, 1.0);
+    gLegacyCvarMinPlayers          = CreateConVar("sm_store_giveaway_min_players", "2", "Legacy alias for umbrella_store_giveaway_min_players.", FCVAR_DONTRECORD, true, 1.0);
+    gLegacyCvarTeamOnly            = CreateConVar("sm_store_giveaway_team_only", "1", "Legacy alias for umbrella_store_giveaway_team_only.", FCVAR_DONTRECORD, true, 0.0, true, 1.0);
+    gLegacyCvarAdminFlag           = CreateConVar("sm_store_giveaway_admin_flag", "z", "Legacy alias for umbrella_store_giveaway_admin_flag.", FCVAR_DONTRECORD);
+    gLegacyCvarStartDelay          = CreateConVar("sm_store_giveaway_start_delay", "3.0", "Legacy alias for umbrella_store_giveaway_start_delay.", FCVAR_DONTRECORD);
+    gLegacyCvarTickInterval        = CreateConVar("sm_store_giveaway_tick_interval", "0.10", "Legacy alias for umbrella_store_giveaway_tick_interval.", FCVAR_DONTRECORD);
+    gLegacyCvarRollTicks           = CreateConVar("sm_store_giveaway_roll_ticks", "38", "Legacy alias for umbrella_store_giveaway_roll_ticks.", FCVAR_DONTRECORD);
+    gLegacyCvarWinnerHoldTime      = CreateConVar("sm_store_giveaway_winner_hold_time", "4.0", "Legacy alias for umbrella_store_giveaway_winner_hold_time.", FCVAR_DONTRECORD);
+    gLegacyCvarAnnounce            = CreateConVar("sm_store_giveaway_announce", "1", "Legacy alias for umbrella_store_giveaway_announce.", FCVAR_DONTRECORD);
+    gLegacyCvarHudChannel          = CreateConVar("sm_store_giveaway_hud_channel", "4", "Legacy alias for umbrella_store_giveaway_hud_channel.", FCVAR_DONTRECORD);
+    gLegacyCvarSoundEnable         = CreateConVar("sm_store_giveaway_sound_enable", "1", "Legacy alias for umbrella_store_giveaway_sound_enable.", FCVAR_DONTRECORD, true, 0.0, true, 1.0);
+    gLegacyCvarRollSound           = CreateConVar("sm_store_giveaway_roll_sound", "", "Legacy alias for umbrella_store_giveaway_roll_sound.", FCVAR_DONTRECORD);
+    gLegacyCvarSlowRollSound       = CreateConVar("sm_store_giveaway_slow_roll_sound", "buttons/button17.wav", "Legacy alias for umbrella_store_giveaway_slow_roll_sound.", FCVAR_DONTRECORD);
+    gLegacyCvarWinnerSound         = CreateConVar("sm_store_giveaway_winner_sound", "buttons/bell1.wav", "Legacy alias for umbrella_store_giveaway_winner_sound.", FCVAR_DONTRECORD);
+    gLegacyCvarSlowRollSoundVolume = CreateConVar("sm_store_giveaway_slow_roll_sound_volume", "0.75", "Legacy alias for umbrella_store_giveaway_slow_roll_sound_volume.", FCVAR_DONTRECORD, true, 0.0, true, 1.0);
+    gLegacyCvarWinnerSoundVolume   = CreateConVar("sm_store_giveaway_winner_sound_volume", "0.95", "Legacy alias for umbrella_store_giveaway_winner_sound_volume.", FCVAR_DONTRECORD, true, 0.0, true, 1.0);
+
+    HookConVarChange(gCvarEnable, OnGiveawayAliasCvarChanged);
+    HookConVarChange(gCvarMinPlayers, OnGiveawayAliasCvarChanged);
+    HookConVarChange(gCvarTeamOnly, OnGiveawayAliasCvarChanged);
+    HookConVarChange(gCvarAdminFlag, OnGiveawayAliasCvarChanged);
+    HookConVarChange(gCvarStartDelay, OnGiveawayAliasCvarChanged);
+    HookConVarChange(gCvarTickInterval, OnGiveawayAliasCvarChanged);
+    HookConVarChange(gCvarRollTicks, OnGiveawayAliasCvarChanged);
+    HookConVarChange(gCvarWinnerHoldTime, OnGiveawayAliasCvarChanged);
+    HookConVarChange(gCvarAnnounce, OnGiveawayAliasCvarChanged);
+    HookConVarChange(gCvarHudChannel, OnGiveawayAliasCvarChanged);
+    HookConVarChange(gCvarSoundEnable, OnGiveawayAliasCvarChanged);
+    HookConVarChange(gCvarRollSound, OnGiveawayAliasCvarChanged);
+    HookConVarChange(gCvarSlowRollSound, OnGiveawayAliasCvarChanged);
+    HookConVarChange(gCvarWinnerSound, OnGiveawayAliasCvarChanged);
+    HookConVarChange(gCvarSlowRollSoundVolume, OnGiveawayAliasCvarChanged);
+    HookConVarChange(gCvarWinnerSoundVolume, OnGiveawayAliasCvarChanged);
+    HookConVarChange(gLegacyCvarEnable, OnGiveawayAliasCvarChanged);
+    HookConVarChange(gLegacyCvarMinPlayers, OnGiveawayAliasCvarChanged);
+    HookConVarChange(gLegacyCvarTeamOnly, OnGiveawayAliasCvarChanged);
+    HookConVarChange(gLegacyCvarAdminFlag, OnGiveawayAliasCvarChanged);
+    HookConVarChange(gLegacyCvarStartDelay, OnGiveawayAliasCvarChanged);
+    HookConVarChange(gLegacyCvarTickInterval, OnGiveawayAliasCvarChanged);
+    HookConVarChange(gLegacyCvarRollTicks, OnGiveawayAliasCvarChanged);
+    HookConVarChange(gLegacyCvarWinnerHoldTime, OnGiveawayAliasCvarChanged);
+    HookConVarChange(gLegacyCvarAnnounce, OnGiveawayAliasCvarChanged);
+    HookConVarChange(gLegacyCvarHudChannel, OnGiveawayAliasCvarChanged);
+    HookConVarChange(gLegacyCvarSoundEnable, OnGiveawayAliasCvarChanged);
+    HookConVarChange(gLegacyCvarRollSound, OnGiveawayAliasCvarChanged);
+    HookConVarChange(gLegacyCvarSlowRollSound, OnGiveawayAliasCvarChanged);
+    HookConVarChange(gLegacyCvarWinnerSound, OnGiveawayAliasCvarChanged);
+    HookConVarChange(gLegacyCvarSlowRollSoundVolume, OnGiveawayAliasCvarChanged);
+    HookConVarChange(gLegacyCvarWinnerSoundVolume, OnGiveawayAliasCvarChanged);
 
     AutoExecConfig(true, "umbrella_store_giveaway");
+    SyncGiveawayLegacyCvarsFromCanonical();
 
     char giveawayCmdHelp[128];
     char giveawayCancelCmdHelp[128];
@@ -305,7 +453,7 @@ void PrintStoreMessageAll(const char[] format, any ...)
         SetGlobalTransTarget(client);
         VFormat(buffer, sizeof(buffer), format, 2);
         HighlightChatCommands(buffer, highlighted, sizeof(highlighted));
-        PrintToChat(client, "%s %s", US_CHAT_TAG, highlighted);
+        CPrintToChat(client, "%s %s", US_CHAT_TAG, highlighted);
     }
 }
 
@@ -325,7 +473,7 @@ void ReplyStoreMessage(int client, const char[] format, any ...)
     HighlightChatCommands(buffer, highlighted, sizeof(highlighted));
     if (client > 0 && client <= MaxClients)
     {
-        ReplyToCommand(client, "%s %s", US_CHAT_TAG, highlighted);
+        CReplyToCommand(client, "%s %s", US_CHAT_TAG, highlighted);
     }
     else
     {
@@ -343,11 +491,22 @@ bool IsCommandContinuationChar(int c)
         || c == '/';
 }
 
+void AppendLiteral(char[] output, int maxlen, int &outPos, const char[] literal)
+{
+    int literalLen = strlen(literal);
+    for (int i = 0; i < literalLen && outPos < maxlen - 1; i++)
+    {
+        output[outPos++] = literal[i];
+    }
+}
+
 void HighlightChatCommands(const char[] input, char[] output, int maxlen)
 {
     int inLen = strlen(input);
     int outPos = 0;
     bool inCommand = false;
+    static const char commandStart[] = "{green}";
+    static const char commandEnd[] = "{default}";
 
     for (int i = 0; i < inLen && outPos < maxlen - 1; i++)
     {
@@ -355,10 +514,7 @@ void HighlightChatCommands(const char[] input, char[] output, int maxlen)
 
         if (!inCommand && ch == '!' && (i + 1) < inLen && IsCommandContinuationChar(input[i + 1]))
         {
-            if (outPos < maxlen - 1)
-            {
-                output[outPos++] = '\x04';
-            }
+            AppendLiteral(output, maxlen, outPos, commandStart);
             output[outPos++] = ch;
             inCommand = true;
             continue;
@@ -366,10 +522,7 @@ void HighlightChatCommands(const char[] input, char[] output, int maxlen)
 
         if (inCommand && !IsCommandContinuationChar(ch))
         {
-            if (outPos < maxlen - 1)
-            {
-                output[outPos++] = '\x01';
-            }
+            AppendLiteral(output, maxlen, outPos, commandEnd);
             inCommand = false;
         }
 
@@ -381,7 +534,7 @@ void HighlightChatCommands(const char[] input, char[] output, int maxlen)
 
     if (inCommand && outPos < maxlen - 1)
     {
-        output[outPos++] = '\x01';
+        AppendLiteral(output, maxlen, outPos, commandEnd);
     }
 
     output[outPos] = '\0';

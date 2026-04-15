@@ -4,8 +4,9 @@
 #include <sourcemod>
 #include <sdktools>
 #include <umbrella_store>
+#include <multicolors>
 
-#define US_CHAT_TAG " \x03[Umbrella Store]\x01"
+#define US_CHAT_TAG " {purple}[Umbrella Store]{default}"
 
 #define CASINO_ID "coinflip"
 
@@ -21,7 +22,7 @@ public Plugin myinfo =
     name        = "[Umbrella Store] Casino - Coinflip",
     author      = "Ayrton09",
     description = "Coinflip contra la casa y versus jugador para Umbrella Store",
-    version     = "1.0.0",
+    version     = "1.1.0",
     url         = ""
 };
 
@@ -41,6 +42,23 @@ ConVar gCvarAnimMode;
 ConVar gCvarPvpEnabled;
 ConVar gCvarPvpTimeout;
 ConVar gCvarPvpChallengeCooldown;
+ConVar gLegacyCvarEnabled;
+ConVar gLegacyCvarMinBet;
+ConVar gLegacyCvarMaxBet;
+ConVar gLegacyCvarCooldown;
+ConVar gLegacyCvarWinMultiplier;
+ConVar gLegacyCvarWinSound;
+ConVar gLegacyCvarLoseSound;
+ConVar gLegacyCvarAnnounceBig;
+ConVar gLegacyCvarAnnounceThreshold;
+ConVar gLegacyCvarAnimEnabled;
+ConVar gLegacyCvarAnimSteps;
+ConVar gLegacyCvarAnimDelay;
+ConVar gLegacyCvarAnimMode;
+ConVar gLegacyCvarPvpEnabled;
+ConVar gLegacyCvarPvpTimeout;
+ConVar gLegacyCvarPvpChallengeCooldown;
+bool g_bSyncingCvarAliases = false;
 
 float g_fNextUse[MAXPLAYERS + 1];
 float g_fNextChallenge[MAXPLAYERS + 1];
@@ -68,6 +86,116 @@ int g_iChallengeFrom[MAXPLAYERS + 1];
 int g_iChallengeAmount[MAXPLAYERS + 1];
 Handle g_hChallengeTimer[MAXPLAYERS + 1];
 
+void TrackCoinflipResult(int client, int net, bool win)
+{
+    if (!IsValidClient(client))
+    {
+        return;
+    }
+
+    US_AddStat(client, "coinflip_games", 1);
+    US_AddStat(client, win ? "coinflip_wins" : "coinflip_losses", 1);
+
+    if (net != 0)
+    {
+        US_AddStat(client, "coinflip_profit", net);
+    }
+
+    if (win)
+    {
+        US_AdvanceQuestProgress(client, "coinflip_wins_5", 1);
+    }
+}
+
+void RegisterCoinflipQuests()
+{
+    if (!LibraryExists("umbrella_store"))
+    {
+        return;
+    }
+
+    US_RegisterQuestEx("coinflip_wins_5", "Quest Title Coinflip Wins I", 5, 200, "", false, "Quest Category Casino", "Quest Desc Coinflip Wins I");
+}
+
+void SyncCoinflipCvarPair(ConVar source, ConVar target)
+{
+    if (source == null || target == null)
+    {
+        return;
+    }
+
+    char value[PLATFORM_MAX_PATH];
+    source.GetString(value, sizeof(value));
+    target.SetString(value);
+}
+
+void SyncCoinflipLegacyCvarsFromCanonical()
+{
+    g_bSyncingCvarAliases = true;
+    SyncCoinflipCvarPair(gCvarEnabled, gLegacyCvarEnabled);
+    SyncCoinflipCvarPair(gCvarMinBet, gLegacyCvarMinBet);
+    SyncCoinflipCvarPair(gCvarMaxBet, gLegacyCvarMaxBet);
+    SyncCoinflipCvarPair(gCvarCooldown, gLegacyCvarCooldown);
+    SyncCoinflipCvarPair(gCvarWinMultiplier, gLegacyCvarWinMultiplier);
+    SyncCoinflipCvarPair(gCvarWinSound, gLegacyCvarWinSound);
+    SyncCoinflipCvarPair(gCvarLoseSound, gLegacyCvarLoseSound);
+    SyncCoinflipCvarPair(gCvarAnnounceBig, gLegacyCvarAnnounceBig);
+    SyncCoinflipCvarPair(gCvarAnnounceThreshold, gLegacyCvarAnnounceThreshold);
+    SyncCoinflipCvarPair(gCvarAnimEnabled, gLegacyCvarAnimEnabled);
+    SyncCoinflipCvarPair(gCvarAnimSteps, gLegacyCvarAnimSteps);
+    SyncCoinflipCvarPair(gCvarAnimDelay, gLegacyCvarAnimDelay);
+    SyncCoinflipCvarPair(gCvarAnimMode, gLegacyCvarAnimMode);
+    SyncCoinflipCvarPair(gCvarPvpEnabled, gLegacyCvarPvpEnabled);
+    SyncCoinflipCvarPair(gCvarPvpTimeout, gLegacyCvarPvpTimeout);
+    SyncCoinflipCvarPair(gCvarPvpChallengeCooldown, gLegacyCvarPvpChallengeCooldown);
+    g_bSyncingCvarAliases = false;
+}
+
+public void OnCoinflipAliasCvarChanged(ConVar convar, const char[] oldValue, const char[] newValue)
+{
+    if (g_bSyncingCvarAliases)
+    {
+        return;
+    }
+
+    g_bSyncingCvarAliases = true;
+
+    if (convar == gCvarEnabled) gLegacyCvarEnabled.SetString(newValue);
+    else if (convar == gLegacyCvarEnabled) gCvarEnabled.SetString(newValue);
+    else if (convar == gCvarMinBet) gLegacyCvarMinBet.SetString(newValue);
+    else if (convar == gLegacyCvarMinBet) gCvarMinBet.SetString(newValue);
+    else if (convar == gCvarMaxBet) gLegacyCvarMaxBet.SetString(newValue);
+    else if (convar == gLegacyCvarMaxBet) gCvarMaxBet.SetString(newValue);
+    else if (convar == gCvarCooldown) gLegacyCvarCooldown.SetString(newValue);
+    else if (convar == gLegacyCvarCooldown) gCvarCooldown.SetString(newValue);
+    else if (convar == gCvarWinMultiplier) gLegacyCvarWinMultiplier.SetString(newValue);
+    else if (convar == gLegacyCvarWinMultiplier) gCvarWinMultiplier.SetString(newValue);
+    else if (convar == gCvarWinSound) gLegacyCvarWinSound.SetString(newValue);
+    else if (convar == gLegacyCvarWinSound) gCvarWinSound.SetString(newValue);
+    else if (convar == gCvarLoseSound) gLegacyCvarLoseSound.SetString(newValue);
+    else if (convar == gLegacyCvarLoseSound) gCvarLoseSound.SetString(newValue);
+    else if (convar == gCvarAnnounceBig) gLegacyCvarAnnounceBig.SetString(newValue);
+    else if (convar == gLegacyCvarAnnounceBig) gCvarAnnounceBig.SetString(newValue);
+    else if (convar == gCvarAnnounceThreshold) gLegacyCvarAnnounceThreshold.SetString(newValue);
+    else if (convar == gLegacyCvarAnnounceThreshold) gCvarAnnounceThreshold.SetString(newValue);
+    else if (convar == gCvarAnimEnabled) gLegacyCvarAnimEnabled.SetString(newValue);
+    else if (convar == gLegacyCvarAnimEnabled) gCvarAnimEnabled.SetString(newValue);
+    else if (convar == gCvarAnimSteps) gLegacyCvarAnimSteps.SetString(newValue);
+    else if (convar == gLegacyCvarAnimSteps) gCvarAnimSteps.SetString(newValue);
+    else if (convar == gCvarAnimDelay) gLegacyCvarAnimDelay.SetString(newValue);
+    else if (convar == gLegacyCvarAnimDelay) gCvarAnimDelay.SetString(newValue);
+    else if (convar == gCvarAnimMode) gLegacyCvarAnimMode.SetString(newValue);
+    else if (convar == gLegacyCvarAnimMode) gCvarAnimMode.SetString(newValue);
+    else if (convar == gCvarPvpEnabled) gLegacyCvarPvpEnabled.SetString(newValue);
+    else if (convar == gLegacyCvarPvpEnabled) gCvarPvpEnabled.SetString(newValue);
+    else if (convar == gCvarPvpTimeout) gLegacyCvarPvpTimeout.SetString(newValue);
+    else if (convar == gLegacyCvarPvpTimeout) gCvarPvpTimeout.SetString(newValue);
+    else if (convar == gCvarPvpChallengeCooldown) gLegacyCvarPvpChallengeCooldown.SetString(newValue);
+    else if (convar == gLegacyCvarPvpChallengeCooldown) gCvarPvpChallengeCooldown.SetString(newValue);
+
+    g_bSyncingCvarAliases = false;
+}
+
 public void OnPluginStart()
 {
     LoadTranslations("umbrella_store_coinflip.phrases");
@@ -85,28 +213,80 @@ public void OnPluginStart()
     AddCommandListener(Command_Say, "say");
     AddCommandListener(Command_Say, "say_team");
 
-    gCvarEnabled = CreateConVar("sm_umbrella_store_coinflip_enabled", "1", "Enable the coinflip module.", FCVAR_NONE, true, 0.0, true, 1.0);
-    gCvarMinBet = CreateConVar("sm_umbrella_store_coinflip_min_bet", "50", "Minimum bet.", FCVAR_NONE, true, 1.0);
-    gCvarMaxBet = CreateConVar("sm_umbrella_store_coinflip_max_bet", "1000000", "Maximum bet. 0 = no limit.", FCVAR_NONE, true, 0.0);
-    gCvarCooldown = CreateConVar("sm_umbrella_store_coinflip_cooldown", "2.0", "Cooldown between uses.", FCVAR_NONE, true, 0.0);
-    gCvarWinMultiplier = CreateConVar("sm_umbrella_store_coinflip_multiplier", "2.0", "Multiplier when winning against the house.", FCVAR_NONE, true, 1.0);
+    gCvarEnabled = CreateConVar("umbrella_store_coinflip_enabled", "1", "Enable the coinflip module.", FCVAR_NONE, true, 0.0, true, 1.0);
+    gCvarMinBet = CreateConVar("umbrella_store_coinflip_min_bet", "50", "Minimum bet.", FCVAR_NONE, true, 1.0);
+    gCvarMaxBet = CreateConVar("umbrella_store_coinflip_max_bet", "1000000", "Maximum bet. 0 = no limit.", FCVAR_NONE, true, 0.0);
+    gCvarCooldown = CreateConVar("umbrella_store_coinflip_cooldown", "2.0", "Cooldown between uses.", FCVAR_NONE, true, 0.0);
+    gCvarWinMultiplier = CreateConVar("umbrella_store_coinflip_multiplier", "2.0", "Multiplier when winning against the house.", FCVAR_NONE, true, 1.0);
 
-    gCvarWinSound = CreateConVar("sm_umbrella_store_coinflip_win_sound", "items/itempickup.wav", "Sound played on win.");
-    gCvarLoseSound = CreateConVar("sm_umbrella_store_coinflip_lose_sound", "buttons/button10.wav", "Sound played on loss.");
+    gCvarWinSound = CreateConVar("umbrella_store_coinflip_win_sound", "items/itempickup.wav", "Sound played on win.");
+    gCvarLoseSound = CreateConVar("umbrella_store_coinflip_lose_sound", "buttons/button10.wav", "Sound played on loss.");
 
-    gCvarAnnounceBig = CreateConVar("sm_umbrella_store_coinflip_announce_big", "1", "Announce large bets globally.", FCVAR_NONE, true, 0.0, true, 1.0);
-    gCvarAnnounceThreshold = CreateConVar("sm_umbrella_store_coinflip_announce_threshold", "2000", "Threshold for global announcement.", FCVAR_NONE, true, 1.0);
+    gCvarAnnounceBig = CreateConVar("umbrella_store_coinflip_announce_big", "1", "Announce large bets globally.", FCVAR_NONE, true, 0.0, true, 1.0);
+    gCvarAnnounceThreshold = CreateConVar("umbrella_store_coinflip_announce_threshold", "2000", "Threshold for global announcement.", FCVAR_NONE, true, 1.0);
 
-    gCvarAnimEnabled = CreateConVar("sm_umbrella_store_coinflip_anim_enabled", "1", "Enable non-graphical animation.", FCVAR_NONE, true, 0.0, true, 1.0);
-    gCvarAnimSteps = CreateConVar("sm_umbrella_store_coinflip_anim_steps", "6", "Number of animation steps.", FCVAR_NONE, true, 1.0, true, 20.0);
-    gCvarAnimDelay = CreateConVar("sm_umbrella_store_coinflip_anim_delay", "0.35", "Delay between animation steps.", FCVAR_NONE, true, 0.05, true, 3.0);
-    gCvarAnimMode = CreateConVar("sm_umbrella_store_coinflip_anim_mode", "2", "1 = center text, 2 = hint text.", FCVAR_NONE, true, 1.0, true, 2.0);
+    gCvarAnimEnabled = CreateConVar("umbrella_store_coinflip_anim_enabled", "1", "Enable non-graphical animation.", FCVAR_NONE, true, 0.0, true, 1.0);
+    gCvarAnimSteps = CreateConVar("umbrella_store_coinflip_anim_steps", "6", "Number of animation steps.", FCVAR_NONE, true, 1.0, true, 20.0);
+    gCvarAnimDelay = CreateConVar("umbrella_store_coinflip_anim_delay", "0.35", "Delay between animation steps.", FCVAR_NONE, true, 0.05, true, 3.0);
+    gCvarAnimMode = CreateConVar("umbrella_store_coinflip_anim_mode", "2", "1 = center text, 2 = hint text.", FCVAR_NONE, true, 1.0, true, 2.0);
 
-    gCvarPvpEnabled = CreateConVar("sm_umbrella_store_coinflip_pvp_enabled", "1", "Enable player-vs-player coinflip.", FCVAR_NONE, true, 0.0, true, 1.0);
-    gCvarPvpTimeout = CreateConVar("sm_umbrella_store_coinflip_pvp_timeout", "20.0", "Time to accept a PvP coinflip.", FCVAR_NONE, true, 5.0, true, 120.0);
-    gCvarPvpChallengeCooldown = CreateConVar("sm_umbrella_store_coinflip_pvp_challenge_cooldown", "8.0", "Cooldown between PvP challenges to prevent spam.", FCVAR_NONE, true, 0.0, true, 120.0);
+    gCvarPvpEnabled = CreateConVar("umbrella_store_coinflip_pvp_enabled", "1", "Enable player-vs-player coinflip.", FCVAR_NONE, true, 0.0, true, 1.0);
+    gCvarPvpTimeout = CreateConVar("umbrella_store_coinflip_pvp_timeout", "20.0", "Time to accept a PvP coinflip.", FCVAR_NONE, true, 5.0, true, 120.0);
+    gCvarPvpChallengeCooldown = CreateConVar("umbrella_store_coinflip_pvp_challenge_cooldown", "8.0", "Cooldown between PvP challenges to prevent spam.", FCVAR_NONE, true, 0.0, true, 120.0);
+
+    gLegacyCvarEnabled = CreateConVar("sm_umbrella_store_coinflip_enabled", "1", "Legacy alias for umbrella_store_coinflip_enabled.", FCVAR_DONTRECORD, true, 0.0, true, 1.0);
+    gLegacyCvarMinBet = CreateConVar("sm_umbrella_store_coinflip_min_bet", "50", "Legacy alias for umbrella_store_coinflip_min_bet.", FCVAR_DONTRECORD, true, 1.0);
+    gLegacyCvarMaxBet = CreateConVar("sm_umbrella_store_coinflip_max_bet", "1000000", "Legacy alias for umbrella_store_coinflip_max_bet.", FCVAR_DONTRECORD, true, 0.0);
+    gLegacyCvarCooldown = CreateConVar("sm_umbrella_store_coinflip_cooldown", "2.0", "Legacy alias for umbrella_store_coinflip_cooldown.", FCVAR_DONTRECORD, true, 0.0);
+    gLegacyCvarWinMultiplier = CreateConVar("sm_umbrella_store_coinflip_multiplier", "2.0", "Legacy alias for umbrella_store_coinflip_multiplier.", FCVAR_DONTRECORD, true, 1.0);
+    gLegacyCvarWinSound = CreateConVar("sm_umbrella_store_coinflip_win_sound", "items/itempickup.wav", "Legacy alias for umbrella_store_coinflip_win_sound.", FCVAR_DONTRECORD);
+    gLegacyCvarLoseSound = CreateConVar("sm_umbrella_store_coinflip_lose_sound", "buttons/button10.wav", "Legacy alias for umbrella_store_coinflip_lose_sound.", FCVAR_DONTRECORD);
+    gLegacyCvarAnnounceBig = CreateConVar("sm_umbrella_store_coinflip_announce_big", "1", "Legacy alias for umbrella_store_coinflip_announce_big.", FCVAR_DONTRECORD, true, 0.0, true, 1.0);
+    gLegacyCvarAnnounceThreshold = CreateConVar("sm_umbrella_store_coinflip_announce_threshold", "2000", "Legacy alias for umbrella_store_coinflip_announce_threshold.", FCVAR_DONTRECORD, true, 1.0);
+    gLegacyCvarAnimEnabled = CreateConVar("sm_umbrella_store_coinflip_anim_enabled", "1", "Legacy alias for umbrella_store_coinflip_anim_enabled.", FCVAR_DONTRECORD, true, 0.0, true, 1.0);
+    gLegacyCvarAnimSteps = CreateConVar("sm_umbrella_store_coinflip_anim_steps", "6", "Legacy alias for umbrella_store_coinflip_anim_steps.", FCVAR_DONTRECORD, true, 1.0, true, 20.0);
+    gLegacyCvarAnimDelay = CreateConVar("sm_umbrella_store_coinflip_anim_delay", "0.35", "Legacy alias for umbrella_store_coinflip_anim_delay.", FCVAR_DONTRECORD, true, 0.05, true, 3.0);
+    gLegacyCvarAnimMode = CreateConVar("sm_umbrella_store_coinflip_anim_mode", "2", "Legacy alias for umbrella_store_coinflip_anim_mode.", FCVAR_DONTRECORD, true, 1.0, true, 2.0);
+    gLegacyCvarPvpEnabled = CreateConVar("sm_umbrella_store_coinflip_pvp_enabled", "1", "Legacy alias for umbrella_store_coinflip_pvp_enabled.", FCVAR_DONTRECORD, true, 0.0, true, 1.0);
+    gLegacyCvarPvpTimeout = CreateConVar("sm_umbrella_store_coinflip_pvp_timeout", "20.0", "Legacy alias for umbrella_store_coinflip_pvp_timeout.", FCVAR_DONTRECORD, true, 5.0, true, 120.0);
+    gLegacyCvarPvpChallengeCooldown = CreateConVar("sm_umbrella_store_coinflip_pvp_challenge_cooldown", "8.0", "Legacy alias for umbrella_store_coinflip_pvp_challenge_cooldown.", FCVAR_DONTRECORD, true, 0.0, true, 120.0);
+
+    HookConVarChange(gCvarEnabled, OnCoinflipAliasCvarChanged);
+    HookConVarChange(gCvarMinBet, OnCoinflipAliasCvarChanged);
+    HookConVarChange(gCvarMaxBet, OnCoinflipAliasCvarChanged);
+    HookConVarChange(gCvarCooldown, OnCoinflipAliasCvarChanged);
+    HookConVarChange(gCvarWinMultiplier, OnCoinflipAliasCvarChanged);
+    HookConVarChange(gCvarWinSound, OnCoinflipAliasCvarChanged);
+    HookConVarChange(gCvarLoseSound, OnCoinflipAliasCvarChanged);
+    HookConVarChange(gCvarAnnounceBig, OnCoinflipAliasCvarChanged);
+    HookConVarChange(gCvarAnnounceThreshold, OnCoinflipAliasCvarChanged);
+    HookConVarChange(gCvarAnimEnabled, OnCoinflipAliasCvarChanged);
+    HookConVarChange(gCvarAnimSteps, OnCoinflipAliasCvarChanged);
+    HookConVarChange(gCvarAnimDelay, OnCoinflipAliasCvarChanged);
+    HookConVarChange(gCvarAnimMode, OnCoinflipAliasCvarChanged);
+    HookConVarChange(gCvarPvpEnabled, OnCoinflipAliasCvarChanged);
+    HookConVarChange(gCvarPvpTimeout, OnCoinflipAliasCvarChanged);
+    HookConVarChange(gCvarPvpChallengeCooldown, OnCoinflipAliasCvarChanged);
+    HookConVarChange(gLegacyCvarEnabled, OnCoinflipAliasCvarChanged);
+    HookConVarChange(gLegacyCvarMinBet, OnCoinflipAliasCvarChanged);
+    HookConVarChange(gLegacyCvarMaxBet, OnCoinflipAliasCvarChanged);
+    HookConVarChange(gLegacyCvarCooldown, OnCoinflipAliasCvarChanged);
+    HookConVarChange(gLegacyCvarWinMultiplier, OnCoinflipAliasCvarChanged);
+    HookConVarChange(gLegacyCvarWinSound, OnCoinflipAliasCvarChanged);
+    HookConVarChange(gLegacyCvarLoseSound, OnCoinflipAliasCvarChanged);
+    HookConVarChange(gLegacyCvarAnnounceBig, OnCoinflipAliasCvarChanged);
+    HookConVarChange(gLegacyCvarAnnounceThreshold, OnCoinflipAliasCvarChanged);
+    HookConVarChange(gLegacyCvarAnimEnabled, OnCoinflipAliasCvarChanged);
+    HookConVarChange(gLegacyCvarAnimSteps, OnCoinflipAliasCvarChanged);
+    HookConVarChange(gLegacyCvarAnimDelay, OnCoinflipAliasCvarChanged);
+    HookConVarChange(gLegacyCvarAnimMode, OnCoinflipAliasCvarChanged);
+    HookConVarChange(gLegacyCvarPvpEnabled, OnCoinflipAliasCvarChanged);
+    HookConVarChange(gLegacyCvarPvpTimeout, OnCoinflipAliasCvarChanged);
+    HookConVarChange(gLegacyCvarPvpChallengeCooldown, OnCoinflipAliasCvarChanged);
 
     AutoExecConfig(true, "umbrella_store_coinflip");
+    SyncCoinflipLegacyCvarsFromCanonical();
+    RegisterCoinflipQuests();
     RegisterCasinoEntry();
 }
 
@@ -125,6 +305,7 @@ public void OnLibraryAdded(const char[] name)
 {
     if (StrEqual(name, "umbrella_store"))
     {
+        RegisterCoinflipQuests();
         RegisterCasinoEntry();
     }
 }
@@ -185,6 +366,8 @@ void ResolvePvpDisconnect(int client)
     {
         US_AddCredits(opponent, amount * 2, false);
     }
+
+    TrackCoinflipResult(opponent, amount, true);
 
     EmitConfiguredSound(opponent, gCvarWinSound);
     CF_Print(opponent, "%t", "CF PvP Opponent Disconnected", amount * 2);
@@ -965,6 +1148,7 @@ void FinishHouseCoinflip(int client)
         }
 
         US_AddCredits(client, reward, false);
+        TrackCoinflipResult(client, reward - bet, true);
         EmitConfiguredSound(client, gCvarWinSound);
         CF_Print(client, "%t", "CF House Win", chosen, rolled, reward - bet);
 
@@ -975,6 +1159,7 @@ void FinishHouseCoinflip(int client)
     }
     else
     {
+        TrackCoinflipResult(client, -bet, false);
         EmitConfiguredSound(client, gCvarLoseSound);
         CF_Print(client, "%t", "CF House Lose", chosen, rolled, bet);
     }
@@ -1005,6 +1190,8 @@ void FinishPvpCoinflip(int clientA, int clientB, int winner, int loser, int amou
     }
 
     US_AddCredits(winner, amount * 2, false);
+    TrackCoinflipResult(winner, amount, true);
+    TrackCoinflipResult(loser, -amount, false);
     EmitConfiguredSound(winner, gCvarWinSound);
     EmitConfiguredSound(loser, gCvarLoseSound);
     CF_PrintAll("%t", "CF PvP Winner Broadcast", winner, loser, amount * 2);
@@ -1186,7 +1373,7 @@ void CF_Print(int client, const char[] format, any ...)
     SetGlobalTransTarget(client);
     VFormat(buffer, sizeof(buffer), format, 3);
     HighlightChatCommands(buffer, highlighted, sizeof(highlighted));
-    PrintToChat(client, "%s %s", US_CHAT_TAG, highlighted);
+    CPrintToChat(client, "%s %s", US_CHAT_TAG, highlighted);
 }
 
 void CF_PrintAll(const char[] format, any ...)
@@ -1202,7 +1389,7 @@ void CF_PrintAll(const char[] format, any ...)
         SetGlobalTransTarget(client);
         VFormat(buffer, sizeof(buffer), format, 2);
         HighlightChatCommands(buffer, highlighted, sizeof(highlighted));
-        PrintToChat(client, "%s %s", US_CHAT_TAG, highlighted);
+        CPrintToChat(client, "%s %s", US_CHAT_TAG, highlighted);
     }
 }
 
@@ -1216,11 +1403,22 @@ bool IsCommandContinuationChar(int c)
         || c == '/';
 }
 
+void AppendLiteral(char[] output, int maxlen, int &outPos, const char[] literal)
+{
+    int literalLen = strlen(literal);
+    for (int i = 0; i < literalLen && outPos < maxlen - 1; i++)
+    {
+        output[outPos++] = literal[i];
+    }
+}
+
 void HighlightChatCommands(const char[] input, char[] output, int maxlen)
 {
     int inLen = strlen(input);
     int outPos = 0;
     bool inCommand = false;
+    static const char commandStart[] = "{green}";
+    static const char commandEnd[] = "{default}";
 
     for (int i = 0; i < inLen && outPos < maxlen - 1; i++)
     {
@@ -1228,10 +1426,7 @@ void HighlightChatCommands(const char[] input, char[] output, int maxlen)
 
         if (!inCommand && ch == '!' && (i + 1) < inLen && IsCommandContinuationChar(input[i + 1]))
         {
-            if (outPos < maxlen - 1)
-            {
-                output[outPos++] = '\x04';
-            }
+            AppendLiteral(output, maxlen, outPos, commandStart);
             output[outPos++] = ch;
             inCommand = true;
             continue;
@@ -1239,10 +1434,7 @@ void HighlightChatCommands(const char[] input, char[] output, int maxlen)
 
         if (inCommand && !IsCommandContinuationChar(ch))
         {
-            if (outPos < maxlen - 1)
-            {
-                output[outPos++] = '\x01';
-            }
+            AppendLiteral(output, maxlen, outPos, commandEnd);
             inCommand = false;
         }
 
@@ -1254,7 +1446,7 @@ void HighlightChatCommands(const char[] input, char[] output, int maxlen)
 
     if (inCommand && outPos < maxlen - 1)
     {
-        output[outPos++] = '\x01';
+        AppendLiteral(output, maxlen, outPos, commandEnd);
     }
 
     output[outPos] = '\0';

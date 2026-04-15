@@ -4,13 +4,13 @@
 #include <sourcemod>
 #include <dbi>
 #include <umbrella_store>
+#include <multicolors>
 
-#define US_CHAT_TAG " \x03[Umbrella Store]\x01"
-
-#define DAILY_LOG_PREFIX     "[Umbrella Daily]"
+#define US_CHAT_TAG " {purple}[Umbrella Store]{default}"
+#define DAILY_LOG_PREFIX "[Umbrella Daily]"
+#define DAILY_TABLE_ID "umbrella_store_daily_rewards"
 
 Database g_DB = null;
-bool g_bIsMySQL = false;
 bool g_bReady = false;
 bool g_bBusy[MAXPLAYERS + 1];
 
@@ -21,38 +21,203 @@ ConVar gCvarMaxStreakDays;
 ConVar gCvarCooldownHours;
 ConVar gCvarGraceHours;
 ConVar gCvarAnnounceOnJoin;
+ConVar gLegacyCvarEnabled;
+ConVar gLegacyCvarBaseCredits;
+ConVar gLegacyCvarStreakBonus;
+ConVar gLegacyCvarMaxStreakDays;
+ConVar gLegacyCvarCooldownHours;
+ConVar gLegacyCvarGraceHours;
+ConVar gLegacyCvarAnnounceOnJoin;
+bool g_bSyncingCvarAliases = false;
 
 public Plugin myinfo =
 {
     name = "[Umbrella Store] Daily Reward",
     author = "Ayrton09",
     description = "Daily reward module for Umbrella Store",
-    version = "1.0.0"
+    version = "1.1.0"
 };
 
 public void OnPluginStart()
 {
     LoadTranslations("umbrella_store_daily.phrases");
+
     RegConsoleCmd("sm_daily", Cmd_Daily);
     RegConsoleCmd("sm_diario", Cmd_Daily);
 
-    gCvarEnabled        = CreateConVar("store_daily_enabled", "1", "Enable !daily module.", FCVAR_NONE, true, 0.0, true, 1.0);
-    gCvarBaseCredits    = CreateConVar("store_daily_base_credits", "50", "Base credits for daily reward.", FCVAR_NONE, true, 1.0);
-    gCvarStreakBonus    = CreateConVar("store_daily_streak_bonus", "25", "Extra bonus for each streak day.", FCVAR_NONE, true, 0.0);
-    gCvarMaxStreakDays  = CreateConVar("store_daily_max_streak_days", "7", "Maximum streak days that scale the reward.", FCVAR_NONE, true, 1.0);
-    gCvarCooldownHours  = CreateConVar("store_daily_cooldown_hours", "24", "Required hours between claims.", FCVAR_NONE, true, 1.0);
-    gCvarGraceHours     = CreateConVar("store_daily_grace_hours", "48", "If more than this many hours pass, streak resets.", FCVAR_NONE, true, 1.0);
-    gCvarAnnounceOnJoin = CreateConVar("store_daily_announce_on_join", "1", "Announce on join that !daily exists.", FCVAR_NONE, true, 0.0, true, 1.0);
+    gCvarEnabled        = CreateConVar("umbrella_store_daily_enabled", "1", "Enable !daily module.", FCVAR_NONE, true, 0.0, true, 1.0);
+    gCvarBaseCredits    = CreateConVar("umbrella_store_daily_base_credits", "50", "Base credits for daily reward.", FCVAR_NONE, true, 1.0);
+    gCvarStreakBonus    = CreateConVar("umbrella_store_daily_streak_bonus", "25", "Extra bonus for each streak day.", FCVAR_NONE, true, 0.0);
+    gCvarMaxStreakDays  = CreateConVar("umbrella_store_daily_max_streak_days", "7", "Maximum streak days that scale the reward.", FCVAR_NONE, true, 1.0);
+    gCvarCooldownHours  = CreateConVar("umbrella_store_daily_cooldown_hours", "24", "Required hours between claims.", FCVAR_NONE, true, 1.0);
+    gCvarGraceHours     = CreateConVar("umbrella_store_daily_grace_hours", "48", "If more than this many hours pass, streak resets.", FCVAR_NONE, true, 1.0);
+    gCvarAnnounceOnJoin = CreateConVar("umbrella_store_daily_announce_on_join", "1", "Announce on join that !daily exists.", FCVAR_NONE, true, 0.0, true, 1.0);
+
+    gLegacyCvarEnabled        = CreateConVar("store_daily_enabled", "1", "Legacy alias for umbrella_store_daily_enabled.", FCVAR_DONTRECORD, true, 0.0, true, 1.0);
+    gLegacyCvarBaseCredits    = CreateConVar("store_daily_base_credits", "50", "Legacy alias for umbrella_store_daily_base_credits.", FCVAR_DONTRECORD, true, 1.0);
+    gLegacyCvarStreakBonus    = CreateConVar("store_daily_streak_bonus", "25", "Legacy alias for umbrella_store_daily_streak_bonus.", FCVAR_DONTRECORD, true, 0.0);
+    gLegacyCvarMaxStreakDays  = CreateConVar("store_daily_max_streak_days", "7", "Legacy alias for umbrella_store_daily_max_streak_days.", FCVAR_DONTRECORD, true, 1.0);
+    gLegacyCvarCooldownHours  = CreateConVar("store_daily_cooldown_hours", "24", "Legacy alias for umbrella_store_daily_cooldown_hours.", FCVAR_DONTRECORD, true, 1.0);
+    gLegacyCvarGraceHours     = CreateConVar("store_daily_grace_hours", "48", "Legacy alias for umbrella_store_daily_grace_hours.", FCVAR_DONTRECORD, true, 1.0);
+    gLegacyCvarAnnounceOnJoin = CreateConVar("store_daily_announce_on_join", "1", "Legacy alias for umbrella_store_daily_announce_on_join.", FCVAR_DONTRECORD, true, 0.0, true, 1.0);
+
+    HookConVarChange(gCvarEnabled, OnDailyAliasCvarChanged);
+    HookConVarChange(gCvarBaseCredits, OnDailyAliasCvarChanged);
+    HookConVarChange(gCvarStreakBonus, OnDailyAliasCvarChanged);
+    HookConVarChange(gCvarMaxStreakDays, OnDailyAliasCvarChanged);
+    HookConVarChange(gCvarCooldownHours, OnDailyAliasCvarChanged);
+    HookConVarChange(gCvarGraceHours, OnDailyAliasCvarChanged);
+    HookConVarChange(gCvarAnnounceOnJoin, OnDailyAliasCvarChanged);
+    HookConVarChange(gLegacyCvarEnabled, OnDailyAliasCvarChanged);
+    HookConVarChange(gLegacyCvarBaseCredits, OnDailyAliasCvarChanged);
+    HookConVarChange(gLegacyCvarStreakBonus, OnDailyAliasCvarChanged);
+    HookConVarChange(gLegacyCvarMaxStreakDays, OnDailyAliasCvarChanged);
+    HookConVarChange(gLegacyCvarCooldownHours, OnDailyAliasCvarChanged);
+    HookConVarChange(gLegacyCvarGraceHours, OnDailyAliasCvarChanged);
+    HookConVarChange(gLegacyCvarAnnounceOnJoin, OnDailyAliasCvarChanged);
 
     AutoExecConfig(true, "umbrella_store_daily");
+    SyncDailyLegacyCvarsFromCanonical();
+    RegisterDailyQuests();
 }
 
 public void OnConfigsExecuted()
 {
-    if (g_DB == null)
+    TryBootstrapDailyStorage(false);
+}
+
+public void OnLibraryAdded(const char[] name)
+{
+    if (StrEqual(name, "umbrella_store", false))
     {
-        ConnectDatabase();
+        RegisterDailyQuests();
+        TryBootstrapDailyStorage(false);
     }
+}
+
+public void OnLibraryRemoved(const char[] name)
+{
+    if (!StrEqual(name, "umbrella_store", false))
+    {
+        return;
+    }
+
+    g_bReady = false;
+
+    if (g_DB != null)
+    {
+        delete g_DB;
+        g_DB = null;
+    }
+}
+
+public void OnPluginEnd()
+{
+    if (g_DB != null)
+    {
+        delete g_DB;
+        g_DB = null;
+    }
+}
+
+void RegisterDailyQuests()
+{
+    US_RegisterQuestEx("daily_claims_3", "Quest Title Daily Claims I", 3, 150, "", false, "Quest Category Daily", "Quest Desc Daily Claims I");
+    US_RegisterQuestEx("daily_streak_7", "Quest Title Daily Streak I", 7, 300, "", false, "Quest Category Daily", "Quest Desc Daily Streak I");
+}
+
+void SyncDailyCvarPair(ConVar source, ConVar target)
+{
+    if (source == null || target == null)
+    {
+        return;
+    }
+
+    char value[64];
+    source.GetString(value, sizeof(value));
+    target.SetString(value);
+}
+
+void SyncDailyLegacyCvarsFromCanonical()
+{
+    g_bSyncingCvarAliases = true;
+    SyncDailyCvarPair(gCvarEnabled, gLegacyCvarEnabled);
+    SyncDailyCvarPair(gCvarBaseCredits, gLegacyCvarBaseCredits);
+    SyncDailyCvarPair(gCvarStreakBonus, gLegacyCvarStreakBonus);
+    SyncDailyCvarPair(gCvarMaxStreakDays, gLegacyCvarMaxStreakDays);
+    SyncDailyCvarPair(gCvarCooldownHours, gLegacyCvarCooldownHours);
+    SyncDailyCvarPair(gCvarGraceHours, gLegacyCvarGraceHours);
+    SyncDailyCvarPair(gCvarAnnounceOnJoin, gLegacyCvarAnnounceOnJoin);
+    g_bSyncingCvarAliases = false;
+}
+
+public void OnDailyAliasCvarChanged(ConVar convar, const char[] oldValue, const char[] newValue)
+{
+    if (g_bSyncingCvarAliases)
+    {
+        return;
+    }
+
+    g_bSyncingCvarAliases = true;
+
+    if (convar == gCvarEnabled)
+    {
+        gLegacyCvarEnabled.SetString(newValue);
+    }
+    else if (convar == gLegacyCvarEnabled)
+    {
+        gCvarEnabled.SetString(newValue);
+    }
+    else if (convar == gCvarBaseCredits)
+    {
+        gLegacyCvarBaseCredits.SetString(newValue);
+    }
+    else if (convar == gLegacyCvarBaseCredits)
+    {
+        gCvarBaseCredits.SetString(newValue);
+    }
+    else if (convar == gCvarStreakBonus)
+    {
+        gLegacyCvarStreakBonus.SetString(newValue);
+    }
+    else if (convar == gLegacyCvarStreakBonus)
+    {
+        gCvarStreakBonus.SetString(newValue);
+    }
+    else if (convar == gCvarMaxStreakDays)
+    {
+        gLegacyCvarMaxStreakDays.SetString(newValue);
+    }
+    else if (convar == gLegacyCvarMaxStreakDays)
+    {
+        gCvarMaxStreakDays.SetString(newValue);
+    }
+    else if (convar == gCvarCooldownHours)
+    {
+        gLegacyCvarCooldownHours.SetString(newValue);
+    }
+    else if (convar == gLegacyCvarCooldownHours)
+    {
+        gCvarCooldownHours.SetString(newValue);
+    }
+    else if (convar == gCvarGraceHours)
+    {
+        gLegacyCvarGraceHours.SetString(newValue);
+    }
+    else if (convar == gLegacyCvarGraceHours)
+    {
+        gCvarGraceHours.SetString(newValue);
+    }
+    else if (convar == gCvarAnnounceOnJoin)
+    {
+        gLegacyCvarAnnounceOnJoin.SetString(newValue);
+    }
+    else if (convar == gLegacyCvarAnnounceOnJoin)
+    {
+        gCvarAnnounceOnJoin.SetString(newValue);
+    }
+
+    g_bSyncingCvarAliases = false;
 }
 
 public void OnClientPutInServer(int client)
@@ -89,6 +254,7 @@ public Action Timer_AnnounceDaily(Handle timer, any userid)
     DailyChat(client, "%t", "Daily Announce");
     return Plugin_Stop;
 }
+
 void DailyChat(int client, const char[] format, any ...)
 {
     if (!IsValidHuman(client))
@@ -100,7 +266,7 @@ void DailyChat(int client, const char[] format, any ...)
     SetGlobalTransTarget(client);
     VFormat(buffer, sizeof(buffer), format, 3);
     HighlightChatCommands(buffer, highlighted, sizeof(highlighted));
-    PrintToChat(client, "%s %s", US_CHAT_TAG, highlighted);
+    CPrintToChat(client, "%s %s", US_CHAT_TAG, highlighted);
 }
 
 bool IsCommandContinuationChar(int c)
@@ -113,11 +279,22 @@ bool IsCommandContinuationChar(int c)
         || c == '/';
 }
 
+void AppendLiteral(char[] output, int maxlen, int &outPos, const char[] literal)
+{
+    int literalLen = strlen(literal);
+    for (int i = 0; i < literalLen && outPos < maxlen - 1; i++)
+    {
+        output[outPos++] = literal[i];
+    }
+}
+
 void HighlightChatCommands(const char[] input, char[] output, int maxlen)
 {
     int inLen = strlen(input);
     int outPos = 0;
     bool inCommand = false;
+    static const char commandStart[] = "{green}";
+    static const char commandEnd[] = "{default}";
 
     for (int i = 0; i < inLen && outPos < maxlen - 1; i++)
     {
@@ -125,10 +302,7 @@ void HighlightChatCommands(const char[] input, char[] output, int maxlen)
 
         if (!inCommand && ch == '!' && (i + 1) < inLen && IsCommandContinuationChar(input[i + 1]))
         {
-            if (outPos < maxlen - 1)
-            {
-                output[outPos++] = '\x04';
-            }
+            AppendLiteral(output, maxlen, outPos, commandStart);
             output[outPos++] = ch;
             inCommand = true;
             continue;
@@ -136,22 +310,16 @@ void HighlightChatCommands(const char[] input, char[] output, int maxlen)
 
         if (inCommand && !IsCommandContinuationChar(ch))
         {
-            if (outPos < maxlen - 1)
-            {
-                output[outPos++] = '\x01';
-            }
+            AppendLiteral(output, maxlen, outPos, commandEnd);
             inCommand = false;
         }
 
-        if (outPos < maxlen - 1)
-        {
-            output[outPos++] = ch;
-        }
+        output[outPos++] = ch;
     }
 
     if (inCommand && outPos < maxlen - 1)
     {
-        output[outPos++] = '\x01';
+        AppendLiteral(output, maxlen, outPos, commandEnd);
     }
 
     output[outPos] = '\0';
@@ -177,120 +345,163 @@ bool GetClientSteamIdSafe(int client, char[] steamid, int maxlen)
         steamid[0] = '\0';
         return false;
     }
+
     return true;
 }
 
 void EscapeStringSafe(const char[] input, char[] output, int maxlen)
 {
-    if (g_DB == null)
+    if (!US_DB_Escape(input, output, maxlen))
     {
         strcopy(output, maxlen, input);
-        return;
     }
-
-    g_DB.Escape(input, output, maxlen);
 }
 
-void ConnectDatabase()
+bool TryBootstrapDailyStorage(bool failHard)
 {
-    char dbConfig[64];
-
-    ConVar storeDatabase = FindConVar("store_database");
-    if (storeDatabase == null)
+    if (g_bReady && g_DB != null)
     {
-        char failMsg[256];
-        Format(failMsg, sizeof(failMsg), "%s Required core cvar 'store_database' was not found. Load Umbrella Store core before Umbrella Daily.", DAILY_LOG_PREFIX);
-        LogError("%s", failMsg);
-        SetFailState("%s", failMsg);
-        return;
+        return true;
     }
 
-    storeDatabase.GetString(dbConfig, sizeof(dbConfig));
-    TrimString(dbConfig);
-    if (dbConfig[0] == '\0')
+    if (!US_IsDatabaseReady())
     {
-        char failMsg[256];
-        Format(failMsg, sizeof(failMsg), "%s Core cvar 'store_database' is empty. Set it in umbrella_store_core.cfg to a valid databases.cfg entry.", DAILY_LOG_PREFIX);
-        LogError("%s", failMsg);
-        SetFailState("%s", failMsg);
-        return;
-    }
-
-    if (SQL_CheckConfig(dbConfig))
-    {
-        Database.Connect(OnDBConnect, dbConfig);
-        return;
-    }
-
-    char failMsg[256];
-    Format(failMsg, sizeof(failMsg), "%s Database config '%s' not found in databases.cfg. Set store_database in Umbrella Store core to a valid entry.", DAILY_LOG_PREFIX, dbConfig);
-    LogError("%s", failMsg);
-    SetFailState("%s", failMsg);
-}
-
-public void OnDBConnect(Database db, const char[] error, any data)
-{
-    if (db == null)
-    {
-        LogDailyError("OnDBConnect", error);
-
-        char failMsg[256];
-        char dbConfig[64];
-        ConVar storeDatabase = FindConVar("store_database");
-        if (storeDatabase == null)
+        if (failHard)
         {
-            Format(failMsg, sizeof(failMsg), "%s Required core cvar 'store_database' was not found during database connection. Load Umbrella Store core before Umbrella Daily.", DAILY_LOG_PREFIX);
-            SetFailState("%s", failMsg);
-            return;
+            LogError("%s Core database is not ready yet.", DAILY_LOG_PREFIX);
         }
-        storeDatabase.GetString(dbConfig, sizeof(dbConfig));
-        TrimString(dbConfig);
-
-        Format(failMsg, sizeof(failMsg), "%s Failed to connect to database config '%s'. Check databases.cfg and connection settings.", DAILY_LOG_PREFIX, dbConfig);
-        SetFailState("%s", failMsg);
-        return;
+        return false;
     }
 
-    g_DB = db;
-    SetupDatabaseMode();
-    CreateDailyTable();
-}
-
-void SetupDatabaseMode()
-{
     if (g_DB == null)
     {
-        return;
+        Handle dbHandle = US_GetDatabaseHandle();
+        if (dbHandle == INVALID_HANDLE)
+        {
+            if (failHard)
+            {
+                LogError("%s Failed to clone Umbrella Store database handle.", DAILY_LOG_PREFIX);
+            }
+            return false;
+        }
+
+        g_DB = view_as<Database>(dbHandle);
     }
 
-    char driver[16];
-    g_DB.Driver.GetIdentifier(driver, sizeof(driver));
-    g_bIsMySQL = StrEqual(driver, "mysql", false);
-}
+    static const char mysqlQuery[] =
+        "CREATE TABLE IF NOT EXISTS store_daily_rewards (steamid VARCHAR(32) PRIMARY KEY, last_claim INT NOT NULL DEFAULT 0, streak INT NOT NULL DEFAULT 0)";
+    static const char sqliteQuery[] =
+        "CREATE TABLE IF NOT EXISTS store_daily_rewards (steamid TEXT PRIMARY KEY, last_claim INTEGER NOT NULL DEFAULT 0, streak INTEGER NOT NULL DEFAULT 0)";
 
-void CreateDailyTable()
-{
-    char query[256];
-
-    if (g_bIsMySQL)
+    if (!US_DB_EnsureTable(DAILY_TABLE_ID, mysqlQuery, sqliteQuery))
     {
-        Format(query, sizeof(query), "CREATE TABLE IF NOT EXISTS store_daily_rewards (steamid VARCHAR(32) PRIMARY KEY, last_claim INT NOT NULL DEFAULT 0, streak INT NOT NULL DEFAULT 0)");
-    }
-    else
-    {
-        Format(query, sizeof(query), "CREATE TABLE IF NOT EXISTS store_daily_rewards (steamid TEXT PRIMARY KEY, last_claim INTEGER NOT NULL DEFAULT 0, streak INTEGER NOT NULL DEFAULT 0)");
-    }
-
-    if (!SQL_FastQuery(g_DB, query))
-    {
-        char error[256];
-        SQL_GetError(g_DB, error, sizeof(error));
-        LogDailyError("CreateDailyTable", error);
-        SetFailState("%s Failed to create or validate store_daily_rewards table.", DAILY_LOG_PREFIX);
-        return;
+        if (failHard)
+        {
+            LogError("%s Failed to ensure table store_daily_rewards using core storage layer.", DAILY_LOG_PREFIX);
+        }
+        return false;
     }
 
     g_bReady = true;
+    return true;
+}
+
+bool PersistDailyClaimRecord(const char[] steamid, int lastClaim, int streak)
+{
+    if (g_DB == null || steamid[0] == '\0')
+    {
+        return false;
+    }
+
+    char safeSteam[64], query[256];
+    EscapeStringSafe(steamid, safeSteam, sizeof(safeSteam));
+
+    if (US_IsMySQL())
+    {
+        Format(query, sizeof(query),
+            "INSERT INTO store_daily_rewards (steamid,last_claim,streak) VALUES ('%s',%d,%d) ON DUPLICATE KEY UPDATE last_claim=VALUES(last_claim), streak=VALUES(streak)",
+            safeSteam, lastClaim, streak);
+    }
+    else
+    {
+        Format(query, sizeof(query),
+            "INSERT INTO store_daily_rewards (steamid,last_claim,streak) VALUES ('%s',%d,%d) ON CONFLICT(steamid) DO UPDATE SET last_claim=excluded.last_claim, streak=excluded.streak",
+            safeSteam, lastClaim, streak);
+    }
+
+    SQL_LockDatabase(g_DB);
+    bool ok = SQL_FastQuery(g_DB, query);
+    if (!ok)
+    {
+        char error[256];
+        SQL_GetError(g_DB, error, sizeof(error));
+        LogDailyError("PersistDailyClaimRecord", error);
+    }
+    SQL_UnlockDatabase(g_DB);
+    return ok;
+}
+
+bool RestoreDailyClaimRecord(const char[] steamid, bool hadPrevious, int previousLast, int previousStreak)
+{
+    if (g_DB == null || steamid[0] == '\0')
+    {
+        return false;
+    }
+
+    char safeSteam[64], query[256];
+    EscapeStringSafe(steamid, safeSteam, sizeof(safeSteam));
+
+    if (hadPrevious)
+    {
+        if (US_IsMySQL())
+        {
+            Format(query, sizeof(query),
+                "INSERT INTO store_daily_rewards (steamid,last_claim,streak) VALUES ('%s',%d,%d) ON DUPLICATE KEY UPDATE last_claim=VALUES(last_claim), streak=VALUES(streak)",
+                safeSteam, previousLast, previousStreak);
+        }
+        else
+        {
+            Format(query, sizeof(query),
+                "INSERT INTO store_daily_rewards (steamid,last_claim,streak) VALUES ('%s',%d,%d) ON CONFLICT(steamid) DO UPDATE SET last_claim=excluded.last_claim, streak=excluded.streak",
+                safeSteam, previousLast, previousStreak);
+        }
+    }
+    else
+    {
+        Format(query, sizeof(query), "DELETE FROM store_daily_rewards WHERE steamid='%s'", safeSteam);
+    }
+
+    SQL_LockDatabase(g_DB);
+    bool ok = SQL_FastQuery(g_DB, query);
+    if (!ok)
+    {
+        char error[256];
+        SQL_GetError(g_DB, error, sizeof(error));
+        LogDailyError("RestoreDailyClaimRecord", error);
+    }
+    SQL_UnlockDatabase(g_DB);
+    return ok;
+}
+
+bool CompleteDailyClaim(int client, const char[] steamid, bool hadPrevious, int previousLast, int previousStreak, int lastClaim, int streak, int reward)
+{
+    if (!PersistDailyClaimRecord(steamid, lastClaim, streak))
+    {
+        return false;
+    }
+
+    if (!US_AddCredits(client, reward, false))
+    {
+        if (!RestoreDailyClaimRecord(steamid, hadPrevious, previousLast, previousStreak))
+        {
+            LogError("%s Failed to rollback daily claim record for %N after reward credit failure.", DAILY_LOG_PREFIX, client);
+        }
+        return false;
+    }
+
+    US_AddStat(client, "daily_claims", 1);
+    US_SetStatMax(client, "daily_best_streak", streak);
+    return true;
 }
 
 public void SQL_Callback(Database db, DBResultSet results, const char[] error, any data)
@@ -316,7 +527,7 @@ public Action Cmd_Daily(int client, int args)
         return Plugin_Handled;
     }
 
-    if (!g_bReady || g_DB == null)
+    if (!TryBootstrapDailyStorage(false) || g_DB == null)
     {
         DailyChat(client, "%t", "Daily Not Ready");
         return Plugin_Handled;
@@ -359,22 +570,25 @@ public void OnDailyLoaded(Database db, DBResultSet results, const char[] error, 
         return;
     }
 
-    int last = 0;
-    int streak = 0;
+    int previousLast = 0;
+    int previousStreak = 0;
+    bool hadPrevious = false;
 
     if (results.FetchRow())
     {
-        last = results.FetchInt(0);
-        streak = results.FetchInt(1);
+        hadPrevious = true;
+        previousLast = results.FetchInt(0);
+        previousStreak = results.FetchInt(1);
     }
 
+    int streak = 0;
     int now = GetTime();
     int cooldown = gCvarCooldownHours.IntValue * 3600;
     int grace = gCvarGraceHours.IntValue * 3600;
 
-    if (last > 0)
+    if (previousLast > 0)
     {
-        int elapsed = now - last;
+        int elapsed = now - previousLast;
 
         if (elapsed < cooldown)
         {
@@ -388,7 +602,7 @@ public void OnDailyLoaded(Database db, DBResultSet results, const char[] error, 
 
         if (elapsed <= grace)
         {
-            streak++;
+            streak = previousStreak + 1;
         }
         else
         {
@@ -403,69 +617,27 @@ public void OnDailyLoaded(Database db, DBResultSet results, const char[] error, 
     int base = gCvarBaseCredits.IntValue;
     int bonus = gCvarStreakBonus.IntValue;
     int maxDays = gCvarMaxStreakDays.IntValue;
+    int rewardLevel = (streak > maxDays) ? maxDays : streak;
+    int reward = base + ((rewardLevel - 1) * bonus);
 
-    int level = streak;
-    if (level > maxDays)
+    char steamid[32];
+    if (!GetClientSteamIdSafe(client, steamid, sizeof(steamid)))
     {
-        level = maxDays;
-    }
-
-    int reward = base + ((level - 1) * bonus);
-
-    if (!US_AddCredits(client, reward, false))
-    {
-        DailyChat(client, "%t", "Daily Add Credits Error");
+        DailyChat(client, "%t", "Daily SteamId Error");
         g_bBusy[client] = false;
         return;
     }
 
-    if (!SaveClaim(client, now, streak))
+    if (!CompleteDailyClaim(client, steamid, hadPrevious, previousLast, previousStreak, now, streak, reward))
     {
-        if (!US_TakeCredits(client, reward))
-        {
-            LogError("%s Failed to rollback %d credits for client %N after claim persistence error.", DAILY_LOG_PREFIX, reward, client);
-        }
-
         DailyChat(client, "%t", "Daily Load Error");
         g_bBusy[client] = false;
         return;
     }
 
+    US_AdvanceQuestProgress(client, "daily_claims_3", 1);
+    US_SetQuestProgressMax(client, "daily_streak_7", streak);
+
     DailyChat(client, "%t", "Daily Claimed", reward, streak);
     g_bBusy[client] = false;
 }
-
-bool SaveClaim(int client, int time, int streak)
-{
-    char steam[32], safeSteam[64], query[256];
-    if (!GetClientSteamIdSafe(client, steam, sizeof(steam)))
-    {
-        return false;
-    }
-
-    EscapeStringSafe(steam, safeSteam, sizeof(safeSteam));
-
-    if (g_bIsMySQL)
-    {
-        Format(query, sizeof(query),
-            "INSERT INTO store_daily_rewards (steamid,last_claim,streak) VALUES ('%s',%d,%d) ON DUPLICATE KEY UPDATE last_claim=%d, streak=%d",
-            safeSteam, time, streak, time, streak);
-    }
-    else
-    {
-        Format(query, sizeof(query),
-            "INSERT OR REPLACE INTO store_daily_rewards (steamid,last_claim,streak) VALUES ('%s',%d,%d)",
-            safeSteam, time, streak);
-    }
-
-    if (!SQL_FastQuery(g_DB, query))
-    {
-        char error[256];
-        SQL_GetError(g_DB, error, sizeof(error));
-        LogDailyError("SaveClaim", error);
-        return false;
-    }
-
-    return true;
-}
-

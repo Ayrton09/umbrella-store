@@ -4,9 +4,10 @@
 #include <sourcemod>
 #include <sdktools>
 #include <umbrella_store>
+#include <multicolors>
 
-#define US_CHAT_TAG " \x03[Umbrella Store]\x01"
-#define ROULETTE_TAG "\x03[Roulette]\x01"
+#define US_CHAT_TAG " {purple}[Umbrella Store]{default}"
+#define ROULETTE_TAG "{green}[Roulette]{default}"
 #define ROULETTE_CASINO_ID "roulette"
 #define ROULETTE_MAX_NUMBER 36
 
@@ -30,7 +31,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Casino - Roulette",
     author = "Ayrton09",
     description = "Roulette module for Umbrella Store",
-    version = "1.0.0",
+    version = "1.1.0",
     url = ""
 };
 
@@ -67,6 +68,37 @@ int g_iSpinResult[MAXPLAYERS + 1];
 int g_iSpinBet[MAXPLAYERS + 1];
 int g_iSpinDisplay[MAXPLAYERS + 1];
 int g_iQueuedBetAmount[MAXPLAYERS + 1];
+
+void TrackRouletteResult(int client, int net, bool win)
+{
+    if (!IsValidHumanClient(client))
+    {
+        return;
+    }
+
+    US_AddStat(client, "roulette_games", 1);
+    US_AddStat(client, win ? "roulette_wins" : "roulette_losses", 1);
+
+    if (net != 0)
+    {
+        US_AddStat(client, "roulette_profit", net);
+    }
+
+    if (win)
+    {
+        US_AdvanceQuestProgress(client, "roulette_wins_5", 1);
+    }
+}
+
+void RegisterRouletteQuests()
+{
+    if (!LibraryExists("umbrella_store"))
+    {
+        return;
+    }
+
+    US_RegisterQuestEx("roulette_wins_5", "Quest Title Roulette Wins I", 5, 200, "", false, "Quest Category Casino", "Quest Desc Roulette Wins I");
+}
 
 public void OnPluginStart()
 {
@@ -126,6 +158,7 @@ public void OnMapStart()
 
 public void OnAllPluginsLoaded()
 {
+    RegisterRouletteQuests();
     RegisterCasinoEntry();
 }
 
@@ -133,6 +166,7 @@ public void OnLibraryAdded(const char[] name)
 {
     if (StrEqual(name, "umbrella_store"))
     {
+        RegisterRouletteQuests();
         RegisterCasinoEntry();
     }
 }
@@ -971,6 +1005,7 @@ void ResolveSpinResult(int client)
         }
 
         US_AddCredits(client, payout, false);
+        TrackRouletteResult(client, payout - amount, true);
         EmitConfiguredSoundClient(client, gCvarWinSound);
 
         int net = payout - amount;
@@ -987,6 +1022,7 @@ void ResolveSpinResult(int client)
     }
     else
     {
+        TrackRouletteResult(client, -amount, false);
         EmitConfiguredSoundClient(client, gCvarLoseSound);
         RoulettePrint(client, "%t", "Roulette Result Lose", choiceText, result, colorText, amountText);
     }
@@ -1519,7 +1555,7 @@ void RoulettePrint(int client, const char[] format, any ...)
     SetGlobalTransTarget(client);
     VFormat(buffer, sizeof(buffer), format, 3);
     HighlightChatCommands(buffer, highlighted, sizeof(highlighted));
-    PrintToChat(client, "%s %s %s", US_CHAT_TAG, ROULETTE_TAG, highlighted);
+    CPrintToChat(client, "%s %s %s", US_CHAT_TAG, ROULETTE_TAG, highlighted);
 }
 
 void RoulettePrintAll(const char[] format, any ...)
@@ -1535,7 +1571,7 @@ void RoulettePrintAll(const char[] format, any ...)
         SetGlobalTransTarget(client);
         VFormat(buffer, sizeof(buffer), format, 2);
         HighlightChatCommands(buffer, highlighted, sizeof(highlighted));
-        PrintToChat(client, "%s %s %s", US_CHAT_TAG, ROULETTE_TAG, highlighted);
+        CPrintToChat(client, "%s %s %s", US_CHAT_TAG, ROULETTE_TAG, highlighted);
     }
 }
 
@@ -1549,11 +1585,22 @@ bool IsCommandContinuationChar(int c)
         || c == '/';
 }
 
+void AppendLiteral(char[] output, int maxlen, int &outPos, const char[] literal)
+{
+    int literalLen = strlen(literal);
+    for (int i = 0; i < literalLen && outPos < maxlen - 1; i++)
+    {
+        output[outPos++] = literal[i];
+    }
+}
+
 void HighlightChatCommands(const char[] input, char[] output, int maxlen)
 {
     int inLen = strlen(input);
     int outPos = 0;
     bool inCommand = false;
+    static const char commandStart[] = "{green}";
+    static const char commandEnd[] = "{default}";
 
     for (int i = 0; i < inLen && outPos < maxlen - 1; i++)
     {
@@ -1561,10 +1608,7 @@ void HighlightChatCommands(const char[] input, char[] output, int maxlen)
 
         if (!inCommand && ch == '!' && (i + 1) < inLen && IsCommandContinuationChar(input[i + 1]))
         {
-            if (outPos < maxlen - 1)
-            {
-                output[outPos++] = '\x04';
-            }
+            AppendLiteral(output, maxlen, outPos, commandStart);
             output[outPos++] = ch;
             inCommand = true;
             continue;
@@ -1572,10 +1616,7 @@ void HighlightChatCommands(const char[] input, char[] output, int maxlen)
 
         if (inCommand && !IsCommandContinuationChar(ch))
         {
-            if (outPos < maxlen - 1)
-            {
-                output[outPos++] = '\x01';
-            }
+            AppendLiteral(output, maxlen, outPos, commandEnd);
             inCommand = false;
         }
 
@@ -1587,7 +1628,7 @@ void HighlightChatCommands(const char[] input, char[] output, int maxlen)
 
     if (inCommand && outPos < maxlen - 1)
     {
-        output[outPos++] = '\x01';
+        AppendLiteral(output, maxlen, outPos, commandEnd);
     }
 
     output[outPos] = '\0';

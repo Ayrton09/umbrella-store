@@ -1,9 +1,10 @@
-﻿#pragma semicolon 1
+#pragma semicolon 1
 #pragma newdecls required
 
 #include <sourcemod>
 #include <sdktools>
 #include <umbrella_store>
+#include <multicolors>
 
 #define BJ_MAX_HAND_CARDS 12
 #define BJ_MAX_HISTORY 8
@@ -15,7 +16,7 @@
 #define BJ_SOUND_LOSE "buttons/button11.wav"
 #define BJ_SOUND_PUSH "buttons/blip1.wav"
 #define BJ_SOUND_CARD "buttons/button17.wav"
-#define BJ_CHAT_TAG " \x03[Blackjack]\x01"
+#define BJ_CHAT_TAG " {green}[Blackjack]{default}"
 
 #define BJ_PVP_INVITE_TIMEOUT 20.0
 #define BJ_TABLE_MAX_PLAYERS 4
@@ -115,12 +116,23 @@ ConVar gCvarBigWinMinNet;
 ConVar gCvarAnnounceNaturalBlackjack;
 ConVar gCvarAnnounceStreaks;
 
+void RegisterBlackjackQuests()
+{
+    if (!LibraryExists("umbrella_store"))
+    {
+        return;
+    }
+
+    US_RegisterQuestEx("blackjack_wins_5", "Quest Title Blackjack Wins I", 5, 250, "", false, "Quest Category Casino", "Quest Desc Blackjack Wins I");
+    US_RegisterQuestEx("blackjack_streak_3", "Quest Title Blackjack Streak I", 3, 200, "", false, "Quest Category Casino", "Quest Desc Blackjack Streak I");
+}
+
 public Plugin myinfo =
 {
     name = "[Umbrella Store] Blackjack",
     author = "Ayrton09",
     description = "Blackjack module for Umbrella Store",
-    version = "1.0.0",
+    version = "1.1.0",
     url = ""
 };
 
@@ -175,6 +187,7 @@ public void OnMapStart()
 
 public void OnAllPluginsLoaded()
 {
+    RegisterBlackjackQuests();
     TryRegisterCasinoEntry();
 }
 
@@ -182,6 +195,7 @@ public void OnLibraryAdded(const char[] name)
 {
     if (StrEqual(name, "umbrella_store"))
     {
+        RegisterBlackjackQuests();
         TryRegisterCasinoEntry();
     }
 }
@@ -575,6 +589,20 @@ void HandleClientLeave(int client)
             if (reward > 0)
             {
                 US_AddCredits(opponent, reward, true);
+                US_AddStat(opponent, "blackjack_games", 1);
+                US_AddStat(opponent, "blackjack_wins", 1);
+                US_AddStat(opponent, "blackjack_profit", refund);
+                g_iStatGames[opponent]++;
+                g_iStatWins[opponent]++;
+                g_iStatProfit[opponent] += refund;
+                g_iWinStreak[opponent]++;
+                if (g_iWinStreak[opponent] > g_iBestWinStreak[opponent])
+                {
+                    g_iBestWinStreak[opponent] = g_iWinStreak[opponent];
+                    US_SetStatMax(opponent, "blackjack_best_streak", g_iBestWinStreak[opponent]);
+                }
+                US_AdvanceQuestProgress(opponent, "blackjack_wins_5", 1);
+                US_SetQuestProgressMax(opponent, "blackjack_streak_3", g_iWinStreak[opponent]);
             }
 
             Chat(opponent, "%T", "PvP Opponent Left", opponent, client);
@@ -1509,15 +1537,23 @@ void RecordSingleStats(int client, int net, bool win, bool push, bool naturalBla
     g_iStatGames[client]++;
     g_iStatProfit[client] += net;
 
+    US_AddStat(client, "blackjack_games", 1);
+    if (net != 0)
+    {
+        US_AddStat(client, "blackjack_profit", net);
+    }
+
     if (naturalBlackjack)
     {
         g_iStatBlackjacks[client]++;
+        US_AddStat(client, "blackjack_blackjacks", 1);
     }
 
     if (push)
     {
         g_iStatPushes[client]++;
         g_iWinStreak[client] = 0;
+        US_AddStat(client, "blackjack_pushes", 1);
         return;
     }
 
@@ -1525,15 +1561,20 @@ void RecordSingleStats(int client, int net, bool win, bool push, bool naturalBla
     {
         g_iStatWins[client]++;
         g_iWinStreak[client]++;
+        US_AddStat(client, "blackjack_wins", 1);
+        US_AdvanceQuestProgress(client, "blackjack_wins_5", 1);
+        US_SetQuestProgressMax(client, "blackjack_streak_3", g_iWinStreak[client]);
         if (g_iWinStreak[client] > g_iBestWinStreak[client])
         {
             g_iBestWinStreak[client] = g_iWinStreak[client];
+            US_SetStatMax(client, "blackjack_best_streak", g_iBestWinStreak[client]);
         }
     }
     else
     {
         g_iStatLosses[client]++;
         g_iWinStreak[client] = 0;
+        US_AddStat(client, "blackjack_losses", 1);
     }
 }
 
@@ -1550,7 +1591,7 @@ void MaybeAnnounceNaturalBlackjack(int client)
         return;
     }
 
-            PrintToChatAll("%s %t", BJ_CHAT_TAG, "Announce Natural Blackjack", client);
+            CPrintToChatAll("%s %t", BJ_CHAT_TAG, "Announce Natural Blackjack", client);
 }
 
 void MaybeAnnounceStreak(int client)
@@ -1560,7 +1601,7 @@ void MaybeAnnounceStreak(int client)
         return;
     }
 
-            PrintToChatAll("%s %t", BJ_CHAT_TAG, "Announce Win Streak", client, g_iWinStreak[client]);
+            CPrintToChatAll("%s %t", BJ_CHAT_TAG, "Announce Win Streak", client, g_iWinStreak[client]);
 }
 
 
@@ -1573,7 +1614,7 @@ void MaybeAnnounceBigWin(int client, int net)
 
     char sNet[32];
     FormatCredits(net, sNet, sizeof(sNet));
-        PrintToChatAll("%s %t", BJ_CHAT_TAG, "Announce Big Win", client, sNet);
+        CPrintToChatAll("%s %t", BJ_CHAT_TAG, "Announce Big Win", client, sNet);
 }
 
 void FinishSingleWin(int client, const char[] format, any ...)
@@ -2206,6 +2247,16 @@ void ResolvePvPRound(int anyClient)
     {
         US_AddCredits(client, g_iPvPBet[client], true);
         US_AddCredits(opponent, g_iPvPBet[opponent], true);
+        US_AddStat(client, "blackjack_games", 1);
+        US_AddStat(opponent, "blackjack_games", 1);
+        US_AddStat(client, "blackjack_pushes", 1);
+        US_AddStat(opponent, "blackjack_pushes", 1);
+        g_iStatGames[client]++;
+        g_iStatGames[opponent]++;
+        g_iStatPushes[client]++;
+        g_iStatPushes[opponent]++;
+        g_iWinStreak[client] = 0;
+        g_iWinStreak[opponent] = 0;
 
         Chat(client, "%T", "PvP Result Push", client, opponent, handA, handB);
         Chat(opponent, "%T", "PvP Result Push", opponent, client, handB, handA);
@@ -2218,6 +2269,27 @@ void ResolvePvPRound(int anyClient)
     {
         US_AddCredits(winner, pot, true);
         int loser = (winner == client) ? opponent : client;
+        US_AddStat(winner, "blackjack_games", 1);
+        US_AddStat(loser, "blackjack_games", 1);
+        US_AddStat(winner, "blackjack_wins", 1);
+        US_AddStat(loser, "blackjack_losses", 1);
+        US_AddStat(winner, "blackjack_profit", g_iPvPBet[winner]);
+        US_AddStat(loser, "blackjack_profit", -g_iPvPBet[loser]);
+        g_iStatGames[winner]++;
+        g_iStatGames[loser]++;
+        g_iStatWins[winner]++;
+        g_iStatLosses[loser]++;
+        g_iStatProfit[winner] += g_iPvPBet[winner];
+        g_iStatProfit[loser] -= g_iPvPBet[loser];
+        g_iWinStreak[winner]++;
+        g_iWinStreak[loser] = 0;
+        if (g_iWinStreak[winner] > g_iBestWinStreak[winner])
+        {
+            g_iBestWinStreak[winner] = g_iWinStreak[winner];
+            US_SetStatMax(winner, "blackjack_best_streak", g_iBestWinStreak[winner]);
+        }
+        US_AdvanceQuestProgress(winner, "blackjack_wins_5", 1);
+        US_SetQuestProgressMax(winner, "blackjack_streak_3", g_iWinStreak[winner]);
         char sPot[32], winnerHand[256], loserHand[256];
         FormatCredits(pot, sPot, sizeof(sPot));
 
@@ -2573,7 +2645,7 @@ void ChatInfo(int client, const char[] format, any ...)
     char buffer[256], highlighted[320];
     VFormat(buffer, sizeof(buffer), format, 3);
     HighlightChatCommands(buffer, highlighted, sizeof(highlighted));
-    PrintToChat(client, "%s %s", BJ_CHAT_TAG, highlighted);
+    CPrintToChat(client, "%s %s", BJ_CHAT_TAG, highlighted);
 }
 
 void ChatSuccess(int client, const char[] format, any ...)
@@ -2581,7 +2653,7 @@ void ChatSuccess(int client, const char[] format, any ...)
     char buffer[256], highlighted[320];
     VFormat(buffer, sizeof(buffer), format, 3);
     HighlightChatCommands(buffer, highlighted, sizeof(highlighted));
-    PrintToChat(client, "%s \x04%s\x01", BJ_CHAT_TAG, highlighted);
+    CPrintToChat(client, "%s {green}%s{default}", BJ_CHAT_TAG, highlighted);
 }
 
 void ChatError(int client, const char[] format, any ...)
@@ -2589,7 +2661,7 @@ void ChatError(int client, const char[] format, any ...)
     char buffer[256], highlighted[320];
     VFormat(buffer, sizeof(buffer), format, 3);
     HighlightChatCommands(buffer, highlighted, sizeof(highlighted));
-    PrintToChat(client, "%s %s", BJ_CHAT_TAG, highlighted);
+    CPrintToChat(client, "%s %s", BJ_CHAT_TAG, highlighted);
 }
 
 void ChatNotice(int client, const char[] format, any ...)
@@ -2597,7 +2669,7 @@ void ChatNotice(int client, const char[] format, any ...)
     char buffer[256], highlighted[320];
     VFormat(buffer, sizeof(buffer), format, 3);
     HighlightChatCommands(buffer, highlighted, sizeof(highlighted));
-    PrintToChat(client, "%s %s", BJ_CHAT_TAG, highlighted);
+    CPrintToChat(client, "%s %s", BJ_CHAT_TAG, highlighted);
 }
 
 void Chat(int client, const char[] format, any ...)
@@ -2605,7 +2677,7 @@ void Chat(int client, const char[] format, any ...)
     char buffer[256], highlighted[320];
     VFormat(buffer, sizeof(buffer), format, 3);
     HighlightChatCommands(buffer, highlighted, sizeof(highlighted));
-    PrintToChat(client, "%s %s", BJ_CHAT_TAG, highlighted);
+    CPrintToChat(client, "%s %s", BJ_CHAT_TAG, highlighted);
 }
 
 bool IsCommandContinuationChar(int c)
@@ -2618,11 +2690,22 @@ bool IsCommandContinuationChar(int c)
         || c == '/';
 }
 
+void AppendLiteral(char[] output, int maxlen, int &outPos, const char[] literal)
+{
+    int literalLen = strlen(literal);
+    for (int i = 0; i < literalLen && outPos < maxlen - 1; i++)
+    {
+        output[outPos++] = literal[i];
+    }
+}
+
 void HighlightChatCommands(const char[] input, char[] output, int maxlen)
 {
     int inLen = strlen(input);
     int outPos = 0;
     bool inCommand = false;
+    static const char commandStart[] = "{green}";
+    static const char commandEnd[] = "{default}";
 
     for (int i = 0; i < inLen && outPos < maxlen - 1; i++)
     {
@@ -2630,10 +2713,7 @@ void HighlightChatCommands(const char[] input, char[] output, int maxlen)
 
         if (!inCommand && ch == '!' && (i + 1) < inLen && IsCommandContinuationChar(input[i + 1]))
         {
-            if (outPos < maxlen - 1)
-            {
-                output[outPos++] = '\x04';
-            }
+            AppendLiteral(output, maxlen, outPos, commandStart);
             output[outPos++] = ch;
             inCommand = true;
             continue;
@@ -2641,10 +2721,7 @@ void HighlightChatCommands(const char[] input, char[] output, int maxlen)
 
         if (inCommand && !IsCommandContinuationChar(ch))
         {
-            if (outPos < maxlen - 1)
-            {
-                output[outPos++] = '\x01';
-            }
+            AppendLiteral(output, maxlen, outPos, commandEnd);
             inCommand = false;
         }
 
@@ -2656,7 +2733,7 @@ void HighlightChatCommands(const char[] input, char[] output, int maxlen)
 
     if (inCommand && outPos < maxlen - 1)
     {
-        output[outPos++] = '\x01';
+        AppendLiteral(output, maxlen, outPos, commandEnd);
     }
 
     output[outPos] = '\0';
@@ -3056,7 +3133,7 @@ void TableMaybeScheduleStart()
     if (g_hTableStartTimer == null)
     {
         g_hTableStartTimer = CreateTimer(BJ_TABLE_START_DELAY, Timer_TableStart);
-            PrintToChatAll("%s %t", BJ_CHAT_TAG, "Table Countdown", RoundToCeil(BJ_TABLE_START_DELAY));
+            CPrintToChatAll("%s %t", BJ_CHAT_TAG, "Table Countdown", RoundToCeil(BJ_TABLE_START_DELAY));
     }
 }
 
@@ -3120,7 +3197,7 @@ bool TableJoin(int client, int bet)
     TableRebuildOrder();
     char sBet[32];
     FormatCredits(bet, sBet, sizeof(sBet));
-    PrintToChatAll("%s %t", BJ_CHAT_TAG, "Table Join Notice", client, sBet);
+    CPrintToChatAll("%s %t", BJ_CHAT_TAG, "Table Join Notice", client, sBet);
 
     TableMaybeScheduleStart();
     TableAnnounceState();
@@ -3146,7 +3223,7 @@ void TableLeave(int client, bool showMenu)
             US_AddCredits(client, refund, true);
         }
 
-    PrintToChatAll("%s %t", BJ_CHAT_TAG, "Table Left", client);
+    CPrintToChatAll("%s %t", BJ_CHAT_TAG, "Table Left", client);
         TableRemoveSeat(client);
         TableRebuildOrder();
 
@@ -3245,7 +3322,7 @@ void StartTableRound()
         }
 
         ChatError(client, "%T", "Error Take Credits", client);
-        PrintToChatAll("%s %t", BJ_CHAT_TAG, "Table Removed No Credits", client);
+        CPrintToChatAll("%s %t", BJ_CHAT_TAG, "Table Removed No Credits", client);
         TableRemoveSeat(client);
     }
 
@@ -3291,7 +3368,7 @@ void StartTableRound()
     g_iTableDealerCards[g_iTableDealerCount++] = DrawCard();
     g_iTableDealerCards[g_iTableDealerCount++] = DrawCard();
 
-        PrintToChatAll("%s %t", BJ_CHAT_TAG, "Table Round Started");
+        CPrintToChatAll("%s %t", BJ_CHAT_TAG, "Table Round Started");
 
     g_iTableCurrentTurn = -1;
     TableAdvanceTurn();
@@ -3320,7 +3397,7 @@ void TableBeginTurn()
         return;
     }
 
-    PrintToChatAll("%s %t", BJ_CHAT_TAG, "Table Turn Notice", client);
+    CPrintToChatAll("%s %t", BJ_CHAT_TAG, "Table Turn Notice", client);
     g_hTableTurnTimer = CreateTimer(BJ_TABLE_TURN_TIME, Timer_TableTurn, GetClientUserId(client));
     TableAnnounceState();
 }
@@ -3534,7 +3611,7 @@ void ResolveTableRound()
         }
     }
 
-    PrintToChatAll("%s %t", BJ_CHAT_TAG, "Table Round End");
+    CPrintToChatAll("%s %t", BJ_CHAT_TAG, "Table Round End");
 
     int reopen[BJ_TABLE_MAX_PLAYERS];
     int reopenCount = 0;

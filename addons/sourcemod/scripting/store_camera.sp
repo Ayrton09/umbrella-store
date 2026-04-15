@@ -2,8 +2,9 @@
 #pragma newdecls required
 
 #include <sourcemod>
+#include <multicolors>
 
-#define US_CHAT_TAG " \x03[Umbrella Store]\x01"
+#define US_CHAT_TAG " {purple}[Umbrella Store]{default}"
 #define MIRROR_BASE_YAW 90
 
 enum CameraMode
@@ -33,7 +34,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Camera",
     author = "Ayrton09",
     description = "Thirdperson and mirror camera for Umbrella Store player inspection",
-    version = "1.0.0",
+    version = "1.1.0",
     url = ""
 };
 
@@ -502,7 +503,7 @@ void CameraChatPhrase(int client, const char[] phrase)
     }
 
     HighlightChatCommands(buffer, highlighted, sizeof(highlighted));
-    PrintToChat(client, "%s %s", US_CHAT_TAG, highlighted);
+    CPrintToChat(client, "%s %s", US_CHAT_TAG, highlighted);
 }
 
 bool IsCommandContinuationChar(int c)
@@ -515,11 +516,22 @@ bool IsCommandContinuationChar(int c)
         || c == '/';
 }
 
+void AppendLiteral(char[] output, int maxlen, int &outPos, const char[] literal)
+{
+    int literalLen = strlen(literal);
+    for (int i = 0; i < literalLen && outPos < maxlen - 1; i++)
+    {
+        output[outPos++] = literal[i];
+    }
+}
+
 void HighlightChatCommands(const char[] input, char[] output, int maxlen)
 {
     int inLen = strlen(input);
     int outPos = 0;
     bool inCommand = false;
+    static const char commandStart[] = "{green}";
+    static const char commandEnd[] = "{default}";
 
     for (int i = 0; i < inLen && outPos < maxlen - 1; i++)
     {
@@ -527,10 +539,7 @@ void HighlightChatCommands(const char[] input, char[] output, int maxlen)
 
         if (!inCommand && ch == '!' && (i + 1) < inLen && IsCommandContinuationChar(input[i + 1]))
         {
-            if (outPos < maxlen - 1)
-            {
-                output[outPos++] = '\x04';
-            }
+            AppendLiteral(output, maxlen, outPos, commandStart);
             output[outPos++] = ch;
             inCommand = true;
             continue;
@@ -538,10 +547,7 @@ void HighlightChatCommands(const char[] input, char[] output, int maxlen)
 
         if (inCommand && !IsCommandContinuationChar(ch))
         {
-            if (outPos < maxlen - 1)
-            {
-                output[outPos++] = '\x01';
-            }
+            AppendLiteral(output, maxlen, outPos, commandEnd);
             inCommand = false;
         }
 
@@ -553,7 +559,7 @@ void HighlightChatCommands(const char[] input, char[] output, int maxlen)
 
     if (inCommand && outPos < maxlen - 1)
     {
-        output[outPos++] = '\x01';
+        AppendLiteral(output, maxlen, outPos, commandEnd);
     }
 
     output[outPos] = '\0';
