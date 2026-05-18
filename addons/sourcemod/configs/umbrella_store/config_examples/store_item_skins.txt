@@ -7,7 +7,6 @@
         "category"              "skins"
         "description"           "Example Counter-Terrorist player skin."
         "model"                 "models/player/custom/example_ct/example_ct.mdl"
-        "arms"                  "models/weapons/t_arms_example.mdl"
         "price"                 "25000"
         "sale_price"            "12000"
         "team"                  "3"

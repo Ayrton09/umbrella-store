@@ -19,7 +19,6 @@
     //   type
     //   value
     //   model
-    //   arms
     //   price
     //   team
     //   flag
@@ -40,7 +39,7 @@
     //   - `value` must contain the real payload used by the item.
     //   - For tag items, `value` is the actual chat tag text and color tags.
     //   - For namecolor and chatcolor, `value` is just the color token.
-    //   - For skin items, `model` is required and `arms` is optional.
+    //   - For skin items, `model` is required.
     //   - The color preset below is aimed at Source 2009 games like CS:S.
     //   - CS:GO only guarantees the classic Multi-Colors subset.
     //
@@ -96,7 +95,6 @@
     //     "category" "skins"
     //     "description" "Example Counter-Terrorist player skin."
     //     "model" "models/player/custom/example_ct/example_ct.mdl"
-    //     "arms" "models/weapons/t_arms_example.mdl"
     //     "price" "25000"
     //     "sale_price" "12000"
     //     "team" "3"

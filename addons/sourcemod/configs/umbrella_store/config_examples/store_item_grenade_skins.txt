@@ -1,13 +1,37 @@
 "Items"
 {
-    "grenadeskin_he_custom"
+    "grenadeskin_he_orange"
     {
-        "name"        "Custom HE Grenade"
+        "name"        "HE Orange"
         "type"        "grenadeskin"
         "category"    "grenade_skins"
-        "description" "Example projectile model replacement for HE grenades."
+        "description" "HE grenade projectile model replacement."
         "grenade"     "hegrenade"
-        "model"       "models/umbrella_store/grenades/hegrenade_custom.mdl"
+        "model"       "models/props/cs_italy/orange.mdl"
+        "price"       "6500"
+        "team"        "0"
+    }
+
+    "grenadeskin_flash_banana"
+    {
+        "name"        "Flashbang Banana"
+        "type"        "grenadeskin"
+        "category"    "grenade_skins"
+        "description" "Flashbang projectile model replacement."
+        "grenade"     "flashbang"
+        "model"       "models/props/cs_italy/bananna.mdl"
+        "price"       "6500"
+        "team"        "0"
+    }
+
+    "grenadeskin_smoke_watermelon"
+    {
+        "name"        "Smoke Watermelon"
+        "type"        "grenadeskin"
+        "category"    "grenade_skins"
+        "description" "Smoke grenade projectile model replacement."
+        "grenade"     "smokegrenade"
+        "model"       "models/props_junk/watermelon01.mdl"
         "price"       "6500"
         "team"        "0"
     }

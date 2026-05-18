@@ -1,14 +1,42 @@
 "Items"
 {
-    "grenadetrail_green"
+    "grenadetrail_thin_pink"
     {
-        "name"        "Green Grenade Trail"
+        "name"        "Thin Pink Grenade Trail"
         "type"        "grenadetrail"
         "category"    "grenade_trails"
-        "description" "Example trail attached to thrown grenade projectiles."
-        "material"    "materials/sprites/umbrella_store/trails/green.vmt"
+        "description" "Thin colored beam attached to thrown grenade projectiles."
+        "material"    "materials/sprites/combineball_trail_black_1.vmt"
+        "color"       "255 0 255 255"
+        "width"       "10.0"
+        "lifetime"    "2.0"
+        "price"       "4000"
+        "team"        "0"
+    }
+
+    "grenadetrail_thin_green"
+    {
+        "name"        "Thin Green Grenade Trail"
+        "type"        "grenadetrail"
+        "category"    "grenade_trails"
+        "description" "Thin colored beam attached to thrown grenade projectiles."
+        "material"    "materials/sprites/combineball_trail_black_1.vmt"
         "color"       "0 255 80 255"
-        "width"       "6.0"
+        "width"       "10.0"
+        "lifetime"    "2.0"
+        "price"       "4000"
+        "team"        "0"
+    }
+
+    "grenadetrail_thin_blue"
+    {
+        "name"        "Thin Blue Grenade Trail"
+        "type"        "grenadetrail"
+        "category"    "grenade_trails"
+        "description" "Thin colored beam attached to thrown grenade projectiles."
+        "material"    "materials/sprites/combineball_trail_black_1.vmt"
+        "color"       "0 140 255 255"
+        "width"       "10.0"
         "lifetime"    "2.0"
         "price"       "4000"
         "team"        "0"

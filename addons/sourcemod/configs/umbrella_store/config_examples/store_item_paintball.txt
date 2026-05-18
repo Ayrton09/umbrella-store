@@ -1,13 +1,24 @@
 "Items"
 {
-    "paintball_blue"
+    "paintball_pink"
     {
-        "name"        "Blue Paintball"
+        "name"        "Pink Paintball"
         "type"        "paintball"
         "category"    "paintball"
-        "description" "Example bullet impact decal set."
-        "decals"      "decals/umbrella_store/paint/blue_01.vmt;decals/umbrella_store/paint/blue_02.vmt"
+        "description" "Single bullet impact decal."
+        "decal"       "paintball/pb_pink.vmt"
         "price"       "4000"
+        "team"        "0"
+    }
+
+    "paintball_random"
+    {
+        "name"        "Random Paintball"
+        "type"        "paintball"
+        "category"    "paintball"
+        "description" "Random bullet impact decal from a configured list."
+        "decals"      "paintball/pb_cyan.vmt;paintball/pb_green.vmt;paintball/pb_pink.vmt;paintball/pb_orange.vmt;paintball/pb_yellow.vmt"
+        "price"       "6000"
         "team"        "0"
     }
 }
