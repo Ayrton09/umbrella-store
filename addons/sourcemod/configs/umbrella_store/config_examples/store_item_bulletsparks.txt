@@ -1,0 +1,12 @@
+"Items"
+{
+    "bulletsparks_default"
+    {
+        "name"        "Bullet Sparks"
+        "type"        "bulletsparks"
+        "category"    "bullet_sparks"
+        "description" "Adds sparks to bullet impacts."
+        "price"       "5000"
+        "team"        "0"
+    }
+}

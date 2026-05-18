@@ -1,0 +1,16 @@
+"Items"
+{
+    "grenadetrail_green"
+    {
+        "name"        "Green Grenade Trail"
+        "type"        "grenadetrail"
+        "category"    "grenade_trails"
+        "description" "Example trail attached to thrown grenade projectiles."
+        "material"    "materials/sprites/umbrella_store/trails/green.vmt"
+        "color"       "0 255 80 255"
+        "width"       "6.0"
+        "lifetime"    "2.0"
+        "price"       "4000"
+        "team"        "0"
+    }
+}

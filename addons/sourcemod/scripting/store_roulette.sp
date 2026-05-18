@@ -31,7 +31,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Casino - Roulette",
     author = "Ayrton09",
     description = "Roulette module for Umbrella Store",
-    version = "1.1.0",
+    version = "1.2.0",
     url = ""
 };
 
@@ -1004,7 +1004,12 @@ void ResolveSpinResult(int client)
             payout = amount;
         }
 
-        US_AddCredits(client, payout, false);
+        if (!US_AddCredits(client, payout, false))
+        {
+            LogError("[Umbrella Store] Roulette failed to pay %d credits to client %d.", payout, client);
+            RoulettePrint(client, "%t", "Roulette Not Enough Credits");
+            return;
+        }
         TrackRouletteResult(client, payout - amount, true);
         EmitConfiguredSoundClient(client, gCvarWinSound);
 

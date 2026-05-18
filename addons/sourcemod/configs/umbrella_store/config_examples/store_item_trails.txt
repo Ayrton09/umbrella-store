@@ -1,0 +1,16 @@
+"Items"
+{
+    "trail_blue"
+    {
+        "name"        "Blue Trail"
+        "type"        "trail"
+        "category"    "trails"
+        "description" "Example player sprite trail."
+        "material"    "materials/sprites/umbrella_store/trails/blue.vmt"
+        "color"       "0 128 255 255"
+        "width"       "8.0"
+        "lifetime"    "1.0"
+        "price"       "4500"
+        "team"        "0"
+    }
+}

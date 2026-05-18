@@ -3,7 +3,7 @@
 #endif
 #define _umbrella_store_included
 
-#define UMBRELLA_STORE_API_VERSION 2
+#define UMBRELLA_STORE_API_VERSION 5
 
 /**
  * Legacy natives kept for backward compatibility.
@@ -13,6 +13,8 @@ native int US_GetCredits(int client);
 native bool US_SetCredits(int client, int amount);
 native bool US_AddCredits(int client, int amount, bool notify = false);
 native bool US_TakeCredits(int client, int amount);
+native bool US_ApplyCreditDelta(int client, int delta, const char[] reason = "api_delta", bool notify = false);
+native bool US_ApplyCreditDeltas(int clientA, int deltaA, const char[] reasonA, int clientB, int deltaB, const char[] reasonB, bool notify = false);
 native bool US_HasItem(int client, const char[] itemId);
 native bool US_GiveItem(int client, const char[] itemId, bool equip = false);
 native bool US_RemoveItem(int client, const char[] itemId);
@@ -21,7 +23,7 @@ native bool US_Casino_Unregister(const char[] id);
 native bool US_OpenCasinoMenu(int client);
 
 /**
- * Recommended v2 API.
+ * Recommended v4 API.
  */
 native int US_GetApiVersion();
 native bool US_OpenStoreMenu(int client);
@@ -34,6 +36,9 @@ native bool US_GetItemInfo(const char[] itemId, char[] name, int nameMax, char[]
 native bool US_GetItemType(const char[] itemId, char[] type, int maxlen);
 native int US_GetItemPrice(const char[] itemId);
 native bool US_GetEquippedItem(int client, const char[] type, char[] itemId, int maxlen);
+native bool US_IsItemEquipped(int client, const char[] itemId);
+native int US_GetEquippedItemCount(int client);
+native bool US_GetEquippedItemIdByIndex(int client, int index, char[] itemId, int maxlen);
 native bool US_CanPurchaseItem(int client, const char[] itemId, char[] reason, int maxlen);
 native bool US_TryPurchaseItem(int client, const char[] itemId, bool equipAfterPurchase = false, bool notify = true);
 native bool US_CanEquipItem(int client, const char[] itemId, char[] reason, int maxlen);
@@ -53,6 +58,7 @@ native bool US_IsMySQL();
 native Handle US_GetDatabaseHandle();
 native bool US_DB_Escape(const char[] input, char[] output, int maxlen);
 native bool US_DB_EnsureTable(const char[] tableId, const char[] mysqlQuery, const char[] sqliteQuery);
+native bool US_ApplyCreditDeltaWithQuery(int client, int delta, const char[] reason, const char[] query, bool notify = false);
 
 /**
  * Initial stats/progression helpers.
@@ -68,6 +74,7 @@ native bool US_SetQuestProgressMax(int client, const char[] questId, int value);
 native bool US_GetQuestProgress(int client, const char[] questId, int &progress, bool &rewarded);
 native bool US_RegisterLeaderboard(const char[] id, const char[] title, const char[] statKey, const char[] entryPhrase = "Top Profit Entry", int sortOrder = 0);
 native bool US_UnregisterLeaderboard(const char[] id);
+native bool US_LogAuditEvent(int actor, int target, const char[] action, const char[] itemId = "", int amount = 0, const char[] details = "");
 
 /**
  * Legacy forwards kept for compatibility.
@@ -78,7 +85,7 @@ forward void OnStoreItemEquipped(int client, const char[] itemId, bool equipped)
 forward void OnStoreTradeCompleted(int sender, int target, const char[] senderItemId, const char[] targetItemId);
 
 /**
- * Recommended v2 forwards.
+ * Recommended v4 forwards.
  * Pre hooks may return Plugin_Handled or Plugin_Stop to veto the action.
  */
 forward Action US_OnPurchasePre(int client, const char[] itemId, bool equipAfterPurchase);
@@ -90,3 +97,10 @@ forward void US_OnTradePost(int sender, int target, const char[] senderItemId, c
 forward void US_OnCreditsChanged(int client, int delta, int newBalance, const char[] reason);
 forward void US_OnInventoryChanged(int client, const char[] itemId, const char[] operation);
 forward void US_OnQuestCompleted(int client, const char[] questId, int rewardCredits);
+
+public SharedPlugin __pl_umbrella_store =
+{
+    name = "umbrella_store",
+    file = "store_core.smx",
+    required = 1
+};

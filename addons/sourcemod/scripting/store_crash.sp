@@ -11,7 +11,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Crash",
     author = "Ayrton09",
     description = "Crash module for Umbrella Store",
-    version = "1.1.0",
+    version = "1.2.0",
     url = ""
 };
 
@@ -1194,7 +1194,12 @@ void DoCashout(int client)
         payout = g_iBet[client];
     }
 
-    US_AddCredits(client, payout, false);
+    if (!US_AddCredits(client, payout, false))
+    {
+        LogError("[Umbrella Store] Crash failed to pay %d credits to client %d.", payout, client);
+        CrashReply(client, "Store transaction failed.");
+        return;
+    }
     g_bCashedOut[client] = true;
     g_iLastPayout[client] = payout;
     TrackCrashResolved(client, payout - g_iBet[client], true);
@@ -1219,7 +1224,11 @@ void RefundBet(int client, bool showMessage, bool cancelled)
     int refund = g_iBet[client];
     if (refund > 0)
     {
-        US_AddCredits(client, refund, false);
+        if (!US_AddCredits(client, refund, false))
+        {
+            LogError("[Umbrella Store] Crash failed to refund %d credits to client %d.", refund, client);
+            return;
+        }
     }
 
     if (showMessage)

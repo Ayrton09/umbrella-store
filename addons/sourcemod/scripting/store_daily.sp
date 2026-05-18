@@ -35,7 +35,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Daily Reward",
     author = "Ayrton09",
     description = "Daily reward module for Umbrella Store",
-    version = "1.1.0"
+    version = "1.2.0"
 };
 
 public void OnPluginStart()
@@ -349,12 +349,16 @@ bool GetClientSteamIdSafe(int client, char[] steamid, int maxlen)
     return true;
 }
 
-void EscapeStringSafe(const char[] input, char[] output, int maxlen)
+bool EscapeStringSafe(const char[] input, char[] output, int maxlen)
 {
     if (!US_DB_Escape(input, output, maxlen))
     {
-        strcopy(output, maxlen, input);
+        output[0] = '\0';
+        LogError("%s Failed to escape SQL string.", DAILY_LOG_PREFIX);
+        return false;
     }
+
+    return true;
 }
 
 bool TryBootstrapDailyStorage(bool failHard)
@@ -406,15 +410,18 @@ bool TryBootstrapDailyStorage(bool failHard)
     return true;
 }
 
-bool PersistDailyClaimRecord(const char[] steamid, int lastClaim, int streak)
+bool CompleteDailyClaim(int client, const char[] steamid, int lastClaim, int streak, int reward)
 {
-    if (g_DB == null || steamid[0] == '\0')
+    if (g_DB == null || steamid[0] == '\0' || reward <= 0)
     {
         return false;
     }
 
     char safeSteam[64], query[256];
-    EscapeStringSafe(steamid, safeSteam, sizeof(safeSteam));
+    if (!EscapeStringSafe(steamid, safeSteam, sizeof(safeSteam)))
+    {
+        return false;
+    }
 
     if (US_IsMySQL())
     {
@@ -429,73 +436,9 @@ bool PersistDailyClaimRecord(const char[] steamid, int lastClaim, int streak)
             safeSteam, lastClaim, streak);
     }
 
-    SQL_LockDatabase(g_DB);
-    bool ok = SQL_FastQuery(g_DB, query);
-    if (!ok)
+    if (!US_ApplyCreditDeltaWithQuery(client, reward, "daily_claim", query, false))
     {
-        char error[256];
-        SQL_GetError(g_DB, error, sizeof(error));
-        LogDailyError("PersistDailyClaimRecord", error);
-    }
-    SQL_UnlockDatabase(g_DB);
-    return ok;
-}
-
-bool RestoreDailyClaimRecord(const char[] steamid, bool hadPrevious, int previousLast, int previousStreak)
-{
-    if (g_DB == null || steamid[0] == '\0')
-    {
-        return false;
-    }
-
-    char safeSteam[64], query[256];
-    EscapeStringSafe(steamid, safeSteam, sizeof(safeSteam));
-
-    if (hadPrevious)
-    {
-        if (US_IsMySQL())
-        {
-            Format(query, sizeof(query),
-                "INSERT INTO store_daily_rewards (steamid,last_claim,streak) VALUES ('%s',%d,%d) ON DUPLICATE KEY UPDATE last_claim=VALUES(last_claim), streak=VALUES(streak)",
-                safeSteam, previousLast, previousStreak);
-        }
-        else
-        {
-            Format(query, sizeof(query),
-                "INSERT INTO store_daily_rewards (steamid,last_claim,streak) VALUES ('%s',%d,%d) ON CONFLICT(steamid) DO UPDATE SET last_claim=excluded.last_claim, streak=excluded.streak",
-                safeSteam, previousLast, previousStreak);
-        }
-    }
-    else
-    {
-        Format(query, sizeof(query), "DELETE FROM store_daily_rewards WHERE steamid='%s'", safeSteam);
-    }
-
-    SQL_LockDatabase(g_DB);
-    bool ok = SQL_FastQuery(g_DB, query);
-    if (!ok)
-    {
-        char error[256];
-        SQL_GetError(g_DB, error, sizeof(error));
-        LogDailyError("RestoreDailyClaimRecord", error);
-    }
-    SQL_UnlockDatabase(g_DB);
-    return ok;
-}
-
-bool CompleteDailyClaim(int client, const char[] steamid, bool hadPrevious, int previousLast, int previousStreak, int lastClaim, int streak, int reward)
-{
-    if (!PersistDailyClaimRecord(steamid, lastClaim, streak))
-    {
-        return false;
-    }
-
-    if (!US_AddCredits(client, reward, false))
-    {
-        if (!RestoreDailyClaimRecord(steamid, hadPrevious, previousLast, previousStreak))
-        {
-            LogError("%s Failed to rollback daily claim record for %N after reward credit failure.", DAILY_LOG_PREFIX, client);
-        }
+        LogError("%s Failed to complete atomic daily claim for %N.", DAILY_LOG_PREFIX, client);
         return false;
     }
 
@@ -546,7 +489,11 @@ public Action Cmd_Daily(int client, int args)
         return Plugin_Handled;
     }
 
-    EscapeStringSafe(steam, safeSteam, sizeof(safeSteam));
+    if (!EscapeStringSafe(steam, safeSteam, sizeof(safeSteam)))
+    {
+        DailyChat(client, "%t", "Daily Not Ready");
+        return Plugin_Handled;
+    }
     Format(query, sizeof(query), "SELECT last_claim, streak FROM store_daily_rewards WHERE steamid='%s'", safeSteam);
 
     g_bBusy[client] = true;
@@ -572,11 +519,9 @@ public void OnDailyLoaded(Database db, DBResultSet results, const char[] error, 
 
     int previousLast = 0;
     int previousStreak = 0;
-    bool hadPrevious = false;
 
     if (results.FetchRow())
     {
-        hadPrevious = true;
         previousLast = results.FetchInt(0);
         previousStreak = results.FetchInt(1);
     }
@@ -628,7 +573,7 @@ public void OnDailyLoaded(Database db, DBResultSet results, const char[] error, 
         return;
     }
 
-    if (!CompleteDailyClaim(client, steamid, hadPrevious, previousLast, previousStreak, now, streak, reward))
+    if (!CompleteDailyClaim(client, steamid, now, streak, reward))
     {
         DailyChat(client, "%t", "Daily Load Error");
         g_bBusy[client] = false;

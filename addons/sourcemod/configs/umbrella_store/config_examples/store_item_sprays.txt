@@ -1,0 +1,13 @@
+"Items"
+{
+    "spray_logo"
+    {
+        "name"        "Umbrella Logo Spray"
+        "type"        "spray"
+        "category"    "sprays"
+        "description" "Places a custom wall spray with the use key."
+        "material"    "materials/umbrella_store/sprays/logo.vmt"
+        "price"       "5000"
+        "team"        "0"
+    }
+}

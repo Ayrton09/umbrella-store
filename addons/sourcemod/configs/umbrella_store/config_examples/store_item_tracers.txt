@@ -1,0 +1,14 @@
+"Items"
+{
+    "tracer_cyan"
+    {
+        "name"        "Cyan Tracer"
+        "type"        "tracer"
+        "category"    "tracers"
+        "description" "Example bullet tracer color."
+        "color"       "0 220 255 255"
+        "rainbow"     "0"
+        "price"       "3500"
+        "team"        "0"
+    }
+}

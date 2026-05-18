@@ -4,11 +4,14 @@
 # Keep Git metadata and public root files.
 !.gitignore
 !README.md
+!MIGRATION.md
 
 # Keep public assets used by the README.
 !assets/
 assets/*
-!assets/umbrella-store-logo.jpg
+!assets/github/
+assets/github/*
+!assets/github/umbrella-store-cover.png
 
 # Keep only Umbrella Store files inside addons/sourcemod.
 !addons/
@@ -26,6 +29,11 @@ addons/sourcemod/scripting/*
 !addons/sourcemod/scripting/include/
 addons/sourcemod/scripting/include/*
 !addons/sourcemod/scripting/include/umbrella_store.inc
+!addons/sourcemod/scripting/include/umbrella_store_module_utils.inc
+!addons/sourcemod/scripting/include/multicolors.inc
+!addons/sourcemod/scripting/include/multicolors/
+addons/sourcemod/scripting/include/multicolors/*
+!addons/sourcemod/scripting/include/multicolors/*.inc
 
 !addons/sourcemod/translations/
 addons/sourcemod/translations/*
@@ -36,6 +44,13 @@ addons/sourcemod/configs/*
 !addons/sourcemod/configs/umbrella_store/
 addons/sourcemod/configs/umbrella_store/*
 !addons/sourcemod/configs/umbrella_store/umbrella_store_items.txt
+!addons/sourcemod/configs/umbrella_store/umbrella_store_quests.txt
+!addons/sourcemod/configs/umbrella_store/config_examples/
+addons/sourcemod/configs/umbrella_store/config_examples/*
+!addons/sourcemod/configs/umbrella_store/config_examples/*.txt
+!addons/sourcemod/configs/umbrella_store/items.d/
+addons/sourcemod/configs/umbrella_store/items.d/*
+!addons/sourcemod/configs/umbrella_store/items.d/*.txt
 
 # Keep internal working files out of the repo.
 release/

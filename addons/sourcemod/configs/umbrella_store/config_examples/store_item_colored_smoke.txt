@@ -1,0 +1,24 @@
+"Items"
+{
+    "coloredsmoke_green"
+    {
+        "name"          "Green Smoke"
+        "type"          "coloredsmoke"
+        "category"      "colored_smoke"
+        "description"   "Example colored smoke grenade effect."
+        "rgb_color"     "0 255 80"
+        "start_size"    "200"
+        "end_size"      "2"
+        "base_spread"   "100"
+        "spread_speed"  "70"
+        "speed"         "80"
+        "rate"          "30"
+        "jet_length"    "150"
+        "twist"         "20"
+        "density"       "200"
+        "lifetime"      "10.0"
+        "material"      "particle/particle_smokegrenade1.vmt"
+        "price"         "5000"
+        "team"          "0"
+    }
+}

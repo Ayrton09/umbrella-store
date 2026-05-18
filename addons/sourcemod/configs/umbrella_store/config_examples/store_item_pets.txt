@@ -1,0 +1,17 @@
+"Items"
+{
+    "pet_drone"
+    {
+        "name"        "Drone Pet"
+        "type"        "pet"
+        "category"    "pets"
+        "description" "Example attached pet model."
+        "model"       "models/umbrella_store/pets/drone.mdl"
+        "position"    "40 -48 8"
+        "angles"      "0 0 0"
+        "idle"        "idle"
+        "price"       "9000"
+        "team"        "0"
+        "downloads"   "materials/umbrella_store/pets/drone.vmt;materials/umbrella_store/pets/drone.vtf"
+    }
+}

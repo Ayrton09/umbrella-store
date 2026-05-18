@@ -1,0 +1,14 @@
+"Items"
+{
+    "mvp_anthem"
+    {
+        "name"        "MVP Anthem"
+        "type"        "mvp_sound"
+        "category"    "mvp_sounds"
+        "description" "Plays when the player receives the round MVP event."
+        "sound"       "umbrella_store/mvp/anthem.mp3"
+        "volume"      "0.5"
+        "price"       "10000"
+        "team"        "0"
+    }
+}

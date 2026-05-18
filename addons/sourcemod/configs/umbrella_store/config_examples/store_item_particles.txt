@@ -1,0 +1,70 @@
+"Items"
+{
+    "particle_aura_lightning"
+    {
+        "name"        "Lightning Aura"
+        "type"        "particle"
+        "category"    "particles"
+        "description" "Persistent aura particle attached to the player."
+        "effect"      "umbrella_lightning_aura"
+        "file"        "particles/umbrella_store.pcf"
+        "slot"        "aura"
+        "price"       "12000"
+        "team"        "0"
+    }
+
+    "particle_trail_energy"
+    {
+        "name"        "Energy Particle Trail"
+        "type"        "particle"
+        "category"    "particles"
+        "description" "Persistent trail particle attached to the player."
+        "effect"      "umbrella_energy_trail"
+        "file"        "particles/umbrella_store.pcf"
+        "slot"        "trail"
+        "price"       "12000"
+        "team"        "0"
+    }
+
+    "particle_spawn_vortex"
+    {
+        "name"        "Spawn Vortex"
+        "type"        "particle"
+        "category"    "particles"
+        "description" "Short particle effect played when the player spawns."
+        "effect"      "umbrella_spawn_vortex"
+        "file"        "particles/umbrella_store.pcf"
+        "slot"        "spawn"
+        "duration"    "2.0"
+        "price"       "8000"
+        "team"        "0"
+    }
+
+    "particle_kill_burst"
+    {
+        "name"        "Kill Burst"
+        "type"        "particle"
+        "category"    "particles"
+        "description" "Short particle effect played at the killed player's position."
+        "effect"      "umbrella_kill_burst"
+        "file"        "particles/umbrella_store.pcf"
+        "slot"        "kill"
+        "duration"    "1.5"
+        "price"       "9000"
+        "team"        "0"
+    }
+
+    "particle_hit_spark"
+    {
+        "name"        "Hit Spark"
+        "type"        "particle"
+        "category"    "particles"
+        "description" "Short particle effect played at bullet impact positions."
+        "effect"      "umbrella_hit_spark"
+        "file"        "particles/umbrella_store.pcf"
+        "slot"        "hit"
+        "duration"    "1.0"
+        "price"       "9000"
+        "team"        "0"
+    }
+}

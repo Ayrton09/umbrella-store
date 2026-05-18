@@ -34,7 +34,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Camera",
     author = "Ayrton09",
     description = "Thirdperson and mirror camera for Umbrella Store player inspection",
-    version = "1.1.0",
+    version = "1.2.0",
     url = ""
 };
 

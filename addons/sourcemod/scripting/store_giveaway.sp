@@ -7,13 +7,14 @@
 #include <multicolors>
 
 #define US_CHAT_TAG " {purple}[Umbrella Store]{default}"
+#define GIVEAWAY_MAX_CREDITS 2000000000
 
 public Plugin myinfo =
 {
     name = "[Umbrella Store] Giveaway",
     author = "Ayrton09",
     description = "Giveaway global con animacion HUD para Umbrella Store",
-    version = "1.1.0",
+    version = "1.2.0",
     url = ""
 };
 
@@ -275,16 +276,54 @@ bool HasGiveawayAccess(int client)
 
     if (sFlag[0] == '\0')
     {
-        return true;
+        return false;
     }
 
     int neededBits = ReadFlagString(sFlag);
     if (neededBits == 0)
     {
-        return true;
+        return false;
     }
 
     return (GetUserFlagBits(client) & neededBits) == neededBits || CheckCommandAccess(client, "sm_giveaway_override", ADMFLAG_ROOT, true);
+}
+
+bool TryParseGiveawayCredits(const char[] input, int &amount)
+{
+    char buffer[32];
+    strcopy(buffer, sizeof(buffer), input);
+    TrimString(buffer);
+
+    int len = strlen(buffer);
+    if (len <= 0)
+    {
+        return false;
+    }
+
+    int parsed = 0;
+    for (int i = 0; i < len; i++)
+    {
+        int digit = buffer[i] - '0';
+        if (digit < 0 || digit > 9)
+        {
+            return false;
+        }
+
+        if (parsed > (GIVEAWAY_MAX_CREDITS - digit) / 10)
+        {
+            return false;
+        }
+
+        parsed = parsed * 10 + digit;
+    }
+
+    if (parsed <= 0)
+    {
+        return false;
+    }
+
+    amount = parsed;
+    return true;
 }
 
 bool IsValidGiveawayClient(int client)
@@ -808,8 +847,8 @@ public Action Command_Giveaway(int client, int args)
     char sAmount[32];
     GetCmdArg(1, sAmount, sizeof(sAmount));
 
-    int amount = StringToInt(sAmount);
-    if (amount <= 0)
+    int amount = 0;
+    if (!TryParseGiveawayCredits(sAmount, amount))
     {
         ReplyStoreMessage(client, "%t", "Giveaway Invalid Amount");
         return Plugin_Handled;

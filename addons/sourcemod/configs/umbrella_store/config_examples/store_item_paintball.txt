@@ -1,0 +1,13 @@
+"Items"
+{
+    "paintball_blue"
+    {
+        "name"        "Blue Paintball"
+        "type"        "paintball"
+        "category"    "paintball"
+        "description" "Example bullet impact decal set."
+        "decals"      "decals/umbrella_store/paint/blue_01.vmt;decals/umbrella_store/paint/blue_02.vmt"
+        "price"       "4000"
+        "team"        "0"
+    }
+}

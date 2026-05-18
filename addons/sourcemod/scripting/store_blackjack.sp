@@ -132,7 +132,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Blackjack",
     author = "Ayrton09",
     description = "Blackjack module for Umbrella Store",
-    version = "1.1.0",
+    version = "1.2.0",
     url = ""
 };
 
@@ -588,7 +588,10 @@ void HandleClientLeave(int client)
             int reward = refund * 2;
             if (reward > 0)
             {
-                US_AddCredits(opponent, reward, true);
+                if (!TryGiveBlackjackCredits(opponent, reward, true, "pvp_disconnect"))
+                {
+                    return;
+                }
                 US_AddStat(opponent, "blackjack_games", 1);
                 US_AddStat(opponent, "blackjack_wins", 1);
                 US_AddStat(opponent, "blackjack_profit", refund);
@@ -1054,7 +1057,7 @@ bool StartBlackjackRound(int client, int bet)
     // y el jugador jamas deberia iniciar por encima de 21.
     if (g_iPlayerCount[client][0] != 2 || g_iDealerCount[client] != 2 || GetBestHandValue(g_iPlayerCards[client][0], g_iPlayerCount[client][0]) > 21)
     {
-        US_AddCredits(client, bet, true);
+        TryGiveBlackjackCredits(client, bet, true, "single_invalid_start");
         ResetBlackjackClient(client, false);
         ChatError(client, "%T", "Round Invalid Start State", client);
         RequestShowMainMenu(client);
@@ -1075,7 +1078,11 @@ bool StartBlackjackRound(int client, int bet)
         else if (playerBJ)
         {
             int payout = CalculateBlackjackPayout(g_iBet[client]);
-            US_AddCredits(client, payout, true);
+            if (!TryGiveBlackjackCredits(client, payout, true, "single_natural"))
+            {
+                ResetBlackjackClient(client, false);
+                return false;
+            }
             char sPayout[32];
             FormatCredits(payout, sPayout, sizeof(sPayout));
             FinishSingleWin(client, "%T", "Round Natural Blackjack Win", client, sPayout);
@@ -1447,7 +1454,11 @@ void DealerPlayAndResolve(int client)
     if (dealerValue > 21)
     {
         int payout = GetCurrentBaseBet(client) * 2;
-        US_AddCredits(client, payout, true);
+        if (!TryGiveBlackjackCredits(client, payout, true, "single_dealer_bust"))
+        {
+            ResetBlackjackClient(client, false);
+            return;
+        }
         char sPayout[32];
         FormatCredits(payout, sPayout, sizeof(sPayout));
         FinishSingleWin(client, "%T", "Round Dealer Bust Win", client, dealerValue, sPayout);
@@ -1457,7 +1468,11 @@ void DealerPlayAndResolve(int client)
     if (playerValue > dealerValue)
     {
         int payout = GetCurrentBaseBet(client) * 2;
-        US_AddCredits(client, payout, true);
+        if (!TryGiveBlackjackCredits(client, payout, true, "single_compare"))
+        {
+            ResetBlackjackClient(client, false);
+            return;
+        }
         char sPayout[32];
         FormatCredits(payout, sPayout, sizeof(sPayout));
         FinishSingleWin(client, "%T", "Round Compare Win", client, sPayout, playerValue, dealerValue);
@@ -1514,7 +1529,11 @@ void ResolveSplitDealer(int client)
 
     if (payout > 0)
     {
-        US_AddCredits(client, payout, true);
+        if (!TryGiveBlackjackCredits(client, payout, true, "single_split"))
+        {
+            ResetBlackjackClient(client, false);
+            return;
+        }
     }
 
     if (dealerValue > 21)
@@ -1669,7 +1688,11 @@ void FinishSingleLose(int client, const char[] format, any ...)
 
 void FinishSinglePush(int client, const char[] format, any ...)
 {
-    US_AddCredits(client, GetCurrentBaseBet(client), true);
+    if (!TryGiveBlackjackCredits(client, GetCurrentBaseBet(client), true, "single_push"))
+    {
+        ResetBlackjackClient(client, false);
+        return;
+    }
 
     char buffer[256];
     VFormat(buffer, sizeof(buffer), format, 3);
@@ -1930,19 +1953,8 @@ void AcceptPvPInvite(int client)
         return;
     }
 
-    bool tookClient = US_TakeCredits(client, bet);
-    bool tookChallenger = US_TakeCredits(challenger, bet);
-    if (!tookClient || !tookChallenger)
+    if (!US_ApplyCreditDeltas(client, -bet, "blackjack_pvp_stake", challenger, -bet, "blackjack_pvp_stake", true))
     {
-        if (tookClient)
-        {
-            US_AddCredits(client, bet, true);
-        }
-        if (tookChallenger)
-        {
-            US_AddCredits(challenger, bet, true);
-        }
-
         Chat(client, "%T", "Error Take Credits", client);
         Chat(challenger, "%T", "Error Take Credits", challenger);
         ClearInvite(client);
@@ -2245,8 +2257,13 @@ void ResolvePvPRound(int anyClient)
     int pot = g_iPvPBet[client] + g_iPvPBet[opponent];
     if (winner == 0)
     {
-        US_AddCredits(client, g_iPvPBet[client], true);
-        US_AddCredits(opponent, g_iPvPBet[opponent], true);
+        if (!US_ApplyCreditDeltas(client, g_iPvPBet[client], "blackjack_pvp_push", opponent, g_iPvPBet[opponent], "blackjack_pvp_push", true))
+        {
+            LogError("[Umbrella Store] Blackjack failed to refund PvP push pot for clients %d and %d.", client, opponent);
+            ResetBlackjackClient(client, false);
+            ResetBlackjackClient(opponent, false);
+            return;
+        }
         US_AddStat(client, "blackjack_games", 1);
         US_AddStat(opponent, "blackjack_games", 1);
         US_AddStat(client, "blackjack_pushes", 1);
@@ -2267,7 +2284,12 @@ void ResolvePvPRound(int anyClient)
     }
     else
     {
-        US_AddCredits(winner, pot, true);
+        if (!TryGiveBlackjackCredits(winner, pot, true, "pvp_finish"))
+        {
+            ResetBlackjackClient(client, false);
+            ResetBlackjackClient(opponent, false);
+            return;
+        }
         int loser = (winner == client) ? opponent : client;
         US_AddStat(winner, "blackjack_games", 1);
         US_AddStat(loser, "blackjack_games", 1);
@@ -2646,6 +2668,26 @@ void ChatInfo(int client, const char[] format, any ...)
     VFormat(buffer, sizeof(buffer), format, 3);
     HighlightChatCommands(buffer, highlighted, sizeof(highlighted));
     CPrintToChat(client, "%s %s", BJ_CHAT_TAG, highlighted);
+}
+
+bool TryGiveBlackjackCredits(int client, int amount, bool notify, const char[] context)
+{
+    if (amount <= 0)
+    {
+        return true;
+    }
+
+    if (US_AddCredits(client, amount, notify))
+    {
+        return true;
+    }
+
+    LogError("[Umbrella Store] Blackjack failed to grant %d credits to client %d in %s.", amount, client, context);
+    if (IsValidClient(client))
+    {
+        ChatError(client, "%T", "Error Take Credits", client);
+    }
+    return false;
 }
 
 void ChatSuccess(int client, const char[] format, any ...)
@@ -3220,7 +3262,7 @@ void TableLeave(int client, bool showMenu)
         int refund = g_bTableStakeTaken[client] ? g_iTableBet[client] : 0;
         if (refund > 0 && IsValidClient(client))
         {
-            US_AddCredits(client, refund, true);
+            TryGiveBlackjackCredits(client, refund, true, "table_leave_refund");
         }
 
     CPrintToChatAll("%s %t", BJ_CHAT_TAG, "Table Left", client);
@@ -3338,7 +3380,10 @@ void StartTableRound()
                 continue;
             }
 
-            US_AddCredits(client, g_iTableBet[client], true);
+            if (!TryGiveBlackjackCredits(client, g_iTableBet[client], true, "table_min_players_refund"))
+            {
+                continue;
+            }
             g_bTableStakeTaken[client] = false;
         }
 
@@ -3567,7 +3612,10 @@ void ResolveTableRound()
         if (natural && !dealerNatural)
         {
             int payout = CalculateBlackjackPayout(bet);
-            US_AddCredits(client, payout, true);
+            if (!TryGiveBlackjackCredits(client, payout, true, "table_natural"))
+            {
+                continue;
+            }
             int net = payout - bet;
             char netText[32]; FormatSignedCredits(net, netText, sizeof(netText));
             ChatSuccess(client, "%T", "Table Result Natural", client, netText);
@@ -3583,7 +3631,10 @@ void ResolveTableRound()
 
         if (dealerValue > 21 || value > dealerValue)
         {
-            US_AddCredits(client, bet * 2, true);
+            if (!TryGiveBlackjackCredits(client, bet * 2, true, "table_win"))
+            {
+                continue;
+            }
             ChatSuccess(client, "%T", "Table Result Win", client, betText);
             ChatInfo(client, "%T", "Table Hand Summary", client, dealer, hand);
             RecordSingleStats(client, bet, true, false, false);
@@ -3594,7 +3645,10 @@ void ResolveTableRound()
         }
         else if (value == dealerValue)
         {
-            US_AddCredits(client, bet, true);
+            if (!TryGiveBlackjackCredits(client, bet, true, "table_push"))
+            {
+                continue;
+            }
             ChatNotice(client, "%T", "Table Result Push", client);
             ChatInfo(client, "%T", "Table Hand Summary", client, dealer, hand);
             RecordSingleStats(client, 0, false, true, false);

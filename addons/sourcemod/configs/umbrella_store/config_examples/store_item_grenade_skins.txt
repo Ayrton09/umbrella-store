@@ -1,0 +1,15 @@
+"Items"
+{
+    "grenadeskin_he_custom"
+    {
+        "name"        "Custom HE Grenade"
+        "type"        "grenadeskin"
+        "category"    "grenade_skins"
+        "description" "Example projectile model replacement for HE grenades."
+        "grenade"     "hegrenade"
+        "model"       "models/umbrella_store/grenades/hegrenade_custom.mdl"
+        "price"       "6500"
+        "team"        "0"
+        "downloads"   "materials/umbrella_store/grenades/hegrenade_custom.vmt;materials/umbrella_store/grenades/hegrenade_custom.vtf"
+    }
+}

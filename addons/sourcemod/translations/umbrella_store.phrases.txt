@@ -2800,4 +2800,304 @@
         "fr" "Vous avez termine une quete et recu {LIGHTBLUE}%s{DEFAULT}."
         "de" "Du hast eine Quest abgeschlossen und {LIGHTBLUE}%s{DEFAULT} erhalten."
     }
+    "Module Hidden"
+    {
+        "es" "%s ocultado."
+        "en" "%s hidden."
+        "ru" "%s скрыто."
+        "chi" "%s 已隐藏。"
+        "pt" "%s oculto."
+        "fr" "%s masque."
+        "de" "%s ausgeblendet."
+    }
+    "Module Visible"
+    {
+        "es" "%s visible."
+        "en" "%s visible."
+        "ru" "%s видно."
+        "chi" "%s 已显示。"
+        "pt" "%s visivel."
+        "fr" "%s visible."
+        "de" "%s sichtbar."
+    }
+    "Say Sound Cooldown"
+    {
+        "es" "Espera %d segundos antes de reproducir otro sonido."
+        "en" "Wait %d seconds before playing another sound."
+        "ru" "Подождите %d секунд перед следующим звуком."
+        "chi" "播放另一个声音前请等待 %d 秒。"
+        "pt" "Aguarde %d segundos antes de tocar outro som."
+        "fr" "Attendez %d secondes avant de jouer un autre son."
+        "de" "Warte %d Sekunden, bevor du einen weiteren Sound abspielst."
+    }
+    "Say Sound Limit Reached"
+    {
+        "es" "Alcanzaste el limite de say sounds."
+        "en" "Say sound limit reached."
+        "ru" "Достигнут лимит звуков."
+        "chi" "已达到聊天音效限制。"
+        "pt" "Limite de say sounds atingido."
+        "fr" "Limite de say sounds atteinte."
+        "de" "Say-Sound-Limit erreicht."
+    }
+    "Hat Slot In Use"
+    {
+        "es" "Ya tienes un hat equipado en ese slot."
+        "en" "You already have a hat equipped in that slot."
+        "ru" "В этом слоте уже надета шапка."
+        "chi" "该槽位已有帽子。"
+        "pt" "Voce ja tem um hat equipado nesse slot."
+        "fr" "Vous avez deja un chapeau equipe dans ce slot."
+        "de" "In diesem Slot ist bereits ein Hat ausgeruestet."
+    }
+    "Grenade Skin Slot In Use"
+    {
+        "es" "Ya tienes una grenade skin equipada para esa granada."
+        "en" "You already have a grenade skin equipped for that grenade."
+        "ru" "Для этой гранаты уже выбран скин."
+        "chi" "该手雷已有皮肤。"
+        "pt" "Voce ja tem uma grenade skin equipada para essa granada."
+        "fr" "Vous avez deja un skin de grenade equipe pour cette grenade."
+        "de" "Fuer diese Granate ist bereits ein Skin ausgeruestet."
+    }
+    "Particle Slot In Use"
+    {
+        "es" "Ya tienes una particula equipada en ese slot."
+        "en" "You already have a particle equipped in that slot."
+        "ru" "В этом слоте уже выбрана частица."
+        "chi" "该槽位已有粒子效果。"
+        "pt" "Voce ja tem uma particula equipada nesse slot."
+        "fr" "Vous avez deja une particule equipee dans ce slot."
+        "de" "In diesem Slot ist bereits ein Partikel ausgeruestet."
+    }
+    "MVP Volume Set"
+    {
+        "es" "Volumen MVP configurado en %d%%."
+        "en" "MVP volume set to %d%%."
+        "ru" "Громкость MVP установлена на %d%%."
+        "chi" "MVP 音量已设置为 %d%%。"
+        "pt" "Volume MVP definido em %d%%."
+        "fr" "Volume MVP defini a %d%%."
+        "de" "MVP-Lautstaerke auf %d%% gesetzt."
+    }
+    "Store Category Search"
+    {
+        "es" "Buscar items"
+        "en" "Search items"
+        "ru" "Поиск предметов"
+        "chi" "搜索物品"
+        "pt" "Buscar itens"
+        "fr" "Rechercher des items"
+        "de" "Items suchen"
+    }
+    "Search Results Title"
+    {
+        "es" "Resultados para: %s"
+        "en" "Results for: %s"
+        "ru" "Результаты для: %s"
+        "chi" "搜索结果: %s"
+        "pt" "Resultados para: %s"
+        "fr" "Resultats pour: %s"
+        "de" "Ergebnisse fuer: %s"
+    }
+    "Search No Results"
+    {
+        "es" "No hay resultados para %s."
+        "en" "No results for %s."
+        "ru" "Нет результатов для %s."
+        "chi" "没有结果: %s。"
+        "pt" "Sem resultados para %s."
+        "fr" "Aucun resultat pour %s."
+        "de" "Keine Ergebnisse fuer %s."
+    }
+    "Search Usage"
+    {
+        "es" "Uso: !storesearch <texto>"
+        "en" "Usage: !storesearch <text>"
+        "ru" "Использование: !storesearch <text>"
+        "chi" "用法: !storesearch <text>"
+        "pt" "Uso: !storesearch <texto>"
+        "fr" "Usage: !storesearch <texte>"
+        "de" "Nutzung: !storesearch <text>"
+    }
+    "Search Too Short"
+    {
+        "es" "La busqueda debe tener al menos 2 caracteres."
+        "en" "Search text must be at least 2 characters."
+        "ru" "Поиск должен содержать минимум 2 символа."
+        "chi" "搜索内容至少需要 2 个字符。"
+        "pt" "A busca precisa ter pelo menos 2 caracteres."
+        "fr" "La recherche doit contenir au moins 2 caracteres."
+        "de" "Der Suchtext muss mindestens 2 Zeichen haben."
+    }
+    "Voucher Redeem Usage"
+    {
+        "es" "Uso: !redeem <codigo>"
+        "en" "Usage: !redeem <code>"
+        "ru" "Использование: !redeem <code>"
+        "chi" "用法: !redeem <code>"
+        "pt" "Uso: !redeem <codigo>"
+        "fr" "Usage: !redeem <code>"
+        "de" "Nutzung: !redeem <code>"
+    }
+    "Voucher Create Credits Usage"
+    {
+        "es" "Uso: sm_createvoucher <codigo> <creditos> [usos_max] [horas_expira]"
+        "en" "Usage: sm_createvoucher <code> <credits> [max_uses] [expires_hours]"
+        "ru" "Usage: sm_createvoucher <code> <credits> [max_uses] [expires_hours]"
+        "chi" "Usage: sm_createvoucher <code> <credits> [max_uses] [expires_hours]"
+        "pt" "Uso: sm_createvoucher <codigo> <creditos> [usos_max] [horas_expira]"
+        "fr" "Usage: sm_createvoucher <code> <credits> [max_uses] [expires_hours]"
+        "de" "Nutzung: sm_createvoucher <code> <credits> [max_uses] [expires_hours]"
+    }
+    "Voucher Create Item Usage"
+    {
+        "es" "Uso: sm_createitemvoucher <codigo> <item_id> [usos_max] [horas_expira]"
+        "en" "Usage: sm_createitemvoucher <code> <item_id> [max_uses] [expires_hours]"
+        "ru" "Usage: sm_createitemvoucher <code> <item_id> [max_uses] [expires_hours]"
+        "chi" "Usage: sm_createitemvoucher <code> <item_id> [max_uses] [expires_hours]"
+        "pt" "Uso: sm_createitemvoucher <codigo> <item_id> [usos_max] [horas_expira]"
+        "fr" "Usage: sm_createitemvoucher <code> <item_id> [max_uses] [expires_hours]"
+        "de" "Nutzung: sm_createitemvoucher <code> <item_id> [max_uses] [expires_hours]"
+    }
+    "Voucher Disable Usage"
+    {
+        "es" "Uso: sm_disablevoucher <codigo>"
+        "en" "Usage: sm_disablevoucher <code>"
+        "ru" "Usage: sm_disablevoucher <code>"
+        "chi" "Usage: sm_disablevoucher <code>"
+        "pt" "Uso: sm_disablevoucher <codigo>"
+        "fr" "Usage: sm_disablevoucher <code>"
+        "de" "Nutzung: sm_disablevoucher <code>"
+    }
+    "Voucher Invalid Code"
+    {
+        "es" "Codigo invalido. Usa 4-63 caracteres: A-Z, 0-9, guion o guion bajo."
+        "en" "Invalid code. Use 4-63 characters: A-Z, 0-9, dash, or underscore."
+        "ru" "Неверный код."
+        "chi" "代码无效。"
+        "pt" "Codigo invalido."
+        "fr" "Code invalide."
+        "de" "Ungueltiger Code."
+    }
+    "Voucher Invalid Args"
+    {
+        "es" "Argumentos de voucher invalidos."
+        "en" "Invalid voucher arguments."
+        "ru" "Неверные аргументы voucher."
+        "chi" "兑换码参数无效。"
+        "pt" "Argumentos de voucher invalidos."
+        "fr" "Arguments de voucher invalides."
+        "de" "Ungueltige Voucher-Argumente."
+    }
+    "Voucher Create Failed"
+    {
+        "es" "No se pudo crear el voucher. Revisa si el codigo ya existe."
+        "en" "Could not create voucher. Check whether the code already exists."
+        "ru" "Не удалось создать voucher."
+        "chi" "无法创建兑换码。"
+        "pt" "Nao foi possivel criar o voucher."
+        "fr" "Impossible de creer le voucher."
+        "de" "Voucher konnte nicht erstellt werden."
+    }
+    "Voucher Created"
+    {
+        "es" "Voucher %s creado."
+        "en" "Voucher %s created."
+        "ru" "Voucher %s создан."
+        "chi" "兑换码 %s 已创建。"
+        "pt" "Voucher %s criado."
+        "fr" "Voucher %s cree."
+        "de" "Voucher %s erstellt."
+    }
+    "Voucher Not Found"
+    {
+        "es" "Voucher no encontrado."
+        "en" "Voucher not found."
+        "ru" "Voucher не найден."
+        "chi" "未找到兑换码。"
+        "pt" "Voucher nao encontrado."
+        "fr" "Voucher introuvable."
+        "de" "Voucher nicht gefunden."
+    }
+    "Voucher Disabled"
+    {
+        "es" "Voucher %s desactivado."
+        "en" "Voucher %s disabled."
+        "ru" "Voucher %s отключен."
+        "chi" "兑换码 %s 已停用。"
+        "pt" "Voucher %s desativado."
+        "fr" "Voucher %s desactive."
+        "de" "Voucher %s deaktiviert."
+    }
+    "Voucher Disabled Player"
+    {
+        "es" "Este voucher esta desactivado."
+        "en" "This voucher is disabled."
+        "ru" "Этот voucher отключен."
+        "chi" "此兑换码已停用。"
+        "pt" "Este voucher esta desativado."
+        "fr" "Ce voucher est desactive."
+        "de" "Dieser Voucher ist deaktiviert."
+    }
+    "Voucher Expired"
+    {
+        "es" "Este voucher expiro."
+        "en" "This voucher has expired."
+        "ru" "Срок voucher истек."
+        "chi" "此兑换码已过期。"
+        "pt" "Este voucher expirou."
+        "fr" "Ce voucher a expire."
+        "de" "Dieser Voucher ist abgelaufen."
+    }
+    "Voucher Used Up"
+    {
+        "es" "Este voucher ya no tiene usos disponibles."
+        "en" "This voucher has no uses left."
+        "ru" "У этого voucher больше нет использований."
+        "chi" "此兑换码已无可用次数。"
+        "pt" "Este voucher nao tem mais usos."
+        "fr" "Ce voucher n'a plus d'utilisations."
+        "de" "Dieser Voucher hat keine Nutzungen mehr."
+    }
+    "Voucher Already Redeemed"
+    {
+        "es" "Ya canjeaste este voucher."
+        "en" "You already redeemed this voucher."
+        "ru" "Вы уже активировали этот voucher."
+        "chi" "你已经兑换过此代码。"
+        "pt" "Voce ja resgatou este voucher."
+        "fr" "Vous avez deja utilise ce voucher."
+        "de" "Du hast diesen Voucher bereits eingeloest."
+    }
+    "Voucher Redeemed Credits Item"
+    {
+        "es" "Voucher canjeado: %d creditos y %s."
+        "en" "Voucher redeemed: %d credits and %s."
+        "ru" "Voucher активирован: %d credits и %s."
+        "chi" "兑换成功: %d credits 和 %s。"
+        "pt" "Voucher resgatado: %d creditos e %s."
+        "fr" "Voucher utilise: %d credits et %s."
+        "de" "Voucher eingeloest: %d Credits und %s."
+    }
+    "Voucher Redeemed Credits"
+    {
+        "es" "Voucher canjeado: %d creditos."
+        "en" "Voucher redeemed: %d credits."
+        "ru" "Voucher активирован: %d credits."
+        "chi" "兑换成功: %d credits。"
+        "pt" "Voucher resgatado: %d creditos."
+        "fr" "Voucher utilise: %d credits."
+        "de" "Voucher eingeloest: %d Credits."
+    }
+    "Voucher Redeemed Item"
+    {
+        "es" "Voucher canjeado: %s."
+        "en" "Voucher redeemed: %s."
+        "ru" "Voucher активирован: %s."
+        "chi" "兑换成功: %s。"
+        "pt" "Voucher resgatado: %s."
+        "fr" "Voucher utilise: %s."
+        "de" "Voucher eingeloest: %s."
+    }
 }

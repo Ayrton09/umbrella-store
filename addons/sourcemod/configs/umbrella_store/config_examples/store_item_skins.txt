@@ -1,0 +1,33 @@
+"Items"
+{
+    "skin_ct_operator"
+    {
+        "name"                  "CT Operator"
+        "type"                  "skin"
+        "category"              "skins"
+        "description"           "Example Counter-Terrorist player skin."
+        "model"                 "models/player/custom/example_ct/example_ct.mdl"
+        "arms"                  "models/weapons/t_arms_example.mdl"
+        "price"                 "25000"
+        "sale_price"            "12000"
+        "team"                  "3"
+        "rarity"                "rare"
+        "sort_order"            "10"
+        "icon"                  "icons/skins/ct_operator"
+        "bundle_id"             "starter_skins"
+        "sell_percent_override" "55"
+    }
+
+    "skin_t_raider"
+    {
+        "name"        "T Raider"
+        "type"        "skin"
+        "category"    "skins"
+        "description" "Example Terrorist player skin."
+        "model"       "models/player/custom/example_t/example_t.mdl"
+        "price"       "25000"
+        "team"        "2"
+        "rarity"      "rare"
+        "sort_order"  "20"
+    }
+}

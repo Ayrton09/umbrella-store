@@ -22,7 +22,7 @@ public Plugin myinfo =
     name        = "[Umbrella Store] Casino - Coinflip",
     author      = "Ayrton09",
     description = "Coinflip contra la casa y versus jugador para Umbrella Store",
-    version     = "1.1.0",
+    version     = "1.2.0",
     url         = ""
 };
 
@@ -364,7 +364,11 @@ void ResolvePvpDisconnect(int client)
 
     if (amount > 0)
     {
-        US_AddCredits(opponent, amount * 2, false);
+        if (!US_AddCredits(opponent, amount * 2, false))
+        {
+            LogError("[Umbrella Store] Coinflip failed to pay disconnected PvP pot %d to client %d.", amount * 2, opponent);
+            return;
+        }
     }
 
     TrackCoinflipResult(opponent, amount, true);
@@ -511,18 +515,11 @@ void HandleChallengeResponse(int client, bool accept)
         return;
     }
 
-    if (!US_TakeCredits(challenger, amount))
+    if (!US_ApplyCreditDeltas(challenger, -amount, "coinflip_pvp_stake", client, -amount, "coinflip_pvp_stake", false))
     {
         CF_Print(client, "%t", "CF Opponent Debit Failed");
+        CF_Print(challenger, "%t", "CF Duel Cancelled Vs", client);
         ClearIncomingChallenge(client, false);
-        return;
-    }
-
-    if (!US_TakeCredits(client, amount))
-    {
-        US_AddCredits(challenger, amount, false);
-        CF_Print(client, "%t", "CF Not Enough Credits");
-        ShowChallengeMenu(client);
         return;
     }
 
@@ -1147,7 +1144,12 @@ void FinishHouseCoinflip(int client)
             reward = 1;
         }
 
-        US_AddCredits(client, reward, false);
+        if (!US_AddCredits(client, reward, false))
+        {
+            LogError("[Umbrella Store] Coinflip failed to pay %d credits to client %d.", reward, client);
+            ResetAnimState(client);
+            return;
+        }
         TrackCoinflipResult(client, reward - bet, true);
         EmitConfiguredSound(client, gCvarWinSound);
         CF_Print(client, "%t", "CF House Win", chosen, rolled, reward - bet);
@@ -1189,7 +1191,16 @@ void FinishPvpCoinflip(int clientA, int clientB, int winner, int loser, int amou
         ShowRollText(clientB, g_iAnimStep[clientB], true);
     }
 
-    US_AddCredits(winner, amount * 2, false);
+    if (!US_AddCredits(winner, amount * 2, false))
+    {
+        LogError("[Umbrella Store] Coinflip failed to pay PvP pot %d to client %d.", amount * 2, winner);
+        ResetAnimState(clientA);
+        if (clientB != clientA)
+        {
+            ResetAnimState(clientB);
+        }
+        return;
+    }
     TrackCoinflipResult(winner, amount, true);
     TrackCoinflipResult(loser, -amount, false);
     EmitConfiguredSound(winner, gCvarWinSound);

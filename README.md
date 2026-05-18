@@ -1,178 +1,83 @@
+![Umbrella Store](assets/github/umbrella-store-cover.png)
+
 # Umbrella Store
 
-![Umbrella Store Logo](logo.png)
+Current package version: `1.2.0`.
 
-Umbrella Store is a modern, modular SourceMod store built from the ground up as an extensible platform.
+Umbrella Store is a modular and modern SourceMod store suite built from the ground up to work as an extensible platform, not just a fixed set of casino plugins.
 
-Unlike many older public store releases, Umbrella Store is not a patched legacy fork. The project is being evolved around one shared core that owns economy, inventory, persistence, menus, stats, quests, leaderboards, marketplace flows, and public extension points for third-party modules.
+Unlike many older public store packages, Umbrella Store is not a patched legacy fork. The current codebase is being evolved as a framework-oriented core with a public API, shared persistence layer, item schema v2, Source 1 cosmetic modules, and extension points for third-party modules.
 
-## Why Umbrella Store
+## What Umbrella Store is becoming
 
-- built from scratch instead of being another patched legacy store fork
-- designed as a real platform with a reusable core and public API
-- shared persistence owned by one core plugin instead of scattered module logic
-- backward-compatible item config evolution through schema v2
-- first-party modules built on the same extension surface available to third parties
-- ready for long-term growth through quests, stats, leaderboards, marketplace flows, and module-defined integrations
+This repository now targets three layers:
 
-## 1.1.0 Highlights
+- `store_core` as the persistent economy, inventory, item, menu, storage, and extension backbone
+- first-party modules such as blackjack, crash, roulette, daily, giveaway, camera, player skins, hats, trails, grenade trails, tracers, paintball, say sounds, pets, colored smoke, grenade skins, bullet sparks, laser sights, MVP sounds, sprays, and particles built on top of that backbone
+- third-party modules that can integrate through `umbrella_store.inc` without editing the core
 
-Umbrella Store 1.1.0 is the first major framework-oriented release.
+## Current architecture highlights
 
-- expanded public API v2 in `umbrella_store.inc`
-- shared storage layer exported by the core
-- item schema v2 with backward compatibility
-- persistent stats, quests, quest completion counts, leaderboards, profile menus, and profile exports
-- built-in marketplace for player-to-player item listings
-- Multi-Colors chat backend with broader Source 2009 color support
-- richer default item config with concrete examples plus a ready-to-test Source 2009 color preset
-- CI, changelog, contributing guide, architecture docs, API docs, schema docs, and migration docs
+- Public API v5 in [`addons/sourcemod/scripting/include/umbrella_store.inc`](addons/sourcemod/scripting/include/umbrella_store.inc)
+- Shared database/storage access exported by the core
+- Item schema v2 with backward compatibility for old item configs
+- Item metadata is normalized by the core so Source 1 modules can read fields such as `model`, `material`, `color`, `sound`, `effect`, `file`, `duration`, `grenade`, `position`, `angles`, and module-specific options through the public API
+- Equipped item enumeration natives for modules that need to scan all active items on a player
+- Menu section registration for external modules
+- Item type registration for custom module-defined item types
+- Pre/post forwards for purchase, equip, trade, credits, and inventory changes
+- Source 1 cosmetic item modules for Counter-Strike: Source style entities and temp entities
+- Separated module config examples under `addons/sourcemod/configs/umbrella_store/config_examples`
+- Optional per-module item config loading from `addons/sourcemod/configs/umbrella_store/items.d/*.txt`
+- Cosmetic previews for model, material, smoke, say sound, MVP sound, spray, and particle items from the item details menu
+- Persistent client preferences for hiding trails, tracers, paintball impacts, pets, bullet sparks, and particles
+- Initial persistent stats and quest progress layers in the core
+- `store_daily` refactored to use the core storage layer instead of opening its own database connection
+- Module profit leaderboards now available through `!topprofit`, `!topdaily`, `!topbj`, `!topcf`, `!topcrash`, and `!toproulette`
+- Daily plus casino sample quests now run on top of the shared quest API
+- Built-in `!profile` / `!perfil` and `!quests` / `!misiones` menus on top of the shared stats and quest layers
+- Built-in `!tops` / `!leaderboards` menu for all shared rankings
+- Built-in `!market` / `!mercado` marketplace for player-to-player item listings, backed by core-owned tables and transaction-safe ownership transfers
+- Built-in `!storesearch` / `!buscarstore` item search across item id, name, type, category, description, and rarity
+- Built-in `!redeem` voucher redemption for credit and item codes, backed by core-owned voucher tables
+- Persistent general audit log through `store_audit_log`, `sm_storeaudit`, and the `US_LogAuditEvent` native for modules
+- Transaction-safe credit delta natives for payouts, stakes, rewards, and module storage updates
+- Multi-Colors chat backend for richer tag, name, and message color customization across Source engine games
+  - Source 2009 games get the broader palette
+  - CS:GO uses the classic Multi-Colors color profile, so only its supported subset is guaranteed there
+- Optional file-defined quests through `addons/sourcemod/configs/umbrella_store/umbrella_store_quests.txt`
+  - supports `title`, `category`, `description`, `goal`, `reward_credits`, `reward_item`, `repeatable`, `max_completions`, `requires_quest`, `starts_at`, `ends_at`, and `enabled`
+- Third-party modules can now publish custom stat keys and register their own leaderboard entries in the shared rankings menu
+- Profile, export, and quest menus now use batched persistence snapshots instead of many individual SQL reads
+- Root admins now have debug/export tooling through `sm_storedebug`, `sm_storequestsdebug`, and `sm_storeexport`
 
-## Project Structure
+## Included first-party modules
 
-Umbrella Store now works across three layers:
+- `store_core`
+  - includes the built-in `skin` item type for player skins
+- `store_blackjack`
+- `store_camera`
+- `store_coinflip`
+- `store_crash`
+- `store_daily`
+- `store_giveaway`
+- `store_roulette`
+- `store_hats`
+- `store_trails`
+- `store_grenade_trails`
+- `store_tracers`
+- `store_paintball`
+- `store_saysounds`
+- `store_pets`
+- `store_colored_smoke`
+- `store_grenade_skins`
+- `store_bulletsparks`
+- `store_lasersight`
+- `store_mvpsounds`
+- `store_sprays`
+- `store_particles`
 
-1. `store_core`
-   The authoritative backbone for:
-   - credits and ledger
-   - inventory and ownership
-   - item loading and schema validation
-   - equip state and exclusivity rules
-   - profile, quests, leaderboards, and marketplace
-   - shared database/storage access
-   - public natives and forwards
-
-2. First-party modules
-   Current first-party modules include:
-   - `store_blackjack`
-   - `store_camera`
-   - `store_coinflip`
-   - `store_crash`
-   - `store_daily`
-   - `store_giveaway`
-   - `store_roulette`
-
-3. Third-party modules
-   Third-party plugins can integrate through `umbrella_store.inc` without editing the core.
-
-## What 1.1.0 Adds
-
-### Core and API
-
-- public API v2 in [`addons/sourcemod/scripting/include/umbrella_store.inc`](addons/sourcemod/scripting/include/umbrella_store.inc)
-- menu section registration for external modules
-- item type registration for custom item classes
-- purchase/equip/trade validation and execution primitives
-- shared pre/post forwards for purchase, equip, trade, credits, and inventory changes
-- stat key, quest, and leaderboard registration for third-party modules
-
-### Persistence and Storage
-
-- shared DB/storage access owned by `store_core`
-- helper natives for DB reuse, escaping, and table bootstrapping
-- centralized economy/inventory transaction flow in the core
-- `store_daily` refactored to stop bootstrapping its own DB connection
-
-### Item System
-
-- schema v2 fields layered on top of the legacy item config
-- support for:
-  - `category`
-  - `description`
-  - `rarity`
-  - `sort_order`
-  - `icon`
-  - `sale_price`
-  - `sell_percent_override`
-  - `starts_at`
-  - `ends_at`
-  - `requires_item`
-  - `bundle_id`
-  - `hidden`
-  - `metadata`
-- richer default [`umbrella_store_items.txt`](addons/sourcemod/configs/umbrella_store/umbrella_store_items.txt) with:
-  - concrete item examples
-  - full Source 2009 color preset for tags, namecolors, and chatcolors
-
-### Stats, Quests, and Profiles
-
-- persistent player stats through core-owned tables
-- persistent quest progress and completion counters
-- quest repeatability, caps, prerequisites, item rewards, and time windows
-- built-in `!profile` / `!perfil`
-- built-in `!quests` / `!misiones`
-- profile exports through `!profileexport` / `!exportprofile`
-- admin inspection tools through `sm_storedebug`, `sm_storequestsdebug`, and `sm_storeexport`
-
-### Leaderboards
-
-- built-in shared rankings hub through `!tops`, `!leaderboards`, and `!rankings`
-- core leaderboards for:
-  - credits
-  - profit
-  - daily streak
-  - blackjack
-  - coinflip
-  - crash
-  - roulette
-- support for module-defined stat keys and shared leaderboard registration
-
-### Marketplace
-
-- built-in player marketplace through `!market` / `!mercado`
-- listing, browsing, buying, and cancelling flows
-- persistent marketplace tables
-- transaction-safe credit and ownership changes
-- listed items are blocked from equip, sell, gift, and trade until the listing is cancelled or sold
-- offline seller handling keeps ledger/stat consistency
-
-### Chat and Colors
-
-- migrated store chat rendering to the Multi-Colors backend
-- broader color support for Source 2009 games such as:
-  - Counter-Strike: Source
-  - Team Fortress 2
-  - Half-Life 2: Deathmatch
-  - Day of Defeat: Source
-  - SDK 2013-based games
-- CS:GO uses the classic Multi-Colors subset
-- store chat tags, player name colors, and chat colors can now stay equipped together correctly
-
-## Module Overview
-
-### `store_core`
-
-Owns the persistent economy, item catalog, inventory, equip rules, profile system, quests, leaderboards, marketplace, shared menus, and the public API.
-
-### `store_blackjack`
-
-Supports single-player and PvP blackjack while reporting shared stats and quest progress back into the core.
-
-### `store_coinflip`
-
-Simple betting flow with persistent profit/win/loss stats and quest integration.
-
-### `store_crash`
-
-Shared crash rounds with stat/profit tracking and quest progression hooks.
-
-### `store_roulette`
-
-Roulette module integrated with the shared economy, stats, and leaderboards.
-
-### `store_daily`
-
-Daily reward module now built on top of the shared storage layer instead of opening its own database flow.
-
-### `store_giveaway`
-
-Shared giveaway flow for server-side reward events.
-
-### `store_camera`
-
-Utility module for camera, mirror, and first/third-person helper flows where the game/server allows them.
-
-## Public API Example
+## Extension example
 
 ```c
 #include <sourcemod>
@@ -182,8 +87,6 @@ public void OnPluginStart()
 {
     US_RegisterMenuSection("my_module", "My Module", "sm_mymodule", 40);
     US_RegisterItemType("player_badge", "cosmetics", true, false);
-    US_RegisterStatKey("my_module_wins");
-    US_RegisterLeaderboard("my_module_top", "My Module Top", "my_module_wins", "Top Profit Entry", 80);
 }
 
 public Action Command_MyModule(int client, int args)
@@ -203,104 +106,108 @@ public Action US_OnPurchasePre(int client, const char[] itemId, bool equipAfterP
 }
 ```
 
-For the full API surface, see [docs/API.md](docs/API.md).
-
-## Repository Layout
+## Repository layout
 
 - `addons/sourcemod/plugins`: compiled plugins
 - `addons/sourcemod/scripting`: SourcePawn sources
-- `addons/sourcemod/scripting/include/umbrella_store.inc`: public include
-- `addons/sourcemod/configs/umbrella_store/umbrella_store_items.txt`: item config and examples
+- `addons/sourcemod/scripting/include/umbrella_store.inc`: public include for modules
+- `addons/sourcemod/configs/umbrella_store/umbrella_store_items.txt`: item schema examples
+- `addons/sourcemod/configs/umbrella_store/items.d`: optional real item config fragments loaded after `umbrella_store_items.txt`
+- `addons/sourcemod/configs/umbrella_store/config_examples`: separated examples for each Source 1 cosmetic module
 - `addons/sourcemod/configs/umbrella_store/umbrella_store_quests.txt`: optional quest definitions
 - `addons/sourcemod/translations`: phrase files
-- `docs`: architecture, API, schema, and migration notes
 
 ## Requirements
 
 - SourceMod
-- SQL or MySQL, depending on the database entry configured in `databases.cfg`
+- SDKTools and SDKHooks, included with SourceMod installs
+- SQLite or MySQL, depending on the database entry you configure in `databases.cfg`
 
 ## Installation
 
 1. Copy the `addons` folder into the game server.
 2. Configure the `store_database` entry in `addons/sourcemod/configs/databases.cfg`.
-3. Start the server once so SourceMod generates cfg files.
-4. Adjust the generated cfg files under `addons/sourcemod/cfg/sourcemod`.
-5. Edit `addons/sourcemod/configs/umbrella_store/umbrella_store_items.txt` for your real server items.
-6. Optionally define additional quests in `addons/sourcemod/configs/umbrella_store/umbrella_store_quests.txt`.
-7. Restart the server or reload the plugins.
+3. Load the plugins once so SourceMod generates cfg files automatically.
+4. Configure the generated cfg files under `addons/sourcemod/cfg/sourcemod`.
+5. Replace the examples in `addons/sourcemod/configs/umbrella_store/umbrella_store_items.txt` with your real items.
+6. Use `addons/sourcemod/configs/umbrella_store/config_examples` as separated references for player skins, hats, trails, grenade trails, tracers, paintball, say sounds, pets, colored smoke, grenade skins, bullet sparks, laser sights, MVP sounds, sprays, and particles.
+7. Put real per-module item files in `addons/sourcemod/configs/umbrella_store/items.d/*.txt` when you want the core to load them separately from `umbrella_store_items.txt`.
+8. Add the real model, material, sound, and decal files referenced by your items to the server and FastDL/workshop delivery path used by your server.
+9. Optionally add extra quests in `addons/sourcemod/configs/umbrella_store/umbrella_store_quests.txt`.
+10. Restart the server or reload the plugins.
 
-## Main Commands
+## Main docs
 
-### Player-facing
+- [`MIGRATION.md`](MIGRATION.md)
 
-- `!store`, `!tienda`
-- `!credits`, `!creditos`
-- `!inv`, `!inventory`, `!inventario`
-- `!topcredits`
-- `!topprofit`
-- `!topdaily`, `!topstreak`
-- `!topbj`
-- `!topcf`
-- `!topcrash`
-- `!toproulette`
-- `!tops`, `!leaderboards`, `!rankings`
-- `!profile`, `!perfil`
-- `!quests`, `!misiones`
-- `!market`, `!mercado`
-- `!profileexport`, `!exportprofile`
+## New platform-facing commands
 
-### Admin/debug
+- `!topcredits`: global credit leaderboard
+- `!topprofit`: global net economy leaderboard
+- `!topdaily` / `!topstreak`: best daily streak leaderboard
+- `!topbj`: blackjack profit leaderboard
+- `!topcf`: coinflip profit leaderboard
+- `!topcrash`: crash profit leaderboard
+- `!toproulette`: roulette profit leaderboard
+- `!tops` / `!leaderboards` / `!rankings`: leaderboard hub menu
+- `!profile` / `!perfil`: player summary menu backed by persistent stats
+- `!quests` / `!misiones`: quest progress menu backed by the shared quest layer
+- `!market` / `!mercado`: built-in player marketplace for browsing, listing, buying, and cancelling listings
+- `!storesearch` / `!searchstore` / `!buscarstore` / `!buscar <text>`: searches the item catalog
+- `!redeem` / `!voucher` / `!codigo <code>`: redeems a voucher code
+- `!profileexport` / `!exportprofile`: exports a text snapshot of your profile under `addons/sourcemod/data/umbrella_store/profile_exports`
+- `!hidetrail` / `!hidetrails`: hides local trail rendering for the player
+- `!hidetracer` / `!hidetracers`: hides local tracer rendering for the player
+- `!hidepaintball`: hides local paintball impact rendering for the player
+- `!hidepet` / `!hidepets`: hides local pet rendering for the player
+- `!hidebulletspark` / `!hidebulletsparks`: hides local bullet spark rendering for the player
+- `!hideparticle` / `!hideparticles`: hides local particle rendering for the player
+- `!mvpvolume` / `!mvpvol`: cycles personal MVP sound volume
+- Say sound triggers are matched through chat text against owned `saysound` items
+- Equipped `spray` items are placed with the use key while aiming at a nearby surface
 
-- `sm_givecredits`
-- `sm_setcredits`
-- `sm_reloadstore`
-- `sm_storedebug <player>`
-- `sm_storequestsdebug <player>`
-- `sm_storeexport <player>`
+## Admin tooling
 
-## Docs
-
-- [Architecture](docs/ARCHITECTURE.md)
-- [API v2](docs/API.md)
-- [Item Schema v2](docs/ITEM_SCHEMA_V2.md)
-- [Migration Notes](docs/MIGRATION.md)
-- [Contributing](CONTRIBUTING.md)
-- [Changelog](CHANGELOG.md)
+- `sm_storedebug <player>`: prints a persistent economy/profile snapshot for a target to the admin console
+- `sm_storequestsdebug <player>`: prints quest state, completion counts, and lock reasons for a target
+- `sm_storeexport <player>`: exports another player's snapshot through the shared core exporter
+- `sm_storeaudit [target|global] [limit]`: prints recent general audit events from `store_audit_log`
+- `sm_createvoucher <code> <credits> [max_uses] [expires_hours]`: creates a credit voucher
+- `sm_createitemvoucher <code> <item_id> [max_uses] [expires_hours]`: creates an item voucher
+- `sm_disablevoucher <code>`: disables an existing voucher
 
 ## Build and CI
 
-Local compilation uses the bundled SourcePawn compiler in `addons/sourcemod/scripting/spcomp.exe`.
+Local compilation uses the SourcePawn compiler from your SourceMod scripting installation.
 
-Example:
+Example from the repository root:
 
 ```powershell
-cd addons/sourcemod/scripting
-./spcomp.exe store_core.sp
-./spcomp.exe store_daily.sp
-./spcomp.exe store_blackjack.sp
+$spcomp = "C:\path\to\addons\sourcemod\scripting\spcomp.exe"
+$include = "C:\path\to\addons\sourcemod\scripting\include"
+& $spcomp addons\sourcemod\scripting\store_core.sp "-i$include" "-oaddons\sourcemod\plugins\store_core.smx"
 ```
 
-GitHub Actions also compiles the main plugins on push and pull request events.
+GitHub Actions also compiles the main plugins on every push and pull request.
 
-## Compatibility Notes
+## Compatibility notes
 
-- The current suite has been tested primarily on Counter-Strike: Global Offensive.
-- Other Source engine games should be compatible in principle, but still need broader real-world testing.
-- Source 2009 games benefit the most from the broader Multi-Colors/MoreColors palette.
-- CS:GO keeps the classic Multi-Colors subset.
-- `store_camera` still depends on thirdperson behavior being allowed by the game/server.
-- Some engine-specific props, such as player arms model handling, are now guarded so unsupported games do not throw runtime errors.
+- This package targets Source 1 / SourceMod servers.
+- The new cosmetic modules target Counter-Strike: Source style Source 2009 entities, temp entities, and projectile classnames.
+- Chat output is kept compatible with standard Source chat formatting.
+- The camera module still depends on thirdperson behavior being allowed by the game/server.
 
-## Project Direction
+## Project direction
 
-Umbrella Store is being evolved incrementally with compatibility in mind.
+Umbrella Store is being evolved incrementally and with compatibility in mind.
 
 That means:
 
 - old installs should keep working
 - old item configs should keep loading
 - legacy natives remain available
-- new framework-facing integrations should target the v2 API and docs
+- new framework-facing integrations should target the v4 API
+- the next sensible cosmetic expansion is custom weapon support for servers that want weapon model/skin/color items
+- gameplay advantage modules such as godmode, speed, gravity, health, or respawn are intentionally not part of the recommended direction for this CS:S store
 
 Feedback, bug reports, feature ideas, and contributions are welcome to keep improving Umbrella Store over time.

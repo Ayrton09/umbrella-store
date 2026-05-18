@@ -1,0 +1,13 @@
+"Items"
+{
+    "lasersight_red"
+    {
+        "name"        "Red Laser Sight"
+        "type"        "lasersight"
+        "category"    "laser_sights"
+        "description" "Shows a red laser while scoped with supported sniper rifles."
+        "color"       "255 0 0 255"
+        "price"       "7500"
+        "team"        "0"
+    }
+}

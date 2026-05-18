@@ -12,9 +12,11 @@
 // =========================================================================
 #define STORE_DB_CONFIG          "store"
 #define STORE_ITEMS_CONFIG       "configs/umbrella_store/umbrella_store_items.txt"
+#define STORE_ITEMS_DIR          "configs/umbrella_store/items.d"
 #define STORE_QUESTS_CONFIG      "configs/umbrella_store/umbrella_store_quests.txt"
 #define STORE_LOG_PREFIX         "[Umbrella Store]"
-#define STORE_API_VERSION        2
+#define STORE_API_VERSION        5
+#define STORE_MAX_CREDITS        2000000000
 #define STORE_SELL_PERCENT       50
 #define PREVIEW_LIFETIME         15.0
 #define PREVIEW_DISTANCE         100.0
@@ -169,10 +171,12 @@ int g_iCredits[MAXPLAYERS + 1] = {0, ...};
 bool g_bIsLoaded[MAXPLAYERS + 1] = {false, ...};
 bool g_bIsLoading[MAXPLAYERS + 1] = {false, ...};
 bool g_bDetailFromInventory[MAXPLAYERS + 1] = {false, ...};
+bool g_bDetailFromSearch[MAXPLAYERS + 1] = {false, ...};
 int g_iPreviewEntity[MAXPLAYERS + 1] = {INVALID_ENT_REFERENCE, ...};
 char g_szBrowseType[MAXPLAYERS + 1][16];
 int g_iBrowseTeam[MAXPLAYERS + 1] = {0, ...};
 char g_szInvFilter[MAXPLAYERS + 1][32];
+char g_szSearchQuery[MAXPLAYERS + 1][64];
 char g_szLastDetailItem[MAXPLAYERS + 1][32];
 int g_iTradeSender[MAXPLAYERS + 1] = {0, ...};
 char g_szTradeSenderItem[MAXPLAYERS + 1][32];
@@ -263,6 +267,8 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
     CreateNative("US_SetCredits", Native_US_SetCredits);
     CreateNative("US_AddCredits", Native_US_AddCredits);
     CreateNative("US_TakeCredits", Native_US_TakeCredits);
+    CreateNative("US_ApplyCreditDelta", Native_US_ApplyCreditDelta);
+    CreateNative("US_ApplyCreditDeltas", Native_US_ApplyCreditDeltas);
     CreateNative("US_HasItem", Native_US_HasItem);
     CreateNative("US_GiveItem", Native_US_GiveItem);
     CreateNative("US_RemoveItem", Native_US_RemoveItem);
@@ -275,6 +281,9 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
     CreateNative("US_GetItemType", Native_US_GetItemType);
     CreateNative("US_GetItemPrice", Native_US_GetItemPrice);
     CreateNative("US_GetEquippedItem", Native_US_GetEquippedItem);
+    CreateNative("US_IsItemEquipped", Native_US_IsItemEquipped);
+    CreateNative("US_GetEquippedItemCount", Native_US_GetEquippedItemCount);
+    CreateNative("US_GetEquippedItemIdByIndex", Native_US_GetEquippedItemIdByIndex);
     CreateNative("US_CanPurchaseItem", Native_US_CanPurchaseItem);
     CreateNative("US_TryPurchaseItem", Native_US_TryPurchaseItem);
     CreateNative("US_CanEquipItem", Native_US_CanEquipItem);
@@ -288,6 +297,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
     CreateNative("US_GetDatabaseHandle", Native_US_GetDatabaseHandle);
     CreateNative("US_DB_Escape", Native_US_DB_Escape);
     CreateNative("US_DB_EnsureTable", Native_US_DB_EnsureTable);
+    CreateNative("US_ApplyCreditDeltaWithQuery", Native_US_ApplyCreditDeltaWithQuery);
     CreateNative("US_RegisterStatKey", Native_US_RegisterStatKey);
     CreateNative("US_AddStat", Native_US_AddStat);
     CreateNative("US_SetStatMax", Native_US_SetStatMax);
@@ -299,6 +309,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
     CreateNative("US_GetQuestProgress", Native_US_GetQuestProgress);
     CreateNative("US_RegisterLeaderboard", Native_US_RegisterLeaderboard);
     CreateNative("US_UnregisterLeaderboard", Native_US_UnregisterLeaderboard);
+    CreateNative("US_LogAuditEvent", Native_US_LogAuditEvent);
     CreateNative("US_Casino_Register", Native_US_Casino_Register);
     CreateNative("US_Casino_Unregister", Native_US_Casino_Unregister);
     CreateNative("US_OpenCasinoMenu", Native_US_OpenCasinoMenu);
@@ -310,7 +321,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Core",
     author = "Ayrton09",
     description = "Core store module for Umbrella Store",
-    version = "1.1.0",
+    version = "1.2.0",
     url = ""
 };
 
@@ -341,7 +352,7 @@ public void OnPluginStart()
     g_mLeaderboardIndex = new StringMap();
 
     LoadTranslations("umbrella_store.phrases");
-    gCvarDatabase = CreateConVar("store_database", STORE_DB_CONFIG, "Explicit database entry name from databases.cfg (no automatic fallback).");
+    gCvarDatabase = CreateConVar("store_database", STORE_DB_CONFIG, "Explicit database entry name from databases.cfg.");
     g_hFwdCreditsGiven = CreateGlobalForward("OnStoreCreditsGiven", ET_Ignore, Param_Cell, Param_Cell, Param_String);
     g_hFwdItemPurchased = CreateGlobalForward("OnStoreItemPurchased", ET_Ignore, Param_Cell, Param_String);
     g_hFwdItemEquipped = CreateGlobalForward("OnStoreItemEquipped", ET_Ignore, Param_Cell, Param_String, Param_Cell);
@@ -362,6 +373,13 @@ public void OnPluginStart()
     RegConsoleCmd("sm_perfil", Cmd_Profile);
     RegConsoleCmd("sm_market", Cmd_Market);
     RegConsoleCmd("sm_mercado", Cmd_Market);
+    RegConsoleCmd("sm_storesearch", Cmd_StoreSearch);
+    RegConsoleCmd("sm_searchstore", Cmd_StoreSearch);
+    RegConsoleCmd("sm_buscarstore", Cmd_StoreSearch);
+    RegConsoleCmd("sm_buscar", Cmd_StoreSearch);
+    RegConsoleCmd("sm_redeem", Cmd_RedeemVoucher);
+    RegConsoleCmd("sm_voucher", Cmd_RedeemVoucher);
+    RegConsoleCmd("sm_codigo", Cmd_RedeemVoucher);
     RegConsoleCmd("sm_profileexport", Cmd_ProfileExport);
     RegConsoleCmd("sm_exportprofile", Cmd_ProfileExport);
     RegConsoleCmd("sm_quests", Cmd_Quests);
@@ -395,6 +413,10 @@ public void OnPluginStart()
     RegAdminCmd("sm_givecredits", Cmd_GiveCredits, ADMFLAG_ROOT);
     RegAdminCmd("sm_setcredits", Cmd_SetCredits, ADMFLAG_ROOT);
     RegAdminCmd("sm_storeaudit", Cmd_StoreAudit, ADMFLAG_ROOT);
+    RegAdminCmd("sm_storelogs", Cmd_StoreAudit, ADMFLAG_ROOT);
+    RegAdminCmd("sm_createvoucher", Cmd_CreateVoucher, ADMFLAG_ROOT);
+    RegAdminCmd("sm_createitemvoucher", Cmd_CreateItemVoucher, ADMFLAG_ROOT);
+    RegAdminCmd("sm_disablevoucher", Cmd_DisableVoucher, ADMFLAG_ROOT);
     RegAdminCmd("sm_reloadstore", Cmd_ReloadStore, ADMFLAG_ROOT);
     RegAdminCmd("sm_storedebug", Cmd_StoreDebug, ADMFLAG_ROOT);
     RegAdminCmd("sm_storequestsdebug", Cmd_StoreQuestsDebug, ADMFLAG_ROOT);
@@ -561,9 +583,11 @@ void ResetClientData(int client, bool clearInventory)
     g_bIsLoaded[client] = false;
     g_bIsLoading[client] = false;
     g_bDetailFromInventory[client] = false;
+    g_bDetailFromSearch[client] = false;
     g_szBrowseType[client][0] = '\0';
     g_iBrowseTeam[client] = 0;
     g_szInvFilter[client][0] = '\0';
+    g_szSearchQuery[client][0] = '\0';
     g_szLastDetailItem[client][0] = '\0';
     g_bCreditsDirty[client] = false;
     g_iCreditSaveToken[client] = 0;
@@ -618,25 +642,6 @@ bool HasAccess(int client, const char[] flagString)
     return CheckCommandAccess(client, "", flags, true);
 }
 
-bool IsWholeNumberString(const char[] value)
-{
-    int len = strlen(value);
-    if (len <= 0)
-    {
-        return false;
-    }
-
-    for (int i = 0; i < len; i++)
-    {
-        if (!IsCharNumeric(value[i]))
-        {
-            return false;
-        }
-    }
-
-    return true;
-}
-
 void LogStoreError(const char[] where, const char[] error)
 {
     if (error[0] != '\0')
@@ -656,15 +661,17 @@ bool GetClientSteamIdSafe(int client, char[] steamid, int maxlen)
     return true;
 }
 
-void EscapeStringSafe(const char[] input, char[] output, int maxlen)
+bool EscapeStringSafe(const char[] input, char[] output, int maxlen)
 {
     if (g_DB == null)
     {
-        strcopy(output, maxlen, input);
-        return;
+        output[0] = '\0';
+        LogError("%s EscapeStringSafe called before database was ready.", STORE_LOG_PREFIX);
+        return false;
     }
 
     g_DB.Escape(input, output, maxlen);
+    return true;
 }
 
 bool GetDatabaseConfigName(char[] buffer, int maxlen)
@@ -874,6 +881,189 @@ void SetItemMetadataValue(const char[] itemId, const char[] key, const char[] va
     char metadataKey[192];
     BuildItemMetadataKey(itemId, key, metadataKey, sizeof(metadataKey));
     g_mItemMetadata.SetString(metadataKey, value);
+}
+
+void SetItemMetadataValueIfNotEmpty(const char[] itemId, const char[] key, const char[] value)
+{
+    if (value[0] == '\0')
+    {
+        return;
+    }
+
+    SetItemMetadataValue(itemId, key, value);
+}
+
+void SetItemMetadataIntValue(const char[] itemId, const char[] key, int value)
+{
+    char buffer[32];
+    IntToString(value, buffer, sizeof(buffer));
+    SetItemMetadataValue(itemId, key, buffer);
+}
+
+void TrimMetadataToken(char[] buffer)
+{
+    TrimString(buffer);
+
+    int len = strlen(buffer);
+    if (len >= 2 && ((buffer[0] == '"' && buffer[len - 1] == '"') || (buffer[0] == '\'' && buffer[len - 1] == '\'')))
+    {
+        for (int i = 1; i < len - 1; i++)
+        {
+            buffer[i - 1] = buffer[i];
+        }
+        buffer[len - 2] = '\0';
+        TrimString(buffer);
+    }
+}
+
+void ParseItemMetadataPairs(const char[] itemId, const char[] raw)
+{
+    if (itemId[0] == '\0' || raw[0] == '\0')
+    {
+        return;
+    }
+
+    char buffer[256];
+    strcopy(buffer, sizeof(buffer), raw);
+    ReplaceString(buffer, sizeof(buffer), "\n", ";");
+    ReplaceString(buffer, sizeof(buffer), "\r", ";");
+
+    int start = 0;
+    int len = strlen(buffer);
+    while (start < len)
+    {
+        int end = start;
+        while (end < len && buffer[end] != ';')
+        {
+            end++;
+        }
+
+        char token[256];
+        int tokenLen = end - start;
+        if (tokenLen >= sizeof(token))
+        {
+            tokenLen = sizeof(token) - 1;
+        }
+
+        for (int i = 0; i < tokenLen; i++)
+        {
+            token[i] = buffer[start + i];
+        }
+        token[tokenLen] = '\0';
+
+        TrimString(token);
+        if (token[0] != '\0')
+        {
+            int sep = FindCharInString(token, '=');
+            if (sep == -1)
+            {
+                sep = FindCharInString(token, ':');
+            }
+
+            if (sep > 0)
+            {
+                char key[64], value[192];
+                strcopy(key, sizeof(key), token);
+                key[sep] = '\0';
+                strcopy(value, sizeof(value), token[sep + 1]);
+                TrimMetadataToken(key);
+                TrimMetadataToken(value);
+
+                if (key[0] != '\0' && value[0] != '\0')
+                {
+                    SetItemMetadataValue(itemId, key, value);
+                }
+            }
+        }
+
+        start = end + 1;
+    }
+}
+
+void StoreConfigStringMetadata(KeyValues kv, const char[] itemId, const char[] configKey, const char[] metadataKey)
+{
+    char value[PLATFORM_MAX_PATH];
+    kv.GetString(configKey, value, sizeof(value), "");
+    SetItemMetadataValueIfNotEmpty(itemId, metadataKey, value);
+}
+
+void StoreCommonItemMetadata(KeyValues kv, StoreItem item)
+{
+    SetItemMetadataValueIfNotEmpty(item.id, "name", item.name);
+    SetItemMetadataValueIfNotEmpty(item.id, "type", item.type);
+    SetItemMetadataValueIfNotEmpty(item.id, "category", item.category);
+    SetItemMetadataValueIfNotEmpty(item.id, "description", item.description);
+    SetItemMetadataValueIfNotEmpty(item.id, "rarity", item.rarity);
+    SetItemMetadataValueIfNotEmpty(item.id, "value", item.szValue);
+    SetItemMetadataValueIfNotEmpty(item.id, "model", item.szModel);
+    SetItemMetadataValueIfNotEmpty(item.id, "arms", item.szArms);
+    SetItemMetadataValueIfNotEmpty(item.id, "icon", item.icon);
+    SetItemMetadataValueIfNotEmpty(item.id, "requires_item", item.requires_item);
+    SetItemMetadataValueIfNotEmpty(item.id, "bundle_id", item.bundle_id);
+    SetItemMetadataValueIfNotEmpty(item.id, "flag", item.flag);
+    SetItemMetadataIntValue(item.id, "price", item.price);
+    SetItemMetadataIntValue(item.id, "sale_price", item.sale_price);
+    SetItemMetadataIntValue(item.id, "team", item.team);
+    SetItemMetadataIntValue(item.id, "sort_order", item.sort_order);
+    SetItemMetadataIntValue(item.id, "starts_at", item.starts_at);
+    SetItemMetadataIntValue(item.id, "ends_at", item.ends_at);
+    SetItemMetadataIntValue(item.id, "sell_percent_override", item.sell_percent_override);
+    SetItemMetadataIntValue(item.id, "hidden", item.hidden);
+
+    StoreConfigStringMetadata(kv, item.id, "material", "material");
+    StoreConfigStringMetadata(kv, item.id, "color", "color");
+    StoreConfigStringMetadata(kv, item.id, "width", "width");
+    StoreConfigStringMetadata(kv, item.id, "lifetime", "lifetime");
+    StoreConfigStringMetadata(kv, item.id, "life", "life");
+    StoreConfigStringMetadata(kv, item.id, "attachment", "attachment");
+    StoreConfigStringMetadata(kv, item.id, "position", "position");
+    StoreConfigStringMetadata(kv, item.id, "angles", "angles");
+    StoreConfigStringMetadata(kv, item.id, "slot", "slot");
+    StoreConfigStringMetadata(kv, item.id, "grenade", "grenade");
+    StoreConfigStringMetadata(kv, item.id, "sound", "sound");
+    StoreConfigStringMetadata(kv, item.id, "effect", "effect");
+    StoreConfigStringMetadata(kv, item.id, "effect_name", "effect");
+    StoreConfigStringMetadata(kv, item.id, "particle", "effect");
+    StoreConfigStringMetadata(kv, item.id, "particle_name", "effect");
+    StoreConfigStringMetadata(kv, item.id, "file", "file");
+    StoreConfigStringMetadata(kv, item.id, "duration", "duration");
+    StoreConfigStringMetadata(kv, item.id, "trigger", "trigger");
+    StoreConfigStringMetadata(kv, item.id, "cooldown", "cooldown");
+    StoreConfigStringMetadata(kv, item.id, "origin", "origin");
+    StoreConfigStringMetadata(kv, item.id, "volume", "volume");
+    StoreConfigStringMetadata(kv, item.id, "radius", "radius");
+    StoreConfigStringMetadata(kv, item.id, "alpha", "alpha");
+    StoreConfigStringMetadata(kv, item.id, "decal", "decal");
+    StoreConfigStringMetadata(kv, item.id, "decals", "decals");
+    StoreConfigStringMetadata(kv, item.id, "downloads", "downloads");
+    StoreConfigStringMetadata(kv, item.id, "idle", "idle");
+    StoreConfigStringMetadata(kv, item.id, "idle2", "idle2");
+    StoreConfigStringMetadata(kv, item.id, "run", "run");
+    StoreConfigStringMetadata(kv, item.id, "rainbow", "rainbow");
+    StoreConfigStringMetadata(kv, item.id, "random", "random");
+
+    StoreConfigStringMetadata(kv, item.id, "rgb color", "rgb_color");
+    StoreConfigStringMetadata(kv, item.id, "rgb_color", "rgb_color");
+    StoreConfigStringMetadata(kv, item.id, "start size", "start_size");
+    StoreConfigStringMetadata(kv, item.id, "start_size", "start_size");
+    StoreConfigStringMetadata(kv, item.id, "end size", "end_size");
+    StoreConfigStringMetadata(kv, item.id, "end_size", "end_size");
+    StoreConfigStringMetadata(kv, item.id, "base spread", "base_spread");
+    StoreConfigStringMetadata(kv, item.id, "base_spread", "base_spread");
+    StoreConfigStringMetadata(kv, item.id, "spread speed", "spread_speed");
+    StoreConfigStringMetadata(kv, item.id, "spread_speed", "spread_speed");
+    StoreConfigStringMetadata(kv, item.id, "speed", "speed");
+    StoreConfigStringMetadata(kv, item.id, "rate", "rate");
+    StoreConfigStringMetadata(kv, item.id, "jet length", "jet_length");
+    StoreConfigStringMetadata(kv, item.id, "jet_length", "jet_length");
+    StoreConfigStringMetadata(kv, item.id, "twist", "twist");
+    StoreConfigStringMetadata(kv, item.id, "density", "density");
+
+    if (item.metadata[0] != '\0')
+    {
+        SetItemMetadataValue(item.id, "raw", item.metadata);
+        ParseItemMetadataPairs(item.id, item.metadata);
+    }
 }
 
 bool GetItemMetadataValue(const char[] itemId, const char[] key, char[] value, int maxlen)
@@ -2463,6 +2653,7 @@ bool GiveItemToClient(int client, const char[] itemId, bool equip = false, bool 
     InventoryOwnedSet(client, item.id, true);
     MarkInventoryChanged(client);
     ForwardInventoryChanged(client, item.id, "give");
+    LogAuditEvent(0, client, "give_item", item.id, 0, "core_give");
 
     if (equip)
     {
@@ -2527,6 +2718,7 @@ bool RemoveItemFromClient(int client, const char[] itemId, bool saveNow = true)
     InventoryOwnedSet(client, itemId, false);
     MarkInventoryChanged(client);
     ForwardInventoryChanged(client, itemId, "remove");
+    LogAuditEvent(0, client, "remove_item", itemId, 0, "core_remove");
 
     if (wasEquipped)
     {
@@ -2700,6 +2892,67 @@ void LogCreditLedger(int client, int amount, const char[] reason)
     }
 
     LogCreditLedgerBySteamId(steamid, g_iCredits[client], amount, reason);
+}
+
+void GetAuditIdentity(int client, char[] steamid, int steamidMax, char[] name, int nameMax)
+{
+    steamid[0] = '\0';
+    name[0] = '\0';
+
+    if (client == 0)
+    {
+        strcopy(name, nameMax, "Console");
+        return;
+    }
+
+    if (!IsValidClientConnected(client))
+    {
+        return;
+    }
+
+    GetClientSteamIdSafe(client, steamid, steamidMax);
+    GetClientName(client, name, nameMax);
+}
+
+bool InsertAuditEvent(const char[] actorSteam, const char[] actorName, const char[] targetSteam, const char[] targetName, const char[] action, const char[] itemId, int amount, const char[] details)
+{
+    if (g_DB == null || action[0] == '\0')
+    {
+        return false;
+    }
+
+    char safeActorSteam[64], safeActorName[128], safeTargetSteam[64], safeTargetName[128], safeAction[96], safeItemId[64], safeDetails[256], query[1024];
+    EscapeStringSafe(actorSteam, safeActorSteam, sizeof(safeActorSteam));
+    EscapeStringSafe(actorName, safeActorName, sizeof(safeActorName));
+    EscapeStringSafe(targetSteam, safeTargetSteam, sizeof(safeTargetSteam));
+    EscapeStringSafe(targetName, safeTargetName, sizeof(safeTargetName));
+    EscapeStringSafe(action, safeAction, sizeof(safeAction));
+    EscapeStringSafe(itemId, safeItemId, sizeof(safeItemId));
+    EscapeStringSafe(details, safeDetails, sizeof(safeDetails));
+
+    Format(query, sizeof(query),
+        "INSERT INTO store_audit_log (actor_steamid, actor_name, target_steamid, target_name, action, item_id, amount, details, created_at) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', %d, '%s', %d)",
+        safeActorSteam, safeActorName, safeTargetSteam, safeTargetName, safeAction, safeItemId, amount, safeDetails, GetTime());
+
+    g_DB.Query(DummyCallback, query);
+    return true;
+}
+
+bool LogAuditEvent(int actor, int target, const char[] action, const char[] itemId = "", int amount = 0, const char[] details = "")
+{
+    char actorSteam[32], actorName[64], targetSteam[32], targetName[64];
+    GetAuditIdentity(actor, actorSteam, sizeof(actorSteam), actorName, sizeof(actorName));
+    GetAuditIdentity(target, targetSteam, sizeof(targetSteam), targetName, sizeof(targetName));
+
+    return InsertAuditEvent(actorSteam, actorName, targetSteam, targetName, action, itemId, amount, details);
+}
+
+bool LogAuditEventBySteamId(int actor, const char[] targetSteam, const char[] targetName, const char[] action, const char[] itemId = "", int amount = 0, const char[] details = "")
+{
+    char actorSteam[32], actorName[64];
+    GetAuditIdentity(actor, actorSteam, sizeof(actorSteam), actorName, sizeof(actorName));
+
+    return InsertAuditEvent(actorSteam, actorName, targetSteam, targetName, action, itemId, amount, details);
 }
 
 bool IsSafeStatKey(const char[] statKey)
@@ -3274,6 +3527,7 @@ bool TransferOwnedItem(int sender, int target, const char[] itemId, bool notify 
     MarkInventoryChanged(target);
     ForwardInventoryChanged(sender, itemId, "transfer_out");
     ForwardInventoryChanged(target, itemId, "transfer_in");
+    LogAuditEvent(sender, target, "gift_item", itemId, 0, "transfer");
 
     StoreItem item;
     FindStoreItemById(itemId, item);
@@ -3390,6 +3644,8 @@ bool ExecuteTrade(int sender, int target, const char[] senderItemId, const char[
     ForwardInventoryChanged(target, senderItemId, "trade_in");
     ForwardTradePost(sender, target, senderItemId, targetItemId);
     ForwardTradeCompleted(sender, target, senderItemId, targetItemId);
+    LogAuditEvent(sender, target, "trade_out", senderItemId, 0, targetItemId);
+    LogAuditEvent(target, sender, "trade_out", targetItemId, 0, senderItemId);
     UpdatePlayerStat(sender, "trades_completed", 1);
     UpdatePlayerStat(target, "trades_completed", 1);
 
@@ -3710,6 +3966,393 @@ void SpawnPreview(int client, const char[] modelPath)
     PrintStorePhrase(client, "%T", "Preview Started", client, lifetimeText);
 }
 
+bool ResolvePreviewMaterial(const char[] rawMaterial, char[] material, int materialMax, char[] downloadPath, int downloadMax)
+{
+    material[0] = '\0';
+    downloadPath[0] = '\0';
+
+    if (rawMaterial[0] == '\0')
+    {
+        return false;
+    }
+
+    strcopy(material, materialMax, rawMaterial);
+    TrimString(material);
+
+    if (StrContains(material, "materials/", false) == 0)
+    {
+        strcopy(downloadPath, downloadMax, material);
+    }
+    else
+    {
+        Format(downloadPath, downloadMax, "materials/%s", material);
+    }
+
+    return FileExists(downloadPath, true);
+}
+
+void FinishPreviewEntity(int client, int entity, float previewLifetime)
+{
+    g_iPreviewEntity[client] = EntIndexToEntRef(entity);
+    g_hPreviewTimer[client] = CreateTimer(previewLifetime, Timer_RemovePreview, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
+
+    char lifetimeText[16];
+    Format(lifetimeText, sizeof(lifetimeText), "%d", RoundToFloor(previewLifetime));
+    PrintStorePhrase(client, "%T", "Preview Started", client, lifetimeText);
+}
+
+bool PrepareNonModelPreview(int client)
+{
+    if (!IsValidHumanClient(client) || !IsPlayerAlive(client))
+    {
+        PrintStorePhrase(client, "%T", "Preview Need Alive", client);
+        return false;
+    }
+
+    float now = GetGameTime();
+    float previewCooldown = (gCvarPreviewCooldown != null) ? gCvarPreviewCooldown.FloatValue : 0.0;
+    if (previewCooldown > 0.0 && now < g_fNextPreview[client])
+    {
+        char cooldownText[16];
+        FormatCooldownText(g_fNextPreview[client] - now, cooldownText, sizeof(cooldownText));
+        PrintStorePhrase(client, "%T", "Preview Cooldown", client, cooldownText);
+        return false;
+    }
+
+    RemovePreview(client);
+    g_fNextPreview[client] = now + previewCooldown;
+    return true;
+}
+
+void GetPreviewPosition(int client, float pos[3], float ang[3])
+{
+    float fwd[3];
+    GetClientEyePosition(client, pos);
+    GetClientEyeAngles(client, ang);
+    GetAngleVectors(ang, fwd, NULL_VECTOR, NULL_VECTOR);
+
+    float previewDistance = (gCvarPreviewDistance != null) ? gCvarPreviewDistance.FloatValue : PREVIEW_DISTANCE;
+    float previewZOffset = (gCvarPreviewZOffset != null) ? gCvarPreviewZOffset.FloatValue : PREVIEW_Z_OFFSET;
+
+    pos[0] += fwd[0] * previewDistance;
+    pos[1] += fwd[1] * previewDistance;
+    pos[2] -= previewZOffset;
+
+    ang[0] = 0.0;
+    ang[1] += 180.0;
+    ang[2] = 0.0;
+}
+
+void SpawnSpritePreview(int client, const char[] rawMaterial)
+{
+    char material[PLATFORM_MAX_PATH], downloadPath[PLATFORM_MAX_PATH];
+    if (!ResolvePreviewMaterial(rawMaterial, material, sizeof(material), downloadPath, sizeof(downloadPath)))
+    {
+        PrintStorePhrase(client, "%T", "Preview Missing Model", client);
+        return;
+    }
+
+    if (!PrepareNonModelPreview(client))
+    {
+        return;
+    }
+
+    PrecacheModel(material, true);
+
+    int ent = CreateEntityByName("env_sprite_oriented");
+    if (ent == -1)
+    {
+        PrintStorePhrase(client, "%T", "Preview Failed Create", client);
+        return;
+    }
+
+    DispatchKeyValue(ent, "model", material);
+    DispatchKeyValue(ent, "rendermode", "5");
+    DispatchKeyValue(ent, "renderamt", "255");
+    DispatchKeyValue(ent, "scale", "0.35");
+    DispatchSpawn(ent);
+    AcceptEntityInput(ent, "Enable");
+    SDKHook(ent, SDKHook_SetTransmit, Hook_PreviewSetTransmit);
+
+    float pos[3], ang[3];
+    GetPreviewPosition(client, pos, ang);
+    TeleportEntity(ent, pos, ang, NULL_VECTOR);
+
+    float previewLifetime = (gCvarPreviewLifetime != null) ? gCvarPreviewLifetime.FloatValue : PREVIEW_LIFETIME;
+    FinishPreviewEntity(client, ent, previewLifetime);
+}
+
+void SpawnSmokePreview(int client, const char[] itemId)
+{
+    if (!PrepareNonModelPreview(client))
+    {
+        return;
+    }
+
+    int ent = CreateEntityByName("env_smokestack");
+    if (ent == -1)
+    {
+        PrintStorePhrase(client, "%T", "Preview Failed Create", client);
+        return;
+    }
+
+    char rgb[64], baseSpread[32], spreadSpeed[32], speed[32], startSize[32], endSize[32], rate[32], jetLength[32], twist[32], density[32], material[PLATFORM_MAX_PATH];
+    GetItemMetadataValue(itemId, "rgb_color", rgb, sizeof(rgb));
+    GetItemMetadataValue(itemId, "base_spread", baseSpread, sizeof(baseSpread));
+    GetItemMetadataValue(itemId, "spread_speed", spreadSpeed, sizeof(spreadSpeed));
+    GetItemMetadataValue(itemId, "speed", speed, sizeof(speed));
+    GetItemMetadataValue(itemId, "start_size", startSize, sizeof(startSize));
+    GetItemMetadataValue(itemId, "end_size", endSize, sizeof(endSize));
+    GetItemMetadataValue(itemId, "rate", rate, sizeof(rate));
+    GetItemMetadataValue(itemId, "jet_length", jetLength, sizeof(jetLength));
+    GetItemMetadataValue(itemId, "twist", twist, sizeof(twist));
+    GetItemMetadataValue(itemId, "density", density, sizeof(density));
+    GetItemMetadataValue(itemId, "material", material, sizeof(material));
+
+    if (rgb[0] == '\0') strcopy(rgb, sizeof(rgb), "0 255 0");
+    if (baseSpread[0] == '\0') strcopy(baseSpread, sizeof(baseSpread), "80");
+    if (spreadSpeed[0] == '\0') strcopy(spreadSpeed, sizeof(spreadSpeed), "55");
+    if (speed[0] == '\0') strcopy(speed, sizeof(speed), "60");
+    if (startSize[0] == '\0') strcopy(startSize, sizeof(startSize), "120");
+    if (endSize[0] == '\0') strcopy(endSize, sizeof(endSize), "2");
+    if (rate[0] == '\0') strcopy(rate, sizeof(rate), "25");
+    if (jetLength[0] == '\0') strcopy(jetLength, sizeof(jetLength), "120");
+    if (twist[0] == '\0') strcopy(twist, sizeof(twist), "20");
+    if (density[0] == '\0') strcopy(density, sizeof(density), "200");
+    if (material[0] == '\0') strcopy(material, sizeof(material), "particle/particle_smokegrenade1.vmt");
+
+    float pos[3], ang[3];
+    GetPreviewPosition(client, pos, ang);
+    DispatchKeyValueVector(ent, "origin", pos);
+    DispatchKeyValue(ent, "BaseSpread", baseSpread);
+    DispatchKeyValue(ent, "SpreadSpeed", spreadSpeed);
+    DispatchKeyValue(ent, "Speed", speed);
+    DispatchKeyValue(ent, "StartSize", startSize);
+    DispatchKeyValue(ent, "EndSize", endSize);
+    DispatchKeyValue(ent, "Rate", rate);
+    DispatchKeyValue(ent, "JetLength", jetLength);
+    DispatchKeyValue(ent, "Twist", twist);
+    DispatchKeyValue(ent, "RenderColor", rgb);
+    DispatchKeyValue(ent, "RenderAmt", density);
+    DispatchKeyValue(ent, "SmokeMaterial", material);
+    DispatchSpawn(ent);
+    AcceptEntityInput(ent, "TurnOn");
+    SDKHook(ent, SDKHook_SetTransmit, Hook_PreviewSetTransmit);
+
+    float previewLifetime = (gCvarPreviewLifetime != null) ? gCvarPreviewLifetime.FloatValue : PREVIEW_LIFETIME;
+    FinishPreviewEntity(client, ent, previewLifetime);
+}
+
+void PlaySoundPreview(int client, const char[] itemId)
+{
+    char sound[PLATFORM_MAX_PATH], download[PLATFORM_MAX_PATH];
+    if (!GetItemMetadataValue(itemId, "sound", sound, sizeof(sound)) || sound[0] == '\0')
+    {
+        PrintStorePhrase(client, "%T", "Preview Missing Model", client);
+        return;
+    }
+
+    Format(download, sizeof(download), "sound/%s", sound);
+    if (!FileExists(download, true))
+    {
+        PrintStorePhrase(client, "%T", "Preview Missing Model", client);
+        return;
+    }
+
+    if (!PrepareNonModelPreview(client))
+    {
+        return;
+    }
+
+    PrecacheSound(sound, true);
+    EmitSoundToClient(client, sound, client, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.8);
+}
+
+int FindStringIndexInTable(int tableidx, const char[] value)
+{
+    char current[1024];
+    int count = GetStringTableNumStrings(tableidx);
+    for (int i = 0; i < count; i++)
+    {
+        ReadStringTable(tableidx, i, current, sizeof(current));
+        if (StrEqual(current, value))
+        {
+            return i;
+        }
+    }
+
+    return INVALID_STRING_INDEX;
+}
+
+int PrecacheParticleEffectName(const char[] effect)
+{
+    static int particleTable = INVALID_STRING_TABLE;
+
+    if (particleTable == INVALID_STRING_TABLE)
+    {
+        particleTable = FindStringTable("ParticleEffectNames");
+        if (particleTable == INVALID_STRING_TABLE)
+        {
+            return INVALID_STRING_INDEX;
+        }
+    }
+
+    int index = FindStringIndexInTable(particleTable, effect);
+    if (index != INVALID_STRING_INDEX)
+    {
+        return index;
+    }
+
+    int count = GetStringTableNumStrings(particleTable);
+    if (count >= GetStringTableMaxStrings(particleTable))
+    {
+        return INVALID_STRING_INDEX;
+    }
+
+    AddToStringTable(particleTable, effect);
+    return count;
+}
+
+bool GetParticlePreviewEffect(const char[] itemId, char[] effect, int maxlen)
+{
+    return GetItemMetadataValue(itemId, "effect", effect, maxlen) && effect[0] != '\0';
+}
+
+bool GetParticlePreviewFile(const char[] itemId, char[] file, int maxlen)
+{
+    return GetItemMetadataValue(itemId, "file", file, maxlen) && file[0] != '\0';
+}
+
+bool ItemHasParticlePreview(const char[] itemId)
+{
+    char effect[64], file[PLATFORM_MAX_PATH];
+    if (!GetParticlePreviewEffect(itemId, effect, sizeof(effect)) || !GetParticlePreviewFile(itemId, file, sizeof(file)))
+    {
+        return false;
+    }
+
+    return FileExists(file, true);
+}
+
+void ClearAlwaysTransmitFlag(int entity)
+{
+    int flags = GetEdictFlags(entity);
+    if ((flags & FL_EDICT_ALWAYS) != 0)
+    {
+        SetEdictFlags(entity, flags ^ FL_EDICT_ALWAYS);
+    }
+}
+
+void SpawnParticlePreview(int client, const char[] itemId)
+{
+    char effect[64], file[PLATFORM_MAX_PATH];
+    if (!GetParticlePreviewEffect(itemId, effect, sizeof(effect)) || !GetParticlePreviewFile(itemId, file, sizeof(file)) || !FileExists(file, true))
+    {
+        PrintStorePhrase(client, "%T", "Preview Missing Model", client);
+        return;
+    }
+
+    if (!PrepareNonModelPreview(client))
+    {
+        return;
+    }
+
+    PrecacheGeneric(file, true);
+    PrecacheParticleEffectName(effect);
+
+    int ent = CreateEntityByName("info_particle_system");
+    if (ent == -1)
+    {
+        PrintStorePhrase(client, "%T", "Preview Failed Create", client);
+        return;
+    }
+
+    DispatchKeyValue(ent, "start_active", "0");
+    DispatchKeyValue(ent, "effect_name", effect);
+    DispatchSpawn(ent);
+    ActivateEntity(ent);
+
+    float pos[3], ang[3];
+    GetPreviewPosition(client, pos, ang);
+    pos[2] += 30.0;
+    TeleportEntity(ent, pos, NULL_VECTOR, NULL_VECTOR);
+
+    AcceptEntityInput(ent, "Start");
+    ClearAlwaysTransmitFlag(ent);
+    SDKHook(ent, SDKHook_SetTransmit, Hook_PreviewSetTransmit);
+
+    float previewLifetime = (gCvarPreviewLifetime != null) ? gCvarPreviewLifetime.FloatValue : PREVIEW_LIFETIME;
+    FinishPreviewEntity(client, ent, previewLifetime);
+}
+
+bool ItemSupportsPreview(StoreItem item)
+{
+    if (item.szModel[0] != '\0' && FileExists(item.szModel, true))
+    {
+        return true;
+    }
+
+    if (StrEqual(item.type, "coloredsmoke", false) || StrEqual(item.type, "ColoredSmoke", false))
+    {
+        return true;
+    }
+
+    if (StrEqual(item.type, "particle", false) && ItemHasParticlePreview(item.id))
+    {
+        return true;
+    }
+
+    char value[PLATFORM_MAX_PATH], material[PLATFORM_MAX_PATH], downloadPath[PLATFORM_MAX_PATH];
+    if (GetItemMetadataValue(item.id, "material", value, sizeof(value)) && ResolvePreviewMaterial(value, material, sizeof(material), downloadPath, sizeof(downloadPath)))
+    {
+        return true;
+    }
+
+    if (GetItemMetadataValue(item.id, "sound", value, sizeof(value)) && value[0] != '\0')
+    {
+        Format(downloadPath, sizeof(downloadPath), "sound/%s", value);
+        return FileExists(downloadPath, true);
+    }
+
+    return false;
+}
+
+void PreviewItem(int client, StoreItem item)
+{
+    if (item.szModel[0] != '\0')
+    {
+        SpawnPreview(client, item.szModel);
+        return;
+    }
+
+    if (StrEqual(item.type, "coloredsmoke", false) || StrEqual(item.type, "ColoredSmoke", false))
+    {
+        SpawnSmokePreview(client, item.id);
+        return;
+    }
+
+    if (StrEqual(item.type, "particle", false))
+    {
+        SpawnParticlePreview(client, item.id);
+        return;
+    }
+
+    char value[PLATFORM_MAX_PATH];
+    if (GetItemMetadataValue(item.id, "material", value, sizeof(value)) && value[0] != '\0')
+    {
+        SpawnSpritePreview(client, value);
+        return;
+    }
+
+    if (GetItemMetadataValue(item.id, "sound", value, sizeof(value)) && value[0] != '\0')
+    {
+        PlaySoundPreview(client, item.id);
+        return;
+    }
+
+    PrintStorePhrase(client, "%T", "Preview Missing Model", client);
+}
+
 public Action Timer_RemovePreview(Handle timer, any userid)
 {
     int client = GetClientOfUserId(userid);
@@ -3833,6 +4476,12 @@ void RegisterModelDownloads(const char[] modelPath)
     Format(filePath, sizeof(filePath), "%s.sw.vtx", base);
     AddDownloadIfExists(filePath);
 
+    Format(filePath, sizeof(filePath), "%s.vtx", base);
+    AddDownloadIfExists(filePath);
+
+    Format(filePath, sizeof(filePath), "%s.xbox.vtx", base);
+    AddDownloadIfExists(filePath);
+
     Format(filePath, sizeof(filePath), "%s.phy", base);
     AddDownloadIfExists(filePath);
 }
@@ -3852,6 +4501,8 @@ int GetPreviewOwnerFromEntity(int entity)
 
 public Action Hook_PreviewSetTransmit(int entity, int client)
 {
+    ClearAlwaysTransmitFlag(entity);
+
     if (client < 1 || client > MaxClients || !IsClientInGame(client))
     {
         return Plugin_Handled;
@@ -3867,6 +4518,231 @@ public Action Hook_PreviewSetTransmit(int entity, int client)
 }
 
 
+bool HasTxtExtension(const char[] fileName)
+{
+    int len = strlen(fileName);
+    if (len < 5)
+    {
+        return false;
+    }
+
+    return StrEqual(fileName[len - 4], ".txt", false);
+}
+
+bool LoadItemsConfigFile(const char[] path, int &loadedSkins, int &loadedTags, int &loadedNameColors, int &loadedChatColors, int &loadedCustom)
+{
+    if (!FileExists(path))
+    {
+        LogError("%s Item config was not found: %s", STORE_LOG_PREFIX, path);
+        return false;
+    }
+
+    KeyValues kv = new KeyValues("Items");
+    if (!kv.ImportFromFile(path))
+    {
+        LogError("%s Failed to load item config: %s", STORE_LOG_PREFIX, path);
+        delete kv;
+        return false;
+    }
+
+    if (!kv.GotoFirstSubKey())
+    {
+        delete kv;
+        return true;
+    }
+
+    StoreItem item;
+    do
+    {
+        item.id[0] = '\0';
+        item.name[0] = '\0';
+        item.type[0] = '\0';
+        item.category[0] = '\0';
+        item.description[0] = '\0';
+        item.rarity[0] = '\0';
+        item.szModel[0] = '\0';
+        item.szArms[0] = '\0';
+        item.szValue[0] = '\0';
+        item.icon[0] = '\0';
+        item.metadata[0] = '\0';
+        item.requires_item[0] = '\0';
+        item.bundle_id[0] = '\0';
+        item.flag[0] = '\0';
+        item.price = 0;
+        item.sale_price = -1;
+        item.team = 0;
+        item.sort_order = 0;
+        item.starts_at = 0;
+        item.ends_at = 0;
+        item.sell_percent_override = -1;
+        item.hidden = 0;
+
+        kv.GetSectionName(item.id, sizeof(item.id));
+        if (item.id[0] == '\0')
+        {
+            LogError("%s Item entry with empty section name was skipped in %s.", STORE_LOG_PREFIX, path);
+            continue;
+        }
+
+        int existingIndex;
+        if (g_mItemIndex != null && g_mItemIndex.GetValue(item.id, existingIndex))
+        {
+            LogError("%s Duplicate item id in config: %s from %s", STORE_LOG_PREFIX, item.id, path);
+            continue;
+        }
+
+        ClearItemMetadataForItem(item.id);
+
+        kv.GetString("name", item.name, sizeof(item.name), "Item");
+        kv.GetString("type", item.type, sizeof(item.type), "skin");
+        kv.GetString("category", item.category, sizeof(item.category), "");
+        kv.GetString("description", item.description, sizeof(item.description), "");
+        kv.GetString("rarity", item.rarity, sizeof(item.rarity), "common");
+        kv.GetString("model", item.szModel, sizeof(item.szModel), "");
+        kv.GetString("arms", item.szArms, sizeof(item.szArms), "");
+        kv.GetString("value", item.szValue, sizeof(item.szValue), "");
+        kv.GetString("icon", item.icon, sizeof(item.icon), "");
+        kv.GetString("metadata", item.metadata, sizeof(item.metadata), "");
+        kv.GetString("requires_item", item.requires_item, sizeof(item.requires_item), "");
+        kv.GetString("bundle_id", item.bundle_id, sizeof(item.bundle_id), "");
+        kv.GetString("flag", item.flag, sizeof(item.flag), "");
+        item.price = kv.GetNum("price", 0);
+        item.sale_price = kv.GetNum("sale_price", -1);
+        item.team = kv.GetNum("team", 0);
+        item.sort_order = kv.GetNum("sort_order", 0);
+        item.starts_at = kv.GetNum("starts_at", 0);
+        item.ends_at = kv.GetNum("ends_at", 0);
+        item.sell_percent_override = kv.GetNum("sell_percent_override", -1);
+        item.hidden = kv.GetNum("hidden", 0);
+
+        if (item.price < 0)
+        {
+            LogError("%s Item '%s' has an invalid negative price %d. It was clamped to 0.", STORE_LOG_PREFIX, item.id, item.price);
+            item.price = 0;
+        }
+
+        if (item.sale_price < -1)
+        {
+            item.sale_price = -1;
+        }
+
+        if (item.sell_percent_override > 100)
+        {
+            item.sell_percent_override = 100;
+        }
+        else if (item.sell_percent_override < -1)
+        {
+            item.sell_percent_override = -1;
+        }
+
+        if (item.ends_at > 0 && item.starts_at > 0 && item.ends_at < item.starts_at)
+        {
+            LogError("%s Item '%s' has ends_at earlier than starts_at. ends_at was ignored.", STORE_LOG_PREFIX, item.id);
+            item.ends_at = 0;
+        }
+
+        if (StrEqual(item.requires_item, item.id))
+        {
+            LogError("%s Item '%s' cannot require itself. requires_item was ignored.", STORE_LOG_PREFIX, item.id);
+            item.requires_item[0] = '\0';
+        }
+
+        if (StrEqual(item.type, "skin"))
+        {
+            if (item.szModel[0] == '\0' || !FileExists(item.szModel, true))
+            {
+                LogError("%s Invalid skin '%s': missing model '%s'", STORE_LOG_PREFIX, item.id, item.szModel);
+                continue;
+            }
+
+            PrecacheModel(item.szModel, true);
+            RegisterModelDownloads(item.szModel);
+
+            if (item.szArms[0] != '\0')
+            {
+                if (FileExists(item.szArms, true))
+                {
+                    PrecacheModel(item.szArms, true);
+                    RegisterModelDownloads(item.szArms);
+                }
+                else
+                {
+                    LogError("%s Invalid arms for '%s': '%s'", STORE_LOG_PREFIX, item.id, item.szArms);
+                    item.szArms[0] = '\0';
+                }
+            }
+        }
+
+        int pushedIndex = g_aItems.PushArray(item, sizeof(StoreItem));
+        if (g_mItemIndex != null)
+        {
+            g_mItemIndex.SetValue(item.id, pushedIndex);
+        }
+
+        StoreCommonItemMetadata(kv, item);
+
+        if (StrEqual(item.type, "skin"))
+        {
+            loadedSkins++;
+        }
+        else if (StrEqual(item.type, "tag"))
+        {
+            loadedTags++;
+        }
+        else if (StrEqual(item.type, "namecolor"))
+        {
+            loadedNameColors++;
+        }
+        else if (StrEqual(item.type, "chatcolor"))
+        {
+            loadedChatColors++;
+        }
+        else
+        {
+            loadedCustom++;
+        }
+    }
+    while (kv.GotoNextKey());
+
+    delete kv;
+    return true;
+}
+
+void LoadItemsConfigDirectory(const char[] dirPath, int &loadedSkins, int &loadedTags, int &loadedNameColors, int &loadedChatColors, int &loadedCustom)
+{
+    DirectoryListing listing = OpenDirectory(dirPath);
+    if (listing == null)
+    {
+        return;
+    }
+
+    ArrayList files = new ArrayList(ByteCountToCells(PLATFORM_MAX_PATH));
+    char entry[PLATFORM_MAX_PATH], filePath[PLATFORM_MAX_PATH];
+    FileType fileType;
+
+    while (listing.GetNext(entry, sizeof(entry), fileType))
+    {
+        if (fileType != FileType_File || !HasTxtExtension(entry))
+        {
+            continue;
+        }
+
+        Format(filePath, sizeof(filePath), "%s/%s", dirPath, entry);
+        files.PushString(filePath);
+    }
+
+    delete listing;
+
+    SortADTArray(files, Sort_Ascending, Sort_String);
+    for (int i = 0; i < files.Length; i++)
+    {
+        files.GetString(i, filePath, sizeof(filePath));
+        LoadItemsConfigFile(filePath, loadedSkins, loadedTags, loadedNameColors, loadedChatColors, loadedCustom);
+    }
+
+    delete files;
+}
+
 void LoadItemsConfig()
 {
     g_aItems.Clear();
@@ -3877,188 +4753,21 @@ void LoadItemsConfig()
         g_mItemIndex = new StringMap();
     }
 
-    char path[PLATFORM_MAX_PATH];
-    BuildPath(Path_SM, path, sizeof(path), STORE_ITEMS_CONFIG);
-
-    if (!FileExists(path))
-    {
-        LogError("%s Item config was not found: %s", STORE_LOG_PREFIX, path);
-        return;
-    }
-
-    KeyValues kv = new KeyValues("Items");
-    if (!kv.ImportFromFile(path))
-    {
-        LogError("%s Failed to load item config: %s", STORE_LOG_PREFIX, path);
-        delete kv;
-        return;
-    }
-
     int loadedSkins = 0;
     int loadedTags = 0;
     int loadedNameColors = 0;
     int loadedChatColors = 0;
     int loadedCustom = 0;
 
-    if (kv.GotoFirstSubKey())
+    char path[PLATFORM_MAX_PATH];
+    BuildPath(Path_SM, path, sizeof(path), STORE_ITEMS_CONFIG);
+    if (!LoadItemsConfigFile(path, loadedSkins, loadedTags, loadedNameColors, loadedChatColors, loadedCustom))
     {
-        StoreItem item;
-        do
-        {
-            item.id[0] = '\0';
-            item.name[0] = '\0';
-            item.type[0] = '\0';
-            item.category[0] = '\0';
-            item.description[0] = '\0';
-            item.rarity[0] = '\0';
-            item.szModel[0] = '\0';
-            item.szArms[0] = '\0';
-            item.szValue[0] = '\0';
-            item.icon[0] = '\0';
-            item.metadata[0] = '\0';
-            item.requires_item[0] = '\0';
-            item.bundle_id[0] = '\0';
-            item.flag[0] = '\0';
-            item.price = 0;
-            item.sale_price = -1;
-            item.team = 0;
-            item.sort_order = 0;
-            item.starts_at = 0;
-            item.ends_at = 0;
-            item.sell_percent_override = -1;
-            item.hidden = 0;
-
-            kv.GetSectionName(item.id, sizeof(item.id));
-            ClearItemMetadataForItem(item.id);
-            if (item.id[0] == '\0')
-            {
-                LogError("%s Item entry with empty section name was skipped.", STORE_LOG_PREFIX);
-                continue;
-            }
-
-            kv.GetString("name", item.name, sizeof(item.name), "Item");
-            kv.GetString("type", item.type, sizeof(item.type), "skin");
-            kv.GetString("category", item.category, sizeof(item.category), "");
-            kv.GetString("description", item.description, sizeof(item.description), "");
-            kv.GetString("rarity", item.rarity, sizeof(item.rarity), "common");
-            kv.GetString("model", item.szModel, sizeof(item.szModel), "");
-            kv.GetString("arms", item.szArms, sizeof(item.szArms), "");
-            kv.GetString("value", item.szValue, sizeof(item.szValue), "");
-            kv.GetString("icon", item.icon, sizeof(item.icon), "");
-            kv.GetString("metadata", item.metadata, sizeof(item.metadata), "");
-            kv.GetString("requires_item", item.requires_item, sizeof(item.requires_item), "");
-            kv.GetString("bundle_id", item.bundle_id, sizeof(item.bundle_id), "");
-            kv.GetString("flag", item.flag, sizeof(item.flag), "");
-            item.price = kv.GetNum("price", 0);
-            item.sale_price = kv.GetNum("sale_price", -1);
-            item.team = kv.GetNum("team", 0);
-            item.sort_order = kv.GetNum("sort_order", 0);
-            item.starts_at = kv.GetNum("starts_at", 0);
-            item.ends_at = kv.GetNum("ends_at", 0);
-            item.sell_percent_override = kv.GetNum("sell_percent_override", -1);
-            item.hidden = kv.GetNum("hidden", 0);
-
-            if (item.price < 0)
-            {
-                LogError("%s Item '%s' has an invalid negative price %d. It was clamped to 0.", STORE_LOG_PREFIX, item.id, item.price);
-                item.price = 0;
-            }
-
-            if (item.sale_price < -1)
-            {
-                item.sale_price = -1;
-            }
-
-            if (item.sell_percent_override > 100)
-            {
-                item.sell_percent_override = 100;
-            }
-            else if (item.sell_percent_override < -1)
-            {
-                item.sell_percent_override = -1;
-            }
-
-            if (item.ends_at > 0 && item.starts_at > 0 && item.ends_at < item.starts_at)
-            {
-                LogError("%s Item '%s' has ends_at earlier than starts_at. ends_at was ignored.", STORE_LOG_PREFIX, item.id);
-                item.ends_at = 0;
-            }
-
-            if (StrEqual(item.requires_item, item.id))
-            {
-                LogError("%s Item '%s' cannot require itself. requires_item was ignored.", STORE_LOG_PREFIX, item.id);
-                item.requires_item[0] = '\0';
-            }
-
-            if (StrEqual(item.type, "skin"))
-            {
-                if (item.szModel[0] == '\0' || !FileExists(item.szModel, true))
-                {
-                    LogError("%s Invalid skin '%s': missing model '%s'", STORE_LOG_PREFIX, item.id, item.szModel);
-                    continue;
-                }
-
-                PrecacheModel(item.szModel, true);
-                RegisterModelDownloads(item.szModel);
-
-                if (item.szArms[0] != '\0')
-                {
-                    if (FileExists(item.szArms, true))
-                    {
-                        PrecacheModel(item.szArms, true);
-                        RegisterModelDownloads(item.szArms);
-                    }
-                    else
-                    {
-                        LogError("%s Invalid arms for '%s': '%s'", STORE_LOG_PREFIX, item.id, item.szArms);
-                        item.szArms[0] = '\0';
-                    }
-                }
-            }
-
-            int existingIndex;
-            if (g_mItemIndex != null && g_mItemIndex.GetValue(item.id, existingIndex))
-            {
-                LogError("%s Duplicate item id in config: %s", STORE_LOG_PREFIX, item.id);
-                continue;
-            }
-
-            int pushedIndex = g_aItems.PushArray(item, sizeof(StoreItem));
-            if (g_mItemIndex != null)
-            {
-                g_mItemIndex.SetValue(item.id, pushedIndex);
-            }
-
-            if (item.metadata[0] != '\0')
-            {
-                SetItemMetadataValue(item.id, "raw", item.metadata);
-            }
-
-            if (StrEqual(item.type, "skin"))
-            {
-                loadedSkins++;
-            }
-            else if (StrEqual(item.type, "tag"))
-            {
-                loadedTags++;
-            }
-            else if (StrEqual(item.type, "namecolor"))
-            {
-                loadedNameColors++;
-            }
-            else if (StrEqual(item.type, "chatcolor"))
-            {
-                loadedChatColors++;
-            }
-            else
-            {
-                loadedCustom++;
-            }
-        }
-        while (kv.GotoNextKey());
+        return;
     }
 
-    delete kv;
+    BuildPath(Path_SM, path, sizeof(path), STORE_ITEMS_DIR);
+    LoadItemsConfigDirectory(path, loadedSkins, loadedTags, loadedNameColors, loadedChatColors, loadedCustom);
 
     RebuildItemCache();
     LogMessage("%s Loaded item config: %d items (skins=%d, tags=%d, namecolors=%d, chatcolors=%d, custom=%d).",
@@ -4186,6 +4895,13 @@ void CreateTables()
     char query13[512];
     char query14[512];
     char query15[512];
+    char query16[1024];
+    char query17[512];
+    char query18[768];
+    char query19[512];
+    char query20[768];
+    char query21[512];
+    char query22[512];
     query3[0] = '\0';
     query5[0] = '\0';
     query7[0] = '\0';
@@ -4193,6 +4909,10 @@ void CreateTables()
     query11[0] = '\0';
     query13[0] = '\0';
     query15[0] = '\0';
+    query17[0] = '\0';
+    query19[0] = '\0';
+    query21[0] = '\0';
+    query22[0] = '\0';
 
     if (g_bIsMySQL)
     {
@@ -4212,6 +4932,12 @@ void CreateTables()
             "CREATE TABLE IF NOT EXISTS store_market_listings (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, seller_steamid VARCHAR(32) NOT NULL, item_id VARCHAR(32) NOT NULL, price INT NOT NULL, fee_percent INT NOT NULL DEFAULT 0, created_at INT NOT NULL, expires_at INT NOT NULL, sold_to VARCHAR(32) NOT NULL DEFAULT '', sold_at INT NOT NULL DEFAULT 0, cancelled_at INT NOT NULL DEFAULT 0, INDEX idx_store_market_seller (seller_steamid), INDEX idx_store_market_active (sold_at, cancelled_at, expires_at))");
         Format(query14, sizeof(query14),
             "CREATE TABLE IF NOT EXISTS store_market_sales (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, listing_id INT NOT NULL, seller_steamid VARCHAR(32) NOT NULL, buyer_steamid VARCHAR(32) NOT NULL, item_id VARCHAR(32) NOT NULL, price INT NOT NULL, fee_amount INT NOT NULL DEFAULT 0, created_at INT NOT NULL, INDEX idx_store_market_sales_seller (seller_steamid), INDEX idx_store_market_sales_buyer (buyer_steamid))");
+        Format(query16, sizeof(query16),
+            "CREATE TABLE IF NOT EXISTS store_audit_log (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, actor_steamid VARCHAR(32) NOT NULL DEFAULT '', actor_name VARCHAR(64) NOT NULL DEFAULT '', target_steamid VARCHAR(32) NOT NULL DEFAULT '', target_name VARCHAR(64) NOT NULL DEFAULT '', action VARCHAR(64) NOT NULL, item_id VARCHAR(32) NOT NULL DEFAULT '', amount INT NOT NULL DEFAULT 0, details VARCHAR(192) NOT NULL DEFAULT '', created_at INT NOT NULL, INDEX idx_store_audit_created (created_at), INDEX idx_store_audit_target (target_steamid), INDEX idx_store_audit_action (action))");
+        Format(query18, sizeof(query18),
+            "CREATE TABLE IF NOT EXISTS store_vouchers (code VARCHAR(64) NOT NULL PRIMARY KEY, reward_credits INT NOT NULL DEFAULT 0, reward_item VARCHAR(32) NOT NULL DEFAULT '', max_uses INT NOT NULL DEFAULT 1, uses INT NOT NULL DEFAULT 0, expires_at INT NOT NULL DEFAULT 0, created_by_steamid VARCHAR(32) NOT NULL DEFAULT '', created_by_name VARCHAR(64) NOT NULL DEFAULT '', created_at INT NOT NULL, disabled INT NOT NULL DEFAULT 0, INDEX idx_store_vouchers_disabled (disabled), INDEX idx_store_vouchers_expires (expires_at))");
+        Format(query20, sizeof(query20),
+            "CREATE TABLE IF NOT EXISTS store_voucher_redemptions (code VARCHAR(64) NOT NULL, steamid VARCHAR(32) NOT NULL, player_name VARCHAR(64) NOT NULL DEFAULT '', redeemed_at INT NOT NULL, PRIMARY KEY (code, steamid), INDEX idx_store_voucher_redemptions_steamid (steamid))");
     }
     else
     {
@@ -4245,6 +4971,20 @@ void CreateTables()
             "CREATE TABLE IF NOT EXISTS store_market_sales (id INTEGER PRIMARY KEY AUTOINCREMENT, listing_id INTEGER NOT NULL, seller_steamid TEXT NOT NULL, buyer_steamid TEXT NOT NULL, item_id TEXT NOT NULL, price INTEGER NOT NULL, fee_amount INTEGER NOT NULL DEFAULT 0, created_at INTEGER NOT NULL)");
         Format(query15, sizeof(query15),
             "CREATE INDEX IF NOT EXISTS idx_store_market_sales_seller ON store_market_sales (seller_steamid)");
+        Format(query16, sizeof(query16),
+            "CREATE TABLE IF NOT EXISTS store_audit_log (id INTEGER PRIMARY KEY AUTOINCREMENT, actor_steamid TEXT NOT NULL DEFAULT '', actor_name TEXT NOT NULL DEFAULT '', target_steamid TEXT NOT NULL DEFAULT '', target_name TEXT NOT NULL DEFAULT '', action TEXT NOT NULL, item_id TEXT NOT NULL DEFAULT '', amount INTEGER NOT NULL DEFAULT 0, details TEXT NOT NULL DEFAULT '', created_at INTEGER NOT NULL)");
+        Format(query17, sizeof(query17),
+            "CREATE INDEX IF NOT EXISTS idx_store_audit_created ON store_audit_log (created_at)");
+        Format(query18, sizeof(query18),
+            "CREATE TABLE IF NOT EXISTS store_vouchers (code TEXT NOT NULL PRIMARY KEY, reward_credits INTEGER NOT NULL DEFAULT 0, reward_item TEXT NOT NULL DEFAULT '', max_uses INTEGER NOT NULL DEFAULT 1, uses INTEGER NOT NULL DEFAULT 0, expires_at INTEGER NOT NULL DEFAULT 0, created_by_steamid TEXT NOT NULL DEFAULT '', created_by_name TEXT NOT NULL DEFAULT '', created_at INTEGER NOT NULL, disabled INTEGER NOT NULL DEFAULT 0)");
+        Format(query19, sizeof(query19),
+            "CREATE INDEX IF NOT EXISTS idx_store_vouchers_disabled ON store_vouchers (disabled)");
+        Format(query20, sizeof(query20),
+            "CREATE TABLE IF NOT EXISTS store_voucher_redemptions (code TEXT NOT NULL, steamid TEXT NOT NULL, player_name TEXT NOT NULL DEFAULT '', redeemed_at INTEGER NOT NULL, PRIMARY KEY (code, steamid))");
+        Format(query21, sizeof(query21),
+            "CREATE INDEX IF NOT EXISTS idx_store_voucher_redemptions_steamid ON store_voucher_redemptions (steamid)");
+        Format(query22, sizeof(query22),
+            "CREATE INDEX IF NOT EXISTS idx_store_audit_target ON store_audit_log (target_steamid)");
     }
 
     g_iPendingTableQueries = 0;
@@ -4308,6 +5048,34 @@ void CreateTables()
     {
         g_iPendingTableQueries++;
     }
+    if (query16[0] != '\0')
+    {
+        g_iPendingTableQueries++;
+    }
+    if (query17[0] != '\0')
+    {
+        g_iPendingTableQueries++;
+    }
+    if (query18[0] != '\0')
+    {
+        g_iPendingTableQueries++;
+    }
+    if (query19[0] != '\0')
+    {
+        g_iPendingTableQueries++;
+    }
+    if (query20[0] != '\0')
+    {
+        g_iPendingTableQueries++;
+    }
+    if (query21[0] != '\0')
+    {
+        g_iPendingTableQueries++;
+    }
+    if (query22[0] != '\0')
+    {
+        g_iPendingTableQueries++;
+    }
 
     g_DB.Query(OnTableCreated, query1);
     g_DB.Query(OnTableCreated, query2);
@@ -4317,6 +5085,9 @@ void CreateTables()
     g_DB.Query(OnTableCreated, query10);
     g_DB.Query(OnTableCreated, query12);
     g_DB.Query(OnTableCreated, query14);
+    g_DB.Query(OnTableCreated, query16);
+    g_DB.Query(OnTableCreated, query18);
+    g_DB.Query(OnTableCreated, query20);
 
     if (query3[0] != '\0')
     {
@@ -4351,6 +5122,26 @@ void CreateTables()
     if (query15[0] != '\0')
     {
         g_DB.Query(OnTableCreated, query15);
+    }
+
+    if (query17[0] != '\0')
+    {
+        g_DB.Query(OnTableCreated, query17);
+    }
+
+    if (query19[0] != '\0')
+    {
+        g_DB.Query(OnTableCreated, query19);
+    }
+
+    if (query21[0] != '\0')
+    {
+        g_DB.Query(OnTableCreated, query21);
+    }
+
+    if (query22[0] != '\0')
+    {
+        g_DB.Query(OnTableCreated, query22);
     }
 }
 
@@ -4550,6 +5341,129 @@ bool BuildPlayerUpsertQueryForCredits(int client, int creditsValue, char[] query
     }
 
     return true;
+}
+
+bool TryComputeCreditBalance(int current, int delta, int &next)
+{
+    if (current < 0 || current > STORE_MAX_CREDITS)
+    {
+        return false;
+    }
+
+    if (delta > 0 && current > STORE_MAX_CREDITS - delta)
+    {
+        return false;
+    }
+
+    next = current + delta;
+    return next >= 0 && next <= STORE_MAX_CREDITS;
+}
+
+bool ApplyCreditDeltasAtomic(int clientA, int deltaA, const char[] reasonA, int clientB, int deltaB, const char[] reasonB, bool notify, const char[] extraQuery)
+{
+    if (g_DB == null || !g_bLateDatabaseReady)
+    {
+        return false;
+    }
+
+    if (clientA < 1 || clientA > MaxClients || !g_bIsLoaded[clientA])
+    {
+        return false;
+    }
+
+    if (clientB == clientA)
+    {
+        deltaA += deltaB;
+        deltaB = 0;
+        clientB = 0;
+    }
+
+    if ((clientB == 0 && deltaB != 0) || (clientB != 0 && (clientB < 1 || clientB > MaxClients || !g_bIsLoaded[clientB])))
+    {
+        return false;
+    }
+
+    int nextA = g_iCredits[clientA];
+    int nextB = (clientB > 0) ? g_iCredits[clientB] : 0;
+
+    if (deltaA != 0 && !TryComputeCreditBalance(g_iCredits[clientA], deltaA, nextA))
+    {
+        return false;
+    }
+
+    if (clientB > 0 && deltaB != 0 && !TryComputeCreditBalance(g_iCredits[clientB], deltaB, nextB))
+    {
+        return false;
+    }
+
+    char queryA[512], queryB[512];
+    if (deltaA != 0 && !BuildPlayerUpsertQueryForCredits(clientA, nextA, queryA, sizeof(queryA)))
+    {
+        return false;
+    }
+
+    if (clientB > 0 && deltaB != 0 && !BuildPlayerUpsertQueryForCredits(clientB, nextB, queryB, sizeof(queryB)))
+    {
+        return false;
+    }
+
+    if (!BeginLockedStoreTransaction("ApplyCreditDeltasAtomic"))
+    {
+        return false;
+    }
+
+    if (extraQuery[0] != '\0' && !ExecuteLockedStoreQuery("ApplyCreditDeltasAtomic", extraQuery))
+    {
+        RollbackLockedStoreTransaction("ApplyCreditDeltasAtomic");
+        return false;
+    }
+
+    if (deltaA != 0 && !ExecuteLockedStoreQuery("ApplyCreditDeltasAtomic", queryA))
+    {
+        RollbackLockedStoreTransaction("ApplyCreditDeltasAtomic");
+        return false;
+    }
+
+    if (clientB > 0 && deltaB != 0 && !ExecuteLockedStoreQuery("ApplyCreditDeltasAtomic", queryB))
+    {
+        RollbackLockedStoreTransaction("ApplyCreditDeltasAtomic");
+        return false;
+    }
+
+    if (!CommitLockedStoreTransaction("ApplyCreditDeltasAtomic"))
+    {
+        return false;
+    }
+
+    if (deltaA != 0)
+    {
+        g_iCredits[clientA] = nextA;
+        ReportCreditsChanged(clientA, deltaA, reasonA, notify, true);
+    }
+
+    if (clientB > 0 && deltaB != 0)
+    {
+        g_iCredits[clientB] = nextB;
+        ReportCreditsChanged(clientB, deltaB, reasonB, notify, true);
+    }
+
+    return true;
+}
+
+bool SetCreditsAtomic(int client, int amount, const char[] reason, bool notify)
+{
+    if (amount < 0 || amount > STORE_MAX_CREDITS)
+    {
+        return false;
+    }
+
+    int delta = amount - g_iCredits[client];
+    if (delta == 0)
+    {
+        return true;
+    }
+
+    return ApplyCreditDeltasAtomic(client, delta, reason, 0, 0, "", notify, "");
 }
 
 bool BeginLockedStoreTransaction(const char[] where)
@@ -4762,35 +5676,48 @@ bool GetQuestCompletionCount(int client, const char[] questId, int &count)
     return true;
 }
 
-bool PersistQuestCompletionCount(int client, const char[] questId, int count)
+bool BuildQuestCompletionCountQuery(int client, const char[] questId, int count, char[] query, int maxlen)
 {
     if (g_DB == null || !IsValidClientConnected(client) || questId[0] == '\0')
     {
         return false;
     }
 
-    char steamid[32], safeSteamId[64], safeQuestId[128], query[512];
+    char steamid[32], safeSteamId[64], safeQuestId[128];
     if (!GetClientSteamIdSafe(client, steamid, sizeof(steamid)))
     {
         return false;
     }
 
-    EscapeStringSafe(steamid, safeSteamId, sizeof(safeSteamId));
-    EscapeStringSafe(questId, safeQuestId, sizeof(safeQuestId));
+    if (!EscapeStringSafe(steamid, safeSteamId, sizeof(safeSteamId)) || !EscapeStringSafe(questId, safeQuestId, sizeof(safeQuestId)))
+    {
+        return false;
+    }
 
     if (g_bIsMySQL)
     {
-        Format(query, sizeof(query),
+        Format(query, maxlen,
             "INSERT INTO store_player_quest_counts (steamid, quest_id, completion_count, updated_at) VALUES ('%s', '%s', %d, %d) "
             ... "ON DUPLICATE KEY UPDATE completion_count = VALUES(completion_count), updated_at = VALUES(updated_at)",
             safeSteamId, safeQuestId, count, GetTime());
     }
     else
     {
-        Format(query, sizeof(query),
+        Format(query, maxlen,
             "INSERT INTO store_player_quest_counts (steamid, quest_id, completion_count, updated_at) VALUES ('%s', '%s', %d, %d) "
             ... "ON CONFLICT(steamid, quest_id) DO UPDATE SET completion_count = excluded.completion_count, updated_at = excluded.updated_at",
             safeSteamId, safeQuestId, count, GetTime());
+    }
+
+    return true;
+}
+
+bool PersistQuestCompletionCount(int client, const char[] questId, int count)
+{
+    char query[512];
+    if (!BuildQuestCompletionCountQuery(client, questId, count, query, sizeof(query)))
+    {
+        return false;
     }
 
     SQL_LockDatabase(g_DB);
@@ -4900,35 +5827,48 @@ void GetQuestAvailabilityStateFromSnapshot(const StoreQuestDefinition definition
     }
 }
 
-bool PersistQuestProgressState(int client, const char[] questId, int progress, int completedAt, int rewardedAt)
+bool BuildQuestProgressStateQuery(int client, const char[] questId, int progress, int completedAt, int rewardedAt, char[] query, int maxlen)
 {
     if (g_DB == null || !IsValidClientConnected(client) || questId[0] == '\0')
     {
         return false;
     }
 
-    char steamid[32], safeSteamId[64], safeQuestId[128], query[512];
+    char steamid[32], safeSteamId[64], safeQuestId[128];
     if (!GetClientSteamIdSafe(client, steamid, sizeof(steamid)))
     {
         return false;
     }
 
-    EscapeStringSafe(steamid, safeSteamId, sizeof(safeSteamId));
-    EscapeStringSafe(questId, safeQuestId, sizeof(safeQuestId));
+    if (!EscapeStringSafe(steamid, safeSteamId, sizeof(safeSteamId)) || !EscapeStringSafe(questId, safeQuestId, sizeof(safeQuestId)))
+    {
+        return false;
+    }
 
     if (g_bIsMySQL)
     {
-        Format(query, sizeof(query),
+        Format(query, maxlen,
             "INSERT INTO store_player_quests (steamid, quest_id, progress, completed_at, rewarded_at) VALUES ('%s', '%s', %d, %d, %d) "
             ... "ON DUPLICATE KEY UPDATE progress = VALUES(progress), completed_at = VALUES(completed_at), rewarded_at = VALUES(rewarded_at)",
             safeSteamId, safeQuestId, progress, completedAt, rewardedAt);
     }
     else
     {
-        Format(query, sizeof(query),
+        Format(query, maxlen,
             "INSERT INTO store_player_quests (steamid, quest_id, progress, completed_at, rewarded_at) VALUES ('%s', '%s', %d, %d, %d) "
             ... "ON CONFLICT(steamid, quest_id) DO UPDATE SET progress = excluded.progress, completed_at = excluded.completed_at, rewarded_at = excluded.rewarded_at",
             safeSteamId, safeQuestId, progress, completedAt, rewardedAt);
+    }
+
+    return true;
+}
+
+bool PersistQuestProgressState(int client, const char[] questId, int progress, int completedAt, int rewardedAt)
+{
+    char query[512];
+    if (!BuildQuestProgressStateQuery(client, questId, progress, completedAt, rewardedAt, query, sizeof(query)))
+    {
+        return false;
     }
 
     SQL_LockDatabase(g_DB);
@@ -4996,10 +5936,6 @@ bool UpdateQuestProgressInternal(int client, const char[] questId, int value, bo
     if (shouldReward)
     {
         completionCount++;
-        if (!PersistQuestCompletionCount(client, questId, completionCount))
-        {
-            return false;
-        }
     }
 
     int persistedProgress = newProgress;
@@ -5023,21 +5959,82 @@ bool UpdateQuestProgressInternal(int client, const char[] questId, int value, bo
         }
     }
 
-    if (!PersistQuestProgressState(client, questId, persistedProgress, persistedCompletedAt, persistedRewardedAt))
+    char questCountQuery[512];
+    questCountQuery[0] = '\0';
+    char questProgressQuery[512];
+    if (shouldReward && !BuildQuestCompletionCountQuery(client, questId, completionCount, questCountQuery, sizeof(questCountQuery)))
     {
         return false;
+    }
+
+    if (!BuildQuestProgressStateQuery(client, questId, persistedProgress, persistedCompletedAt, persistedRewardedAt, questProgressQuery, sizeof(questProgressQuery)))
+    {
+        return false;
+    }
+
+    if (shouldReward && definition.reward_credits > 0)
+    {
+        int newCredits = 0;
+        if (!TryComputeCreditBalance(g_iCredits[client], definition.reward_credits, newCredits))
+        {
+            return false;
+        }
+
+        char playerQuery[512];
+        if (!BuildPlayerUpsertQueryForCredits(client, newCredits, playerQuery, sizeof(playerQuery)))
+        {
+            return false;
+        }
+
+        if (!BeginLockedStoreTransaction("AdvanceQuestProgress"))
+        {
+            return false;
+        }
+
+        if (questCountQuery[0] != '\0' && !ExecuteLockedStoreQuery("AdvanceQuestProgress", questCountQuery))
+        {
+            RollbackLockedStoreTransaction("AdvanceQuestProgress");
+            return false;
+        }
+
+        if (!ExecuteLockedStoreQuery("AdvanceQuestProgress", questProgressQuery))
+        {
+            RollbackLockedStoreTransaction("AdvanceQuestProgress");
+            return false;
+        }
+
+        if (!ExecuteLockedStoreQuery("AdvanceQuestProgress", playerQuery))
+        {
+            RollbackLockedStoreTransaction("AdvanceQuestProgress");
+            return false;
+        }
+
+        if (!CommitLockedStoreTransaction("AdvanceQuestProgress"))
+        {
+            return false;
+        }
+    }
+    else
+    {
+        if (shouldReward && !PersistQuestCompletionCount(client, questId, completionCount))
+        {
+            return false;
+        }
+
+        if (!PersistQuestProgressState(client, questId, persistedProgress, persistedCompletedAt, persistedRewardedAt))
+        {
+            return false;
+        }
     }
 
     if (shouldReward)
     {
         if (definition.reward_credits > 0)
         {
-            g_iCredits[client] += definition.reward_credits;
-
             char reason[96];
             Format(reason, sizeof(reason), "quest:%s", questId);
-            ReportCreditsChanged(client, definition.reward_credits, reason, false, false);
-            SavePlayer(client);
+            g_iCredits[client] += definition.reward_credits;
+            ReportCreditsChanged(client, definition.reward_credits, reason, false, true);
         }
 
         if (definition.reward_item[0] != '\0')
@@ -5227,13 +6224,13 @@ Action ProcessChat(int client, bool isTeamChat)
             return Plugin_Handled;
         }
 
-        if (!IsWholeNumberString(text))
+        int price = 0;
+        if (!TryParseCreditAmount(text, price))
         {
             PrintStorePhrase(client, "%T", "Market Price Invalid", client, GetMarketplaceMinPrice(), GetMarketplaceMaxPrice());
             return Plugin_Handled;
         }
 
-        int price = StringToInt(text);
         char itemId[32];
         strcopy(itemId, sizeof(itemId), g_szPendingMarketItem[client]);
         g_bAwaitingMarketPrice[client] = false;
@@ -5663,6 +6660,7 @@ bool SetItemEquipped(int client, const char[] itemId, bool equipNow, bool notify
         ForwardItemEquipped(client, itemId, true);
         ForwardEquipPost(client, itemId, true);
         ForwardInventoryChanged(client, itemId, "equip");
+        LogAuditEvent(client, client, "equip", itemId, 0, "");
     }
     else
     {
@@ -5678,6 +6676,7 @@ bool SetItemEquipped(int client, const char[] itemId, bool equipNow, bool notify
         ForwardItemEquipped(client, itemId, false);
         ForwardEquipPost(client, itemId, false);
         ForwardInventoryChanged(client, itemId, "unequip");
+        LogAuditEvent(client, client, "unequip", itemId, 0, "");
     }
 
     MarkInventoryChanged(client);
@@ -5853,6 +6852,7 @@ bool BuyItem(int client, const char[] itemId, bool equipAfterPurchase = false, b
 
     ForwardItemPurchased(client, item.id);
     ForwardPurchasePost(client, item.id, item.price, equippedAfterPurchase);
+    LogAuditEvent(client, client, "purchase", item.id, -item.price, "");
     return true;
 }
 
@@ -5938,6 +6938,7 @@ bool SellItem(int client, const char[] itemId)
     Format(sellReason, sizeof(sellReason), "sell:%s", item.id);
     ReportCreditsChanged(client, refund, sellReason, false, true);
     ForwardInventoryChanged(client, item.id, "sell");
+    LogAuditEvent(client, client, "sell", item.id, refund, "");
     UpdatePlayerStat(client, "sales_total", 1);
 
     if (wasEquipped && StrEqual(item.type, "skin"))
@@ -6014,7 +7015,7 @@ void ShowStoreMainMenu(int client)
     Menu menu = new Menu(MenuHandler_Main);
     char title[192];
     char creditsText[32];
-    char profileLabel[64], questsLabel[64], skinsLabel[64], chatLabel[64], leaderboardsLabel[64], inventoryLabel[64], casinoLabel[64], marketLabel[64];
+    char profileLabel[64], questsLabel[64], skinsLabel[64], chatLabel[64], leaderboardsLabel[64], inventoryLabel[64], casinoLabel[64], marketLabel[64], searchLabel[64];
 
     FormatNumberDots(g_iCredits[client], creditsText, sizeof(creditsText));
     Format(title, sizeof(title), "%T", "Store Main Menu Title", client, creditsText);
@@ -6028,6 +7029,7 @@ void ShowStoreMainMenu(int client)
     Format(inventoryLabel, sizeof(inventoryLabel), "%T", "Store Category Inventory", client);
     Format(casinoLabel, sizeof(casinoLabel), "%T", "Store Category Casino", client);
     Format(marketLabel, sizeof(marketLabel), "%T", "Store Category Marketplace", client);
+    Format(searchLabel, sizeof(searchLabel), "%T", "Store Category Search", client);
 
     menu.AddItem("profile", profileLabel);
     menu.AddItem("quests", questsLabel);
@@ -6036,6 +7038,7 @@ void ShowStoreMainMenu(int client)
     menu.AddItem("leaderboards", leaderboardsLabel);
     menu.AddItem("inventory", inventoryLabel);
     menu.AddItem("market", marketLabel);
+    menu.AddItem("search", searchLabel);
     AddRegisteredMenuSections(menu);
     menu.AddItem("casino", casinoLabel);
     menu.Display(client, MENU_TIME_FOREVER);
@@ -6165,6 +7168,133 @@ public Action Cmd_Inv(int client, int args)
     return Plugin_Handled;
 }
 
+bool ItemMatchesSearch(StoreItem item, const char[] query)
+{
+    if (query[0] == '\0')
+    {
+        return false;
+    }
+
+    return StrContains(item.id, query, false) != -1
+        || StrContains(item.name, query, false) != -1
+        || StrContains(item.type, query, false) != -1
+        || StrContains(item.category, query, false) != -1
+        || StrContains(item.description, query, false) != -1
+        || StrContains(item.rarity, query, false) != -1;
+}
+
+void ShowSearchResultsMenu(int client, const char[] query)
+{
+    strcopy(g_szSearchQuery[client], sizeof(g_szSearchQuery[]), query);
+
+    Menu menu = new Menu(MenuHandler_SearchResults);
+    char title[192];
+    Format(title, sizeof(title), "%T", "Search Results Title", client, query);
+    menu.SetTitle(title);
+
+    int itemsAdded = 0;
+    StoreItem item;
+    for (int i = 0; i < g_aItems.Length; i++)
+    {
+        g_aItems.GetArray(i, item, sizeof(StoreItem));
+
+        if (item.hidden || !IsItemActiveForNow(item) || !ItemMatchesSearch(item, query))
+        {
+            continue;
+        }
+
+        char display[160], priceText[48];
+        bool owns = PlayerOwnsItem(client, item.id);
+        FormatCreditsAmount(client, item.price, priceText, sizeof(priceText));
+
+        if (owns)
+        {
+            char invSuffix[64];
+            Format(invSuffix, sizeof(invSuffix), "%T", "Items List Inventory Suffix", client);
+            Format(display, sizeof(display), "%s [%s] %s", item.name, item.type, invSuffix);
+        }
+        else
+        {
+            Format(display, sizeof(display), "%s [%s | %s]", item.name, item.type, priceText);
+        }
+
+        menu.AddItem(item.id, display, HasAccess(client, item.flag) ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+        itemsAdded++;
+    }
+
+    if (itemsAdded == 0)
+    {
+        char emptyLabel[128];
+        Format(emptyLabel, sizeof(emptyLabel), "%T", "Search No Results", client, query);
+        menu.AddItem("none", emptyLabel, ITEMDRAW_DISABLED);
+    }
+
+    menu.ExitBackButton = true;
+    menu.Display(client, MENU_TIME_FOREVER);
+}
+
+public Action Cmd_StoreSearch(int client, int args)
+{
+    if (!IsValidHumanClient(client) || !g_bIsLoaded[client])
+    {
+        return Plugin_Handled;
+    }
+
+    if (!EnsureStoreEnabledForClient(client))
+    {
+        return Plugin_Handled;
+    }
+
+    if (args < 1)
+    {
+        PrintStorePhrase(client, "%T", "Search Usage", client);
+        if (g_szSearchQuery[client][0] != '\0')
+        {
+            ShowSearchResultsMenu(client, g_szSearchQuery[client]);
+        }
+        return Plugin_Handled;
+    }
+
+    char query[64];
+    GetCmdArgString(query, sizeof(query));
+    StripQuotes(query);
+    TrimString(query);
+
+    if (strlen(query) < 2)
+    {
+        PrintStorePhrase(client, "%T", "Search Too Short", client);
+        return Plugin_Handled;
+    }
+
+    ShowSearchResultsMenu(client, query);
+    return Plugin_Handled;
+}
+
+public int MenuHandler_SearchResults(Menu menu, MenuAction action, int param1, int param2)
+{
+    if (action == MenuAction_End)
+    {
+        delete menu;
+    }
+    else if (action == MenuAction_Cancel && param2 == MenuCancel_ExitBack)
+    {
+        ShowStoreMainMenu(param1);
+    }
+    else if (action == MenuAction_Select)
+    {
+        char info[32];
+        menu.GetItem(param2, info, sizeof(info));
+        if (!StrEqual(info, "none"))
+        {
+            g_bDetailFromInventory[param1] = false;
+            g_bDetailFromSearch[param1] = true;
+            ShowItemDetailsMenu(param1, info);
+        }
+    }
+
+    return 0;
+}
+
 public int MenuHandler_Main(Menu menu, MenuAction action, int param1, int param2)
 {
     if (action == MenuAction_End)
@@ -6207,6 +7337,18 @@ public int MenuHandler_Main(Menu menu, MenuAction action, int param1, int param2
         else if (StrEqual(info, "market"))
         {
             ShowMarketMenu(param1);
+        }
+        else if (StrEqual(info, "search"))
+        {
+            if (g_szSearchQuery[param1][0] != '\0')
+            {
+                ShowSearchResultsMenu(param1, g_szSearchQuery[param1]);
+            }
+            else
+            {
+                PrintStorePhrase(param1, "%T", "Search Usage", param1);
+                ShowStoreMainMenu(param1);
+            }
         }
         else if (StrEqual(info, "casino"))
         {
@@ -7036,6 +8178,7 @@ bool CreateMarketplaceListing(int client, const char[] itemId, int price)
     char priceText[32];
     FormatCreditsAmount(client, price, priceText, sizeof(priceText));
     PrintStorePhrase(client, "%T", "Market Listing Created", client, item.name, priceText);
+    LogAuditEvent(client, client, "market_list", itemId, price, "");
     return true;
 }
 
@@ -7207,23 +8350,31 @@ bool ExecuteMarketplacePurchase(int buyer, int listingId)
     }
     delete buyerInvResults;
 
+    int sellerClient = GetOnlineClientBySteamId(sellerSteamId);
     int sellerCredits = 0;
-    Format(query, sizeof(query),
-        "SELECT credits FROM store_players WHERE steamid = '%s'",
-        safeSellerSteamId);
-    DBResultSet sellerCreditResults = SQL_Query(g_DB, query);
-    if (sellerCreditResults == null || !sellerCreditResults.FetchRow())
+    if (sellerClient > 0 && g_bIsLoaded[sellerClient])
     {
-        if (sellerCreditResults != null)
-        {
-            delete sellerCreditResults;
-        }
-        RollbackLockedStoreTransaction("ExecuteMarketplacePurchase");
-        PrintStorePhrase(buyer, "%T", "Market Buy Failed", buyer);
-        return false;
+        sellerCredits = g_iCredits[sellerClient];
     }
-    sellerCredits = sellerCreditResults.FetchInt(0);
-    delete sellerCreditResults;
+    else
+    {
+        Format(query, sizeof(query),
+            "SELECT credits FROM store_players WHERE steamid = '%s'",
+            safeSellerSteamId);
+        DBResultSet sellerCreditResults = SQL_Query(g_DB, query);
+        if (sellerCreditResults == null || !sellerCreditResults.FetchRow())
+        {
+            if (sellerCreditResults != null)
+            {
+                delete sellerCreditResults;
+            }
+            RollbackLockedStoreTransaction("ExecuteMarketplacePurchase");
+            PrintStorePhrase(buyer, "%T", "Market Buy Failed", buyer);
+            return false;
+        }
+        sellerCredits = sellerCreditResults.FetchInt(0);
+        delete sellerCreditResults;
+    }
 
     int feeAmount = RoundToFloor(float(price * feePercent) / 100.0);
     int sellerNet = price - feeAmount;
@@ -7300,7 +8451,16 @@ bool ExecuteMarketplacePurchase(int buyer, int listingId)
     FormatCreditsAmount(buyer, price, priceText, sizeof(priceText));
     PrintStorePhrase(buyer, "%T", "Market Listing Bought", buyer, item.name, priceText, sellerName);
 
-    int sellerClient = GetOnlineClientBySteamId(sellerSteamId);
+    LogAuditEvent(buyer, buyer, "market_buy", itemId, -price, sellerSteamId);
+    if (sellerClient > 0)
+    {
+        LogAuditEvent(0, sellerClient, "market_sale", itemId, sellerNet, buyerSteamId);
+    }
+    else
+    {
+        LogAuditEventBySteamId(0, sellerSteamId, sellerName, "market_sale", itemId, sellerNet, buyerSteamId);
+    }
+
     if (sellerClient > 0)
     {
         char sellerNetText[32];
@@ -7360,6 +8520,10 @@ bool CancelMarketplaceListing(int client, int listingId, bool notify = true)
     {
         PrintStorePhrase(client, "%T", "Market Listing Cancelled", client);
     }
+
+    char listingText[32];
+    IntToString(listingId, listingText, sizeof(listingText));
+    LogAuditEvent(client, client, "market_cancel", "", 0, listingText);
     return true;
 }
 
@@ -7883,6 +9047,7 @@ void ShowItemsListMenu(int client, const char[] targetType, int targetTeam)
 {
     strcopy(g_szBrowseType[client], 16, targetType);
     g_iBrowseTeam[client] = targetTeam;
+    g_bDetailFromSearch[client] = false;
 
     Menu menu = new Menu(MenuHandler_ItemsList);
     char title[192];
@@ -8053,6 +9218,10 @@ public int MenuHandler_SellConfirm(Menu menu, MenuAction action, int param1, int
             {
                 ShowInventoryListMenu(param1, g_szInvFilter[param1]);
             }
+            else if (g_bDetailFromSearch[param1])
+            {
+                ShowSearchResultsMenu(param1, g_szSearchQuery[param1]);
+            }
             else
             {
                 ShowItemsListMenu(param1, g_szBrowseType[param1], g_iBrowseTeam[param1]);
@@ -8142,7 +9311,7 @@ void ShowItemDetailsMenu(int client, const char[] itemId)
         menu.AddItem(tradeInfo, tradeLabel);
     }
 
-    if (StrEqual(item.type, "skin"))
+    if (ItemSupportsPreview(item))
     {
         char previewInfo[64];
         char previewLabel[64];
@@ -8166,6 +9335,10 @@ public int MenuHandler_ItemDetails(Menu menu, MenuAction action, int param1, int
         if (g_bDetailFromInventory[param1])
         {
             ShowInventoryListMenu(param1, g_szInvFilter[param1]);
+        }
+        else if (g_bDetailFromSearch[param1])
+        {
+            ShowSearchResultsMenu(param1, g_szSearchQuery[param1]);
         }
         else
         {
@@ -8239,7 +9412,7 @@ public int MenuHandler_ItemDetails(Menu menu, MenuAction action, int param1, int
                 StoreItem item;
                 if (FindStoreItemById(itemId, item))
                 {
-                    SpawnPreview(param1, item.szModel);
+                    PreviewItem(param1, item);
                 }
             }
             ShowItemDetailsMenu(param1, itemId);
@@ -8720,25 +9893,17 @@ public Action Cmd_Gift(int client, int args)
         char targetPattern[64];
         int amount = 0;
 
-        if (IsStringNumeric(arg1))
+        if (TryParseCreditAmount(arg1, amount))
         {
-            amount = StringToInt(arg1);
             strcopy(targetPattern, sizeof(targetPattern), arg2);
         }
-        else if (IsStringNumeric(arg2))
+        else if (TryParseCreditAmount(arg2, amount))
         {
-            amount = StringToInt(arg2);
             strcopy(targetPattern, sizeof(targetPattern), arg1);
         }
         else
         {
             PrintStorePhrase(client, "%T", "Gift Credits Usage", client);
-            return Plugin_Handled;
-        }
-
-        if (amount <= 0)
-        {
-            PrintStorePhrase(client, "%T", "Gift Credits Invalid Amount", client);
             return Plugin_Handled;
         }
 
@@ -8763,14 +9928,15 @@ public Action Cmd_Gift(int client, int args)
             return Plugin_Handled;
         }
 
-        g_iCredits[client] -= amount;
-        g_iCredits[target] += amount;
-        ReportCreditsChanged(client, -amount, "gift_credits_sent", false, false);
-        ReportCreditsChanged(target, amount, "gift_credits_received", false, false);
+        if (!ApplyCreditDeltasAtomic(client, -amount, "gift_credits_sent", target, amount, "gift_credits_received", false, ""))
+        {
+            PrintStorePhrase(client, "%T", "Store Transaction Failed", client);
+            return Plugin_Handled;
+        }
+
         UpdatePlayerStat(client, "gifts_sent", 1);
         UpdatePlayerStat(target, "gifts_received", 1);
-        SavePlayer(client);
-        SavePlayer(target);
+        LogAuditEvent(client, target, "gift_credits", "", amount, "");
 
         PrintStorePhrase(client, "%T", "Gift Credits Sent", client, amount, target);
         PrintStorePhrase(target, "%T", "Gift Credits Received", target, client, amount);
@@ -9210,6 +10376,7 @@ public int MenuHandler_InvList(Menu menu, MenuAction action, int param1, int par
 
         ExplodeString(info, "|", buffers, 2, 32);
         g_bDetailFromInventory[param1] = true;
+        g_bDetailFromSearch[param1] = false;
         ShowItemDetailsMenu(param1, buffers[1]);
     }
 
@@ -9404,6 +10571,54 @@ bool IsStringNumeric(const char[] value)
     }
 
     return true;
+}
+
+bool TryParseBoundedInt(const char[] value, bool allowZero, int maxValue, int &result)
+{
+    char buffer[32];
+    strcopy(buffer, sizeof(buffer), value);
+    TrimString(buffer);
+
+    int len = strlen(buffer);
+    if (len <= 0)
+    {
+        return false;
+    }
+
+    int parsed = 0;
+    for (int i = 0; i < len; i++)
+    {
+        int digit = buffer[i] - '0';
+        if (digit < 0 || digit > 9)
+        {
+            return false;
+        }
+
+        if (parsed > (maxValue - digit) / 10)
+        {
+            return false;
+        }
+
+        parsed = parsed * 10 + digit;
+    }
+
+    if (!allowZero && parsed <= 0)
+    {
+        return false;
+    }
+
+    result = parsed;
+    return true;
+}
+
+bool TryParseCreditAmount(const char[] value, int &amount)
+{
+    return TryParseBoundedInt(value, false, STORE_MAX_CREDITS, amount);
+}
+
+bool TryParseNonNegativeAmount(const char[] value, int &amount)
+{
+    return TryParseBoundedInt(value, true, STORE_MAX_CREDITS, amount);
 }
 
 bool TryResolveCreditTargets(int admin, const char[] pattern, int targets[MAXPLAYERS], int &count)
@@ -9940,6 +11155,485 @@ public int MenuHandler_LeaderboardHubView(Menu menu, MenuAction action, int para
     return 0;
 }
 
+void NormalizeVoucherCode(char[] code, int maxlen)
+{
+    TrimString(code);
+
+    int len = strlen(code);
+    for (int i = 0; i < len && i < maxlen; i++)
+    {
+        if (code[i] >= 'a' && code[i] <= 'z')
+        {
+            code[i] -= 32;
+        }
+    }
+}
+
+bool IsValidVoucherCode(const char[] code)
+{
+    int len = strlen(code);
+    if (len < 4 || len >= 64)
+    {
+        return false;
+    }
+
+    for (int i = 0; i < len; i++)
+    {
+        int c = code[i];
+        if ((c >= 'A' && c <= 'Z')
+            || (c >= 'a' && c <= 'z')
+            || (c >= '0' && c <= '9')
+            || c == '_'
+            || c == '-')
+        {
+            continue;
+        }
+
+        return false;
+    }
+
+    return true;
+}
+
+bool InsertVoucher(int admin, const char[] rawCode, int credits, const char[] rewardItem, int maxUses, int expiresHours)
+{
+    if (g_DB == null || !g_bLateDatabaseReady)
+    {
+        ReplyStorePhrase(admin, "%T", "Store DB Not Ready", admin);
+        return false;
+    }
+
+    char code[64];
+    strcopy(code, sizeof(code), rawCode);
+    NormalizeVoucherCode(code, sizeof(code));
+
+    if (!IsValidVoucherCode(code))
+    {
+        ReplyStorePhrase(admin, "%T", "Voucher Invalid Code", admin);
+        return false;
+    }
+
+    if (credits < 0 || maxUses < 0 || expiresHours < 0)
+    {
+        ReplyStorePhrase(admin, "%T", "Voucher Invalid Args", admin);
+        return false;
+    }
+
+    if (credits == 0 && rewardItem[0] == '\0')
+    {
+        ReplyStorePhrase(admin, "%T", "Voucher Invalid Args", admin);
+        return false;
+    }
+
+    if (rewardItem[0] != '\0')
+    {
+        StoreItem item;
+        if (!FindStoreItemById(rewardItem, item))
+        {
+            ReplyStorePhrase(admin, "%T", "Item Not Found", admin);
+            return false;
+        }
+    }
+
+    char adminSteam[32], adminName[64], safeCode[96], safeItem[64], safeAdminSteam[64], safeAdminName[128], query[1024];
+    GetAuditIdentity(admin, adminSteam, sizeof(adminSteam), adminName, sizeof(adminName));
+    EscapeStringSafe(code, safeCode, sizeof(safeCode));
+    EscapeStringSafe(rewardItem, safeItem, sizeof(safeItem));
+    EscapeStringSafe(adminSteam, safeAdminSteam, sizeof(safeAdminSteam));
+    EscapeStringSafe(adminName, safeAdminName, sizeof(safeAdminName));
+
+    int expiresAt = 0;
+    if (expiresHours > 0)
+    {
+        int now = GetTime();
+        if (expiresHours > (STORE_MAX_CREDITS - now) / 3600)
+        {
+            ReplyStorePhrase(admin, "%T", "Voucher Invalid Args", admin);
+            return false;
+        }
+        expiresAt = now + expiresHours * 3600;
+    }
+    Format(query, sizeof(query),
+        "INSERT INTO store_vouchers (code, reward_credits, reward_item, max_uses, uses, expires_at, created_by_steamid, created_by_name, created_at, disabled) VALUES ('%s', %d, '%s', %d, 0, %d, '%s', '%s', %d, 0)",
+        safeCode, credits, safeItem, maxUses, expiresAt, safeAdminSteam, safeAdminName, GetTime());
+
+    if (!SQL_FastQuery(g_DB, query))
+    {
+        char error[256];
+        SQL_GetError(g_DB, error, sizeof(error));
+        LogStoreError("InsertVoucher", error);
+        ReplyStorePhrase(admin, "%T", "Voucher Create Failed", admin);
+        return false;
+    }
+
+    LogAuditEvent(admin, 0, (rewardItem[0] != '\0') ? "voucher_create_item" : "voucher_create_credits", rewardItem, credits, code);
+    ReplyStorePhrase(admin, "%T", "Voucher Created", admin, code);
+    return true;
+}
+
+bool DisableVoucherCode(int admin, const char[] rawCode)
+{
+    if (g_DB == null || !g_bLateDatabaseReady)
+    {
+        ReplyStorePhrase(admin, "%T", "Store DB Not Ready", admin);
+        return false;
+    }
+
+    char code[64], safeCode[96], query[256];
+    strcopy(code, sizeof(code), rawCode);
+    NormalizeVoucherCode(code, sizeof(code));
+    if (!IsValidVoucherCode(code))
+    {
+        ReplyStorePhrase(admin, "%T", "Voucher Invalid Code", admin);
+        return false;
+    }
+
+    EscapeStringSafe(code, safeCode, sizeof(safeCode));
+    Format(query, sizeof(query), "UPDATE store_vouchers SET disabled = 1 WHERE code = '%s'", safeCode);
+    if (!SQL_FastQuery(g_DB, query) || SQL_GetAffectedRows(g_DB) != 1)
+    {
+        ReplyStorePhrase(admin, "%T", "Voucher Not Found", admin);
+        return false;
+    }
+
+    LogAuditEvent(admin, 0, "voucher_disable", "", 0, code);
+    ReplyStorePhrase(admin, "%T", "Voucher Disabled", admin, code);
+    return true;
+}
+
+bool RedeemVoucherCode(int client, const char[] rawCode)
+{
+    if (!IsValidHumanClient(client) || !g_bIsLoaded[client] || g_hInventory[client] == null || g_DB == null || !g_bLateDatabaseReady)
+    {
+        return false;
+    }
+
+    char code[64], safeCode[96];
+    strcopy(code, sizeof(code), rawCode);
+    NormalizeVoucherCode(code, sizeof(code));
+    if (!IsValidVoucherCode(code))
+    {
+        PrintStorePhrase(client, "%T", "Voucher Invalid Code", client);
+        return false;
+    }
+
+    char steamid[32], name[64], safeSteamId[64], safeName[128];
+    if (!GetClientSteamIdSafe(client, steamid, sizeof(steamid)))
+    {
+        PrintStorePhrase(client, "%T", "Store Transaction Failed", client);
+        return false;
+    }
+
+    GetClientName(client, name, sizeof(name));
+    EscapeStringSafe(code, safeCode, sizeof(safeCode));
+    EscapeStringSafe(steamid, safeSteamId, sizeof(safeSteamId));
+    EscapeStringSafe(name, safeName, sizeof(safeName));
+
+    if (!BeginLockedStoreTransaction("RedeemVoucher"))
+    {
+        PrintStorePhrase(client, "%T", "Store Transaction Failed", client);
+        return false;
+    }
+
+    char query[1024];
+    Format(query, sizeof(query),
+        "SELECT reward_credits, reward_item, max_uses, uses, expires_at, disabled FROM store_vouchers WHERE code = '%s' LIMIT 1",
+        safeCode);
+    DBResultSet voucher = SQL_Query(g_DB, query);
+    if (voucher == null)
+    {
+        char error[256];
+        SQL_GetError(g_DB, error, sizeof(error));
+        LogStoreError("RedeemVoucher", error);
+        RollbackLockedStoreTransaction("RedeemVoucher");
+        PrintStorePhrase(client, "%T", "Store Transaction Failed", client);
+        return false;
+    }
+
+    if (!voucher.FetchRow())
+    {
+        delete voucher;
+        RollbackLockedStoreTransaction("RedeemVoucher");
+        PrintStorePhrase(client, "%T", "Voucher Not Found", client);
+        return false;
+    }
+
+    int credits = voucher.FetchInt(0);
+    char rewardItem[32];
+    voucher.FetchString(1, rewardItem, sizeof(rewardItem));
+    int maxUses = voucher.FetchInt(2);
+    int uses = voucher.FetchInt(3);
+    int expiresAt = voucher.FetchInt(4);
+    int disabled = voucher.FetchInt(5);
+    delete voucher;
+
+    if (disabled != 0)
+    {
+        RollbackLockedStoreTransaction("RedeemVoucher");
+        PrintStorePhrase(client, "%T", "Voucher Disabled Player", client);
+        return false;
+    }
+
+    if (expiresAt > 0 && expiresAt < GetTime())
+    {
+        RollbackLockedStoreTransaction("RedeemVoucher");
+        PrintStorePhrase(client, "%T", "Voucher Expired", client);
+        return false;
+    }
+
+    if (maxUses > 0 && uses >= maxUses)
+    {
+        RollbackLockedStoreTransaction("RedeemVoucher");
+        PrintStorePhrase(client, "%T", "Voucher Used Up", client);
+        return false;
+    }
+
+    Format(query, sizeof(query),
+        "SELECT redeemed_at FROM store_voucher_redemptions WHERE code = '%s' AND steamid = '%s' LIMIT 1",
+        safeCode, safeSteamId);
+    DBResultSet redemption = SQL_Query(g_DB, query);
+    if (redemption == null)
+    {
+        char error[256];
+        SQL_GetError(g_DB, error, sizeof(error));
+        LogStoreError("RedeemVoucher", error);
+        RollbackLockedStoreTransaction("RedeemVoucher");
+        PrintStorePhrase(client, "%T", "Store Transaction Failed", client);
+        return false;
+    }
+
+    bool alreadyRedeemed = redemption.FetchRow();
+    delete redemption;
+    if (alreadyRedeemed)
+    {
+        RollbackLockedStoreTransaction("RedeemVoucher");
+        PrintStorePhrase(client, "%T", "Voucher Already Redeemed", client);
+        return false;
+    }
+
+    StoreItem item;
+    bool givesItem = rewardItem[0] != '\0';
+    if (givesItem)
+    {
+        if (!FindStoreItemById(rewardItem, item))
+        {
+            RollbackLockedStoreTransaction("RedeemVoucher");
+            PrintStorePhrase(client, "%T", "Item Not Found", client);
+            return false;
+        }
+
+        if (PlayerOwnsItem(client, item.id))
+        {
+            RollbackLockedStoreTransaction("RedeemVoucher");
+            PrintStorePhrase(client, "%T", "Already Owns Item", client);
+            return false;
+        }
+    }
+
+    if (credits > 0)
+    {
+        char playerQuery[512];
+        if (!BuildPlayerUpsertQueryForCredits(client, g_iCredits[client] + credits, playerQuery, sizeof(playerQuery)) || !ExecuteLockedStoreQuery("RedeemVoucher", playerQuery))
+        {
+            RollbackLockedStoreTransaction("RedeemVoucher");
+            PrintStorePhrase(client, "%T", "Store Transaction Failed", client);
+            return false;
+        }
+    }
+
+    if (givesItem)
+    {
+        char safeItemId[64];
+        EscapeStringSafe(item.id, safeItemId, sizeof(safeItemId));
+        Format(query, sizeof(query), "INSERT INTO store_inventory (steamid, item_id, is_equipped) VALUES ('%s', '%s', 0)", safeSteamId, safeItemId);
+        if (!ExecuteLockedStoreQuery("RedeemVoucher", query, 1))
+        {
+            RollbackLockedStoreTransaction("RedeemVoucher");
+            PrintStorePhrase(client, "%T", "Store Transaction Failed", client);
+            return false;
+        }
+    }
+
+    Format(query, sizeof(query),
+        "INSERT INTO store_voucher_redemptions (code, steamid, player_name, redeemed_at) VALUES ('%s', '%s', '%s', %d)",
+        safeCode, safeSteamId, safeName, GetTime());
+    if (!ExecuteLockedStoreQuery("RedeemVoucher", query, 1))
+    {
+        RollbackLockedStoreTransaction("RedeemVoucher");
+        PrintStorePhrase(client, "%T", "Store Transaction Failed", client);
+        return false;
+    }
+
+    Format(query, sizeof(query), "UPDATE store_vouchers SET uses = uses + 1 WHERE code = '%s'", safeCode);
+    if (!ExecuteLockedStoreQuery("RedeemVoucher", query, 1))
+    {
+        RollbackLockedStoreTransaction("RedeemVoucher");
+        PrintStorePhrase(client, "%T", "Store Transaction Failed", client);
+        return false;
+    }
+
+    if (!CommitLockedStoreTransaction("RedeemVoucher"))
+    {
+        PrintStorePhrase(client, "%T", "Store Transaction Failed", client);
+        return false;
+    }
+
+    if (credits > 0)
+    {
+        g_iCredits[client] += credits;
+        char reason[96];
+        Format(reason, sizeof(reason), "voucher:%s", code);
+        ReportCreditsChanged(client, credits, reason, true, true);
+    }
+
+    if (givesItem)
+    {
+        InventoryItem newInv;
+        strcopy(newInv.item_id, sizeof(newInv.item_id), item.id);
+        newInv.is_equipped = 0;
+        g_hInventory[client].PushArray(newInv, sizeof(InventoryItem));
+        InventoryOwnedSet(client, item.id, true);
+        MarkInventoryChanged(client);
+        ForwardInventoryChanged(client, item.id, "voucher");
+    }
+
+    LogAuditEvent(client, client, "voucher_redeem", rewardItem, credits, code);
+
+    if (credits > 0 && givesItem)
+    {
+        PrintStorePhrase(client, "%T", "Voucher Redeemed Credits Item", client, credits, item.name);
+    }
+    else if (credits > 0)
+    {
+        PrintStorePhrase(client, "%T", "Voucher Redeemed Credits", client, credits);
+    }
+    else if (givesItem)
+    {
+        PrintStorePhrase(client, "%T", "Voucher Redeemed Item", client, item.name);
+    }
+
+    return true;
+}
+
+public Action Cmd_RedeemVoucher(int client, int args)
+{
+    if (!IsValidHumanClient(client) || !g_bIsLoaded[client])
+    {
+        return Plugin_Handled;
+    }
+
+    if (!EnsureStoreEnabledForClient(client))
+    {
+        return Plugin_Handled;
+    }
+
+    if (args < 1)
+    {
+        PrintStorePhrase(client, "%T", "Voucher Redeem Usage", client);
+        return Plugin_Handled;
+    }
+
+    char code[64];
+    GetCmdArg(1, code, sizeof(code));
+    RedeemVoucherCode(client, code);
+    return Plugin_Handled;
+}
+
+public Action Cmd_CreateVoucher(int client, int args)
+{
+    if (args < 2)
+    {
+        ReplyStorePhrase(client, "%T", "Voucher Create Credits Usage", client);
+        return Plugin_Handled;
+    }
+
+    char code[64], creditsText[16], maxUsesText[16], expiresText[16];
+    GetCmdArg(1, code, sizeof(code));
+    GetCmdArg(2, creditsText, sizeof(creditsText));
+    int credits = 0;
+    int maxUses = 1;
+    int expiresHours = 0;
+
+    if (!TryParseCreditAmount(creditsText, credits))
+    {
+        ReplyStorePhrase(client, "%T", "Voucher Invalid Args", client);
+        return Plugin_Handled;
+    }
+
+    if (args >= 3)
+    {
+        GetCmdArg(3, maxUsesText, sizeof(maxUsesText));
+        if (!TryParseNonNegativeAmount(maxUsesText, maxUses))
+        {
+            ReplyStorePhrase(client, "%T", "Voucher Invalid Args", client);
+            return Plugin_Handled;
+        }
+    }
+    if (args >= 4)
+    {
+        GetCmdArg(4, expiresText, sizeof(expiresText));
+        if (!TryParseNonNegativeAmount(expiresText, expiresHours))
+        {
+            ReplyStorePhrase(client, "%T", "Voucher Invalid Args", client);
+            return Plugin_Handled;
+        }
+    }
+
+    InsertVoucher(client, code, credits, "", maxUses, expiresHours);
+    return Plugin_Handled;
+}
+
+public Action Cmd_CreateItemVoucher(int client, int args)
+{
+    if (args < 2)
+    {
+        ReplyStorePhrase(client, "%T", "Voucher Create Item Usage", client);
+        return Plugin_Handled;
+    }
+
+    char code[64], itemId[32], maxUsesText[16], expiresText[16];
+    GetCmdArg(1, code, sizeof(code));
+    GetCmdArg(2, itemId, sizeof(itemId));
+    int maxUses = 1;
+    int expiresHours = 0;
+
+    if (args >= 3)
+    {
+        GetCmdArg(3, maxUsesText, sizeof(maxUsesText));
+        if (!TryParseNonNegativeAmount(maxUsesText, maxUses))
+        {
+            ReplyStorePhrase(client, "%T", "Voucher Invalid Args", client);
+            return Plugin_Handled;
+        }
+    }
+    if (args >= 4)
+    {
+        GetCmdArg(4, expiresText, sizeof(expiresText));
+        if (!TryParseNonNegativeAmount(expiresText, expiresHours))
+        {
+            ReplyStorePhrase(client, "%T", "Voucher Invalid Args", client);
+            return Plugin_Handled;
+        }
+    }
+
+    InsertVoucher(client, code, 0, itemId, maxUses, expiresHours);
+    return Plugin_Handled;
+}
+
+public Action Cmd_DisableVoucher(int client, int args)
+{
+    if (args < 1)
+    {
+        ReplyStorePhrase(client, "%T", "Voucher Disable Usage", client);
+        return Plugin_Handled;
+    }
+
+    char code[64];
+    GetCmdArg(1, code, sizeof(code));
+    DisableVoucherCode(client, code);
+    return Plugin_Handled;
+}
+
 void ReplyAuditOutput(int client, const char[] format, any ...)
 {
     char buffer[256];
@@ -9972,37 +11666,19 @@ public Action Cmd_StoreAudit(int client, int args)
     {
         char argLimit[16];
         GetCmdArg(1, argLimit, sizeof(argLimit));
-        if (IsStringNumeric(argLimit))
+        if (TryParseBoundedInt(argLimit, false, 100, limit))
         {
-            limit = StringToInt(argLimit);
-            if (limit < 1)
-            {
-                limit = 1;
-            }
-            else if (limit > 100)
-            {
-                limit = 100;
-            }
+            limit = (limit < 1) ? 1 : limit;
         }
     }
     else if (args >= 2)
     {
         char argLimit[16];
         GetCmdArg(2, argLimit, sizeof(argLimit));
-        if (!IsStringNumeric(argLimit))
+        if (!TryParseBoundedInt(argLimit, false, 100, limit))
         {
             ReplyAuditOutput(client, "[Umbrella Store] Uso: sm_storeaudit [target] [limit]");
             return Plugin_Handled;
-        }
-
-        limit = StringToInt(argLimit);
-        if (limit < 1)
-        {
-            limit = 1;
-        }
-        else if (limit > 100)
-        {
-            limit = 100;
         }
     }
 
@@ -10068,13 +11744,14 @@ public Action Cmd_StoreAudit(int client, int args)
     if (filterByTarget)
     {
         Format(query, sizeof(query),
-            "SELECT steamid, amount, reason, balance_after, created_at FROM store_credits_ledger WHERE steamid = '%s' ORDER BY id DESC LIMIT %d",
+            "SELECT actor_name, target_name, action, item_id, amount, details, created_at FROM store_audit_log WHERE target_steamid = '%s' OR actor_steamid = '%s' ORDER BY id DESC LIMIT %d",
+            safeTargetSteamId,
             safeTargetSteamId, limit);
     }
     else
     {
         Format(query, sizeof(query),
-            "SELECT steamid, amount, reason, balance_after, created_at FROM store_credits_ledger ORDER BY id DESC LIMIT %d",
+            "SELECT actor_name, target_name, action, item_id, amount, details, created_at FROM store_audit_log ORDER BY id DESC LIMIT %d",
             limit);
     }
 
@@ -10085,7 +11762,7 @@ public Action Cmd_StoreAudit(int client, int args)
     pack.WriteString(targetLabel);
 
     g_DB.Query(OnStoreAuditLoaded, query, pack);
-    ReplyAuditOutput(client, "[Umbrella Store] Cargando auditoria de creditos...");
+    ReplyAuditOutput(client, "[Umbrella Store] Cargando auditoria general...");
     return Plugin_Handled;
 }
 
@@ -10127,22 +11804,29 @@ public void OnStoreAuditLoaded(Database db, DBResultSet results, const char[] er
     {
         hasRows = true;
 
-        char steamid[32], reason[96], when[32], amountText[32], balanceText[32];
+        char actorName[64], targetName[64], actionName[64], itemId[32], details[192], when[32], amountText[32];
         int amount = 0;
-        int balanceAfter = 0;
         int createdAt = 0;
 
-        results.FetchString(0, steamid, sizeof(steamid));
-        amount = results.FetchInt(1);
-        results.FetchString(2, reason, sizeof(reason));
-        balanceAfter = results.FetchInt(3);
-        createdAt = results.FetchInt(4);
+        results.FetchString(0, actorName, sizeof(actorName));
+        results.FetchString(1, targetName, sizeof(targetName));
+        results.FetchString(2, actionName, sizeof(actionName));
+        results.FetchString(3, itemId, sizeof(itemId));
+        amount = results.FetchInt(4);
+        results.FetchString(5, details, sizeof(details));
+        createdAt = results.FetchInt(6);
 
         FormatTime(when, sizeof(when), "%Y-%m-%d %H:%M:%S", createdAt);
         FormatNumberDots(amount, amountText, sizeof(amountText));
-        FormatNumberDots(balanceAfter, balanceText, sizeof(balanceText));
 
-        ReplyAuditOutput(client, "[%s] %s | delta=%s | balance=%s | reason=%s", when, steamid, amountText, balanceText, reason);
+        ReplyAuditOutput(client, "[%s] actor=%s target=%s action=%s item=%s amount=%s details=%s",
+            when,
+            actorName[0] != '\0' ? actorName : "-",
+            targetName[0] != '\0' ? targetName : "-",
+            actionName,
+            itemId[0] != '\0' ? itemId : "-",
+            amountText,
+            details[0] != '\0' ? details : "-");
     }
 
     if (!hasRows)
@@ -10163,8 +11847,8 @@ public Action Cmd_GiveCredits(int client, int args)
     GetCmdArg(1, arg1, sizeof(arg1));
     GetCmdArg(2, arg2, sizeof(arg2));
 
-    int amount = StringToInt(arg2);
-    if (amount <= 0)
+    int amount = 0;
+    if (!TryParseCreditAmount(arg2, amount))
     {
         ReplyStorePhrase(client, "%T", "Admin Amount Positive", client);
         return Plugin_Handled;
@@ -10181,9 +11865,10 @@ public Action Cmd_GiveCredits(int client, int args)
     for (int i = 0; i < count; i++)
     {
         int target = targets[i];
-        g_iCredits[target] += amount;
-        ReportCreditsChanged(target, amount, "admin_give", false, false);
-        SavePlayer(target);
+        if (ApplyCreditDeltasAtomic(target, amount, "admin_give", 0, 0, "", false, ""))
+        {
+            LogAuditEvent(client, target, "admin_give_credits", "", amount, "");
+        }
     }
 
     char amountText[32];
@@ -10213,8 +11898,8 @@ public Action Cmd_SetCredits(int client, int args)
     GetCmdArg(1, arg1, sizeof(arg1));
     GetCmdArg(2, arg2, sizeof(arg2));
 
-    int amount = StringToInt(arg2);
-    if (amount < 0)
+    int amount = 0;
+    if (!TryParseNonNegativeAmount(arg2, amount))
     {
         ReplyStorePhrase(client, "%T", "Admin Amount NonNegative", client);
         return Plugin_Handled;
@@ -10231,10 +11916,10 @@ public Action Cmd_SetCredits(int client, int args)
     for (int i = 0; i < count; i++)
     {
         int target = targets[i];
-        int delta = amount - g_iCredits[target];
-        g_iCredits[target] = amount;
-        ReportCreditsChanged(target, delta, "admin_set", false, false);
-        SavePlayer(target);
+        if (SetCreditsAtomic(target, amount, "admin_set", false))
+        {
+            LogAuditEvent(client, target, "admin_set_credits", "", amount, "");
+        }
     }
 
     char amountText[32];
@@ -10441,13 +12126,9 @@ public any Native_US_SetCredits(Handle plugin, int numParams)
     }
     if (amount < 0)
     {
-        amount = 0;
+        return false;
     }
-    int delta = amount - g_iCredits[client];
-    g_iCredits[client] = amount;
-    ReportCreditsChanged(client, delta, "api_set", false, false);
-    SavePlayer(client);
-    return true;
+    return SetCreditsAtomic(client, amount, "api_set", false);
 }
 
 public any Native_US_AddCredits(Handle plugin, int numParams)
@@ -10459,9 +12140,7 @@ public any Native_US_AddCredits(Handle plugin, int numParams)
     {
         return false;
     }
-    AddCreditsEx(client, amount, "api", notify);
-    SavePlayer(client);
-    return true;
+    return ApplyCreditDeltasAtomic(client, amount, "api", 0, 0, "", notify, "");
 }
 
 public any Native_US_TakeCredits(Handle plugin, int numParams)
@@ -10472,10 +12151,56 @@ public any Native_US_TakeCredits(Handle plugin, int numParams)
     {
         return false;
     }
-    g_iCredits[client] -= amount;
-    ReportCreditsChanged(client, -amount, "api_take", false, false);
-    SavePlayer(client);
-    return true;
+    return ApplyCreditDeltasAtomic(client, -amount, "api_take", 0, 0, "", false, "");
+}
+
+public any Native_US_ApplyCreditDelta(Handle plugin, int numParams)
+{
+    int client = GetNativeCell(1);
+    int delta = GetNativeCell(2);
+    char reason[64];
+    GetNativeString(3, reason, sizeof(reason));
+    bool notify = (numParams >= 4) ? view_as<bool>(GetNativeCell(4)) : false;
+
+    if (reason[0] == '\0')
+    {
+        strcopy(reason, sizeof(reason), "api_delta");
+    }
+
+    if (client < 1 || client > MaxClients || !g_bIsLoaded[client] || delta == 0)
+    {
+        return false;
+    }
+
+    return ApplyCreditDeltasAtomic(client, delta, reason, 0, 0, "", notify, "");
+}
+
+public any Native_US_ApplyCreditDeltas(Handle plugin, int numParams)
+{
+    int clientA = GetNativeCell(1);
+    int deltaA = GetNativeCell(2);
+    int clientB = GetNativeCell(4);
+    int deltaB = GetNativeCell(5);
+    bool notify = (numParams >= 7) ? view_as<bool>(GetNativeCell(7)) : false;
+
+    char reasonA[64], reasonB[64];
+    GetNativeString(3, reasonA, sizeof(reasonA));
+    GetNativeString(6, reasonB, sizeof(reasonB));
+    if (reasonA[0] == '\0')
+    {
+        strcopy(reasonA, sizeof(reasonA), "api_delta");
+    }
+    if (reasonB[0] == '\0')
+    {
+        strcopy(reasonB, sizeof(reasonB), "api_delta");
+    }
+
+    if (deltaA == 0 && deltaB == 0)
+    {
+        return false;
+    }
+
+    return ApplyCreditDeltasAtomic(clientA, deltaA, reasonA, clientB, deltaB, reasonB, notify, "");
 }
 
 public any Native_US_HasItem(Handle plugin, int numParams)
@@ -10625,6 +12350,83 @@ public any Native_US_GetEquippedItem(Handle plugin, int numParams)
     return true;
 }
 
+public any Native_US_IsItemEquipped(Handle plugin, int numParams)
+{
+    int client = GetNativeCell(1);
+    char itemId[64];
+    GetNativeString(2, itemId, sizeof(itemId));
+
+    if (client < 1 || client > MaxClients || !g_bIsLoaded[client] || g_hInventory[client] == null)
+    {
+        return false;
+    }
+
+    int index = FindInventoryIndexByItemId(client, itemId);
+    if (index == -1)
+    {
+        return false;
+    }
+
+    InventoryItem inv;
+    g_hInventory[client].GetArray(index, inv, sizeof(InventoryItem));
+    return view_as<bool>(inv.is_equipped);
+}
+
+public any Native_US_GetEquippedItemCount(Handle plugin, int numParams)
+{
+    int client = GetNativeCell(1);
+    if (client < 1 || client > MaxClients || !g_bIsLoaded[client] || g_hInventory[client] == null)
+    {
+        return 0;
+    }
+
+    int count = 0;
+    InventoryItem inv;
+    for (int i = 0; i < g_hInventory[client].Length; i++)
+    {
+        g_hInventory[client].GetArray(i, inv, sizeof(InventoryItem));
+        if (inv.is_equipped)
+        {
+            count++;
+        }
+    }
+
+    return count;
+}
+
+public any Native_US_GetEquippedItemIdByIndex(Handle plugin, int numParams)
+{
+    int client = GetNativeCell(1);
+    int targetIndex = GetNativeCell(2);
+    int maxlen = GetNativeCell(4);
+
+    if (client < 1 || client > MaxClients || targetIndex < 0 || maxlen <= 0 || !g_bIsLoaded[client] || g_hInventory[client] == null)
+    {
+        return false;
+    }
+
+    int count = 0;
+    InventoryItem inv;
+    for (int i = 0; i < g_hInventory[client].Length; i++)
+    {
+        g_hInventory[client].GetArray(i, inv, sizeof(InventoryItem));
+        if (!inv.is_equipped)
+        {
+            continue;
+        }
+
+        if (count == targetIndex)
+        {
+            SetNativeString(3, inv.item_id, maxlen, true);
+            return true;
+        }
+
+        count++;
+    }
+
+    return false;
+}
+
 public any Native_US_CanPurchaseItem(Handle plugin, int numParams)
 {
     int client = GetNativeCell(1);
@@ -10748,6 +12550,30 @@ public any Native_US_DB_EnsureTable(Handle plugin, int numParams)
     GetNativeString(2, mysqlQuery, sizeof(mysqlQuery));
     GetNativeString(3, sqliteQuery, sizeof(sqliteQuery));
     return EnsureSharedTableInternal(tableId, mysqlQuery, sqliteQuery);
+}
+
+public any Native_US_ApplyCreditDeltaWithQuery(Handle plugin, int numParams)
+{
+    int client = GetNativeCell(1);
+    int delta = GetNativeCell(2);
+    bool notify = (numParams >= 5) ? view_as<bool>(GetNativeCell(5)) : false;
+
+    char reason[64], query[1024];
+    GetNativeString(3, reason, sizeof(reason));
+    GetNativeString(4, query, sizeof(query));
+    TrimString(query);
+
+    if (reason[0] == '\0')
+    {
+        strcopy(reason, sizeof(reason), "api_delta_query");
+    }
+
+    if (client < 1 || client > MaxClients || !g_bIsLoaded[client] || delta == 0 || query[0] == '\0')
+    {
+        return false;
+    }
+
+    return ApplyCreditDeltasAtomic(client, delta, reason, 0, 0, "", notify, query);
 }
 
 public any Native_US_RegisterStatKey(Handle plugin, int numParams)
@@ -10903,3 +12729,31 @@ public any Native_US_UnregisterLeaderboard(Handle plugin, int numParams)
     return UnregisterLeaderboardInternal(id);
 }
 
+public any Native_US_LogAuditEvent(Handle plugin, int numParams)
+{
+    int actor = GetNativeCell(1);
+    int target = GetNativeCell(2);
+    int amount = (numParams >= 5) ? GetNativeCell(5) : 0;
+    char action[64], itemId[32], details[192];
+
+    GetNativeString(3, action, sizeof(action));
+    if (numParams >= 4)
+    {
+        GetNativeString(4, itemId, sizeof(itemId));
+    }
+    else
+    {
+        itemId[0] = '\0';
+    }
+
+    if (numParams >= 6)
+    {
+        GetNativeString(6, details, sizeof(details));
+    }
+    else
+    {
+        details[0] = '\0';
+    }
+
+    return LogAuditEvent(actor, target, action, itemId, amount, details);
+}

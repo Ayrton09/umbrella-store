@@ -1,0 +1,17 @@
+"Items"
+{
+    "saysound_airhorn"
+    {
+        "name"        "Airhorn"
+        "type"        "saysound"
+        "category"    "say_sounds"
+        "description" "Example chat-triggered sound."
+        "sound"       "umbrella_store/saysounds/airhorn.mp3"
+        "trigger"     "airhorn"
+        "cooldown"    "30"
+        "origin"      "1"
+        "volume"      "0.8"
+        "price"       "2500"
+        "team"        "0"
+    }
+}
