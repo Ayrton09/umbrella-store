@@ -176,38 +176,9 @@ public Action US_OnPurchasePre(int client, const char[] itemId, bool equipAfterP
 - `sm_createitemvoucher <code> <item_id> [max_uses] [expires_hours]`: creates an item voucher
 - `sm_disablevoucher <code>`: disables an existing voucher
 
-## Build and CI
-
-Local compilation uses the SourcePawn compiler from your SourceMod scripting installation.
-
-Example from the repository root:
-
-```powershell
-$spcomp = "C:\path\to\addons\sourcemod\scripting\spcomp.exe"
-$include = "C:\path\to\addons\sourcemod\scripting\include"
-& $spcomp addons\sourcemod\scripting\store_core.sp "-i$include" "-oaddons\sourcemod\plugins\store_core.smx"
-```
-
-GitHub Actions also compiles the main plugins on every push and pull request.
-
 ## Compatibility notes
 
 - This package targets Source 1 / SourceMod servers.
 - The new cosmetic modules target Counter-Strike: Source style Source 2009 entities, temp entities, and projectile classnames.
 - Chat output is kept compatible with standard Source chat formatting.
 - The camera module still depends on thirdperson behavior being allowed by the game/server.
-
-## Project direction
-
-Umbrella Store is being evolved incrementally and with compatibility in mind.
-
-That means:
-
-- old installs should keep working
-- old item configs should keep loading
-- legacy natives remain available
-- new framework-facing integrations should target the v4 API
-- the next sensible cosmetic expansion is custom weapon support for servers that want weapon model/skin/color items
-- gameplay advantage modules such as godmode, speed, gravity, health, or respawn are intentionally not part of the recommended direction for this CS:S store
-
-Feedback, bug reports, feature ideas, and contributions are welcome to keep improving Umbrella Store over time.
