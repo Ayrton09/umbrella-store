@@ -27,7 +27,6 @@
     //   description
     //   rarity
     //   sort_order
-    //   icon
     //   sale_price
     //   sell_percent_override
     //   starts_at
@@ -103,7 +102,6 @@
     //     "team" "3"
     //     "rarity" "rare"
     //     "sort_order" "10"
-    //     "icon" "icons/skins/ct_operator"
     //     "bundle_id" "starter_skins"
     //     "sell_percent_override" "55"
     // }

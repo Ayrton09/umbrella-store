@@ -13,6 +13,5 @@
         "bonemerge"   "0"
         "price"       "5000"
         "team"        "0"
-        "downloads"   "materials/umbrella_store/hats/sombrero.vmt;materials/umbrella_store/hats/sombrero.vtf"
     }
 }

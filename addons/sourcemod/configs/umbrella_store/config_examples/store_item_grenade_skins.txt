@@ -10,6 +10,5 @@
         "model"       "models/umbrella_store/grenades/hegrenade_custom.mdl"
         "price"       "6500"
         "team"        "0"
-        "downloads"   "materials/umbrella_store/grenades/hegrenade_custom.vmt;materials/umbrella_store/grenades/hegrenade_custom.vtf"
     }
 }

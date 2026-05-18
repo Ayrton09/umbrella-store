@@ -86,7 +86,7 @@ Recommended gradual upgrade path:
 
 1. keep existing item ids unchanged
 2. add `category` where grouping matters
-3. add `description`, `rarity`, and `icon` for richer module UIs
+3. add `description` and `rarity` for clearer store menus
 4. use `sale_price` or `sell_percent_override` if the default global sell logic is not enough
 5. use `requires_item`, `starts_at`, and `ends_at` for progression/seasonal content
 6. use `metadata` for module-specific payloads
