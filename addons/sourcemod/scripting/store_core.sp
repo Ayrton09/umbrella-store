@@ -320,7 +320,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Core",
     author = "Ayrton09",
     description = "Core store module for Umbrella Store",
-    version = "1.2.1",
+    version = "1.2.2",
     url = ""
 };
 
@@ -6412,9 +6412,9 @@ Action ProcessChat(int client, bool isTeamChat)
 // =========================================================================
 bool ShouldUnequipSameCategory(StoreItem targetItem, StoreItem otherItem)
 {
-    if (StrEqual(targetItem.type, "skin") && StrEqual(otherItem.type, "skin") && targetItem.team == otherItem.team)
+    if (StrEqual(targetItem.type, "skin") && StrEqual(otherItem.type, "skin"))
     {
-        return true;
+        return targetItem.team == 0 || otherItem.team == 0 || targetItem.team == otherItem.team;
     }
 
     if (StrEqual(targetItem.type, "tag") && StrEqual(otherItem.type, "tag"))

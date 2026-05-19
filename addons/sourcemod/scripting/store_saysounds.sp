@@ -21,7 +21,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Say Sounds",
     author = "Ayrton09",
     description = "Chat-triggered sound item module for Umbrella Store",
-    version = "1.2.1",
+    version = "1.2.2",
     url = ""
 };
 

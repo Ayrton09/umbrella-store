@@ -27,7 +27,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Particles",
     author = "Ayrton09",
     description = "Aura, trail, spawn, kill, and hit particle item module for Umbrella Store",
-    version = "1.2.1",
+    version = "1.2.2",
     url = ""
 };
 

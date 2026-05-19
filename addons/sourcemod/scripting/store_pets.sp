@@ -19,7 +19,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Pets",
     author = "Ayrton09",
     description = "Attached pet model item module for Umbrella Store",
-    version = "1.2.1",
+    version = "1.2.2",
     url = ""
 };
 

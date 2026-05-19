@@ -15,7 +15,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Grenade Trails",
     author = "Ayrton09",
     description = "Grenade projectile trail item module for Umbrella Store",
-    version = "1.2.1",
+    version = "1.2.2",
     url = ""
 };
 
