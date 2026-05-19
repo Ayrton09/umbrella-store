@@ -2,7 +2,7 @@
 
 # Umbrella Store
 
-Current package version: `1.2.0`.
+Current package version: `1.2.2`.
 
 Umbrella Store is a modular and modern SourceMod store suite built from the ground up to work as an extensible platform, not just a fixed set of casino plugins.
 
