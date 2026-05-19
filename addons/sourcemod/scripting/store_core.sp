@@ -36,7 +36,6 @@ enum struct StoreItem
     char szModel[PLATFORM_MAX_PATH];
     char szArms[PLATFORM_MAX_PATH];
     char szValue[128];
-    char icon[128];
     char metadata[256];
     char requires_item[32];
     char bundle_id[32];
@@ -321,7 +320,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Core",
     author = "Ayrton09",
     description = "Core store module for Umbrella Store",
-    version = "1.2.0",
+    version = "1.2.1",
     url = ""
 };
 
@@ -465,6 +464,14 @@ public void OnMapStart()
 public void OnAllPluginsLoaded()
 {
     LoadQuestConfig();
+}
+
+public void OnPluginEnd()
+{
+    for (int i = 1; i <= MaxClients; i++)
+    {
+        RemovePreview(i);
+    }
 }
 
 public void OnMapEnd()
@@ -790,20 +797,29 @@ bool CancelMarketplaceListingsForSteamIdItem(const char[] steamid, const char[] 
     char safeSteamId[64], safeItemId[64], query[320];
     EscapeStringSafe(steamid, safeSteamId, sizeof(safeSteamId));
     EscapeStringSafe(itemId, safeItemId, sizeof(safeItemId));
+
+    if (!BeginLockedStoreTransaction("CancelMarketplaceListingsForSteamIdItem"))
+    {
+        return false;
+    }
+
     Format(query, sizeof(query),
         "UPDATE store_market_listings SET cancelled_at = %d WHERE seller_steamid = '%s' AND item_id = '%s' AND sold_at = 0 AND cancelled_at = 0",
         GetTime(), safeSteamId, safeItemId);
 
-    SQL_LockDatabase(g_DB);
-    bool ok = SQL_FastQuery(g_DB, query);
-    if (!ok)
+    if (!ExecuteLockedStoreQuery("CancelMarketplaceListingsForSteamIdItem", query))
     {
-        char error[256];
-        SQL_GetError(g_DB, error, sizeof(error));
-        LogStoreError("CancelMarketplaceListingsForSteamIdItem", error);
+        RollbackLockedStoreTransaction("CancelMarketplaceListingsForSteamIdItem");
+        return false;
     }
-    SQL_UnlockDatabase(g_DB);
-    return ok;
+
+    if (!ReleaseMarketplaceListingLock(safeSteamId, safeItemId))
+    {
+        RollbackLockedStoreTransaction("CancelMarketplaceListingsForSteamIdItem");
+        return false;
+    }
+
+    return CommitLockedStoreTransaction("CancelMarketplaceListingsForSteamIdItem");
 }
 
 bool CancelMarketplaceListingsForClientItem(int client, const char[] itemId)
@@ -815,6 +831,65 @@ bool CancelMarketplaceListingsForClientItem(int client, const char[] itemId)
     }
 
     return CancelMarketplaceListingsForSteamIdItem(steamid, itemId);
+}
+
+bool CleanupStaleMarketplaceLock(const char[] safeSteamId, const char[] safeItemId, int now)
+{
+    char query[768];
+    Format(query, sizeof(query),
+        "DELETE FROM store_market_locks WHERE seller_steamid = '%s' AND item_id = '%s' AND NOT EXISTS (SELECT 1 FROM store_market_listings WHERE seller_steamid = '%s' AND item_id = '%s' AND sold_at = 0 AND cancelled_at = 0 AND expires_at > %d)",
+        safeSteamId, safeItemId, safeSteamId, safeItemId, now);
+
+    if (!SQL_FastQuery(g_DB, query))
+    {
+        char error[256];
+        SQL_GetError(g_DB, error, sizeof(error));
+        LogStoreError("CleanupStaleMarketplaceLock", error);
+        return false;
+    }
+
+    return true;
+}
+
+bool TryAcquireMarketplaceListingLock(const char[] safeSteamId, const char[] safeItemId, int now)
+{
+    if (!CleanupStaleMarketplaceLock(safeSteamId, safeItemId, now))
+    {
+        return false;
+    }
+
+    char query[320];
+    Format(query, sizeof(query),
+        "INSERT INTO store_market_locks (seller_steamid, item_id, created_at) VALUES ('%s', '%s', %d)",
+        safeSteamId, safeItemId, now);
+
+    if (!SQL_FastQuery(g_DB, query))
+    {
+        char error[256];
+        SQL_GetError(g_DB, error, sizeof(error));
+        LogStoreError("TryAcquireMarketplaceListingLock", error);
+        return false;
+    }
+
+    return SQL_GetAffectedRows(g_DB) == 1;
+}
+
+bool ReleaseMarketplaceListingLock(const char[] safeSteamId, const char[] safeItemId)
+{
+    char query[256];
+    Format(query, sizeof(query),
+        "DELETE FROM store_market_locks WHERE seller_steamid = '%s' AND item_id = '%s'",
+        safeSteamId, safeItemId);
+
+    if (!SQL_FastQuery(g_DB, query))
+    {
+        char error[256];
+        SQL_GetError(g_DB, error, sizeof(error));
+        LogStoreError("ReleaseMarketplaceListingLock", error);
+        return false;
+    }
+
+    return true;
 }
 
 void SyncMarketplaceTransferInMemory(const char[] sellerSteamId, int buyer, const char[] itemId, int sellerNetCredits)
@@ -997,7 +1072,6 @@ void StoreCommonItemMetadata(KeyValues kv, StoreItem item)
     SetItemMetadataValueIfNotEmpty(item.id, "value", item.szValue);
     SetItemMetadataValueIfNotEmpty(item.id, "model", item.szModel);
     SetItemMetadataValueIfNotEmpty(item.id, "arms", item.szArms);
-    SetItemMetadataValueIfNotEmpty(item.id, "icon", item.icon);
     SetItemMetadataValueIfNotEmpty(item.id, "requires_item", item.requires_item);
     SetItemMetadataValueIfNotEmpty(item.id, "bundle_id", item.bundle_id);
     SetItemMetadataValueIfNotEmpty(item.id, "flag", item.flag);
@@ -1035,7 +1109,6 @@ void StoreCommonItemMetadata(KeyValues kv, StoreItem item)
     StoreConfigStringMetadata(kv, item.id, "alpha", "alpha");
     StoreConfigStringMetadata(kv, item.id, "decal", "decal");
     StoreConfigStringMetadata(kv, item.id, "decals", "decals");
-    StoreConfigStringMetadata(kv, item.id, "downloads", "downloads");
     StoreConfigStringMetadata(kv, item.id, "idle", "idle");
     StoreConfigStringMetadata(kv, item.id, "idle2", "idle2");
     StoreConfigStringMetadata(kv, item.id, "run", "run");
@@ -3682,19 +3755,6 @@ bool CanPlayerUseItem(int client, StoreItem item, bool notify = false)
         return false;
     }
 
-    if (StrEqual(item.type, "skin"))
-    {
-        int team = GetClientTeam(client);
-        if (item.team != 0 && team > 1 && item.team != team)
-        {
-            if (notify)
-            {
-                PrintStorePhrase(client, "%T", "Skin Wrong Team", client);
-            }
-            return false;
-        }
-    }
-
     if (item.requires_item[0] != '\0' && !PlayerOwnsItem(client, item.requires_item))
     {
         if (notify)
@@ -4563,7 +4623,6 @@ bool LoadItemsConfigFile(const char[] path, int &loadedSkins, int &loadedTags, i
         item.szModel[0] = '\0';
         item.szArms[0] = '\0';
         item.szValue[0] = '\0';
-        item.icon[0] = '\0';
         item.metadata[0] = '\0';
         item.requires_item[0] = '\0';
         item.bundle_id[0] = '\0';
@@ -4601,7 +4660,6 @@ bool LoadItemsConfigFile(const char[] path, int &loadedSkins, int &loadedTags, i
         kv.GetString("model", item.szModel, sizeof(item.szModel), "");
         kv.GetString("arms", item.szArms, sizeof(item.szArms), "");
         kv.GetString("value", item.szValue, sizeof(item.szValue), "");
-        kv.GetString("icon", item.icon, sizeof(item.icon), "");
         kv.GetString("metadata", item.metadata, sizeof(item.metadata), "");
         kv.GetString("requires_item", item.requires_item, sizeof(item.requires_item), "");
         kv.GetString("bundle_id", item.bundle_id, sizeof(item.bundle_id), "");
@@ -4902,6 +4960,7 @@ void CreateTables()
     char query20[768];
     char query21[512];
     char query22[512];
+    char query23[512];
     query3[0] = '\0';
     query5[0] = '\0';
     query7[0] = '\0';
@@ -4913,6 +4972,7 @@ void CreateTables()
     query19[0] = '\0';
     query21[0] = '\0';
     query22[0] = '\0';
+    query23[0] = '\0';
 
     if (g_bIsMySQL)
     {
@@ -4938,6 +4998,8 @@ void CreateTables()
             "CREATE TABLE IF NOT EXISTS store_vouchers (code VARCHAR(64) NOT NULL PRIMARY KEY, reward_credits INT NOT NULL DEFAULT 0, reward_item VARCHAR(32) NOT NULL DEFAULT '', max_uses INT NOT NULL DEFAULT 1, uses INT NOT NULL DEFAULT 0, expires_at INT NOT NULL DEFAULT 0, created_by_steamid VARCHAR(32) NOT NULL DEFAULT '', created_by_name VARCHAR(64) NOT NULL DEFAULT '', created_at INT NOT NULL, disabled INT NOT NULL DEFAULT 0, INDEX idx_store_vouchers_disabled (disabled), INDEX idx_store_vouchers_expires (expires_at))");
         Format(query20, sizeof(query20),
             "CREATE TABLE IF NOT EXISTS store_voucher_redemptions (code VARCHAR(64) NOT NULL, steamid VARCHAR(32) NOT NULL, player_name VARCHAR(64) NOT NULL DEFAULT '', redeemed_at INT NOT NULL, PRIMARY KEY (code, steamid), INDEX idx_store_voucher_redemptions_steamid (steamid))");
+        Format(query23, sizeof(query23),
+            "CREATE TABLE IF NOT EXISTS store_market_locks (seller_steamid VARCHAR(32) NOT NULL, item_id VARCHAR(32) NOT NULL, created_at INT NOT NULL, PRIMARY KEY (seller_steamid, item_id))");
     }
     else
     {
@@ -4985,6 +5047,8 @@ void CreateTables()
             "CREATE INDEX IF NOT EXISTS idx_store_voucher_redemptions_steamid ON store_voucher_redemptions (steamid)");
         Format(query22, sizeof(query22),
             "CREATE INDEX IF NOT EXISTS idx_store_audit_target ON store_audit_log (target_steamid)");
+        Format(query23, sizeof(query23),
+            "CREATE TABLE IF NOT EXISTS store_market_locks (seller_steamid TEXT NOT NULL, item_id TEXT NOT NULL, created_at INTEGER NOT NULL, PRIMARY KEY (seller_steamid, item_id))");
     }
 
     g_iPendingTableQueries = 0;
@@ -5076,6 +5140,10 @@ void CreateTables()
     {
         g_iPendingTableQueries++;
     }
+    if (query23[0] != '\0')
+    {
+        g_iPendingTableQueries++;
+    }
 
     g_DB.Query(OnTableCreated, query1);
     g_DB.Query(OnTableCreated, query2);
@@ -5142,6 +5210,11 @@ void CreateTables()
     if (query22[0] != '\0')
     {
         g_DB.Query(OnTableCreated, query22);
+    }
+
+    if (query23[0] != '\0')
+    {
+        g_DB.Query(OnTableCreated, query23);
     }
 }
 
@@ -5493,7 +5566,7 @@ bool ExecuteLockedStoreQuery(const char[] where, const char[] query, int expecte
         char error[256];
         SQL_GetError(g_DB, error, sizeof(error));
         LogStoreError(where, error);
-        LogError("%s %s query failed: %s", STORE_LOG_PREFIX, where, query);
+        LogError("%s %s query failed.", STORE_LOG_PREFIX, where);
         return false;
     }
 
@@ -5502,7 +5575,7 @@ bool ExecuteLockedStoreQuery(const char[] where, const char[] query, int expecte
         int affected = SQL_GetAffectedRows(g_DB);
         if (affected != expectedAffected)
         {
-            LogError("%s %s unexpected affected rows (%d != %d). Query: %s", STORE_LOG_PREFIX, where, affected, expectedAffected, query);
+            LogError("%s %s unexpected affected rows (%d != %d).", STORE_LOG_PREFIX, where, affected, expectedAffected);
             return false;
         }
     }
@@ -6086,6 +6159,11 @@ public void OnInventoryLoaded(Database db, DBResultSet results, const char[] err
     g_bIsLoading[client] = false;
     MarkInventoryChanged(client);
     g_iMenuInventoryVersion[client] = g_iInventoryVersion[client];
+
+    if (IsValidHumanClient(client) && IsPlayerAlive(client))
+    {
+        CreateTimer(0.1, Timer_ApplySkin, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
+    }
 }
 
 bool SavePlayer(int client)
@@ -6497,7 +6575,7 @@ void ApplyPlayerSkin(int client)
             continue;
         }
 
-        if (!StrEqual(item.type, "skin") || item.team != team)
+        if (!StrEqual(item.type, "skin") || (item.team != 0 && item.team != team))
         {
             continue;
         }
@@ -8135,12 +8213,6 @@ bool CreateMarketplaceListing(int client, const char[] itemId, int price)
         return false;
     }
 
-    if (HasActiveMarketplaceListing(client, itemId))
-    {
-        PrintStorePhrase(client, "%T", "Market Item Listed Already", client);
-        return false;
-    }
-
     char steamid[32], safeSteamId[64], safeItemId[64], query[512];
     if (!GetClientSteamIdSafe(client, steamid, sizeof(steamid)))
     {
@@ -8153,21 +8225,55 @@ bool CreateMarketplaceListing(int client, const char[] itemId, int price)
     int expiresAt = now + (GetMarketplaceListingHours() * 3600);
     int feePercent = GetMarketplaceFeePercent();
 
-    Format(query, sizeof(query),
-        "INSERT INTO store_market_listings (seller_steamid, item_id, price, fee_percent, created_at, expires_at, sold_to, sold_at, cancelled_at) VALUES ('%s', '%s', %d, %d, %d, %d, '', 0, 0)",
-        safeSteamId, safeItemId, price, feePercent, now, expiresAt);
+    if (!BeginLockedStoreTransaction("CreateMarketplaceListing"))
+    {
+        PrintStorePhrase(client, "%T", "Market Listing Failed", client);
+        return false;
+    }
 
-    SQL_LockDatabase(g_DB);
-    bool ok = SQL_FastQuery(g_DB, query);
-    if (!ok)
+    Format(query, sizeof(query),
+        "SELECT id FROM store_market_listings WHERE seller_steamid = '%s' AND item_id = '%s' AND sold_at = 0 AND cancelled_at = 0 AND expires_at > %d LIMIT 1",
+        safeSteamId, safeItemId, now);
+
+    DBResultSet activeResults = SQL_Query(g_DB, query);
+    if (activeResults == null)
     {
         char error[256];
         SQL_GetError(g_DB, error, sizeof(error));
         LogStoreError("CreateMarketplaceListing", error);
+        RollbackLockedStoreTransaction("CreateMarketplaceListing");
+        PrintStorePhrase(client, "%T", "Market Listing Failed", client);
+        return false;
     }
-    SQL_UnlockDatabase(g_DB);
 
-    if (!ok)
+    bool alreadyListed = activeResults.FetchRow();
+    delete activeResults;
+    if (alreadyListed)
+    {
+        RollbackLockedStoreTransaction("CreateMarketplaceListing");
+        PrintStorePhrase(client, "%T", "Market Item Listed Already", client);
+        return false;
+    }
+
+    if (!TryAcquireMarketplaceListingLock(safeSteamId, safeItemId, now))
+    {
+        RollbackLockedStoreTransaction("CreateMarketplaceListing");
+        PrintStorePhrase(client, "%T", "Market Item Listed Already", client);
+        return false;
+    }
+
+    Format(query, sizeof(query),
+        "INSERT INTO store_market_listings (seller_steamid, item_id, price, fee_percent, created_at, expires_at, sold_to, sold_at, cancelled_at) VALUES ('%s', '%s', %d, %d, %d, %d, '', 0, 0)",
+        safeSteamId, safeItemId, price, feePercent, now, expiresAt);
+
+    if (!ExecuteLockedStoreQuery("CreateMarketplaceListing", query, 1))
+    {
+        RollbackLockedStoreTransaction("CreateMarketplaceListing");
+        PrintStorePhrase(client, "%T", "Market Listing Failed", client);
+        return false;
+    }
+
+    if (!CommitLockedStoreTransaction("CreateMarketplaceListing"))
     {
         PrintStorePhrase(client, "%T", "Market Listing Failed", client);
         return false;
@@ -8434,6 +8540,13 @@ bool ExecuteMarketplacePurchase(int buyer, int listingId)
         return false;
     }
 
+    if (!ReleaseMarketplaceListingLock(safeSellerSteamId, safeItemId))
+    {
+        RollbackLockedStoreTransaction("ExecuteMarketplacePurchase");
+        PrintStorePhrase(buyer, "%T", "Market Buy Failed", buyer);
+        return false;
+    }
+
     if (!CommitLockedStoreTransaction("ExecuteMarketplacePurchase"))
     {
         PrintStorePhrase(buyer, "%T", "Market Buy Failed", buyer);
@@ -8485,29 +8598,81 @@ bool CancelMarketplaceListing(int client, int listingId, bool notify = true)
         return false;
     }
 
-    char steamid[32], safeSteamId[64], query[320];
+    char steamid[32], safeSteamId[64], query[512];
     if (!GetClientSteamIdSafe(client, steamid, sizeof(steamid)))
     {
         return false;
     }
 
     EscapeStringSafe(steamid, safeSteamId, sizeof(safeSteamId));
-    Format(query, sizeof(query),
-        "UPDATE store_market_listings SET cancelled_at = %d WHERE id = %d AND seller_steamid = '%s' AND sold_at = 0 AND cancelled_at = 0",
-        GetTime(), listingId, safeSteamId);
 
-    SQL_LockDatabase(g_DB);
-    bool ok = SQL_FastQuery(g_DB, query);
-    int affected = SQL_GetAffectedRows(g_DB);
-    if (!ok)
+    if (!BeginLockedStoreTransaction("CancelMarketplaceListing"))
+    {
+        if (notify)
+        {
+            PrintStorePhrase(client, "%T", "Market Cancel Failed", client);
+        }
+        return false;
+    }
+
+    Format(query, sizeof(query),
+        "SELECT item_id FROM store_market_listings WHERE id = %d AND seller_steamid = '%s' AND sold_at = 0 AND cancelled_at = 0 LIMIT 1",
+        listingId, safeSteamId);
+    DBResultSet results = SQL_Query(g_DB, query);
+    if (results == null)
     {
         char error[256];
         SQL_GetError(g_DB, error, sizeof(error));
         LogStoreError("CancelMarketplaceListing", error);
+        RollbackLockedStoreTransaction("CancelMarketplaceListing");
+        if (notify)
+        {
+            PrintStorePhrase(client, "%T", "Market Cancel Failed", client);
+        }
+        return false;
     }
-    SQL_UnlockDatabase(g_DB);
 
-    if (!ok || affected <= 0)
+    char itemId[32], safeItemId[64];
+    if (!results.FetchRow())
+    {
+        delete results;
+        RollbackLockedStoreTransaction("CancelMarketplaceListing");
+        if (notify)
+        {
+            PrintStorePhrase(client, "%T", "Market Cancel Failed", client);
+        }
+        return false;
+    }
+
+    results.FetchString(0, itemId, sizeof(itemId));
+    delete results;
+    EscapeStringSafe(itemId, safeItemId, sizeof(safeItemId));
+
+    Format(query, sizeof(query),
+        "UPDATE store_market_listings SET cancelled_at = %d WHERE id = %d AND seller_steamid = '%s' AND sold_at = 0 AND cancelled_at = 0",
+        GetTime(), listingId, safeSteamId);
+
+    if (!ExecuteLockedStoreQuery("CancelMarketplaceListing", query, 1))
+    {
+        RollbackLockedStoreTransaction("CancelMarketplaceListing");
+        if (notify)
+        {
+            PrintStorePhrase(client, "%T", "Market Cancel Failed", client);
+        }
+        return false;
+    }
+
+    if (!ReleaseMarketplaceListingLock(safeSteamId, safeItemId))
+    {
+        RollbackLockedStoreTransaction("CancelMarketplaceListing");
+        if (notify)
+        {
+            PrintStorePhrase(client, "%T", "Market Cancel Failed", client);
+        }
+        return false;
+    }
+
+    if (!CommitLockedStoreTransaction("CancelMarketplaceListing"))
     {
         if (notify)
         {
@@ -10518,6 +10683,11 @@ public Action Event_PlayerTeam(Event event, const char[] name, bool dontBroadcas
     if (client > 0)
     {
         RemovePreview(client);
+    }
+
+    if (client > 0 && IsValidHumanClient(client) && IsPlayerAlive(client) && g_bIsLoaded[client])
+    {
+        CreateTimer(0.1, Timer_ApplySkin, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
     }
 
     return Plugin_Continue;

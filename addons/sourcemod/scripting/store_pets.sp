@@ -19,7 +19,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Pets",
     author = "Ayrton09",
     description = "Attached pet model item module for Umbrella Store",
-    version = "1.2.0",
+    version = "1.2.1",
     url = ""
 };
 
@@ -50,6 +50,14 @@ public void OnClientDisconnect(int client)
 {
     RemovePet(client);
     g_bHidePet[client] = false;
+}
+
+public void OnPluginEnd()
+{
+    for (int i = 1; i <= MaxClients; i++)
+    {
+        RemovePet(i);
+    }
 }
 
 public void OnClientCookiesCached(int client)
@@ -99,7 +107,6 @@ void PrecacheConfiguredPets()
         {
             PrecacheModel(model, true);
             USM_AddModelDownloads(model);
-            USM_AddConfiguredDownloads(itemId);
         }
         else
         {

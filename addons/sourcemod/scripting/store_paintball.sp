@@ -17,7 +17,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Paintball",
     author = "Ayrton09",
     description = "Bullet impact decal item module for Umbrella Store",
-    version = "1.2.0",
+    version = "1.2.1",
     url = ""
 };
 
@@ -176,7 +176,6 @@ void PrecachePaintballDecals()
             PrecacheOnePaintballDecal(single);
         }
 
-        USM_AddConfiguredDownloads(itemId);
     }
 }
 

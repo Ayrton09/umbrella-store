@@ -19,7 +19,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Sprays",
     author = "Ayrton09",
     description = "Custom wall spray item module for Umbrella Store",
-    version = "1.2.0",
+    version = "1.2.1",
     url = ""
 };
 
@@ -138,7 +138,6 @@ void PrecacheConfiguredSprays()
         }
 
         PrecacheOneSpray(material);
-        USM_AddConfiguredDownloads(itemId);
     }
 }
 

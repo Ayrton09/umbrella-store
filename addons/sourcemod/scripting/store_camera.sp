@@ -2,10 +2,15 @@
 #pragma newdecls required
 
 #include <sourcemod>
+#include <sdktools>
 #include <multicolors>
 
 #define US_CHAT_TAG " {purple}[Umbrella Store]{default}"
-#define MIRROR_BASE_YAW 90
+#define MIRROR_BASE_YAW 180
+#define OBS_MODE_NONE 0
+#define OBS_MODE_DEATHCAM 1
+#define DEFAULT_FOV 90
+#define THIRDPERSON_FOV 120
 
 enum CameraMode
 {
@@ -34,7 +39,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Camera",
     author = "Ayrton09",
     description = "Thirdperson and mirror camera for Umbrella Store player inspection",
-    version = "1.2.0",
+    version = "1.2.1",
     url = ""
 };
 
@@ -111,7 +116,7 @@ public void OnPluginStart()
     gCvarMirrorYaw = CreateConVar(
         "umbrella_store_camera_mirror_yaw",
         "0",
-        "Mirror yaw fine offset. 0 = front-facing baseline (legacy 180 is treated as front).",
+        "Mirror yaw fine offset. 0 = front-facing baseline.",
         FCVAR_NOTIFY,
         true, -180.0,
         true, 180.0
@@ -241,7 +246,11 @@ public Action Command_FirstPerson(int client, int args)
     }
 
     g_CameraMode[client] = Camera_FirstPerson;
-    ForceFirstPerson(client);
+    if (IsPlayerAlive(client))
+    {
+        ForceFirstPerson(client);
+    }
+
     CameraChatPhrase(client, "Camera Firstperson On");
     return Plugin_Handled;
 }
@@ -300,7 +309,7 @@ public void Event_PlayerDeath(Event event, const char[] name, bool dontBroadcast
         return;
     }
 
-    ForceFirstPerson(client);
+    g_CameraMode[client] = Camera_FirstPerson;
 }
 
 public void Event_PlayerTeam(Event event, const char[] name, bool dontBroadcast)
@@ -318,7 +327,11 @@ public void Event_PlayerTeam(Event event, const char[] name, bool dontBroadcast)
 
     if (event.GetInt("team") <= 1)
     {
-        ForceFirstPerson(client);
+        g_CameraMode[client] = Camera_FirstPerson;
+        if (IsPlayerAlive(client))
+        {
+            ForceFirstPerson(client);
+        }
     }
 }
 
@@ -347,17 +360,11 @@ void ApplyCameraMode(int client)
         return;
     }
 
-    if (gCvarAllowThirdPerson != null)
-    {
-        gCvarAllowThirdPerson.SetInt(1);
-    }
-
-    ClientCommand(client, "thirdperson");
-
     switch (g_CameraMode[client])
     {
         case Camera_ThirdPerson:
         {
+            SetCssThirdPerson(client, true);
             SendCameraFloatCmd(client, "cam_idealdist", gCvarTpDistance.FloatValue);
             SendCameraFloatCmd(client, "cam_idealpitch", gCvarTpPitch.FloatValue);
             SendCameraIntCmd(client, "cam_idealyaw", 0);
@@ -365,13 +372,9 @@ void ApplyCameraMode(int client)
 
         case Camera_Mirror:
         {
+            SetCssThirdPerson(client, true);
             float mirrorDist = FloatAbs(gCvarMirrorDistance.FloatValue);
             int yawOffset = gCvarMirrorYaw.IntValue;
-            // Backward compatibility for old configs that used 180 as "front".
-            if (yawOffset == 180 || yawOffset == -180)
-            {
-                yawOffset = 0;
-            }
 
             int mirrorYaw = MIRROR_BASE_YAW + yawOffset;
             while (mirrorYaw > 180)
@@ -477,12 +480,72 @@ void SendCameraIntCmd(int client, const char[] cmd, int value)
 
 void ForceFirstPerson(int client)
 {
+    if (!IsValidRealClient(client) || !IsPlayerAlive(client))
+    {
+        return;
+    }
+
+    SetCssThirdPerson(client, false);
+}
+
+void SetCssThirdPerson(int client, bool enable)
+{
     if (!IsValidRealClient(client))
     {
         return;
     }
 
-    ClientCommand(client, "firstperson");
+    if (gCvarAllowThirdPerson != null)
+    {
+        gCvarAllowThirdPerson.SetInt(1);
+    }
+
+    if (enable)
+    {
+        SetObserverTargetSafe(client, 0);
+        SetObserverModeSafe(client, OBS_MODE_DEATHCAM);
+        SetDrawViewModelSafe(client, false);
+        SetFovSafe(client, THIRDPERSON_FOV);
+    }
+    else
+    {
+        SetObserverTargetSafe(client, -1);
+        SetObserverModeSafe(client, OBS_MODE_NONE);
+        SetDrawViewModelSafe(client, true);
+        SetFovSafe(client, DEFAULT_FOV);
+    }
+}
+
+void SetObserverTargetSafe(int client, int target)
+{
+    if (HasEntProp(client, Prop_Send, "m_hObserverTarget"))
+    {
+        SetEntPropEnt(client, Prop_Send, "m_hObserverTarget", target);
+    }
+}
+
+void SetObserverModeSafe(int client, int mode)
+{
+    if (HasEntProp(client, Prop_Send, "m_iObserverMode"))
+    {
+        SetEntProp(client, Prop_Send, "m_iObserverMode", mode);
+    }
+}
+
+void SetDrawViewModelSafe(int client, bool draw)
+{
+    if (HasEntProp(client, Prop_Send, "m_bDrawViewmodel"))
+    {
+        SetEntProp(client, Prop_Send, "m_bDrawViewmodel", draw ? 1 : 0);
+    }
+}
+
+void SetFovSafe(int client, int fov)
+{
+    if (HasEntProp(client, Prop_Send, "m_iFOV"))
+    {
+        SetEntProp(client, Prop_Send, "m_iFOV", fov);
+    }
 }
 
 void CameraChatPhrase(int client, const char[] phrase)

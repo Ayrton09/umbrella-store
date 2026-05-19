@@ -13,7 +13,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Colored Smoke",
     author = "Ayrton09",
     description = "Colored smoke grenade item module for Umbrella Store",
-    version = "1.2.0",
+    version = "1.2.1",
     url = ""
 };
 
@@ -90,7 +90,6 @@ void PrecacheConfiguredSmokeMaterials()
 
         USM_GetMetadata(itemId, "material", material, sizeof(material), "particle/particle_smokegrenade1.vmt");
         AddSmokeMaterialDownload(material);
-        USM_AddConfiguredDownloads(itemId);
     }
 }
 

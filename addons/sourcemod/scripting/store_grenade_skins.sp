@@ -14,7 +14,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Grenade Skins",
     author = "Ayrton09",
     description = "Grenade projectile model item module for Umbrella Store",
-    version = "1.2.0",
+    version = "1.2.1",
     url = ""
 };
 
@@ -97,7 +97,6 @@ void PrecacheConfiguredGrenadeSkins()
         {
             PrecacheModel(model, true);
             USM_AddModelDownloads(model);
-            USM_AddConfiguredDownloads(itemId);
         }
         else
         {

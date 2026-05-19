@@ -21,7 +21,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Say Sounds",
     author = "Ayrton09",
     description = "Chat-triggered sound item module for Umbrella Store",
-    version = "1.2.0",
+    version = "1.2.1",
     url = ""
 };
 
@@ -101,7 +101,6 @@ void PrecacheConfiguredSounds()
         {
             PrecacheSound(sound, true);
             AddFileToDownloadsTable(download);
-            USM_AddConfiguredDownloads(itemId);
         }
         else
         {

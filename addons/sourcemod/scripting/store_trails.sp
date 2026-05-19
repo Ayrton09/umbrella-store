@@ -20,7 +20,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Trails",
     author = "Ayrton09",
     description = "Player sprite trail item module for Umbrella Store",
-    version = "1.2.0",
+    version = "1.2.1",
     url = ""
 };
 
@@ -52,6 +52,14 @@ public void OnClientDisconnect(int client)
 {
     RemoveTrail(client);
     g_bHideTrail[client] = false;
+}
+
+public void OnPluginEnd()
+{
+    for (int i = 1; i <= MaxClients; i++)
+    {
+        RemoveTrail(i);
+    }
 }
 
 public void OnClientCookiesCached(int client)
@@ -101,7 +109,6 @@ void PrecacheConfiguredTrails()
         {
             PrecacheModel(material, true);
             USM_AddMaterialDownloads(material);
-            USM_AddConfiguredDownloads(itemId);
         }
         else
         {

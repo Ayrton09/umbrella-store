@@ -249,23 +249,6 @@ stock void USM_AddMaterialDownloads(const char[] materialPath)
     }
 }
 
-stock void USM_AddConfiguredDownloads(const char[] itemId)
-{
-    char downloads[512];
-    if (!US_GetItemMetadata(itemId, "downloads", downloads, sizeof(downloads)) || downloads[0] == '\0')
-    {
-        return;
-    }
-
-    char parts[16][PLATFORM_MAX_PATH];
-    int count = ExplodeString(downloads, ";", parts, sizeof(parts), sizeof(parts[]));
-    for (int i = 0; i < count; i++)
-    {
-        TrimString(parts[i]);
-        USM_AddDownloadIfExists(parts[i]);
-    }
-}
-
 stock int USM_GetEquippedItemsOfType(int client, const char[] type, char itemIds[][64], int maxItems)
 {
     if (!USM_IsValidClient(client) || maxItems <= 0)

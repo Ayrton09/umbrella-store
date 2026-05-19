@@ -19,7 +19,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Hats",
     author = "Ayrton09",
     description = "Attached hat model item module for Umbrella Store",
-    version = "1.2.0",
+    version = "1.2.1",
     url = ""
 };
 
@@ -48,6 +48,14 @@ public void OnMapStart()
 public void OnClientDisconnect(int client)
 {
     RemoveHats(client);
+}
+
+public void OnPluginEnd()
+{
+    for (int i = 1; i <= MaxClients; i++)
+    {
+        RemoveHats(i);
+    }
 }
 
 void ResetHatRefs()
@@ -84,7 +92,6 @@ void PrecacheConfiguredHats()
         {
             PrecacheModel(model, true);
             USM_AddModelDownloads(model);
-            USM_AddConfiguredDownloads(itemId);
         }
         else
         {

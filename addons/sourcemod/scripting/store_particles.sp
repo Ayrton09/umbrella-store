@@ -27,7 +27,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Particles",
     author = "Ayrton09",
     description = "Aura, trail, spawn, kill, and hit particle item module for Umbrella Store",
-    version = "1.2.0",
+    version = "1.2.1",
     url = ""
 };
 
@@ -60,6 +60,12 @@ public void OnMapStart()
 
 public void OnPluginEnd()
 {
+    for (int i = 1; i <= MaxClients; i++)
+    {
+        RemoveAttachedParticle(i, PARTICLE_AURA);
+        RemoveAttachedParticle(i, PARTICLE_TRAIL);
+    }
+
     delete g_mParticleIndexes;
 }
 
@@ -164,7 +170,6 @@ void PrecacheConfiguredParticles()
         PrecacheParticleSystem(effect);
         PrecacheGeneric(file, true);
         AddFileToDownloadsTable(file);
-        USM_AddConfiguredDownloads(itemId);
     }
 }
 
