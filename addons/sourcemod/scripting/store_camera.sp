@@ -5,8 +5,7 @@
 #include <sdktools>
 #include <multicolors>
 
-#define US_CHAT_TAG " {purple}[Umbrella Store]{default}"
-#define MIRROR_BASE_YAW 180
+#define US_CHAT_TAG " {green}[Umbrella Store]{default}"
 #define OBS_MODE_NONE 0
 #define OBS_MODE_DEATHCAM 1
 #define DEFAULT_FOV 90
@@ -24,22 +23,19 @@ CameraMode g_CameraMode[MAXPLAYERS + 1];
 ConVar gCvarAllowThirdPerson;
 ConVar gCvarCameraEnabled;
 ConVar gCvarDisabledMaps;
-ConVar gCvarTpDistance;
-ConVar gCvarMirrorDistance;
-ConVar gCvarTpPitch;
-ConVar gCvarMirrorPitch;
-ConVar gCvarMirrorYaw;
 ConVar gCvarAnnounceCommands;
 ConVar gCvarResetOnDeath;
+ConVar gCvarStoreEnabled;
 
 bool g_bMapAllowed = true;
+bool g_bStoreEnabledHooked = false;
 
 public Plugin myinfo =
 {
     name = "[Umbrella Store] Camera",
     author = "Ayrton09",
     description = "Thirdperson and mirror camera for Umbrella Store player inspection",
-    version = "1.2.2",
+    version = "1.3.0",
     url = ""
 };
 
@@ -77,46 +73,46 @@ public void OnPluginStart()
         FCVAR_NOTIFY
     );
 
-    gCvarTpDistance = CreateConVar(
+    CreateConVar(
         "umbrella_store_camera_tp_distance",
         "120",
-        "Camera distance for thirdperson mode.",
+        "Legacy compatibility only. CS:S blocks server-side cam_* camera commands.",
         FCVAR_NOTIFY,
         true, 40.0,
         true, 300.0
     );
 
-    gCvarMirrorDistance = CreateConVar(
+    CreateConVar(
         "umbrella_store_camera_mirror_distance",
         "100",
-        "Camera distance for mirror mode.",
+        "Legacy compatibility only. CS:S blocks server-side cam_* camera commands.",
         FCVAR_NOTIFY,
         true, 40.0,
         true, 300.0
     );
 
-    gCvarTpPitch = CreateConVar(
+    CreateConVar(
         "umbrella_store_camera_tp_pitch",
         "0",
-        "Camera pitch for thirdperson mode.",
+        "Legacy compatibility only. CS:S blocks server-side cam_* camera commands.",
         FCVAR_NOTIFY,
         true, -89.0,
         true, 89.0
     );
 
-    gCvarMirrorPitch = CreateConVar(
+    CreateConVar(
         "umbrella_store_camera_mirror_pitch",
         "0",
-        "Camera pitch for mirror mode.",
+        "Legacy compatibility only. CS:S blocks server-side cam_* camera commands.",
         FCVAR_NOTIFY,
         true, -89.0,
         true, 89.0
     );
 
-    gCvarMirrorYaw = CreateConVar(
+    CreateConVar(
         "umbrella_store_camera_mirror_yaw",
         "0",
-        "Mirror yaw fine offset. 0 = front-facing baseline.",
+        "Legacy compatibility only. CS:S blocks server-side cam_* camera commands.",
         FCVAR_NOTIFY,
         true, -180.0,
         true, 180.0
@@ -141,16 +137,24 @@ public void OnPluginStart()
     );
 
     AutoExecConfig(true, "umbrella_store_camera");
+    RefreshStoreEnabledConVar();
 }
 
 public void OnConfigsExecuted()
 {
+    RefreshStoreEnabledConVar();
+
     if (gCvarAllowThirdPerson != null)
     {
         gCvarAllowThirdPerson.SetInt(1);
     }
 
     RefreshMapCameraState();
+}
+
+public void OnAllPluginsLoaded()
+{
+    RefreshStoreEnabledConVar();
 }
 
 public void OnMapStart()
@@ -187,7 +191,7 @@ public Action Timer_AnnounceClient(Handle timer, any userid)
         return Plugin_Stop;
     }
 
-    if (!gCvarCameraEnabled.BoolValue || !g_bMapAllowed)
+    if (!IsUmbrellaStoreEnabled() || !gCvarCameraEnabled.BoolValue || !g_bMapAllowed)
     {
         return Plugin_Stop;
     }
@@ -286,7 +290,7 @@ public Action Timer_ReapplyCamera(Handle timer, any userid)
         return Plugin_Stop;
     }
 
-    if (!gCvarCameraEnabled.BoolValue || !g_bMapAllowed)
+    if (!IsUmbrellaStoreEnabled() || !gCvarCameraEnabled.BoolValue || !g_bMapAllowed)
     {
         ForceFirstPerson(client);
         return Plugin_Stop;
@@ -348,7 +352,7 @@ void ApplyCameraMode(int client)
         return;
     }
 
-    if (!gCvarCameraEnabled.BoolValue || !g_bMapAllowed)
+    if (!IsUmbrellaStoreEnabled() || !gCvarCameraEnabled.BoolValue || !g_bMapAllowed)
     {
         ForceFirstPerson(client);
         return;
@@ -365,30 +369,11 @@ void ApplyCameraMode(int client)
         case Camera_ThirdPerson:
         {
             SetCssThirdPerson(client, true);
-            SendCameraFloatCmd(client, "cam_idealdist", gCvarTpDistance.FloatValue);
-            SendCameraFloatCmd(client, "cam_idealpitch", gCvarTpPitch.FloatValue);
-            SendCameraIntCmd(client, "cam_idealyaw", 0);
         }
 
         case Camera_Mirror:
         {
             SetCssThirdPerson(client, true);
-            float mirrorDist = FloatAbs(gCvarMirrorDistance.FloatValue);
-            int yawOffset = gCvarMirrorYaw.IntValue;
-
-            int mirrorYaw = MIRROR_BASE_YAW + yawOffset;
-            while (mirrorYaw > 180)
-            {
-                mirrorYaw -= 360;
-            }
-            while (mirrorYaw < -180)
-            {
-                mirrorYaw += 360;
-            }
-
-            SendCameraFloatCmd(client, "cam_idealdist", mirrorDist);
-            SendCameraFloatCmd(client, "cam_idealpitch", gCvarMirrorPitch.FloatValue);
-            SendCameraIntCmd(client, "cam_idealyaw", mirrorYaw);
         }
 
         default:
@@ -402,6 +387,12 @@ bool CanUseCamera(int client)
 {
     if (!IsValidRealClient(client))
     {
+        return false;
+    }
+
+    if (!IsUmbrellaStoreEnabled())
+    {
+        CameraChatPhrase(client, "Camera Disabled");
         return false;
     }
 
@@ -430,6 +421,48 @@ bool CanUseCamera(int client)
     }
 
     return true;
+}
+
+void RefreshStoreEnabledConVar()
+{
+    if (gCvarStoreEnabled == null)
+    {
+        gCvarStoreEnabled = FindConVar("store_enabled");
+    }
+
+    if (gCvarStoreEnabled != null && !g_bStoreEnabledHooked)
+    {
+        HookConVarChange(gCvarStoreEnabled, OnStoreEnabledChanged);
+        g_bStoreEnabledHooked = true;
+    }
+}
+
+bool IsUmbrellaStoreEnabled()
+{
+    RefreshStoreEnabledConVar();
+    return (gCvarStoreEnabled == null || gCvarStoreEnabled.BoolValue);
+}
+
+public void OnStoreEnabledChanged(ConVar convar, const char[] oldValue, const char[] newValue)
+{
+    if (StringToInt(newValue) != 0)
+    {
+        return;
+    }
+
+    for (int i = 1; i <= MaxClients; i++)
+    {
+        if (!IsValidRealClient(i))
+        {
+            continue;
+        }
+
+        g_CameraMode[i] = Camera_FirstPerson;
+        if (IsPlayerAlive(i))
+        {
+            ForceFirstPerson(i);
+        }
+    }
 }
 
 void RefreshMapCameraState()
@@ -462,20 +495,6 @@ void RefreshMapCameraState()
             return;
         }
     }
-}
-
-void SendCameraFloatCmd(int client, const char[] cmd, float value)
-{
-    char buffer[64];
-    FormatEx(buffer, sizeof(buffer), "%s %.1f", cmd, value);
-    ClientCommand(client, buffer);
-}
-
-void SendCameraIntCmd(int client, const char[] cmd, int value)
-{
-    char buffer[64];
-    FormatEx(buffer, sizeof(buffer), "%s %d", cmd, value);
-    ClientCommand(client, buffer);
 }
 
 void ForceFirstPerson(int client)

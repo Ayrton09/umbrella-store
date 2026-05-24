@@ -13,6 +13,18 @@ assets/*
 assets/github/*
 !assets/github/umbrella-store-cover.png
 
+# Keep curated drag-and-drop CS:S cosmetic assets.
+!models/
+!models/**/
+!models/**/*.mdl
+!models/**/*.phy
+!models/**/*.vtx
+!models/**/*.vvd
+!materials/
+!materials/**/
+!materials/**/*.vmt
+!materials/**/*.vtf
+
 # Keep only Umbrella Store files inside addons/sourcemod.
 !addons/
 addons/*

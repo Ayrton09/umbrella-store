@@ -25,7 +25,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Laser Sight",
     author = "Ayrton09",
     description = "Scoped sniper laser sight item module for Umbrella Store",
-    version = "1.2.2",
+    version = "1.3.0",
     url = ""
 };
 
@@ -127,7 +127,7 @@ void GetClientSightEnd(int client, float end[3])
 
 public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3], float angles[3], int &weapon)
 {
-    if (!gCvarEnabled.BoolValue || g_iLaserBeam < 0 || g_iLaserDot < 0)
+    if (!US_IsEnabled() || !gCvarEnabled.BoolValue || g_iLaserBeam < 0 || g_iLaserDot < 0)
     {
         return Plugin_Continue;
     }
@@ -158,7 +158,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
     }
 
     char itemId[64];
-    if (!US_GetEquippedItem(client, "lasersight", itemId, sizeof(itemId)))
+    if (!USM_GetEquippedItemForClientTeam(client, "lasersight", itemId, sizeof(itemId)))
     {
         return Plugin_Continue;
     }

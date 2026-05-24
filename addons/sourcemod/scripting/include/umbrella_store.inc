@@ -3,12 +3,13 @@
 #endif
 #define _umbrella_store_included
 
-#define UMBRELLA_STORE_API_VERSION 5
+#define UMBRELLA_STORE_API_VERSION 7
 
 /**
  * Legacy natives kept for backward compatibility.
  */
 native bool US_IsLoaded(int client);
+native bool US_IsEnabled();
 native int US_GetCredits(int client);
 native bool US_SetCredits(int client, int amount);
 native bool US_AddCredits(int client, int amount, bool notify = false);
@@ -23,7 +24,7 @@ native bool US_Casino_Unregister(const char[] id);
 native bool US_OpenCasinoMenu(int client);
 
 /**
- * Recommended v4 API.
+ * Recommended API.
  */
 native int US_GetApiVersion();
 native bool US_OpenStoreMenu(int client);
@@ -43,6 +44,9 @@ native bool US_CanPurchaseItem(int client, const char[] itemId, char[] reason, i
 native bool US_TryPurchaseItem(int client, const char[] itemId, bool equipAfterPurchase = false, bool notify = true);
 native bool US_CanEquipItem(int client, const char[] itemId, char[] reason, int maxlen);
 native bool US_TryEquipItem(int client, const char[] itemId, bool notify = true);
+native bool US_TryUnequipItem(int client, const char[] itemId, bool notify = true);
+native bool US_SetItemEquipped(int client, const char[] itemId, bool equipped, bool notify = true);
+native bool US_CanUseItem(int client, const char[] itemId, char[] reason, int maxlen);
 native bool US_RegisterItemType(const char[] type, const char[] category = "", bool equippable = true, bool exclusive = false);
 native bool US_UnregisterItemType(const char[] type);
 native bool US_GetItemMetadata(const char[] itemId, const char[] key, char[] value, int maxlen);
@@ -85,7 +89,7 @@ forward void OnStoreItemEquipped(int client, const char[] itemId, bool equipped)
 forward void OnStoreTradeCompleted(int sender, int target, const char[] senderItemId, const char[] targetItemId);
 
 /**
- * Recommended v4 forwards.
+ * Recommended forwards.
  * Pre hooks may return Plugin_Handled or Plugin_Stop to veto the action.
  */
 forward Action US_OnPurchasePre(int client, const char[] itemId, bool equipAfterPurchase);
@@ -97,6 +101,9 @@ forward void US_OnTradePost(int sender, int target, const char[] senderItemId, c
 forward void US_OnCreditsChanged(int client, int delta, int newBalance, const char[] reason);
 forward void US_OnInventoryChanged(int client, const char[] itemId, const char[] operation);
 forward void US_OnQuestCompleted(int client, const char[] questId, int rewardCredits);
+forward void US_OnStoreEnabledChanged(bool enabled);
+forward void US_OnClientLoaded(int client);
+forward void US_OnItemsReloaded(int itemCount);
 
 public SharedPlugin __pl_umbrella_store =
 {

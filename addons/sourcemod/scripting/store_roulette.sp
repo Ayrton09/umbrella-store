@@ -6,7 +6,7 @@
 #include <umbrella_store>
 #include <multicolors>
 
-#define US_CHAT_TAG " {purple}[Umbrella Store]{default}"
+#define US_CHAT_TAG " {green}[Umbrella Store]{default}"
 #define ROULETTE_TAG "{green}[Roulette]{default}"
 #define ROULETTE_CASINO_ID "roulette"
 #define ROULETTE_MAX_NUMBER 36
@@ -31,7 +31,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Casino - Roulette",
     author = "Ayrton09",
     description = "Roulette module for Umbrella Store",
-    version = "1.2.2",
+    version = "1.3.0",
     url = ""
 };
 
@@ -125,9 +125,9 @@ public void OnPluginStart()
     gCvarLoseSound = CreateConVar("umbrella_store_roulette_lose_sound", "buttons/button10.wav", "Sound played on roulette loss.");
     gCvarAnimEnabled = CreateConVar("umbrella_store_roulette_anim_enabled", "1", "Enable roulette HUD spin animation.", FCVAR_NONE, true, 0.0, true, 1.0);
     gCvarAnimMode = CreateConVar("umbrella_store_roulette_anim_mode", "2", "Roulette animation mode. 1=center text, 2=hint text.", FCVAR_NONE, true, 1.0, true, 2.0);
-    gCvarAnimSteps = CreateConVar("umbrella_store_roulette_anim_steps", "54", "Minimum visual steps for roulette animation.", FCVAR_NONE, true, 20.0, true, 120.0);
-    gCvarAnimDelayMin = CreateConVar("umbrella_store_roulette_anim_delay_min", "0.20", "Initial delay between animation steps.", FCVAR_NONE, true, 0.08, true, 1.2);
-    gCvarAnimDelayMax = CreateConVar("umbrella_store_roulette_anim_delay_max", "0.90", "Final delay between animation steps.", FCVAR_NONE, true, 0.20, true, 2.5);
+    gCvarAnimSteps = CreateConVar("umbrella_store_roulette_anim_steps", "18", "Minimum visual steps for roulette animation.", FCVAR_NONE, true, 8.0, true, 80.0);
+    gCvarAnimDelayMin = CreateConVar("umbrella_store_roulette_anim_delay_min", "0.03", "Initial delay between animation steps.", FCVAR_NONE, true, 0.01, true, 1.2);
+    gCvarAnimDelayMax = CreateConVar("umbrella_store_roulette_anim_delay_max", "0.12", "Final delay between animation steps.", FCVAR_NONE, true, 0.03, true, 2.5);
 
     HookConVarChange(gCvarEnabled, OnRouletteEnabledChanged);
 
@@ -1061,6 +1061,15 @@ void RefundPendingSpin(int client)
 bool CanUseRoulette(int client, bool notify)
 {
     if (!gCvarEnabled.BoolValue)
+    {
+        if (notify)
+        {
+            RoulettePrint(client, "%t", "Roulette Disabled");
+        }
+        return false;
+    }
+
+    if (!US_IsEnabled())
     {
         if (notify)
         {

@@ -20,7 +20,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] MVP Sounds",
     author = "Ayrton09",
     description = "Round MVP sound item module for Umbrella Store",
-    version = "1.2.2",
+    version = "1.3.0",
     url = ""
 };
 
@@ -50,6 +50,11 @@ public void OnPluginStart()
 }
 
 public void OnMapStart()
+{
+    PrecacheConfiguredSounds();
+}
+
+public void US_OnItemsReloaded(int itemCount)
 {
     PrecacheConfiguredSounds();
 }
@@ -140,7 +145,7 @@ void PrecacheConfiguredSounds()
 
 public Action Event_RoundMVP(Event event, const char[] name, bool dontBroadcast)
 {
-    if (!gCvarEnabled.BoolValue)
+    if (!US_IsEnabled() || !gCvarEnabled.BoolValue)
     {
         return Plugin_Continue;
     }
@@ -152,7 +157,7 @@ public Action Event_RoundMVP(Event event, const char[] name, bool dontBroadcast)
     }
 
     char itemId[64], sound[PLATFORM_MAX_PATH], download[PLATFORM_MAX_PATH];
-    if (!US_GetEquippedItem(client, "mvp_sound", itemId, sizeof(itemId)))
+    if (!USM_GetEquippedItemForClientTeam(client, "mvp_sound", itemId, sizeof(itemId)))
     {
         return Plugin_Continue;
     }

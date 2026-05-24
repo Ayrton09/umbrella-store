@@ -2,13 +2,13 @@
 {
     "Store Prefix"
     {
-        "es" "{PURPLE}[Umbrella Store]{DEFAULT}"
-        "en" "{PURPLE}[Umbrella Store]{DEFAULT}"
-        "ru" "{PURPLE}[Магазин Umbrella]{DEFAULT}"
-        "chi" "{PURPLE}[伞店]{DEFAULT}"
-        "pt" "{PURPLE}[Loja Umbrella]{DEFAULT}"
-        "fr" "{PURPLE}[Magasin de parapluies]{DEFAULT}"
-        "de" "{PURPLE}[Umbrella Store]{DEFAULT}"
+        "es" "{GREEN}[Umbrella Store]{DEFAULT}"
+        "en" "{GREEN}[Umbrella Store]{DEFAULT}"
+        "ru" "{GREEN}[Магазин Umbrella]{DEFAULT}"
+        "chi" "{GREEN}[伞店]{DEFAULT}"
+        "pt" "{GREEN}[Loja Umbrella]{DEFAULT}"
+        "fr" "{GREEN}[Magasin de parapluies]{DEFAULT}"
+        "de" "{GREEN}[Umbrella Store]{DEFAULT}"
     }
     "Menu Main Title"
     {
@@ -682,13 +682,13 @@
     }
     "Store Reloaded"
     {
-        "es" "{TEAM}[Umbrella Store]{DEFAULT} Config recargado. Ítems: {LIGHTBLUE}%d{DEFAULT}"
-        "en" "{TEAM}[Umbrella Store]{DEFAULT} Config reloaded. Items: {LIGHTBLUE}%d{DEFAULT}"
-        "ru" "{TEAM}[Umbrella Store]{DEFAULT} Конфигурация перезагружена. Предметы: {LIGHTBLUE}%d{DEFAULT}"
-        "chi" "{TEAM}[Umbrella Store]{DEFAULT} 配置已重新加载。项目：{LIGHTBLUE}%d{DEFAULT}"
-        "pt" "{TEAM}[Umbrella Store]{DEFAULT} Configuração recarregada. Itens: {LIGHTBLUE}%d{DEFAULT}"
-        "fr" "{TEAM}[Umbrella Store]{DEFAULT} Configuration rechargée. Articles : {LIGHTBLUE}%d{DEFAULT}"
-        "de" "{TEAM}[Umbrella Store]{DEFAULT} Konfiguration neu geladen. Artikel: {LIGHTBLUE}%d{DEFAULT}"
+        "es" "{GREEN}[Umbrella Store]{DEFAULT} Config recargado. Ítems: {LIGHTBLUE}%d{DEFAULT}"
+        "en" "{GREEN}[Umbrella Store]{DEFAULT} Config reloaded. Items: {LIGHTBLUE}%d{DEFAULT}"
+        "ru" "{GREEN}[Umbrella Store]{DEFAULT} Конфигурация перезагружена. Предметы: {LIGHTBLUE}%d{DEFAULT}"
+        "chi" "{GREEN}[Umbrella Store]{DEFAULT} 配置已重新加载。项目：{LIGHTBLUE}%d{DEFAULT}"
+        "pt" "{GREEN}[Umbrella Store]{DEFAULT} Configuração recarregada. Itens: {LIGHTBLUE}%d{DEFAULT}"
+        "fr" "{GREEN}[Umbrella Store]{DEFAULT} Configuration rechargée. Articles : {LIGHTBLUE}%d{DEFAULT}"
+        "de" "{GREEN}[Umbrella Store]{DEFAULT} Konfiguration neu geladen. Artikel: {LIGHTBLUE}%d{DEFAULT}"
     }
     "Store Main Menu Title"
     {
@@ -719,6 +719,26 @@
         "pt" "Bate-papo e Personalização"
         "fr" "Chat et personnalisation"
         "de" "Chat und Personalisierung"
+    }
+    "Store Category Accessories"
+    {
+        "es" "Accesorios"
+        "en" "Accessories"
+        "ru" "Аксессуары"
+        "chi" "配饰"
+        "pt" "Acessórios"
+        "fr" "Accessoires"
+        "de" "Accessoires"
+    }
+    "Store Category Pets"
+    {
+        "es" "Mascotas"
+        "en" "Pets"
+        "ru" "Питомцы"
+        "chi" "宠物"
+        "pt" "Mascotes"
+        "fr" "Animaux"
+        "de" "Begleiter"
     }
     "Store Category Top Credits"
     {
@@ -792,13 +812,13 @@
     }
     "Store DB Not Ready"
     {
-        "es" "{TEAM}[Umbrella Store]{DEFAULT} La base de datos no está lista todavía."
-        "en" "{TEAM}[Umbrella Store]{DEFAULT} The database is not ready yet."
-        "ru" "{TEAM}[Umbrella Store]{DEFAULT} База данных еще не готова."
-        "chi" "{TEAM}[Umbrella Store]{DEFAULT} 数据库尚未准备好。"
-        "pt" "{TEAM}[Umbrella Store]{DEFAULT} O banco de dados ainda não está pronto."
-        "fr" "{TEAM}[Umbrella Store]{DEFAULT} La base de données n'est pas encore prête."
-        "de" "{TEAM}[Umbrella Store]{DEFAULT} Die Datenbank ist noch nicht bereit."
+        "es" "{GREEN}[Umbrella Store]{DEFAULT} La base de datos no está lista todavía."
+        "en" "{GREEN}[Umbrella Store]{DEFAULT} The database is not ready yet."
+        "ru" "{GREEN}[Umbrella Store]{DEFAULT} База данных еще не готова."
+        "chi" "{GREEN}[Umbrella Store]{DEFAULT} 数据库尚未准备好。"
+        "pt" "{GREEN}[Umbrella Store]{DEFAULT} O banco de dados ainda não está pronto."
+        "fr" "{GREEN}[Umbrella Store]{DEFAULT} La base de données n'est pas encore prête."
+        "de" "{GREEN}[Umbrella Store]{DEFAULT} Die Datenbank ist noch nicht bereit."
     }
     "Casino Menu Title"
     {
@@ -949,6 +969,36 @@
         "pt" "Cores do bate-papo"
         "fr" "Couleurs de discussion"
         "de" "Chat-Farben"
+    }
+    "Accessories Menu Title"
+    {
+        "es" "=== Accesorios ===\nElige una categoría:\n "
+        "en" "=== Accessories ===\nChoose a category:\n "
+        "ru" "=== Аксессуары ===\nВыберите категорию:\n "
+        "chi" "=== 配饰 ===\n选择类别：\n "
+        "pt" "=== Acessórios ===\nEscolha uma categoria:\n "
+        "fr" "=== Accessoires ===\nChoisissez une catégorie :\n "
+        "de" "=== Accessoires ===\nWählen Sie eine Kategorie:\n "
+    }
+    "Accessories Menu Hats"
+    {
+        "es" "Sombreros y Cascos"
+        "en" "Hats and Helmets"
+        "ru" "Шляпы и шлемы"
+        "chi" "帽子和头盔"
+        "pt" "Chapéus e capacetes"
+        "fr" "Chapeaux et casques"
+        "de" "Hüte und Helme"
+    }
+    "Accessories Menu Glasses"
+    {
+        "es" "Lentes"
+        "en" "Glasses"
+        "ru" "Очки"
+        "chi" "眼镜"
+        "pt" "Óculos"
+        "fr" "Lunettes"
+        "de" "Brillen"
     }
     "Items List Menu Title"
     {
@@ -1240,6 +1290,16 @@
         "fr" "Mes éléments de discussion"
         "de" "Meine Chat-Elemente"
     }
+    "Inventory Category Accessories"
+    {
+        "es" "Mis Accesorios"
+        "en" "My Accessories"
+        "ru" "Мои аксессуары"
+        "chi" "我的配饰"
+        "pt" "Meus acessórios"
+        "fr" "Mes accessoires"
+        "de" "Meine Accessoires"
+    }
     "Inventory Teams Menu Title"
     {
         "es" "--- Inventario: Skins ---\nSelecciona un equipo:\n "
@@ -1279,6 +1339,16 @@
         "pt" "--- Inventário: Bate-papo ---\nEscolha uma categoria:\n "
         "fr" "--- Inventaire : Chat ---\nChoisissez une catégorie :\n "
         "de" "--- Inventar: Chat ---\nWählen Sie eine Kategorie:\n "
+    }
+    "Inventory Accessories Menu Title"
+    {
+        "es" "--- Inventario: Accesorios ---\nElige una categoría:\n "
+        "en" "--- Inventory: Accessories ---\nChoose a category:\n "
+        "ru" "--- Инвентарь: аксессуары ---\nВыберите категорию:\n "
+        "chi" "--- 库存：配饰 ---\n选择类别：\n "
+        "pt" "--- Inventário: Acessórios ---\nEscolha uma categoria:\n "
+        "fr" "--- Inventaire : Accessoires ---\nChoisissez une catégorie :\n "
+        "de" "--- Inventar: Accessoires ---\nWählen Sie eine Kategorie:\n "
     }
     "Inventory Equipped Suffix"
     {
@@ -3099,5 +3169,415 @@
         "pt" "Voucher resgatado: %s."
         "fr" "Voucher utilise: %s."
         "de" "Voucher eingeloest: %s."
+    }
+    "Admin Menu Category"
+    {
+        "es" "Store Admin"
+        "en" "Store Admin"
+        "ru" "Store Admin"
+        "chi" "Store Admin"
+        "pt" "Store Admin"
+        "fr" "Store Admin"
+        "de" "Store Admin"
+    }
+    "Admin Menu Title"
+    {
+        "es" "--- Store Admin ---\nElige una accion:\n "
+        "en" "--- Store Admin ---\nChoose an action:\n "
+        "ru" "--- Store Admin ---\nChoose an action:\n "
+        "chi" "--- Store Admin ---\nChoose an action:\n "
+        "pt" "--- Store Admin ---\nChoose an action:\n "
+        "fr" "--- Store Admin ---\nChoose an action:\n "
+        "de" "--- Store Admin ---\nChoose an action:\n "
+    }
+    "Admin Menu Reload"
+    {
+        "es" "Recargar config"
+        "en" "Reload config"
+        "ru" "Reload config"
+        "chi" "Reload config"
+        "pt" "Reload config"
+        "fr" "Reload config"
+        "de" "Reload config"
+    }
+    "Admin Reload Confirm Title"
+    {
+        "es" "--- Confirmar recarga ---\nEsto va a recargar items y misiones.\n "
+        "en" "--- Confirm reload ---\nThis will reload items and quests.\n "
+        "ru" "--- Confirm reload ---\nThis will reload items and quests.\n "
+        "chi" "--- Confirm reload ---\nThis will reload items and quests.\n "
+        "pt" "--- Confirm reload ---\nThis will reload items and quests.\n "
+        "fr" "--- Confirm reload ---\nThis will reload items and quests.\n "
+        "de" "--- Confirm reload ---\nThis will reload items and quests.\n "
+    }
+    "Admin Reload Confirm Yes"
+    {
+        "es" "Si, recargar config"
+        "en" "Yes, reload config"
+        "ru" "Yes, reload config"
+        "chi" "Yes, reload config"
+        "pt" "Yes, reload config"
+        "fr" "Yes, reload config"
+        "de" "Yes, reload config"
+    }
+    "Admin Reload Confirm No"
+    {
+        "es" "No, volver"
+        "en" "No, go back"
+        "ru" "No, go back"
+        "chi" "No, go back"
+        "pt" "No, go back"
+        "fr" "No, go back"
+        "de" "No, go back"
+    }
+    "Admin Menu Give Credits"
+    {
+        "es" "Dar creditos"
+        "en" "Give credits"
+        "ru" "Give credits"
+        "chi" "Give credits"
+        "pt" "Give credits"
+        "fr" "Give credits"
+        "de" "Give credits"
+    }
+    "Admin Menu Set Credits"
+    {
+        "es" "Setear creditos"
+        "en" "Set credits"
+        "ru" "Set credits"
+        "chi" "Set credits"
+        "pt" "Set credits"
+        "fr" "Set credits"
+        "de" "Set credits"
+    }
+    "Admin Menu View Inventory"
+    {
+        "es" "Ver inventario"
+        "en" "View inventory"
+        "ru" "View inventory"
+        "chi" "View inventory"
+        "pt" "View inventory"
+        "fr" "View inventory"
+        "de" "View inventory"
+    }
+    "Admin Menu Debug Player"
+    {
+        "es" "Debug de jugador"
+        "en" "Player debug"
+        "ru" "Player debug"
+        "chi" "Player debug"
+        "pt" "Player debug"
+        "fr" "Player debug"
+        "de" "Player debug"
+    }
+    "Admin Menu Debug Quests"
+    {
+        "es" "Debug de misiones"
+        "en" "Quest debug"
+        "ru" "Quest debug"
+        "chi" "Quest debug"
+        "pt" "Quest debug"
+        "fr" "Quest debug"
+        "de" "Quest debug"
+    }
+    "Admin Menu Export Profile"
+    {
+        "es" "Exportar perfil"
+        "en" "Export profile"
+        "ru" "Export profile"
+        "chi" "Export profile"
+        "pt" "Export profile"
+        "fr" "Export profile"
+        "de" "Export profile"
+    }
+    "Admin Menu Audit Global"
+    {
+        "es" "Auditoria global"
+        "en" "Global audit"
+        "ru" "Global audit"
+        "chi" "Global audit"
+        "pt" "Global audit"
+        "fr" "Global audit"
+        "de" "Global audit"
+    }
+    "Admin Menu Audit Player"
+    {
+        "es" "Auditoria de jugador"
+        "en" "Player audit"
+        "ru" "Player audit"
+        "chi" "Player audit"
+        "pt" "Player audit"
+        "fr" "Player audit"
+        "de" "Player audit"
+    }
+    "Admin Menu Open Store"
+    {
+        "es" "Abrir store"
+        "en" "Open store"
+        "ru" "Open store"
+        "chi" "Open store"
+        "pt" "Open store"
+        "fr" "Open store"
+        "de" "Open store"
+    }
+    "Admin Target Menu Title"
+    {
+        "es" "--- %s ---\nElige un jugador:\n "
+        "en" "--- %s ---\nChoose a player:\n "
+        "ru" "--- %s ---\nChoose a player:\n "
+        "chi" "--- %s ---\nChoose a player:\n "
+        "pt" "--- %s ---\nChoose a player:\n "
+        "fr" "--- %s ---\nChoose a player:\n "
+        "de" "--- %s ---\nChoose a player:\n "
+    }
+    "Admin Amount Menu Title"
+    {
+        "es" "--- %s ---\nJugador: %N\nCreditos actuales: %s\n "
+        "en" "--- %s ---\nPlayer: %N\nCurrent credits: %s\n "
+        "ru" "--- %s ---\nPlayer: %N\nCurrent credits: %s\n "
+        "chi" "--- %s ---\nPlayer: %N\nCurrent credits: %s\n "
+        "pt" "--- %s ---\nPlayer: %N\nCurrent credits: %s\n "
+        "fr" "--- %s ---\nPlayer: %N\nCurrent credits: %s\n "
+        "de" "--- %s ---\nPlayer: %N\nCurrent credits: %s\n "
+    }
+    "Admin No Loaded Players"
+    {
+        "es" "No hay jugadores cargados por la store."
+        "en" "There are no store-loaded players."
+        "ru" "There are no store-loaded players."
+        "chi" "There are no store-loaded players."
+        "pt" "There are no store-loaded players."
+        "fr" "There are no store-loaded players."
+        "de" "There are no store-loaded players."
+    }
+    "Admin Target Not Loaded"
+    {
+        "es" "Ese jugador ya no esta disponible o la store no termino de cargarlo."
+        "en" "That player is no longer available or the store has not finished loading them."
+        "ru" "That player is no longer available or the store has not finished loading them."
+        "chi" "That player is no longer available or the store has not finished loading them."
+        "pt" "That player is no longer available or the store has not finished loading them."
+        "fr" "That player is no longer available or the store has not finished loading them."
+        "de" "That player is no longer available or the store has not finished loading them."
+    }
+    "Admin Inventory Title"
+    {
+        "es" "--- Inventario de %N ---\n[E] = equipado\n "
+        "en" "--- Inventory for %N ---\n[E] = equipped\n "
+        "ru" "--- Inventory for %N ---\n[E] = equipped\n "
+        "chi" "--- Inventory for %N ---\n[E] = equipped\n "
+        "pt" "--- Inventory for %N ---\n[E] = equipped\n "
+        "fr" "--- Inventory for %N ---\n[E] = equipped\n "
+        "de" "--- Inventory for %N ---\n[E] = equipped\n "
+    }
+    "Admin Inventory Empty"
+    {
+        "es" "Este jugador no tiene items."
+        "en" "This player has no items."
+        "ru" "This player has no items."
+        "chi" "This player has no items."
+        "pt" "This player has no items."
+        "fr" "This player has no items."
+        "de" "This player has no items."
+    }
+    "Admin Credit Custom"
+    {
+        "es" "Monto custom por chat"
+        "en" "Custom amount by chat"
+        "ru" "Custom amount by chat"
+        "chi" "Custom amount by chat"
+        "pt" "Custom amount by chat"
+        "fr" "Custom amount by chat"
+        "de" "Custom amount by chat"
+    }
+    "Admin Credit Prompt"
+    {
+        "es" "%s para %N: escribi el monto por chat. Usa cancel para volver."
+        "en" "%s for %N: type the amount in chat. Use cancel to go back."
+        "ru" "%s for %N: type the amount in chat. Use cancel to go back."
+        "chi" "%s for %N: type the amount in chat. Use cancel to go back."
+        "pt" "%s for %N: type the amount in chat. Use cancel to go back."
+        "fr" "%s for %N: type the amount in chat. Use cancel to go back."
+        "de" "%s for %N: type the amount in chat. Use cancel to go back."
+    }
+    "Admin Credit Cancelled"
+    {
+        "es" "Edicion de creditos cancelada."
+        "en" "Credit edit cancelled."
+        "ru" "Credit edit cancelled."
+        "chi" "Credit edit cancelled."
+        "pt" "Credit edit cancelled."
+        "fr" "Credit edit cancelled."
+        "de" "Credit edit cancelled."
+    }
+    "Admin Credit Invalid Signed"
+    {
+        "es" "Monto invalido. Usa un numero como 1000 o -1000."
+        "en" "Invalid amount. Use a number like 1000 or -1000."
+        "ru" "Invalid amount. Use a number like 1000 or -1000."
+        "chi" "Invalid amount. Use a number like 1000 or -1000."
+        "pt" "Invalid amount. Use a number like 1000 or -1000."
+        "fr" "Invalid amount. Use a number like 1000 or -1000."
+        "de" "Invalid amount. Use a number like 1000 or -1000."
+    }
+    "Admin Credit Invalid Set"
+    {
+        "es" "Monto invalido. Usa 0 o un numero positivo."
+        "en" "Invalid amount. Use 0 or a positive number."
+        "ru" "Invalid amount. Use 0 or a positive number."
+        "chi" "Invalid amount. Use 0 or a positive number."
+        "pt" "Invalid amount. Use 0 or a positive number."
+        "fr" "Invalid amount. Use 0 or a positive number."
+        "de" "Invalid amount. Use 0 or a positive number."
+    }
+    "Admin Credit Failed"
+    {
+        "es" "No se pudieron actualizar los creditos."
+        "en" "Could not update credits."
+        "ru" "Could not update credits."
+        "chi" "Could not update credits."
+        "pt" "Could not update credits."
+        "fr" "Could not update credits."
+        "de" "Could not update credits."
+    }
+    "Admin Inventory Category Title"
+    {
+        "es" "--- Inventario de %N ---\nElige una categoria:\n "
+        "en" "--- Inventory for %N ---\nChoose a category:\n "
+        "ru" "--- Inventory for %N ---\nChoose a category:\n "
+        "chi" "--- Inventory for %N ---\nChoose a category:\n "
+        "pt" "--- Inventory for %N ---\nChoose a category:\n "
+        "fr" "--- Inventory for %N ---\nChoose a category:\n "
+        "de" "--- Inventory for %N ---\nChoose a category:\n "
+    }
+    "Admin Inventory Skins Title"
+    {
+        "es" "--- Inventario de %N: Skins de Jugador ---\nSelecciona un equipo:\n "
+        "en" "--- Inventory for %N: Player Skins ---\nSelect a team:\n "
+        "ru" "--- Inventory for %N: Player Skins ---\nSelect a team:\n "
+        "chi" "--- Inventory for %N: Player Skins ---\nSelect a team:\n "
+        "pt" "--- Inventory for %N: Player Skins ---\nSelect a team:\n "
+        "fr" "--- Inventory for %N: Player Skins ---\nSelect a team:\n "
+        "de" "--- Inventory for %N: Player Skins ---\nSelect a team:\n "
+    }
+    "Admin Inventory Chat Title"
+    {
+        "es" "--- Inventario de %N: Chat y Personalizacion ---\nElige una categoria:\n "
+        "en" "--- Inventory for %N: Chat and Personalization ---\nChoose a category:\n "
+        "ru" "--- Inventory for %N: Chat and Personalization ---\nChoose a category:\n "
+        "chi" "--- Inventory for %N: Chat and Personalization ---\nChoose a category:\n "
+        "pt" "--- Inventory for %N: Chat and Personalization ---\nChoose a category:\n "
+        "fr" "--- Inventory for %N: Chat and Personalization ---\nChoose a category:\n "
+        "de" "--- Inventory for %N: Chat and Personalization ---\nChoose a category:\n "
+    }
+    "Admin Inventory Category Equipped"
+    {
+        "es" "Equipados"
+        "en" "Equipped"
+        "ru" "Equipped"
+        "chi" "Equipped"
+        "pt" "Equipped"
+        "fr" "Equipped"
+        "de" "Equipped"
+    }
+    "Admin Inventory Category Other"
+    {
+        "es" "Otros items"
+        "en" "Other items"
+        "ru" "Other items"
+        "chi" "Other items"
+        "pt" "Other items"
+        "fr" "Other items"
+        "de" "Other items"
+    }
+    "Admin Inventory Category All"
+    {
+        "es" "Todos"
+        "en" "All"
+        "ru" "All"
+        "chi" "All"
+        "pt" "All"
+        "fr" "All"
+        "de" "All"
+    }
+    "Admin Inventory List Title"
+    {
+        "es" "--- Inventario de %N: %s ---\n[E] = equipado\n "
+        "en" "--- Inventory for %N: %s ---\n[E] = equipped\n "
+        "ru" "--- Inventory for %N: %s ---\n[E] = equipped\n "
+        "chi" "--- Inventory for %N: %s ---\n[E] = equipped\n "
+        "pt" "--- Inventory for %N: %s ---\n[E] = equipped\n "
+        "fr" "--- Inventory for %N: %s ---\n[E] = equipped\n "
+        "de" "--- Inventory for %N: %s ---\n[E] = equipped\n "
+    }
+    "Admin Inventory Item Title"
+    {
+        "es" "--- %N ---\nItem: %s\nTipo: %s\nEstado: %s\n "
+        "en" "--- %N ---\nItem: %s\nType: %s\nState: %s\n "
+        "ru" "--- %N ---\nItem: %s\nType: %s\nState: %s\n "
+        "chi" "--- %N ---\nItem: %s\nType: %s\nState: %s\n "
+        "pt" "--- %N ---\nItem: %s\nType: %s\nState: %s\n "
+        "fr" "--- %N ---\nItem: %s\nType: %s\nState: %s\n "
+        "de" "--- %N ---\nItem: %s\nType: %s\nState: %s\n "
+    }
+    "Admin Inventory Equip Item"
+    {
+        "es" "Equipar item"
+        "en" "Equip item"
+        "ru" "Equip item"
+        "chi" "Equip item"
+        "pt" "Equip item"
+        "fr" "Equip item"
+        "de" "Equip item"
+    }
+    "Admin Inventory Unequip Item"
+    {
+        "es" "Desequipar item"
+        "en" "Unequip item"
+        "ru" "Unequip item"
+        "chi" "Unequip item"
+        "pt" "Unequip item"
+        "fr" "Unequip item"
+        "de" "Unequip item"
+    }
+    "Admin Inventory Not Equippable"
+    {
+        "es" "Este item no es equipable"
+        "en" "This item is not equippable"
+        "ru" "This item is not equippable"
+        "chi" "This item is not equippable"
+        "pt" "This item is not equippable"
+        "fr" "This item is not equippable"
+        "de" "This item is not equippable"
+    }
+    "Admin Inventory Equipped Item"
+    {
+        "es" "Item equipado a %N."
+        "en" "Item equipped for %N."
+        "ru" "Item equipped for %N."
+        "chi" "Item equipped for %N."
+        "pt" "Item equipped for %N."
+        "fr" "Item equipped for %N."
+        "de" "Item equipped for %N."
+    }
+    "Admin Inventory Unequipped Item"
+    {
+        "es" "Item desequipado a %N."
+        "en" "Item unequipped for %N."
+        "ru" "Item unequipped for %N."
+        "chi" "Item unequipped for %N."
+        "pt" "Item unequipped for %N."
+        "fr" "Item unequipped for %N."
+        "de" "Item unequipped for %N."
+    }
+    "Admin Inventory Toggle Failed"
+    {
+        "es" "No se pudo cambiar el estado del item."
+        "en" "Could not change the item state."
+        "ru" "Could not change the item state."
+        "chi" "Could not change the item state."
+        "pt" "Could not change the item state."
+        "fr" "Could not change the item state."
+        "de" "Could not change the item state."
     }
 }

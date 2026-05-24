@@ -2,7 +2,7 @@
 
 # Umbrella Store
 
-Current package version: `1.2.2`.
+Current package version: `1.3.0`.
 
 Umbrella Store is a modular and modern SourceMod store suite built from the ground up to work as an extensible platform, not just a fixed set of casino plugins.
 
@@ -18,7 +18,7 @@ This repository now targets three layers:
 
 ## Current architecture highlights
 
-- Public API v5 in [`addons/sourcemod/scripting/include/umbrella_store.inc`](addons/sourcemod/scripting/include/umbrella_store.inc)
+- Public API v7 in [`addons/sourcemod/scripting/include/umbrella_store.inc`](addons/sourcemod/scripting/include/umbrella_store.inc)
 - Shared database/storage access exported by the core
 - Item schema v2 with backward compatibility for old item configs
 - Item metadata is normalized by the core so Source 1 modules can read fields such as `model`, `material`, `color`, `sound`, `effect`, `file`, `duration`, `grenade`, `position`, `angles`, and module-specific options through the public API

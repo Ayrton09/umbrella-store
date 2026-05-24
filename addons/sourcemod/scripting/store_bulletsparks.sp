@@ -19,7 +19,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Bullet Sparks",
     author = "Ayrton09",
     description = "Bullet spark impact item module for Umbrella Store",
-    version = "1.2.2",
+    version = "1.3.0",
     url = ""
 };
 
@@ -71,7 +71,7 @@ public Action Command_HideBulletSparks(int client, int args)
 
 public Action Event_BulletImpact(Event event, const char[] name, bool dontBroadcast)
 {
-    if (!gCvarEnabled.BoolValue)
+    if (!US_IsEnabled() || !gCvarEnabled.BoolValue)
     {
         return Plugin_Continue;
     }
@@ -83,7 +83,7 @@ public Action Event_BulletImpact(Event event, const char[] name, bool dontBroadc
     }
 
     char itemId[64];
-    if (!US_GetEquippedItem(client, "bulletsparks", itemId, sizeof(itemId)))
+    if (!USM_GetEquippedItemForClientTeam(client, "bulletsparks", itemId, sizeof(itemId)))
     {
         return Plugin_Continue;
     }

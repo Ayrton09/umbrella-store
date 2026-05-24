@@ -2,6 +2,7 @@
 #pragma newdecls required
 
 #include <sourcemod>
+#include <adminmenu>
 #include <cstrike>
 #include <sdktools>
 #include <sdkhooks>
@@ -15,7 +16,7 @@
 #define STORE_ITEMS_DIR          "configs/umbrella_store/items.d"
 #define STORE_QUESTS_CONFIG      "configs/umbrella_store/umbrella_store_quests.txt"
 #define STORE_LOG_PREFIX         "[Umbrella Store]"
-#define STORE_API_VERSION        5
+#define STORE_API_VERSION        7
 #define STORE_MAX_CREDITS        2000000000
 #define STORE_SELL_PERCENT       50
 #define PREVIEW_LIFETIME         15.0
@@ -134,6 +135,18 @@ enum struct InventoryItem
     int is_equipped;
 }
 
+enum StoreAdminAction
+{
+    StoreAdminAction_None = 0,
+    StoreAdminAction_GiveCredits,
+    StoreAdminAction_SetCredits,
+    StoreAdminAction_ViewInventory,
+    StoreAdminAction_DebugPlayer,
+    StoreAdminAction_DebugQuests,
+    StoreAdminAction_ExportProfile,
+    StoreAdminAction_AuditPlayer
+}
+
 ArrayList g_aItems;
 ArrayList g_hInventory[MAXPLAYERS + 1];
 ArrayList g_aCasinoIds;
@@ -174,6 +187,7 @@ bool g_bDetailFromSearch[MAXPLAYERS + 1] = {false, ...};
 int g_iPreviewEntity[MAXPLAYERS + 1] = {INVALID_ENT_REFERENCE, ...};
 char g_szBrowseType[MAXPLAYERS + 1][16];
 int g_iBrowseTeam[MAXPLAYERS + 1] = {0, ...};
+char g_szBrowseCategory[MAXPLAYERS + 1][32];
 char g_szInvFilter[MAXPLAYERS + 1][32];
 char g_szSearchQuery[MAXPLAYERS + 1][64];
 char g_szLastDetailItem[MAXPLAYERS + 1][32];
@@ -208,6 +222,7 @@ ConVar gCvarCreditsDefuseAmount;
 ConVar gCvarCreditsAfkMax;
 ConVar gCvarCreditsNotifyDelay;
 ConVar gCvarCreditsAutosaveInterval;
+ConVar gCvarStoreAdminFlag;
 ConVar gCvarInitialCredits;
 ConVar gCvarSellPercent;
 ConVar gCvarPreviewLifetime;
@@ -226,6 +241,11 @@ Handle g_hCreditsTimeTimer = null;
 Handle g_hCreditsAutosaveTimer = null;
 Handle g_hCreditNotifyTimer[MAXPLAYERS + 1] = {null, ...};
 Handle g_hPreviewTimer[MAXPLAYERS + 1] = {null, ...};
+Handle g_hAdminMenu = INVALID_HANDLE;
+TopMenuObject g_tmoStoreAdmin = INVALID_TOPMENUOBJECT;
+StoreAdminAction g_AdminMenuAction[MAXPLAYERS + 1];
+int g_iAdminMenuTarget[MAXPLAYERS + 1] = {0, ...};
+bool g_bAwaitingAdminCreditAmount[MAXPLAYERS + 1] = {false, ...};
 bool g_bCreditsDirty[MAXPLAYERS + 1] = {false, ...};
 int g_iCreditSaveToken[MAXPLAYERS + 1] = {0, ...};
 int g_iCreditSaveInFlight[MAXPLAYERS + 1] = {0, ...};
@@ -251,6 +271,9 @@ Handle g_hFwdTradePost = null;
 Handle g_hFwdCreditsChanged = null;
 Handle g_hFwdInventoryChanged = null;
 Handle g_hFwdQuestCompleted = null;
+Handle g_hFwdStoreEnabledChanged = null;
+Handle g_hFwdClientLoaded = null;
+Handle g_hFwdItemsReloaded = null;
 
 // =========================================================================
 // API PÚBLICA
@@ -262,6 +285,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
     RegPluginLibrary("umbrella_store");
     CreateNative("US_GetApiVersion", Native_US_GetApiVersion);
     CreateNative("US_IsLoaded", Native_US_IsLoaded);
+    CreateNative("US_IsEnabled", Native_US_IsEnabled);
     CreateNative("US_GetCredits", Native_US_GetCredits);
     CreateNative("US_SetCredits", Native_US_SetCredits);
     CreateNative("US_AddCredits", Native_US_AddCredits);
@@ -287,6 +311,9 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
     CreateNative("US_TryPurchaseItem", Native_US_TryPurchaseItem);
     CreateNative("US_CanEquipItem", Native_US_CanEquipItem);
     CreateNative("US_TryEquipItem", Native_US_TryEquipItem);
+    CreateNative("US_TryUnequipItem", Native_US_TryUnequipItem);
+    CreateNative("US_SetItemEquipped", Native_US_SetItemEquipped);
+    CreateNative("US_CanUseItem", Native_US_CanUseItem);
     CreateNative("US_RegisterItemType", Native_US_RegisterItemType);
     CreateNative("US_UnregisterItemType", Native_US_UnregisterItemType);
     CreateNative("US_GetItemMetadata", Native_US_GetItemMetadata);
@@ -320,7 +347,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Core",
     author = "Ayrton09",
     description = "Core store module for Umbrella Store",
-    version = "1.2.2",
+    version = "1.3.0",
     url = ""
 };
 
@@ -365,6 +392,9 @@ public void OnPluginStart()
     g_hFwdCreditsChanged = CreateGlobalForward("US_OnCreditsChanged", ET_Ignore, Param_Cell, Param_Cell, Param_Cell, Param_String);
     g_hFwdInventoryChanged = CreateGlobalForward("US_OnInventoryChanged", ET_Ignore, Param_Cell, Param_String, Param_String);
     g_hFwdQuestCompleted = CreateGlobalForward("US_OnQuestCompleted", ET_Ignore, Param_Cell, Param_String, Param_Cell);
+    g_hFwdStoreEnabledChanged = CreateGlobalForward("US_OnStoreEnabledChanged", ET_Ignore, Param_Cell);
+    g_hFwdClientLoaded = CreateGlobalForward("US_OnClientLoaded", ET_Ignore, Param_Cell);
+    g_hFwdItemsReloaded = CreateGlobalForward("US_OnItemsReloaded", ET_Ignore, Param_Cell);
 
     RegConsoleCmd("sm_store", Cmd_Store);
     RegConsoleCmd("sm_tienda", Cmd_Store);
@@ -420,6 +450,8 @@ public void OnPluginStart()
     RegAdminCmd("sm_storedebug", Cmd_StoreDebug, ADMFLAG_ROOT);
     RegAdminCmd("sm_storequestsdebug", Cmd_StoreQuestsDebug, ADMFLAG_ROOT);
     RegAdminCmd("sm_storeexport", Cmd_StoreExportTarget, ADMFLAG_ROOT);
+    RegConsoleCmd("sm_storeadmin", Cmd_StoreAdminMenu);
+    RegConsoleCmd("sm_store_admin", Cmd_StoreAdminMenu);
 
     SetupCreditCvars();
     HookConVarChange(gCvarEnablePlayerSkins, OnPlayerSkinsToggleChanged);
@@ -445,6 +477,15 @@ public void OnPluginStart()
     RegisterBuiltinItemTypes();
     RegisterBuiltinStatKeys();
     LoadItemsConfig();
+
+    if (LibraryExists("adminmenu"))
+    {
+        Handle topmenu = GetAdminTopMenu();
+        if (topmenu != INVALID_HANDLE)
+        {
+            OnAdminMenuReady(topmenu);
+        }
+    }
 }
 
 public void OnConfigsExecuted()
@@ -593,6 +634,7 @@ void ResetClientData(int client, bool clearInventory)
     g_bDetailFromSearch[client] = false;
     g_szBrowseType[client][0] = '\0';
     g_iBrowseTeam[client] = 0;
+    g_szBrowseCategory[client][0] = '\0';
     g_szInvFilter[client][0] = '\0';
     g_szSearchQuery[client][0] = '\0';
     g_szLastDetailItem[client][0] = '\0';
@@ -605,6 +647,9 @@ void ResetClientData(int client, bool clearInventory)
     g_iTradeTargetInvVersion[client] = 0;
     g_bAwaitingMarketPrice[client] = false;
     g_szPendingMarketItem[client][0] = '\0';
+    g_AdminMenuAction[client] = StoreAdminAction_None;
+    g_iAdminMenuTarget[client] = 0;
+    g_bAwaitingAdminCreditAmount[client] = false;
     g_fLastActivity[client] = GetGameTime();
     g_iCreditReasonTime[client] = 0;
     g_iCreditReasonKill[client] = 0;
@@ -1062,6 +1107,46 @@ void StoreConfigStringMetadata(KeyValues kv, const char[] itemId, const char[] c
     SetItemMetadataValueIfNotEmpty(itemId, metadataKey, value);
 }
 
+void StoreConfigNestedDecalsMetadata(KeyValues kv, const char[] itemId)
+{
+    char existing[512];
+    if (GetItemMetadataValue(itemId, "decals", existing, sizeof(existing)) && existing[0] != '\0')
+    {
+        return;
+    }
+
+    if (!kv.JumpToKey("Decals", false))
+    {
+        return;
+    }
+
+    char decals[512], material[PLATFORM_MAX_PATH];
+    if (kv.GotoFirstSubKey())
+    {
+        do
+        {
+            kv.GetString("material", material, sizeof(material), "");
+            TrimString(material);
+            if (material[0] == '\0')
+            {
+                continue;
+            }
+
+            if (decals[0] != '\0')
+            {
+                StrCat(decals, sizeof(decals), ";");
+            }
+            StrCat(decals, sizeof(decals), material);
+        }
+        while (kv.GotoNextKey());
+
+        kv.GoBack();
+    }
+
+    kv.GoBack();
+    SetItemMetadataValueIfNotEmpty(itemId, "decals", decals);
+}
+
 void StoreCommonItemMetadata(KeyValues kv, StoreItem item)
 {
     SetItemMetadataValueIfNotEmpty(item.id, "name", item.name);
@@ -1112,6 +1197,10 @@ void StoreCommonItemMetadata(KeyValues kv, StoreItem item)
     StoreConfigStringMetadata(kv, item.id, "idle", "idle");
     StoreConfigStringMetadata(kv, item.id, "idle2", "idle2");
     StoreConfigStringMetadata(kv, item.id, "run", "run");
+    StoreConfigStringMetadata(kv, item.id, "spawn", "spawn");
+    StoreConfigStringMetadata(kv, item.id, "death", "death");
+    StoreConfigStringMetadata(kv, item.id, "spawn_delay", "spawn_delay");
+    StoreConfigStringMetadata(kv, item.id, "scale", "scale");
     StoreConfigStringMetadata(kv, item.id, "rainbow", "rainbow");
     StoreConfigStringMetadata(kv, item.id, "random", "random");
 
@@ -1123,6 +1212,7 @@ void StoreCommonItemMetadata(KeyValues kv, StoreItem item)
     StoreConfigStringMetadata(kv, item.id, "end_size", "end_size");
     StoreConfigStringMetadata(kv, item.id, "base spread", "base_spread");
     StoreConfigStringMetadata(kv, item.id, "base_spread", "base_spread");
+    StoreConfigStringMetadata(kv, item.id, "speed spread", "spread_speed");
     StoreConfigStringMetadata(kv, item.id, "spread speed", "spread_speed");
     StoreConfigStringMetadata(kv, item.id, "spread_speed", "spread_speed");
     StoreConfigStringMetadata(kv, item.id, "speed", "speed");
@@ -1131,6 +1221,7 @@ void StoreCommonItemMetadata(KeyValues kv, StoreItem item)
     StoreConfigStringMetadata(kv, item.id, "jet_length", "jet_length");
     StoreConfigStringMetadata(kv, item.id, "twist", "twist");
     StoreConfigStringMetadata(kv, item.id, "density", "density");
+    StoreConfigNestedDecalsMetadata(kv, item.id);
 
     if (item.metadata[0] != '\0')
     {
@@ -1608,6 +1699,11 @@ bool IsItemTypeEquippable(const char[] type)
 
 bool IsItemTypeExclusive(const char[] type)
 {
+    if (StrEqual(type, "pet"))
+    {
+        return true;
+    }
+
     StoreItemTypeDefinition definition;
     if (FindItemTypeDefinition(type, definition))
     {
@@ -2672,9 +2768,45 @@ void ForwardQuestCompleted(int client, const char[] questId, int rewardCredits)
     Call_Finish();
 }
 
+void ForwardStoreEnabledChanged(bool enabled)
+{
+    if (g_hFwdStoreEnabledChanged == null)
+    {
+        return;
+    }
+
+    Call_StartForward(g_hFwdStoreEnabledChanged);
+    Call_PushCell(enabled ? 1 : 0);
+    Call_Finish();
+}
+
+void ForwardClientLoaded(int client)
+{
+    if (g_hFwdClientLoaded == null)
+    {
+        return;
+    }
+
+    Call_StartForward(g_hFwdClientLoaded);
+    Call_PushCell(client);
+    Call_Finish();
+}
+
+void ForwardItemsReloaded()
+{
+    if (g_hFwdItemsReloaded == null)
+    {
+        return;
+    }
+
+    Call_StartForward(g_hFwdItemsReloaded);
+    Call_PushCell(g_aItems != null ? g_aItems.Length : 0);
+    Call_Finish();
+}
+
 bool GiveItemToClient(int client, const char[] itemId, bool equip = false, bool saveNow = true)
 {
-    if (!IsValidHumanClient(client) || !g_bIsLoaded[client] || g_hInventory[client] == null || g_DB == null)
+    if (!IsStoreEnabled() || !IsValidHumanClient(client) || !g_bIsLoaded[client] || g_hInventory[client] == null || g_DB == null)
     {
         return false;
     }
@@ -2743,7 +2875,7 @@ bool GiveItemToClient(int client, const char[] itemId, bool equip = false, bool 
 
 bool RemoveItemFromClient(int client, const char[] itemId, bool saveNow = true)
 {
-    if (!IsValidHumanClient(client) || !g_bIsLoaded[client] || g_hInventory[client] == null || g_DB == null)
+    if (!IsStoreEnabled() || !IsValidHumanClient(client) || !g_bIsLoaded[client] || g_hInventory[client] == null || g_DB == null)
     {
         return false;
     }
@@ -2827,6 +2959,7 @@ void SetupCreditCvars()
     gCvarCreditsAfkMax = CreateConVar("store_credits_afk_max", "90", "Maximum idle seconds allowed to receive time-based credits.", FCVAR_NONE, true, 15.0);
     gCvarCreditsNotifyDelay = CreateConVar("store_credits_notify_delay", "2.0", "Delay in seconds to group credit messages and reduce spam.", FCVAR_NONE, true, 0.1);
     gCvarCreditsAutosaveInterval = CreateConVar("store_credits_autosave_interval", "120.0", "Auto-save interval for credits in seconds.", FCVAR_NONE, true, 30.0);
+    gCvarStoreAdminFlag = CreateConVar("store_admin_flag", "z", "SourceMod admin flag required for the Umbrella Store admin menu. Default z = root.", FCVAR_NOTIFY);
     gCvarInitialCredits = CreateConVar("store_initial_credits", "50000", "Initial credits for new players.", FCVAR_NONE, true, 0.0);
     gCvarSellPercent = CreateConVar("store_sell_percent", "50", "Refund percentage when selling items.", FCVAR_NONE, true, 0.0, true, 100.0);
     gCvarPreviewLifetime = CreateConVar("store_preview_lifetime", "15.0", "Preview lifetime in seconds.", FCVAR_NONE, true, 1.0);
@@ -2841,15 +2974,53 @@ void SetupCreditCvars()
     gCvarMarketMaxPrice = CreateConVar("umbrella_store_market_max_price", "1000000", "Maximum price for marketplace listings. 0 disables the cap.", FCVAR_NONE, true, 0.0);
     gCvarMarketListingHours = CreateConVar("umbrella_store_market_listing_hours", "72", "Hours before a marketplace listing expires.", FCVAR_NONE, true, 1.0, true, 720.0);
     gCvarMarketFeePercent = CreateConVar("umbrella_store_market_fee_percent", "5", "Marketplace fee percentage applied to completed sales.", FCVAR_NONE, true, 0.0, true, 100.0);
+    HookConVarChange(gCvarStoreEnabled, OnStoreEnabledChanged);
+    HookConVarChange(gCvarStoreAdminFlag, OnStoreAdminFlagChanged);
     HookConVarChange(gCvarCreditsTimeInterval, OnCreditTimerSettingsChanged);
     HookConVarChange(gCvarCreditsAutosaveInterval, OnCreditTimerSettingsChanged);
 
     AutoExecConfig(true, "umbrella_store_core");
 }
 
+public void OnStoreEnabledChanged(ConVar convar, const char[] oldValue, const char[] newValue)
+{
+    bool enabled = StringToInt(newValue) != 0;
+
+    for (int i = 1; i <= MaxClients; i++)
+    {
+        if (!IsValidHumanClient(i))
+        {
+            continue;
+        }
+
+        RemovePreview(i);
+
+        if (!IsPlayerAlive(i))
+        {
+            continue;
+        }
+
+        if (enabled && ArePlayerSkinsEnabled())
+        {
+            ApplyPlayerSkin(i);
+        }
+        else if (!enabled)
+        {
+            ResetPlayerModelToDefault(i);
+        }
+    }
+
+    ForwardStoreEnabledChanged(enabled);
+}
+
 public void OnCreditTimerSettingsChanged(ConVar convar, const char[] oldValue, const char[] newValue)
 {
     StartCreditTimers();
+}
+
+public void OnStoreAdminFlagChanged(ConVar convar, const char[] oldValue, const char[] newValue)
+{
+    RefreshStoreAdminTopMenu();
 }
 
 void StartCreditTimers()
@@ -4836,6 +5007,7 @@ void LoadItemsConfig()
         loadedNameColors,
         loadedChatColors,
         loadedCustom);
+    ForwardItemsReloaded();
 }
 
 public Action Cmd_ReloadStore(int client, int args)
@@ -6159,11 +6331,14 @@ public void OnInventoryLoaded(Database db, DBResultSet results, const char[] err
     g_bIsLoading[client] = false;
     MarkInventoryChanged(client);
     g_iMenuInventoryVersion[client] = g_iInventoryVersion[client];
+    NormalizeEquippedItemConflicts(client);
 
-    if (IsValidHumanClient(client) && IsPlayerAlive(client))
+    if (ArePlayerSkinsEnabled() && IsValidHumanClient(client) && IsPlayerAlive(client))
     {
         CreateTimer(0.1, Timer_ApplySkin, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
     }
+
+    ForwardClientLoaded(client);
 }
 
 bool SavePlayer(int client)
@@ -6276,16 +6451,26 @@ public Action Command_SayTeam(int client, const char[] command, int argc)
 
 Action ProcessChat(int client, bool isTeamChat)
 {
-    if (!IsValidHumanClient(client) || !g_bIsLoaded[client] || g_hInventory[client] == null || !IsStoreEnabled())
+    if (!IsValidHumanClient(client))
+    {
+        return Plugin_Continue;
+    }
+
+    char text[192];
+    GetCmdArgString(text, sizeof(text));
+    StripQuotes(text);
+
+    if (g_bAwaitingAdminCreditAmount[client])
+    {
+        return HandleStoreAdminCreditAmountInput(client, text);
+    }
+
+    if (!g_bIsLoaded[client] || g_hInventory[client] == null || !IsStoreEnabled())
     {
         return Plugin_Continue;
     }
 
     MarkClientActive(client);
-
-    char text[192];
-    GetCmdArgString(text, sizeof(text));
-    StripQuotes(text);
 
     if (text[0] == '\0' || text[0] == '/')
     {
@@ -6410,11 +6595,31 @@ Action ProcessChat(int client, bool isTeamChat)
 // =========================================================================
 // EQUIPAMIENTO / SKINS
 // =========================================================================
+bool IsAnyStoreTeam(int team)
+{
+    return team == 0 || team == 4;
+}
+
+bool StoreItemTeamMatches(int itemTeam, int clientTeam)
+{
+    return IsAnyStoreTeam(itemTeam) || itemTeam == clientTeam;
+}
+
+bool StoreItemTeamsCanConflict(int firstTeam, int secondTeam)
+{
+    return IsAnyStoreTeam(firstTeam) || IsAnyStoreTeam(secondTeam) || firstTeam == secondTeam;
+}
+
 bool ShouldUnequipSameCategory(StoreItem targetItem, StoreItem otherItem)
 {
+    if (StrEqual(targetItem.type, "pet") && StrEqual(otherItem.type, "pet"))
+    {
+        return true;
+    }
+
     if (StrEqual(targetItem.type, "skin") && StrEqual(otherItem.type, "skin"))
     {
-        return targetItem.team == 0 || otherItem.team == 0 || targetItem.team == otherItem.team;
+        return StoreItemTeamsCanConflict(targetItem.team, otherItem.team);
     }
 
     if (StrEqual(targetItem.type, "tag") && StrEqual(otherItem.type, "tag"))
@@ -6434,7 +6639,7 @@ bool ShouldUnequipSameCategory(StoreItem targetItem, StoreItem otherItem)
 
     if (IsItemTypeExclusive(targetItem.type) && StrEqual(targetItem.type, otherItem.type))
     {
-        return true;
+        return StoreItemTeamsCanConflict(targetItem.team, otherItem.team);
     }
 
     char targetCategory[32], otherCategory[32];
@@ -6450,7 +6655,7 @@ bool ShouldUnequipSameCategory(StoreItem targetItem, StoreItem otherItem)
 
     if (targetCategory[0] != '\0' && StrEqual(targetCategory, otherCategory) && IsItemTypeExclusive(targetItem.type))
     {
-        return true;
+        return StoreItemTeamsCanConflict(targetItem.team, otherItem.team);
     }
 
     return false;
@@ -6519,7 +6724,7 @@ void GetReadableTeamName(int client, char[] buffer, int maxlen)
 
 bool ArePlayerSkinsEnabled()
 {
-    return (gCvarEnablePlayerSkins == null || gCvarEnablePlayerSkins.BoolValue);
+    return IsStoreEnabled() && (gCvarEnablePlayerSkins == null || gCvarEnablePlayerSkins.BoolValue);
 }
 
 public void OnPlayerSkinsToggleChanged(ConVar convar, const char[] oldValue, const char[] newValue)
@@ -6533,11 +6738,11 @@ public void OnPlayerSkinsToggleChanged(ConVar convar, const char[] oldValue, con
             continue;
         }
 
-        if (enabled)
+        if (enabled && IsStoreEnabled())
         {
             ApplyPlayerSkin(i);
         }
-        else
+        else if (!enabled)
         {
             ResetPlayerModelToDefault(i);
         }
@@ -6551,12 +6756,12 @@ void ApplyPlayerSkin(int client)
         return;
     }
 
-    ResetPlayerModelToDefault(client);
-
     if (!ArePlayerSkinsEnabled())
     {
         return;
     }
+
+    ResetPlayerModelToDefault(client);
 
     int team = GetClientTeam(client);
     InventoryItem inv;
@@ -6575,7 +6780,7 @@ void ApplyPlayerSkin(int client)
             continue;
         }
 
-        if (!StrEqual(item.type, "skin") || (item.team != 0 && item.team != team))
+        if (!StrEqual(item.type, "skin") || !StoreItemTeamMatches(item.team, team))
         {
             continue;
         }
@@ -6621,9 +6826,9 @@ bool CanUseEquipAction(int client)
     return true;
 }
 
-bool SetItemEquipped(int client, const char[] itemId, bool equipNow, bool notify = true, bool respectCooldown = true)
+bool SetItemEquipped(int client, const char[] itemId, bool equipNow, bool notify = true, bool respectCooldown = true, bool force = false)
 {
-    if (!IsValidHumanClient(client) || !g_bIsLoaded[client] || g_hInventory[client] == null)
+    if (!IsStoreEnabled() || !IsValidHumanClient(client) || !g_bIsLoaded[client] || g_hInventory[client] == null)
     {
         return false;
     }
@@ -6658,17 +6863,22 @@ bool SetItemEquipped(int client, const char[] itemId, bool equipNow, bool notify
 
     if (view_as<bool>(targetInv.is_equipped) == equipNow)
     {
+        if (equipNow && UnequipConflictingItemsForTarget(client, targetIndex, targetItem))
+        {
+            MarkInventoryChanged(client);
+        }
+
         return true;
     }
 
     if (equipNow)
     {
-        if (!CanPlayerUseItem(client, targetItem, notify))
+        if (!force && !CanPlayerUseItem(client, targetItem, notify))
         {
             return false;
         }
 
-        if (StrEqual(targetItem.type, "skin") && !ArePlayerSkinsEnabled())
+        if (!force && StrEqual(targetItem.type, "skin") && !ArePlayerSkinsEnabled())
         {
             if (notify)
             {
@@ -6678,12 +6888,12 @@ bool SetItemEquipped(int client, const char[] itemId, bool equipNow, bool notify
         }
     }
 
-    if (ForwardEquipPre(client, itemId, equipNow) >= Plugin_Handled)
+    if (!force && ForwardEquipPre(client, itemId, equipNow) >= Plugin_Handled)
     {
         return false;
     }
 
-    if (equipNow && HasActiveMarketplaceListing(client, itemId))
+    if (!force && equipNow && HasActiveMarketplaceListing(client, itemId))
     {
         if (notify)
         {
@@ -6694,37 +6904,7 @@ bool SetItemEquipped(int client, const char[] itemId, bool equipNow, bool notify
 
     if (equipNow)
     {
-        InventoryItem inv;
-        StoreItem otherItem;
-
-        for (int i = 0; i < g_hInventory[client].Length; i++)
-        {
-            if (i == targetIndex)
-            {
-                continue;
-            }
-
-            g_hInventory[client].GetArray(i, inv, sizeof(InventoryItem));
-            if (!inv.is_equipped)
-            {
-                continue;
-            }
-
-            if (!FindStoreItemById(inv.item_id, otherItem))
-            {
-                continue;
-            }
-
-            if (ShouldUnequipSameCategory(targetItem, otherItem))
-            {
-                inv.is_equipped = 0;
-                g_hInventory[client].SetArray(i, inv, sizeof(InventoryItem));
-                SaveInventoryEquipState(client, inv.item_id, 0);
-                ForwardItemEquipped(client, inv.item_id, false);
-                ForwardEquipPost(client, inv.item_id, false);
-                ForwardInventoryChanged(client, inv.item_id, "unequip");
-            }
-        }
+        UnequipConflictingItemsForTarget(client, targetIndex, targetItem);
 
         targetInv.is_equipped = 1;
         g_hInventory[client].SetArray(targetIndex, targetInv, sizeof(InventoryItem));
@@ -7093,7 +7273,7 @@ void ShowStoreMainMenu(int client)
     Menu menu = new Menu(MenuHandler_Main);
     char title[192];
     char creditsText[32];
-    char profileLabel[64], questsLabel[64], skinsLabel[64], chatLabel[64], leaderboardsLabel[64], inventoryLabel[64], casinoLabel[64], marketLabel[64], searchLabel[64];
+    char profileLabel[64], questsLabel[64], skinsLabel[64], chatLabel[64], accessoriesLabel[64], petsLabel[64], leaderboardsLabel[64], inventoryLabel[64], casinoLabel[64], marketLabel[64], searchLabel[64];
 
     FormatNumberDots(g_iCredits[client], creditsText, sizeof(creditsText));
     Format(title, sizeof(title), "%T", "Store Main Menu Title", client, creditsText);
@@ -7103,22 +7283,26 @@ void ShowStoreMainMenu(int client)
     Format(questsLabel, sizeof(questsLabel), "%T", "Store Category Quests", client);
     Format(skinsLabel, sizeof(skinsLabel), "%T", "Store Category Skins", client);
     Format(chatLabel, sizeof(chatLabel), "%T", "Store Category Chat", client);
+    Format(accessoriesLabel, sizeof(accessoriesLabel), "%T", "Store Category Accessories", client);
+    Format(petsLabel, sizeof(petsLabel), "%T", "Store Category Pets", client);
     Format(leaderboardsLabel, sizeof(leaderboardsLabel), "%T", "Store Category Leaderboards", client);
     Format(inventoryLabel, sizeof(inventoryLabel), "%T", "Store Category Inventory", client);
     Format(casinoLabel, sizeof(casinoLabel), "%T", "Store Category Casino", client);
     Format(marketLabel, sizeof(marketLabel), "%T", "Store Category Marketplace", client);
     Format(searchLabel, sizeof(searchLabel), "%T", "Store Category Search", client);
 
-    menu.AddItem("profile", profileLabel);
-    menu.AddItem("quests", questsLabel);
     menu.AddItem("skins", skinsLabel);
     menu.AddItem("chat", chatLabel);
-    menu.AddItem("leaderboards", leaderboardsLabel);
+    menu.AddItem("accessories", accessoriesLabel);
+    menu.AddItem("pets", petsLabel);
     menu.AddItem("inventory", inventoryLabel);
+    menu.AddItem("casino", casinoLabel);
     menu.AddItem("market", marketLabel);
+    menu.AddItem("profile", profileLabel);
+    menu.AddItem("quests", questsLabel);
+    menu.AddItem("leaderboards", leaderboardsLabel);
     menu.AddItem("search", searchLabel);
     AddRegisteredMenuSections(menu);
-    menu.AddItem("casino", casinoLabel);
     menu.Display(client, MENU_TIME_FOREVER);
 }
 
@@ -7399,6 +7583,14 @@ public int MenuHandler_Main(Menu menu, MenuAction action, int param1, int param2
         else if (StrEqual(info, "chat"))
         {
             ShowChatMenu(param1);
+        }
+        else if (StrEqual(info, "accessories"))
+        {
+            ShowAccessoriesMenu(param1);
+        }
+        else if (StrEqual(info, "pets"))
+        {
+            ShowItemsListMenuFiltered(param1, "pet", 0, "pets");
         }
         else if (StrEqual(info, "topcredits"))
         {
@@ -9208,10 +9400,92 @@ public int MenuHandler_Chat(Menu menu, MenuAction action, int param1, int param2
     return 0;
 }
 
+bool ItemMatchesBrowseFilter(const StoreItem item, const char[] targetType, int targetTeam, const char[] categoryFilter)
+{
+    if (!StrEqual(item.type, targetType) || (targetTeam != 0 && !StoreItemTeamMatches(item.team, targetTeam)))
+    {
+        return false;
+    }
+
+    if (categoryFilter[0] != '\0' && !StrEqual(item.category, categoryFilter, false))
+    {
+        return false;
+    }
+
+    return !item.hidden && IsItemActiveForNow(item);
+}
+
+int CountAvailableItemsForBrowse(const char[] targetType, int targetTeam, const char[] categoryFilter)
+{
+    int count = 0;
+    StoreItem item;
+    for (int i = 0; i < g_aItems.Length; i++)
+    {
+        g_aItems.GetArray(i, item, sizeof(StoreItem));
+        if (ItemMatchesBrowseFilter(item, targetType, targetTeam, categoryFilter))
+        {
+            count++;
+        }
+    }
+    return count;
+}
+
+void AddCountedMenuItem(Menu menu, int client, const char[] info, const char[] phrase, int count)
+{
+    char baseLabel[64], display[96];
+    Format(baseLabel, sizeof(baseLabel), "%T", phrase, client);
+    Format(display, sizeof(display), "%s (%d)", baseLabel, count);
+    menu.AddItem(info, display, count > 0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+}
+
+void ShowAccessoriesMenu(int client)
+{
+    Menu menu = new Menu(MenuHandler_Accessories);
+    SetMenuTitlePhrase(menu, client, "Accessories Menu Title");
+    AddCountedMenuItem(menu, client, "hats", "Accessories Menu Hats", CountAvailableItemsForBrowse("hat", 0, "hats"));
+    AddCountedMenuItem(menu, client, "glasses", "Accessories Menu Glasses", CountAvailableItemsForBrowse("hat", 0, "glasses"));
+    menu.ExitBackButton = true;
+    menu.Display(client, MENU_TIME_FOREVER);
+}
+
+public int MenuHandler_Accessories(Menu menu, MenuAction action, int param1, int param2)
+{
+    if (action == MenuAction_End)
+    {
+        delete menu;
+    }
+    else if (action == MenuAction_Cancel && param2 == MenuCancel_ExitBack)
+    {
+        Cmd_Store(param1, 0);
+    }
+    else if (action == MenuAction_Select)
+    {
+        char info[32];
+        menu.GetItem(param2, info, sizeof(info));
+        if (StrEqual(info, "hats") || StrEqual(info, "glasses"))
+        {
+            ShowItemsListMenuFiltered(param1, "hat", 0, info);
+        }
+    }
+
+    return 0;
+}
+
+void ShowCurrentBrowseItemsList(int client)
+{
+    ShowItemsListMenuFiltered(client, g_szBrowseType[client], g_iBrowseTeam[client], g_szBrowseCategory[client]);
+}
+
 void ShowItemsListMenu(int client, const char[] targetType, int targetTeam)
+{
+    ShowItemsListMenuFiltered(client, targetType, targetTeam, "");
+}
+
+void ShowItemsListMenuFiltered(int client, const char[] targetType, int targetTeam, const char[] categoryFilter)
 {
     strcopy(g_szBrowseType[client], 16, targetType);
     g_iBrowseTeam[client] = targetTeam;
+    strcopy(g_szBrowseCategory[client], sizeof(g_szBrowseCategory[]), categoryFilter);
     g_bDetailFromSearch[client] = false;
 
     Menu menu = new Menu(MenuHandler_ItemsList);
@@ -9228,12 +9502,7 @@ void ShowItemsListMenu(int client, const char[] targetType, int targetTeam)
     {
         g_aItems.GetArray(i, item, sizeof(StoreItem));
 
-        if (!StrEqual(item.type, targetType) || (targetTeam != 0 && item.team != targetTeam))
-        {
-            continue;
-        }
-
-        if (item.hidden || !IsItemActiveForNow(item))
+        if (!ItemMatchesBrowseFilter(item, targetType, targetTeam, categoryFilter))
         {
             continue;
         }
@@ -9289,6 +9558,14 @@ public int MenuHandler_ItemsList(Menu menu, MenuAction action, int param1, int p
         {
             ShowTeamsMenu(param1);
         }
+        else if (StrEqual(g_szBrowseType[param1], "hat"))
+        {
+            ShowAccessoriesMenu(param1);
+        }
+        else if (StrEqual(g_szBrowseType[param1], "pet"))
+        {
+            Cmd_Store(param1, 0);
+        }
         else
         {
             ShowChatMenu(param1);
@@ -9319,7 +9596,7 @@ void ShowSellConfirmMenu(int client, const char[] itemId)
         }
         else
         {
-            ShowItemsListMenu(client, g_szBrowseType[client], g_iBrowseTeam[client]);
+            ShowCurrentBrowseItemsList(client);
         }
         return;
     }
@@ -9364,7 +9641,7 @@ public int MenuHandler_SellConfirm(Menu menu, MenuAction action, int param1, int
         }
         else
         {
-            ShowItemsListMenu(param1, g_szBrowseType[param1], g_iBrowseTeam[param1]);
+            ShowCurrentBrowseItemsList(param1);
         }
     }
     else if (action == MenuAction_Select)
@@ -9389,7 +9666,7 @@ public int MenuHandler_SellConfirm(Menu menu, MenuAction action, int param1, int
             }
             else
             {
-                ShowItemsListMenu(param1, g_szBrowseType[param1], g_iBrowseTeam[param1]);
+                ShowCurrentBrowseItemsList(param1);
             }
         }
         else if (StrContains(info, "no_") == 0)
@@ -9507,7 +9784,7 @@ public int MenuHandler_ItemDetails(Menu menu, MenuAction action, int param1, int
         }
         else
         {
-            ShowItemsListMenu(param1, g_szBrowseType[param1], g_iBrowseTeam[param1]);
+            ShowCurrentBrowseItemsList(param1);
         }
     }
     else if (action == MenuAction_Select)
@@ -10359,6 +10636,7 @@ void ShowInventoryCategoryMenu(int client)
     SetMenuTitlePhrase(menu, client, "Inventory Category Menu Title");
     AddMenuItemPhrase(menu, "skins", client, "Inventory Category Skins");
     AddMenuItemPhrase(menu, "chat", client, "Inventory Category Chat");
+    AddMenuItemPhrase(menu, "accessories", client, "Inventory Category Accessories");
     menu.ExitBackButton = true;
     menu.Display(client, MENU_TIME_FOREVER);
 }
@@ -10385,6 +10663,10 @@ public int MenuHandler_InvCategory(Menu menu, MenuAction action, int param1, int
         else if (StrEqual(info, "chat"))
         {
             ShowInventoryChatMenu(param1);
+        }
+        else if (StrEqual(info, "accessories"))
+        {
+            ShowInventoryAccessoriesMenu(param1);
         }
     }
 
@@ -10417,6 +10699,37 @@ void ShowInventoryChatMenu(int client)
     menu.Display(client, MENU_TIME_FOREVER);
 }
 
+int CountInventoryItemsForFilter(int client, const char[] filter)
+{
+    if (g_hInventory[client] == null)
+    {
+        return 0;
+    }
+
+    int count = 0;
+    InventoryItem inv;
+    StoreItem item;
+    for (int i = 0; i < g_hInventory[client].Length; i++)
+    {
+        g_hInventory[client].GetArray(i, inv, sizeof(InventoryItem));
+        if (FindStoreItemById(inv.item_id, item) && DoesInventoryItemMatchFilter(filter, item))
+        {
+            count++;
+        }
+    }
+    return count;
+}
+
+void ShowInventoryAccessoriesMenu(int client)
+{
+    Menu menu = new Menu(MenuHandler_InvSub);
+    SetMenuTitlePhrase(menu, client, "Inventory Accessories Menu Title");
+    AddCountedMenuItem(menu, client, "hat_hats", "Accessories Menu Hats", CountInventoryItemsForFilter(client, "hat_hats"));
+    AddCountedMenuItem(menu, client, "hat_glasses", "Accessories Menu Glasses", CountInventoryItemsForFilter(client, "hat_glasses"));
+    menu.ExitBackButton = true;
+    menu.Display(client, MENU_TIME_FOREVER);
+}
+
 public int MenuHandler_InvSub(Menu menu, MenuAction action, int param1, int param2)
 {
     if (action == MenuAction_End)
@@ -10439,11 +10752,11 @@ public int MenuHandler_InvSub(Menu menu, MenuAction action, int param1, int para
 
 bool DoesInventoryItemMatchFilter(const char[] filter, const StoreItem item)
 {
-    if (StrEqual(filter, "skin_2") && StrEqual(item.type, "skin") && item.team == 2)
+    if (StrEqual(filter, "skin_2") && StrEqual(item.type, "skin") && StoreItemTeamMatches(item.team, 2))
     {
         return true;
     }
-    if (StrEqual(filter, "skin_3") && StrEqual(item.type, "skin") && item.team == 3)
+    if (StrEqual(filter, "skin_3") && StrEqual(item.type, "skin") && StoreItemTeamMatches(item.team, 3))
     {
         return true;
     }
@@ -10451,7 +10764,104 @@ bool DoesInventoryItemMatchFilter(const char[] filter, const StoreItem item)
     {
         return true;
     }
+    if (StrEqual(filter, "hat_hats") && StrEqual(item.type, "hat") && StrEqual(item.category, "hats", false))
+    {
+        return true;
+    }
+    if (StrEqual(filter, "hat_glasses") && StrEqual(item.type, "hat") && StrEqual(item.category, "glasses", false))
+    {
+        return true;
+    }
     return false;
+}
+
+bool UnequipConflictingItemsForTarget(int client, int targetIndex, StoreItem targetItem)
+{
+    bool changed = false;
+    InventoryItem inv;
+    StoreItem otherItem;
+
+    for (int i = 0; i < g_hInventory[client].Length; i++)
+    {
+        if (i == targetIndex)
+        {
+            continue;
+        }
+
+        g_hInventory[client].GetArray(i, inv, sizeof(InventoryItem));
+        if (!inv.is_equipped)
+        {
+            continue;
+        }
+
+        if (!FindStoreItemById(inv.item_id, otherItem))
+        {
+            continue;
+        }
+
+        if (!ShouldUnequipSameCategory(targetItem, otherItem))
+        {
+            continue;
+        }
+
+        inv.is_equipped = 0;
+        g_hInventory[client].SetArray(i, inv, sizeof(InventoryItem));
+        SaveInventoryEquipState(client, inv.item_id, 0);
+        ForwardItemEquipped(client, inv.item_id, false);
+        ForwardEquipPost(client, inv.item_id, false);
+        ForwardInventoryChanged(client, inv.item_id, "unequip");
+        changed = true;
+    }
+
+    return changed;
+}
+
+void NormalizeEquippedItemConflicts(int client)
+{
+    if (!IsValidHumanClient(client) || g_hInventory[client] == null)
+    {
+        return;
+    }
+
+    InventoryItem keeperInv, otherInv;
+    StoreItem keeperItem, otherItem;
+    bool changed = false;
+
+    for (int i = 0; i < g_hInventory[client].Length; i++)
+    {
+        g_hInventory[client].GetArray(i, keeperInv, sizeof(InventoryItem));
+        if (!keeperInv.is_equipped || !FindStoreItemById(keeperInv.item_id, keeperItem))
+        {
+            continue;
+        }
+
+        for (int j = i + 1; j < g_hInventory[client].Length; j++)
+        {
+            g_hInventory[client].GetArray(j, otherInv, sizeof(InventoryItem));
+            if (!otherInv.is_equipped || !FindStoreItemById(otherInv.item_id, otherItem))
+            {
+                continue;
+            }
+
+            if (!ShouldUnequipSameCategory(keeperItem, otherItem))
+            {
+                continue;
+            }
+
+            otherInv.is_equipped = 0;
+            g_hInventory[client].SetArray(j, otherInv, sizeof(InventoryItem));
+            SaveInventoryEquipState(client, otherInv.item_id, 0);
+            ForwardItemEquipped(client, otherInv.item_id, false);
+            ForwardEquipPost(client, otherInv.item_id, false);
+            ForwardInventoryChanged(client, otherInv.item_id, "unequip");
+            changed = true;
+        }
+    }
+
+    if (changed)
+    {
+        MarkInventoryChanged(client);
+    }
 }
 
 void AddInventoryItemsToMenu(int client, Menu menu, const char[] filter, bool equippedOnly, int &itemsAdded)
@@ -10523,6 +10933,10 @@ public int MenuHandler_InvList(Menu menu, MenuAction action, int param1, int par
         if (StrEqual(g_szInvFilter[param1], "skin_2") || StrEqual(g_szInvFilter[param1], "skin_3"))
         {
             ShowInventoryTeamMenu(param1);
+        }
+        else if (StrEqual(g_szInvFilter[param1], "hat_hats") || StrEqual(g_szInvFilter[param1], "hat_glasses"))
+        {
+            ShowInventoryAccessoriesMenu(param1);
         }
         else
         {
@@ -10657,7 +11071,7 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
         RemovePreview(client);
     }
 
-    if (client > 0 && IsValidHumanClient(client) && IsPlayerAlive(client) && g_bIsLoaded[client])
+    if (client > 0 && ArePlayerSkinsEnabled() && IsValidHumanClient(client) && IsPlayerAlive(client) && g_bIsLoaded[client])
     {
         CaptureClientDefaultModel(client);
         CreateTimer(0.1, Timer_ApplySkin, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
@@ -10669,7 +11083,7 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
 public Action Timer_ApplySkin(Handle timer, any userid)
 {
     int client = GetClientOfUserId(userid);
-    if (client > 0 && IsValidHumanClient(client) && IsPlayerAlive(client))
+    if (client > 0 && ArePlayerSkinsEnabled() && IsValidHumanClient(client) && IsPlayerAlive(client))
     {
         ApplyPlayerSkin(client);
     }
@@ -10685,7 +11099,7 @@ public Action Event_PlayerTeam(Event event, const char[] name, bool dontBroadcas
         RemovePreview(client);
     }
 
-    if (client > 0 && IsValidHumanClient(client) && IsPlayerAlive(client) && g_bIsLoaded[client])
+    if (client > 0 && ArePlayerSkinsEnabled() && IsValidHumanClient(client) && IsPlayerAlive(client) && g_bIsLoaded[client])
     {
         CreateTimer(0.1, Timer_ApplySkin, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
     }
@@ -10784,6 +11198,33 @@ bool TryParseBoundedInt(const char[] value, bool allowZero, int maxValue, int &r
 bool TryParseCreditAmount(const char[] value, int &amount)
 {
     return TryParseBoundedInt(value, false, STORE_MAX_CREDITS, amount);
+}
+
+bool TryParseSignedCreditAmount(const char[] value, int &amount)
+{
+    char buffer[32];
+    strcopy(buffer, sizeof(buffer), value);
+    TrimString(buffer);
+
+    bool negative = false;
+    if (buffer[0] == '-')
+    {
+        negative = true;
+        strcopy(buffer, sizeof(buffer), buffer[1]);
+    }
+    else if (buffer[0] == '+')
+    {
+        strcopy(buffer, sizeof(buffer), buffer[1]);
+    }
+
+    int parsed = 0;
+    if (!TryParseCreditAmount(buffer, parsed))
+    {
+        return false;
+    }
+
+    amount = negative ? -parsed : parsed;
+    return true;
 }
 
 bool TryParseNonNegativeAmount(const char[] value, int &amount)
@@ -10907,6 +11348,1292 @@ void ReplyStoreAdminUsage(int client, const char[] phrase)
     Format(msg, sizeof(msg), "%T", phrase, client);
     ReplaceColorTags(msg, sizeof(msg));
     ReplyStoreText(client, msg);
+}
+
+bool HasStoreAdminAccess(int client)
+{
+    return (IsValidHumanClient(client) && CheckCommandAccess(client, "sm_storeadmin", GetStoreAdminAccessFlags()));
+}
+
+int GetStoreAdminAccessFlags()
+{
+    char flagString[32];
+    flagString[0] = '\0';
+
+    if (gCvarStoreAdminFlag != null)
+    {
+        gCvarStoreAdminFlag.GetString(flagString, sizeof(flagString));
+        TrimString(flagString);
+    }
+
+    if (flagString[0] == '\0')
+    {
+        strcopy(flagString, sizeof(flagString), "z");
+    }
+
+    int flags = ReadFlagString(flagString);
+    if (flags == 0)
+    {
+        flags = ADMFLAG_ROOT;
+    }
+
+    return flags;
+}
+
+public void OnLibraryRemoved(const char[] name)
+{
+    if (StrEqual(name, "adminmenu"))
+    {
+        g_hAdminMenu = INVALID_HANDLE;
+        g_tmoStoreAdmin = INVALID_TOPMENUOBJECT;
+    }
+}
+
+public void OnAdminMenuReady(Handle topmenu)
+{
+    if (topmenu == INVALID_HANDLE)
+    {
+        return;
+    }
+
+    g_hAdminMenu = topmenu;
+    RefreshStoreAdminTopMenu();
+}
+
+void RefreshStoreAdminTopMenu()
+{
+    if (g_hAdminMenu == INVALID_HANDLE)
+    {
+        return;
+    }
+
+    if (g_tmoStoreAdmin != INVALID_TOPMENUOBJECT)
+    {
+        RemoveFromTopMenu(g_hAdminMenu, g_tmoStoreAdmin);
+        g_tmoStoreAdmin = INVALID_TOPMENUOBJECT;
+    }
+
+    int adminFlags = GetStoreAdminAccessFlags();
+    g_tmoStoreAdmin = AddToTopMenu(g_hAdminMenu, "Store Admin", TopMenuObject_Category, TopMenuHandler_StoreAdminCategory, INVALID_TOPMENUOBJECT, "sm_storeadmin", adminFlags);
+    if (g_tmoStoreAdmin == INVALID_TOPMENUOBJECT)
+    {
+        return;
+    }
+
+    AddToTopMenu(g_hAdminMenu, "umbrella_store_reload", TopMenuObject_Item, TopMenuHandler_StoreAdminItem, g_tmoStoreAdmin, "sm_reloadstore", adminFlags, "reload");
+    AddToTopMenu(g_hAdminMenu, "umbrella_store_givecredits", TopMenuObject_Item, TopMenuHandler_StoreAdminItem, g_tmoStoreAdmin, "sm_givecredits", adminFlags, "give_credits");
+    AddToTopMenu(g_hAdminMenu, "umbrella_store_setcredits", TopMenuObject_Item, TopMenuHandler_StoreAdminItem, g_tmoStoreAdmin, "sm_setcredits", adminFlags, "set_credits");
+    AddToTopMenu(g_hAdminMenu, "umbrella_store_viewinventory", TopMenuObject_Item, TopMenuHandler_StoreAdminItem, g_tmoStoreAdmin, "sm_storeadmin", adminFlags, "view_inventory");
+}
+
+public void TopMenuHandler_StoreAdminCategory(TopMenu topmenu, TopMenuAction action, TopMenuObject objectId, int param, char[] buffer, int maxlength)
+{
+    if (action == TopMenuAction_DisplayTitle || action == TopMenuAction_DisplayOption)
+    {
+        Format(buffer, maxlength, "%T", "Admin Menu Category", param);
+    }
+}
+
+public void TopMenuHandler_StoreAdminItem(TopMenu topmenu, TopMenuAction action, TopMenuObject objectId, int param, char[] buffer, int maxlength)
+{
+    char actionName[32];
+    GetTopMenuInfoString(topmenu, objectId, actionName, sizeof(actionName));
+
+    if (action == TopMenuAction_DisplayOption)
+    {
+        FormatStoreAdminActionText(param, actionName, buffer, maxlength);
+    }
+    else if (action == TopMenuAction_SelectOption)
+    {
+        RunStoreAdminAction(param, actionName);
+    }
+}
+
+public Action Cmd_StoreAdminMenu(int client, int args)
+{
+    if (!HasStoreAdminAccess(client))
+    {
+        return Plugin_Handled;
+    }
+
+    ShowStoreAdminMenu(client);
+    return Plugin_Handled;
+}
+
+void ShowStoreAdminMenu(int client)
+{
+    if (!HasStoreAdminAccess(client))
+    {
+        return;
+    }
+
+    Menu menu = new Menu(MenuHandler_StoreAdminMain);
+    SetMenuTitlePhrase(menu, client, "Admin Menu Title");
+    AddStoreAdminMenuItem(menu, "reload", client);
+    AddStoreAdminMenuItem(menu, "give_credits", client);
+    AddStoreAdminMenuItem(menu, "set_credits", client);
+    AddStoreAdminMenuItem(menu, "view_inventory", client);
+    menu.Display(client, MENU_TIME_FOREVER);
+}
+
+void AddStoreAdminMenuItem(Menu menu, const char[] actionName, int client)
+{
+    char label[128];
+    FormatStoreAdminActionText(client, actionName, label, sizeof(label));
+    menu.AddItem(actionName, label);
+}
+
+void FormatStoreAdminActionText(int client, const char[] actionName, char[] buffer, int maxlength)
+{
+    if (StrEqual(actionName, "reload"))
+    {
+        Format(buffer, maxlength, "%T", "Admin Menu Reload", client);
+        return;
+    }
+
+    if (StrEqual(actionName, "give_credits"))
+    {
+        Format(buffer, maxlength, "%T", "Admin Menu Give Credits", client);
+        return;
+    }
+
+    if (StrEqual(actionName, "set_credits"))
+    {
+        Format(buffer, maxlength, "%T", "Admin Menu Set Credits", client);
+        return;
+    }
+
+    if (StrEqual(actionName, "view_inventory"))
+    {
+        Format(buffer, maxlength, "%T", "Admin Menu View Inventory", client);
+        return;
+    }
+
+    if (StrEqual(actionName, "debug_player"))
+    {
+        Format(buffer, maxlength, "%T", "Admin Menu Debug Player", client);
+        return;
+    }
+
+    if (StrEqual(actionName, "debug_quests"))
+    {
+        Format(buffer, maxlength, "%T", "Admin Menu Debug Quests", client);
+        return;
+    }
+
+    if (StrEqual(actionName, "export_profile"))
+    {
+        Format(buffer, maxlength, "%T", "Admin Menu Export Profile", client);
+        return;
+    }
+
+    if (StrEqual(actionName, "audit_global"))
+    {
+        Format(buffer, maxlength, "%T", "Admin Menu Audit Global", client);
+        return;
+    }
+
+    if (StrEqual(actionName, "audit_player"))
+    {
+        Format(buffer, maxlength, "%T", "Admin Menu Audit Player", client);
+        return;
+    }
+
+    Format(buffer, maxlength, "%T", "Admin Menu Open Store", client);
+}
+
+public int MenuHandler_StoreAdminMain(Menu menu, MenuAction action, int param1, int param2)
+{
+    if (action == MenuAction_End)
+    {
+        delete menu;
+    }
+    else if (action == MenuAction_Select)
+    {
+        char actionName[32];
+        menu.GetItem(param2, actionName, sizeof(actionName));
+        RunStoreAdminAction(param1, actionName);
+    }
+
+    return 0;
+}
+
+void ReloadStoreAdminConfigs(int client)
+{
+    LoadItemsConfig();
+    LoadQuestConfig();
+
+    char msg[192];
+    Format(msg, sizeof(msg), "%T", "Store Reloaded", client, g_aItems.Length);
+    ReplaceColorTags(msg, sizeof(msg));
+    CPrintToChat(client, "%s", msg);
+}
+
+void ShowStoreAdminReloadConfirmMenu(int client)
+{
+    if (!HasStoreAdminAccess(client))
+    {
+        return;
+    }
+
+    Menu menu = new Menu(MenuHandler_StoreAdminReloadConfirm);
+    SetMenuTitlePhrase(menu, client, "Admin Reload Confirm Title");
+    AddMenuItemPhrase(menu, "yes", client, "Admin Reload Confirm Yes");
+    AddMenuItemPhrase(menu, "no", client, "Admin Reload Confirm No");
+    menu.ExitBackButton = true;
+    menu.Display(client, MENU_TIME_FOREVER);
+}
+
+public int MenuHandler_StoreAdminReloadConfirm(Menu menu, MenuAction action, int param1, int param2)
+{
+    if (action == MenuAction_End)
+    {
+        delete menu;
+    }
+    else if (action == MenuAction_Cancel && param2 == MenuCancel_ExitBack)
+    {
+        ShowStoreAdminMenu(param1);
+    }
+    else if (action == MenuAction_Select)
+    {
+        char info[16];
+        menu.GetItem(param2, info, sizeof(info));
+        if (StrEqual(info, "yes"))
+        {
+            ReloadStoreAdminConfigs(param1);
+        }
+
+        ShowStoreAdminMenu(param1);
+    }
+
+    return 0;
+}
+
+void RunStoreAdminAction(int client, const char[] actionName)
+{
+    if (!HasStoreAdminAccess(client))
+    {
+        return;
+    }
+
+    if (StrEqual(actionName, "reload"))
+    {
+        ShowStoreAdminReloadConfirmMenu(client);
+        return;
+    }
+
+    if (StrEqual(actionName, "audit_global"))
+    {
+        RequestStoreAudit(client, 0, 20, false);
+        return;
+    }
+
+    if (StrEqual(actionName, "open_store"))
+    {
+        if (!g_bIsLoaded[client] || !EnsureStoreEnabledForClient(client))
+        {
+            return;
+        }
+
+        ShowStoreMainMenu(client);
+        return;
+    }
+
+    if (StrEqual(actionName, "give_credits"))
+    {
+        ShowStoreAdminTargetMenu(client, StoreAdminAction_GiveCredits);
+    }
+    else if (StrEqual(actionName, "set_credits"))
+    {
+        ShowStoreAdminTargetMenu(client, StoreAdminAction_SetCredits);
+    }
+    else if (StrEqual(actionName, "view_inventory"))
+    {
+        ShowStoreAdminTargetMenu(client, StoreAdminAction_ViewInventory);
+    }
+    else if (StrEqual(actionName, "debug_player"))
+    {
+        ShowStoreAdminTargetMenu(client, StoreAdminAction_DebugPlayer);
+    }
+    else if (StrEqual(actionName, "debug_quests"))
+    {
+        ShowStoreAdminTargetMenu(client, StoreAdminAction_DebugQuests);
+    }
+    else if (StrEqual(actionName, "export_profile"))
+    {
+        ShowStoreAdminTargetMenu(client, StoreAdminAction_ExportProfile);
+    }
+    else if (StrEqual(actionName, "audit_player"))
+    {
+        ShowStoreAdminTargetMenu(client, StoreAdminAction_AuditPlayer);
+    }
+}
+
+void FormatStoreAdminActionLabel(StoreAdminAction action, int client, char[] buffer, int maxlength)
+{
+    switch (action)
+    {
+        case StoreAdminAction_GiveCredits:
+        {
+            Format(buffer, maxlength, "%T", "Admin Menu Give Credits", client);
+            return;
+        }
+        case StoreAdminAction_SetCredits:
+        {
+            Format(buffer, maxlength, "%T", "Admin Menu Set Credits", client);
+            return;
+        }
+        case StoreAdminAction_ViewInventory:
+        {
+            Format(buffer, maxlength, "%T", "Admin Menu View Inventory", client);
+            return;
+        }
+        case StoreAdminAction_DebugPlayer:
+        {
+            Format(buffer, maxlength, "%T", "Admin Menu Debug Player", client);
+            return;
+        }
+        case StoreAdminAction_DebugQuests:
+        {
+            Format(buffer, maxlength, "%T", "Admin Menu Debug Quests", client);
+            return;
+        }
+        case StoreAdminAction_ExportProfile:
+        {
+            Format(buffer, maxlength, "%T", "Admin Menu Export Profile", client);
+            return;
+        }
+        case StoreAdminAction_AuditPlayer:
+        {
+            Format(buffer, maxlength, "%T", "Admin Menu Audit Player", client);
+            return;
+        }
+    }
+
+    Format(buffer, maxlength, "%T", "Admin Menu Open Store", client);
+}
+
+void ShowStoreAdminTargetMenu(int client, StoreAdminAction action)
+{
+    if (!HasStoreAdminAccess(client))
+    {
+        return;
+    }
+
+    g_AdminMenuAction[client] = action;
+
+    char actionLabel[96], title[192];
+    FormatStoreAdminActionLabel(action, client, actionLabel, sizeof(actionLabel));
+    Format(title, sizeof(title), "%T", "Admin Target Menu Title", client, actionLabel);
+
+    Menu menu = new Menu(MenuHandler_StoreAdminTarget);
+    menu.SetTitle(title);
+    menu.ExitBackButton = true;
+
+    int count = AddLoadedPlayersToStoreAdminMenu(menu, client, true);
+    if (count == 0)
+    {
+        char emptyLabel[128];
+        Format(emptyLabel, sizeof(emptyLabel), "%T", "Admin No Loaded Players", client);
+        menu.AddItem("none", emptyLabel, ITEMDRAW_DISABLED);
+    }
+
+    menu.Display(client, MENU_TIME_FOREVER);
+}
+
+int AddLoadedPlayersToStoreAdminMenu(Menu menu, int admin, bool showCredits)
+{
+    int count = 0;
+    for (int i = 1; i <= MaxClients; i++)
+    {
+        if (!IsValidHumanClient(i) || !g_bIsLoaded[i])
+        {
+            continue;
+        }
+
+        if (admin > 0 && i != admin && !CanUserTarget(admin, i))
+        {
+            continue;
+        }
+
+        char info[16], name[MAX_NAME_LENGTH], display[128], creditsText[32];
+        IntToString(GetClientUserId(i), info, sizeof(info));
+        GetClientName(i, name, sizeof(name));
+
+        if (showCredits)
+        {
+            FormatNumberDots(g_iCredits[i], creditsText, sizeof(creditsText));
+            Format(display, sizeof(display), "%s - %s credits", name, creditsText);
+        }
+        else
+        {
+            strcopy(display, sizeof(display), name);
+        }
+
+        menu.AddItem(info, display);
+        count++;
+    }
+
+    return count;
+}
+
+bool IsValidStoreAdminTarget(int admin, int target)
+{
+    if (!IsValidHumanClient(target) || !g_bIsLoaded[target])
+    {
+        PrintStorePhrase(admin, "%T", "Admin Target Not Loaded", admin);
+        return false;
+    }
+
+    if (admin > 0 && target != admin && !CanUserTarget(admin, target))
+    {
+        ReplyAdminTargetNotFound(admin, "target");
+        return false;
+    }
+
+    return true;
+}
+
+public int MenuHandler_StoreAdminTarget(Menu menu, MenuAction action, int param1, int param2)
+{
+    if (action == MenuAction_End)
+    {
+        delete menu;
+    }
+    else if (action == MenuAction_Cancel && param2 == MenuCancel_ExitBack)
+    {
+        ShowStoreAdminMenu(param1);
+    }
+    else if (action == MenuAction_Select)
+    {
+        char info[16];
+        menu.GetItem(param2, info, sizeof(info));
+        int target = GetClientOfUserId(StringToInt(info));
+
+        if (!IsValidStoreAdminTarget(param1, target))
+        {
+            ShowStoreAdminTargetMenu(param1, g_AdminMenuAction[param1]);
+            return 0;
+        }
+
+        g_iAdminMenuTarget[param1] = target;
+
+        switch (g_AdminMenuAction[param1])
+        {
+            case StoreAdminAction_GiveCredits, StoreAdminAction_SetCredits:
+            {
+                ShowStoreAdminCreditAmountMenu(param1, g_AdminMenuAction[param1]);
+            }
+            case StoreAdminAction_ViewInventory:
+            {
+                ShowStoreAdminInventoryMenu(param1, target);
+            }
+            case StoreAdminAction_DebugPlayer:
+            {
+                PrintStoreDebugForTarget(param1, target);
+                ShowStoreAdminTargetMenu(param1, StoreAdminAction_DebugPlayer);
+            }
+            case StoreAdminAction_DebugQuests:
+            {
+                PrintStoreQuestsDebugForTarget(param1, target);
+                ShowStoreAdminTargetMenu(param1, StoreAdminAction_DebugQuests);
+            }
+            case StoreAdminAction_ExportProfile:
+            {
+                ExportStoreProfileForTarget(param1, target);
+                ShowStoreAdminTargetMenu(param1, StoreAdminAction_ExportProfile);
+            }
+            case StoreAdminAction_AuditPlayer:
+            {
+                RequestStoreAudit(param1, target, 20, true);
+                ShowStoreAdminTargetMenu(param1, StoreAdminAction_AuditPlayer);
+            }
+        }
+    }
+
+    return 0;
+}
+
+void AddStoreAdminCreditAmountMenuItem(Menu menu, StoreAdminAction action, const char[] amount, const char[] display)
+{
+    char info[24];
+    Format(info, sizeof(info), "%d:%s", view_as<int>(action), amount);
+    menu.AddItem(info, display);
+}
+
+bool ParseStoreAdminCreditAmountMenuInfo(const char[] info, StoreAdminAction &action, char[] amount, int maxlen)
+{
+    char parts[2][16];
+    if (ExplodeString(info, ":", parts, sizeof(parts), sizeof(parts[])) != 2)
+    {
+        return false;
+    }
+
+    int actionValue = StringToInt(parts[0]);
+    if (actionValue != view_as<int>(StoreAdminAction_GiveCredits) && actionValue != view_as<int>(StoreAdminAction_SetCredits))
+    {
+        return false;
+    }
+
+    action = view_as<StoreAdminAction>(actionValue);
+    strcopy(amount, maxlen, parts[1]);
+    return true;
+}
+
+void ShowStoreAdminCreditAmountMenu(int client, StoreAdminAction action, int firstItem = 0)
+{
+    int target = g_iAdminMenuTarget[client];
+    if (!IsValidStoreAdminTarget(client, target))
+    {
+        ShowStoreAdminTargetMenu(client, action);
+        return;
+    }
+
+    g_AdminMenuAction[client] = action;
+
+    char actionLabel[96], title[192], creditsText[32];
+    FormatStoreAdminActionLabel(action, client, actionLabel, sizeof(actionLabel));
+    FormatNumberDots(g_iCredits[target], creditsText, sizeof(creditsText));
+    Format(title, sizeof(title), "%T", "Admin Amount Menu Title", client, actionLabel, target, creditsText);
+
+    Menu menu = new Menu(MenuHandler_StoreAdminCreditAmount);
+    menu.SetTitle(title);
+    menu.ExitBackButton = true;
+
+    if (action == StoreAdminAction_GiveCredits)
+    {
+        AddStoreAdminCreditAmountMenuItem(menu, action, "10", "+10");
+        AddStoreAdminCreditAmountMenuItem(menu, action, "100", "+100");
+        AddStoreAdminCreditAmountMenuItem(menu, action, "500", "+500");
+        AddStoreAdminCreditAmountMenuItem(menu, action, "1000", "+1.000");
+        AddStoreAdminCreditAmountMenuItem(menu, action, "5000", "+5.000");
+        AddStoreAdminCreditAmountMenuItem(menu, action, "10000", "+10.000");
+
+        char customLabel[96];
+        Format(customLabel, sizeof(customLabel), "%T", "Admin Credit Custom", client);
+        AddStoreAdminCreditAmountMenuItem(menu, action, "custom", customLabel);
+
+        AddStoreAdminCreditAmountMenuItem(menu, action, "-10000", "-10.000");
+        AddStoreAdminCreditAmountMenuItem(menu, action, "-5000", "-5.000");
+        AddStoreAdminCreditAmountMenuItem(menu, action, "-1000", "-1.000");
+        AddStoreAdminCreditAmountMenuItem(menu, action, "-500", "-500");
+        AddStoreAdminCreditAmountMenuItem(menu, action, "-100", "-100");
+        AddStoreAdminCreditAmountMenuItem(menu, action, "-10", "-10");
+    }
+    else if (action == StoreAdminAction_SetCredits)
+    {
+        char customLabel[96];
+        Format(customLabel, sizeof(customLabel), "%T", "Admin Credit Custom", client);
+        AddStoreAdminCreditAmountMenuItem(menu, action, "custom", customLabel);
+        AddStoreAdminCreditAmountMenuItem(menu, action, "0", "0");
+        AddStoreAdminCreditAmountMenuItem(menu, action, "10", "10");
+        AddStoreAdminCreditAmountMenuItem(menu, action, "100", "100");
+        AddStoreAdminCreditAmountMenuItem(menu, action, "500", "500");
+        AddStoreAdminCreditAmountMenuItem(menu, action, "1000", "1.000");
+        AddStoreAdminCreditAmountMenuItem(menu, action, "5000", "5.000");
+        AddStoreAdminCreditAmountMenuItem(menu, action, "10000", "10.000");
+    }
+
+    if (firstItem > 0)
+    {
+        menu.DisplayAt(client, firstItem, MENU_TIME_FOREVER);
+    }
+    else
+    {
+        menu.Display(client, MENU_TIME_FOREVER);
+    }
+}
+
+bool ApplyStoreAdminCreditAmount(int admin, int target, StoreAdminAction action, int amount)
+{
+    if (!IsValidStoreAdminTarget(admin, target))
+    {
+        return false;
+    }
+
+    char amountText[32];
+    FormatNumberDots(amount, amountText, sizeof(amountText));
+
+    if (action == StoreAdminAction_GiveCredits)
+    {
+        if (!ApplyCreditDeltasAtomic(target, amount, "admin_menu_give", 0, 0, "", false, ""))
+        {
+            PrintStorePhrase(admin, "%T", "Admin Credit Failed", admin);
+            return false;
+        }
+
+        LogAuditEvent(admin, target, "admin_menu_give_credits", "", amount, "");
+        PrintStorePhrase(admin, "%T", "Admin Give Single", admin, amountText, target);
+        return true;
+    }
+
+    if (action == StoreAdminAction_SetCredits)
+    {
+        if (amount < 0 || !SetCreditsAtomic(target, amount, "admin_menu_set", false))
+        {
+            PrintStorePhrase(admin, "%T", "Admin Credit Failed", admin);
+            return false;
+        }
+
+        LogAuditEvent(admin, target, "admin_menu_set_credits", "", amount, "");
+        PrintStorePhrase(admin, "%T", "Admin Set Single", admin, amountText, target);
+        return true;
+    }
+
+    return false;
+}
+
+void PromptStoreAdminCreditAmount(int client, StoreAdminAction action)
+{
+    int target = g_iAdminMenuTarget[client];
+    if (!IsValidStoreAdminTarget(client, target))
+    {
+        ShowStoreAdminTargetMenu(client, action);
+        return;
+    }
+
+    g_AdminMenuAction[client] = action;
+    g_bAwaitingAdminCreditAmount[client] = true;
+
+    char actionLabel[96];
+    FormatStoreAdminActionLabel(action, client, actionLabel, sizeof(actionLabel));
+    PrintStorePhrase(client, "%T", "Admin Credit Prompt", client, actionLabel, target);
+}
+
+Action HandleStoreAdminCreditAmountInput(int client, const char[] rawText)
+{
+    char text[192];
+    strcopy(text, sizeof(text), rawText);
+    TrimString(text);
+
+    if (text[0] == '/')
+    {
+        strcopy(text, sizeof(text), text[1]);
+        TrimString(text);
+    }
+
+    StoreAdminAction action = g_AdminMenuAction[client];
+    int target = g_iAdminMenuTarget[client];
+
+    if (StrEqual(text, "cancel", false) || StrEqual(text, "cancelar", false))
+    {
+        g_bAwaitingAdminCreditAmount[client] = false;
+        PrintStorePhrase(client, "%T", "Admin Credit Cancelled", client);
+        ShowStoreAdminCreditAmountMenu(client, action);
+        return Plugin_Handled;
+    }
+
+    if (!HasStoreAdminAccess(client) || (action != StoreAdminAction_GiveCredits && action != StoreAdminAction_SetCredits) || !IsValidStoreAdminTarget(client, target))
+    {
+        g_bAwaitingAdminCreditAmount[client] = false;
+        return Plugin_Handled;
+    }
+
+    int amount = 0;
+    bool validAmount = (action == StoreAdminAction_SetCredits)
+        ? TryParseNonNegativeAmount(text, amount)
+        : TryParseSignedCreditAmount(text, amount);
+
+    if (!validAmount)
+    {
+        PrintStorePhrase(client, "%T", action == StoreAdminAction_SetCredits ? "Admin Credit Invalid Set" : "Admin Credit Invalid Signed", client);
+        return Plugin_Handled;
+    }
+
+    g_bAwaitingAdminCreditAmount[client] = false;
+    ApplyStoreAdminCreditAmount(client, target, action, amount);
+    ShowStoreAdminCreditAmountMenu(client, action);
+    return Plugin_Handled;
+}
+
+public int MenuHandler_StoreAdminCreditAmount(Menu menu, MenuAction action, int param1, int param2)
+{
+    if (action == MenuAction_End)
+    {
+        delete menu;
+    }
+    else if (action == MenuAction_Cancel && param2 == MenuCancel_ExitBack)
+    {
+        ShowStoreAdminTargetMenu(param1, g_AdminMenuAction[param1]);
+    }
+    else if (action == MenuAction_Select)
+    {
+        int firstItem = GetMenuSelectionPosition();
+        int target = g_iAdminMenuTarget[param1];
+        if (!IsValidStoreAdminTarget(param1, target))
+        {
+            ShowStoreAdminTargetMenu(param1, g_AdminMenuAction[param1]);
+            return 0;
+        }
+
+        char info[24], amountText[16];
+        menu.GetItem(param2, info, sizeof(info));
+        StoreAdminAction creditAction;
+        if (!ParseStoreAdminCreditAmountMenuInfo(info, creditAction, amountText, sizeof(amountText)))
+        {
+            ShowStoreAdminTargetMenu(param1, g_AdminMenuAction[param1]);
+            return 0;
+        }
+
+        if (StrEqual(amountText, "custom"))
+        {
+            PromptStoreAdminCreditAmount(param1, creditAction);
+            return 0;
+        }
+
+        ApplyStoreAdminCreditAmount(param1, target, creditAction, StringToInt(amountText));
+
+        ShowStoreAdminCreditAmountMenu(param1, creditAction, firstItem);
+    }
+
+    return 0;
+}
+
+void ShowStoreAdminInventoryMenu(int client, int target)
+{
+    if (!IsValidStoreAdminTarget(client, target))
+    {
+        ShowStoreAdminTargetMenu(client, StoreAdminAction_ViewInventory);
+        return;
+    }
+
+    g_iAdminMenuTarget[client] = target;
+
+    Menu menu = new Menu(MenuHandler_StoreAdminInventory);
+    char title[192];
+    Format(title, sizeof(title), "%T", "Admin Inventory Category Title", client, target);
+    menu.SetTitle(title);
+    menu.ExitBackButton = true;
+
+    AddStoreAdminInventoryCategoryItem(menu, client, target, "equipped", "Admin Inventory Category Equipped");
+    AddStoreAdminInventoryCategoryItem(menu, client, target, "skins", "Store Category Skins");
+    AddStoreAdminInventoryCategoryItem(menu, client, target, "chat", "Store Category Chat");
+    AddStoreAdminInventoryCategoryItem(menu, client, target, "other", "Admin Inventory Category Other");
+
+    menu.Display(client, MENU_TIME_FOREVER);
+}
+
+void ShowStoreAdminInventorySkinsMenu(int client, int target)
+{
+    if (!IsValidStoreAdminTarget(client, target))
+    {
+        ShowStoreAdminTargetMenu(client, StoreAdminAction_ViewInventory);
+        return;
+    }
+
+    g_iAdminMenuTarget[client] = target;
+
+    Menu menu = new Menu(MenuHandler_StoreAdminInventorySub);
+    char title[192];
+    Format(title, sizeof(title), "%T", "Admin Inventory Skins Title", client, target);
+    menu.SetTitle(title);
+    menu.ExitBackButton = true;
+
+    AddStoreAdminInventoryCategoryItem(menu, client, target, "skin_2", "Inventory Teams Menu TT");
+    AddStoreAdminInventoryCategoryItem(menu, client, target, "skin_3", "Inventory Teams Menu CT");
+
+    menu.Display(client, MENU_TIME_FOREVER);
+}
+
+void ShowStoreAdminInventoryChatMenu(int client, int target)
+{
+    if (!IsValidStoreAdminTarget(client, target))
+    {
+        ShowStoreAdminTargetMenu(client, StoreAdminAction_ViewInventory);
+        return;
+    }
+
+    g_iAdminMenuTarget[client] = target;
+
+    Menu menu = new Menu(MenuHandler_StoreAdminInventorySub);
+    char title[192];
+    Format(title, sizeof(title), "%T", "Admin Inventory Chat Title", client, target);
+    menu.SetTitle(title);
+    menu.ExitBackButton = true;
+
+    AddStoreAdminInventoryCategoryItem(menu, client, target, "tag", "Chat Menu Tags");
+    AddStoreAdminInventoryCategoryItem(menu, client, target, "namecolor", "Chat Menu Name Colors");
+    AddStoreAdminInventoryCategoryItem(menu, client, target, "chatcolor", "Chat Menu Chat Colors");
+
+    menu.Display(client, MENU_TIME_FOREVER);
+}
+
+void AddStoreAdminInventoryCategoryItem(Menu menu, int client, int target, const char[] filter, const char[] phrase)
+{
+    int count = CountStoreAdminInventoryItems(target, filter);
+
+    char label[96], display[128];
+    Format(label, sizeof(label), "%T", phrase, client);
+    Format(display, sizeof(display), "%s (%d)", label, count);
+    menu.AddItem(filter, display, count > 0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+}
+
+bool DoesStoreAdminInventoryItemMatchFilter(const char[] filter, const StoreItem item, bool equipped)
+{
+    if (StrEqual(filter, "all"))
+    {
+        return true;
+    }
+
+    if (StrEqual(filter, "equipped"))
+    {
+        return equipped;
+    }
+
+    if (StrEqual(filter, "skins"))
+    {
+        return StrEqual(item.type, "skin");
+    }
+
+    if (StrEqual(filter, "chat"))
+    {
+        return IsBuiltinChatCosmeticType(item.type);
+    }
+
+    if (StrEqual(filter, "other"))
+    {
+        return !StrEqual(item.type, "skin") && !IsBuiltinChatCosmeticType(item.type);
+    }
+
+    return DoesInventoryItemMatchFilter(filter, item);
+}
+
+int CountStoreAdminInventoryItems(int target, const char[] filter)
+{
+    if (g_hInventory[target] == null || g_aItems == null)
+    {
+        return 0;
+    }
+
+    int count = 0;
+    StoreItem item;
+    for (int i = 0; i < g_aItems.Length; i++)
+    {
+        g_aItems.GetArray(i, item, sizeof(StoreItem));
+        int invIndex = FindInventoryIndexByItemId(target, item.id);
+        if (invIndex == -1)
+        {
+            continue;
+        }
+
+        InventoryItem inv;
+        g_hInventory[target].GetArray(invIndex, inv, sizeof(InventoryItem));
+        if (DoesStoreAdminInventoryItemMatchFilter(filter, item, view_as<bool>(inv.is_equipped)))
+        {
+            count++;
+        }
+    }
+
+    return count;
+}
+
+void AddStoreAdminInventoryItemsToMenu(int target, Menu menu, const char[] filter, bool equippedOnly, int &itemsAdded)
+{
+    if (g_hInventory[target] == null || g_aItems == null)
+    {
+        return;
+    }
+
+    StoreItem item;
+    InventoryItem inv;
+    for (int i = 0; i < g_aItems.Length; i++)
+    {
+        g_aItems.GetArray(i, item, sizeof(StoreItem));
+        int invIndex = FindInventoryIndexByItemId(target, item.id);
+        if (invIndex == -1)
+        {
+            continue;
+        }
+
+        g_hInventory[target].GetArray(invIndex, inv, sizeof(InventoryItem));
+        bool equipped = view_as<bool>(inv.is_equipped);
+        if (equipped != equippedOnly || !DoesStoreAdminInventoryItemMatchFilter(filter, item, equipped))
+        {
+            continue;
+        }
+
+        char display[160];
+        if (equipped)
+        {
+            Format(display, sizeof(display), "[E] %s [%s]", item.name, item.type);
+        }
+        else
+        {
+            Format(display, sizeof(display), "%s [%s]", item.name, item.type);
+        }
+
+        menu.AddItem(item.id, display);
+        itemsAdded++;
+    }
+}
+
+void ShowStoreAdminInventoryListMenu(int client, int target, const char[] filter)
+{
+    if (!IsValidStoreAdminTarget(client, target))
+    {
+        ShowStoreAdminTargetMenu(client, StoreAdminAction_ViewInventory);
+        return;
+    }
+
+    g_iAdminMenuTarget[client] = target;
+    strcopy(g_szInvFilter[client], sizeof(g_szInvFilter[]), filter);
+
+    char filterName[96], title[192];
+    FormatStoreAdminInventoryFilterName(client, filter, filterName, sizeof(filterName));
+    Format(title, sizeof(title), "%T", "Admin Inventory List Title", client, target, filterName);
+
+    Menu menu = new Menu(MenuHandler_StoreAdminInventoryList);
+    menu.SetTitle(title);
+    menu.ExitBackButton = true;
+
+    int itemsAdded = 0;
+    AddStoreAdminInventoryItemsToMenu(target, menu, filter, true, itemsAdded);
+    AddStoreAdminInventoryItemsToMenu(target, menu, filter, false, itemsAdded);
+
+    if (itemsAdded == 0)
+    {
+        char emptyLabel[128];
+        Format(emptyLabel, sizeof(emptyLabel), "%T", "Admin Inventory Empty", client);
+        menu.AddItem("empty", emptyLabel, ITEMDRAW_DISABLED);
+    }
+
+    menu.Display(client, MENU_TIME_FOREVER);
+}
+
+public int MenuHandler_StoreAdminInventory(Menu menu, MenuAction action, int param1, int param2)
+{
+    if (action == MenuAction_End)
+    {
+        delete menu;
+    }
+    else if (action == MenuAction_Cancel && param2 == MenuCancel_ExitBack)
+    {
+        ShowStoreAdminTargetMenu(param1, StoreAdminAction_ViewInventory);
+    }
+    else if (action == MenuAction_Select)
+    {
+        char filter[32];
+        menu.GetItem(param2, filter, sizeof(filter));
+        if (StrEqual(filter, "skins"))
+        {
+            ShowStoreAdminInventorySkinsMenu(param1, g_iAdminMenuTarget[param1]);
+        }
+        else if (StrEqual(filter, "chat"))
+        {
+            ShowStoreAdminInventoryChatMenu(param1, g_iAdminMenuTarget[param1]);
+        }
+        else
+        {
+            ShowStoreAdminInventoryListMenu(param1, g_iAdminMenuTarget[param1], filter);
+        }
+    }
+
+    return 0;
+}
+
+public int MenuHandler_StoreAdminInventorySub(Menu menu, MenuAction action, int param1, int param2)
+{
+    if (action == MenuAction_End)
+    {
+        delete menu;
+    }
+    else if (action == MenuAction_Cancel && param2 == MenuCancel_ExitBack)
+    {
+        ShowStoreAdminInventoryMenu(param1, g_iAdminMenuTarget[param1]);
+    }
+    else if (action == MenuAction_Select)
+    {
+        char filter[32];
+        menu.GetItem(param2, filter, sizeof(filter));
+        ShowStoreAdminInventoryListMenu(param1, g_iAdminMenuTarget[param1], filter);
+    }
+
+    return 0;
+}
+
+void ShowStoreAdminInventoryParentMenuForFilter(int client, int target, const char[] filter)
+{
+    if (StrEqual(filter, "skin_2") || StrEqual(filter, "skin_3"))
+    {
+        ShowStoreAdminInventorySkinsMenu(client, target);
+        return;
+    }
+
+    if (StrEqual(filter, "tag") || StrEqual(filter, "namecolor") || StrEqual(filter, "chatcolor"))
+    {
+        ShowStoreAdminInventoryChatMenu(client, target);
+        return;
+    }
+
+    ShowStoreAdminInventoryMenu(client, target);
+}
+
+public int MenuHandler_StoreAdminInventoryList(Menu menu, MenuAction action, int param1, int param2)
+{
+    if (action == MenuAction_End)
+    {
+        delete menu;
+    }
+    else if (action == MenuAction_Cancel && param2 == MenuCancel_ExitBack)
+    {
+        ShowStoreAdminInventoryParentMenuForFilter(param1, g_iAdminMenuTarget[param1], g_szInvFilter[param1]);
+    }
+    else if (action == MenuAction_Select)
+    {
+        char itemId[32];
+        menu.GetItem(param2, itemId, sizeof(itemId));
+        if (!StrEqual(itemId, "empty"))
+        {
+            ShowStoreAdminInventoryItemMenu(param1, g_iAdminMenuTarget[param1], itemId);
+        }
+    }
+
+    return 0;
+}
+
+void FormatStoreAdminInventoryFilterName(int client, const char[] filter, char[] buffer, int maxlength)
+{
+    if (StrEqual(filter, "equipped"))
+    {
+        Format(buffer, maxlength, "%T", "Admin Inventory Category Equipped", client);
+        return;
+    }
+
+    if (StrEqual(filter, "skins"))
+    {
+        Format(buffer, maxlength, "%T", "Store Category Skins", client);
+        return;
+    }
+
+    if (StrEqual(filter, "chat"))
+    {
+        Format(buffer, maxlength, "%T", "Store Category Chat", client);
+        return;
+    }
+
+    if (StrEqual(filter, "skin_2"))
+    {
+        Format(buffer, maxlength, "%T", "Inventory Teams Menu TT", client);
+        return;
+    }
+
+    if (StrEqual(filter, "skin_3"))
+    {
+        Format(buffer, maxlength, "%T", "Inventory Teams Menu CT", client);
+        return;
+    }
+
+    if (StrEqual(filter, "tag"))
+    {
+        Format(buffer, maxlength, "%T", "Chat Menu Tags", client);
+        return;
+    }
+
+    if (StrEqual(filter, "namecolor"))
+    {
+        Format(buffer, maxlength, "%T", "Chat Menu Name Colors", client);
+        return;
+    }
+
+    if (StrEqual(filter, "chatcolor"))
+    {
+        Format(buffer, maxlength, "%T", "Chat Menu Chat Colors", client);
+        return;
+    }
+
+    if (StrEqual(filter, "other"))
+    {
+        Format(buffer, maxlength, "%T", "Admin Inventory Category Other", client);
+        return;
+    }
+
+    Format(buffer, maxlength, "%T", "Admin Inventory Category All", client);
+}
+
+void ShowStoreAdminInventoryItemMenu(int client, int target, const char[] itemId)
+{
+    if (!IsValidStoreAdminTarget(client, target))
+    {
+        ShowStoreAdminTargetMenu(client, StoreAdminAction_ViewInventory);
+        return;
+    }
+
+    StoreItem item;
+    if (!FindStoreItemById(itemId, item))
+    {
+        PrintStorePhrase(client, "%T", "Item Not Found", client);
+        ShowStoreAdminInventoryListMenu(client, target, g_szInvFilter[client]);
+        return;
+    }
+
+    int invIndex = FindInventoryIndexByItemId(target, itemId);
+    if (invIndex == -1)
+    {
+        PrintStorePhrase(client, "%T", "Item Not In Inventory", client);
+        ShowStoreAdminInventoryListMenu(client, target, g_szInvFilter[client]);
+        return;
+    }
+
+    InventoryItem inv;
+    g_hInventory[target].GetArray(invIndex, inv, sizeof(InventoryItem));
+    bool equipped = view_as<bool>(inv.is_equipped);
+
+    char stateText[64], title[192];
+    Format(stateText, sizeof(stateText), "%T", equipped ? "Item State Equipped" : "Item State Inventory", client);
+    Format(title, sizeof(title), "%T", "Admin Inventory Item Title", client, target, item.name, item.type, stateText);
+
+    Menu menu = new Menu(MenuHandler_StoreAdminInventoryItem);
+    menu.SetTitle(title);
+    menu.ExitBackButton = true;
+
+    if (IsItemTypeEquippable(item.type))
+    {
+        char label[96];
+        Format(label, sizeof(label), "%T", equipped ? "Admin Inventory Unequip Item" : "Admin Inventory Equip Item", client);
+        menu.AddItem(item.id, label);
+    }
+    else
+    {
+        char label[96];
+        Format(label, sizeof(label), "%T", "Admin Inventory Not Equippable", client);
+        menu.AddItem("not_equippable", label, ITEMDRAW_DISABLED);
+    }
+
+    char idLine[128];
+    Format(idLine, sizeof(idLine), "ID: %s", item.id);
+    menu.AddItem("id", idLine, ITEMDRAW_DISABLED);
+    menu.Display(client, MENU_TIME_FOREVER);
+}
+
+public int MenuHandler_StoreAdminInventoryItem(Menu menu, MenuAction action, int param1, int param2)
+{
+    if (action == MenuAction_End)
+    {
+        delete menu;
+    }
+    else if (action == MenuAction_Cancel && param2 == MenuCancel_ExitBack)
+    {
+        ShowStoreAdminInventoryListMenu(param1, g_iAdminMenuTarget[param1], g_szInvFilter[param1]);
+    }
+    else if (action == MenuAction_Select)
+    {
+        char itemId[32];
+        menu.GetItem(param2, itemId, sizeof(itemId));
+        if (StrEqual(itemId, "id") || StrEqual(itemId, "not_equippable"))
+        {
+            return 0;
+        }
+
+        int target = g_iAdminMenuTarget[param1];
+        if (!IsValidStoreAdminTarget(param1, target))
+        {
+            return 0;
+        }
+
+        int invIndex = FindInventoryIndexByItemId(target, itemId);
+        if (invIndex == -1)
+        {
+            PrintStorePhrase(param1, "%T", "Item Not In Inventory", param1);
+            ShowStoreAdminInventoryListMenu(param1, target, g_szInvFilter[param1]);
+            return 0;
+        }
+
+        InventoryItem inv;
+        g_hInventory[target].GetArray(invIndex, inv, sizeof(InventoryItem));
+        bool equipNow = !view_as<bool>(inv.is_equipped);
+
+        if (SetItemEquipped(target, itemId, equipNow, false, false, true))
+        {
+            LogAuditEvent(param1, target, equipNow ? "admin_equip_item" : "admin_unequip_item", itemId, 0, "");
+            PrintStorePhrase(param1, "%T", equipNow ? "Admin Inventory Equipped Item" : "Admin Inventory Unequipped Item", param1, target);
+        }
+        else
+        {
+            PrintStorePhrase(param1, "%T", "Admin Inventory Toggle Failed", param1);
+        }
+
+        ShowStoreAdminInventoryItemMenu(param1, target, itemId);
+    }
+
+    return 0;
+}
+
+void PrintStoreDebugForTarget(int client, int target)
+{
+    char steamid[32], creditsText[32], amountTextA[32], amountTextB[32];
+    StoreProfileSnapshot snapshot;
+    BuildProfileSnapshot(target, snapshot);
+    GetClientSteamIdSafe(target, steamid, sizeof(steamid));
+
+    ReplyStorePhrase(client, "%T", "Admin Debug Header", client, target, steamid);
+    ReplyStorePhrase(client, "%T", "Admin Debug Identity", client,
+        g_bIsLoaded[target], g_bIsLoading[target], snapshot.credits, snapshot.owned_items, snapshot.equipped_items);
+
+    FormatNumberDots(snapshot.credits_earned, amountTextA, sizeof(amountTextA));
+    FormatNumberDots(snapshot.credits_spent, amountTextB, sizeof(amountTextB));
+    ReplyStorePhrase(client, "%T", "Admin Debug Economy", client,
+        amountTextA, amountTextB, snapshot.purchases_total, snapshot.sales_total, snapshot.gifts_sent, snapshot.gifts_received, snapshot.trades_completed);
+
+    FormatNumberDots(snapshot.total_casino_profit, creditsText, sizeof(creditsText));
+    ReplyStorePhrase(client, "%T", "Admin Debug Progress", client,
+        snapshot.daily_best_streak, snapshot.quests_completed, snapshot.total_casino_activity, creditsText);
+
+    FormatNumberDots(snapshot.blackjack_profit, amountTextA, sizeof(amountTextA));
+    FormatNumberDots(snapshot.coinflip_profit, amountTextB, sizeof(amountTextB));
+    ReplyStorePhrase(client, "%T", "Admin Debug Casino A", client,
+        snapshot.blackjack_games, amountTextA, snapshot.coinflip_games, amountTextB);
+
+    FormatNumberDots(snapshot.crash_profit, amountTextA, sizeof(amountTextA));
+    FormatNumberDots(snapshot.roulette_profit, amountTextB, sizeof(amountTextB));
+    ReplyStorePhrase(client, "%T", "Admin Debug Casino B", client,
+        snapshot.crash_rounds, amountTextA, snapshot.roulette_games, amountTextB);
+}
+
+void PrintStoreQuestsDebugForTarget(int client, int target)
+{
+    ArrayList questRows = new ArrayList(sizeof(StoreQuestProgressSnapshot));
+    StringMap questIndex = new StringMap();
+    int completedCount = 0;
+    LoadQuestProgressSnapshot(target, questRows, questIndex, completedCount);
+
+    ReplyStorePhrase(client, "%T", "Admin Quests Debug Header", client, target);
+    ReplyStorePhrase(client, "%T", "Admin Quests Debug Summary", client, (g_aQuestDefinitions != null) ? g_aQuestDefinitions.Length : 0, completedCount);
+
+    if (g_aQuestDefinitions != null)
+    {
+        StoreQuestDefinition definition;
+        for (int i = 0; i < g_aQuestDefinitions.Length; i++)
+        {
+            g_aQuestDefinitions.GetArray(i, definition, sizeof(StoreQuestDefinition));
+
+            int progress = 0, completedAt = 0, rewardedAt = 0, completionCount = 0;
+            GetQuestSnapshotState(questRows, questIndex, definition.id, progress, completedAt, rewardedAt, completionCount);
+
+            bool lockedByWindow = false;
+            bool lockedByRequirement = false;
+            bool maxedOut = false;
+            GetQuestAvailabilityStateFromSnapshot(definition, rewardedAt, completionCount, questRows, questIndex, lockedByWindow, lockedByRequirement, maxedOut);
+
+            ReplyStorePhrase(client, "%T", "Admin Quest Debug Entry", client,
+                definition.id, progress, definition.goal, (rewardedAt > 0), definition.repeatable, completionCount, definition.max_completions,
+                lockedByWindow, lockedByRequirement, maxedOut);
+        }
+    }
+
+    delete questRows;
+    delete questIndex;
+}
+
+void ExportStoreProfileForTarget(int client, int target)
+{
+    char filePath[PLATFORM_MAX_PATH];
+    if (!ExportProfileSnapshotInternal(client, target, filePath, sizeof(filePath)))
+    {
+        ReplyStoreAdminUsage(client, "Admin Export Failed");
+        return;
+    }
+
+    ReplyStorePhrase(client, "%T", "Admin Export Target Success", client, target, filePath);
 }
 
 // =========================================================================
@@ -11813,7 +13540,7 @@ void ReplyAuditOutput(int client, const char[] format, any ...)
     {
         if (StrContains(buffer, "[Umbrella Store]") == 0)
         {
-            ReplaceString(buffer, sizeof(buffer), "[Umbrella Store]", " {purple}[Umbrella Store]{default}");
+            ReplaceString(buffer, sizeof(buffer), "[Umbrella Store]", " {green}[Umbrella Store]{default}");
         }
         CReplyToCommand(client, "%s", buffer);
     }
@@ -11821,6 +13548,72 @@ void ReplyAuditOutput(int client, const char[] format, any ...)
     {
         PrintToServer("%s", buffer);
     }
+}
+
+bool RequestStoreAudit(int client, int target, int limit, bool filterByTarget)
+{
+    if (g_DB == null || !g_bLateDatabaseReady)
+    {
+        ReplyAuditOutput(client, "[Umbrella Store] Database no lista.");
+        return false;
+    }
+
+    if (limit < 1)
+    {
+        limit = 1;
+    }
+    else if (limit > 100)
+    {
+        limit = 100;
+    }
+
+    char safeTargetSteamId[64];
+    safeTargetSteamId[0] = '\0';
+    char targetLabel[64];
+    strcopy(targetLabel, sizeof(targetLabel), "global");
+
+    if (filterByTarget)
+    {
+        if (!IsValidStoreAdminTarget(client, target))
+        {
+            return false;
+        }
+
+        char targetSteamId[32];
+        if (!GetClientSteamIdSafe(target, targetSteamId, sizeof(targetSteamId)))
+        {
+            ReplyAuditOutput(client, "[Umbrella Store] No se pudo obtener SteamID del objetivo.");
+            return false;
+        }
+
+        EscapeStringSafe(targetSteamId, safeTargetSteamId, sizeof(safeTargetSteamId));
+        GetClientName(target, targetLabel, sizeof(targetLabel));
+    }
+
+    char query[512];
+    if (filterByTarget)
+    {
+        Format(query, sizeof(query),
+            "SELECT actor_name, target_name, action, item_id, amount, details, created_at FROM store_audit_log WHERE target_steamid = '%s' OR actor_steamid = '%s' ORDER BY id DESC LIMIT %d",
+            safeTargetSteamId,
+            safeTargetSteamId, limit);
+    }
+    else
+    {
+        Format(query, sizeof(query),
+            "SELECT actor_name, target_name, action, item_id, amount, details, created_at FROM store_audit_log ORDER BY id DESC LIMIT %d",
+            limit);
+    }
+
+    DataPack pack = new DataPack();
+    pack.WriteCell((client > 0) ? GetClientUserId(client) : 0);
+    pack.WriteCell(limit);
+    pack.WriteCell(filterByTarget ? 1 : 0);
+    pack.WriteString(targetLabel);
+
+    g_DB.Query(OnStoreAuditLoaded, query, pack);
+    ReplyAuditOutput(client, "[Umbrella Store] Cargando auditoria general...");
+    return true;
 }
 
 public Action Cmd_StoreAudit(int client, int args)
@@ -11853,10 +13646,7 @@ public Action Cmd_StoreAudit(int client, int args)
     }
 
     bool filterByTarget = false;
-    char safeTargetSteamId[64];
-    safeTargetSteamId[0] = '\0';
-    char targetLabel[64];
-    strcopy(targetLabel, sizeof(targetLabel), "global");
+    int target = 0;
 
     bool firstArgIsLimit = false;
     if (args == 1)
@@ -11874,7 +13664,6 @@ public Action Cmd_StoreAudit(int client, int args)
         if (StrEqual(argTarget, "@all", false) || StrEqual(argTarget, "all", false) || StrEqual(argTarget, "global", false))
         {
             filterByTarget = false;
-            strcopy(targetLabel, sizeof(targetLabel), "global");
         }
         else
         {
@@ -11886,53 +13675,17 @@ public Action Cmd_StoreAudit(int client, int args)
                 return Plugin_Handled;
             }
 
-            int target = targets[0];
-            char targetSteamId[32];
-            if (!GetClientSteamIdSafe(target, targetSteamId, sizeof(targetSteamId)))
-            {
-                ReplyAuditOutput(client, "[Umbrella Store] No se pudo obtener SteamID del objetivo.");
-                return Plugin_Handled;
-            }
-
-            EscapeStringSafe(targetSteamId, safeTargetSteamId, sizeof(safeTargetSteamId));
-            GetClientName(target, targetLabel, sizeof(targetLabel));
+            target = targets[0];
             filterByTarget = true;
         }
     }
     else if (client > 0)
     {
-        char targetSteamId[32];
-        if (GetClientSteamIdSafe(client, targetSteamId, sizeof(targetSteamId)))
-        {
-            EscapeStringSafe(targetSteamId, safeTargetSteamId, sizeof(safeTargetSteamId));
-            GetClientName(client, targetLabel, sizeof(targetLabel));
-            filterByTarget = true;
-        }
+        target = client;
+        filterByTarget = true;
     }
 
-    char query[512];
-    if (filterByTarget)
-    {
-        Format(query, sizeof(query),
-            "SELECT actor_name, target_name, action, item_id, amount, details, created_at FROM store_audit_log WHERE target_steamid = '%s' OR actor_steamid = '%s' ORDER BY id DESC LIMIT %d",
-            safeTargetSteamId,
-            safeTargetSteamId, limit);
-    }
-    else
-    {
-        Format(query, sizeof(query),
-            "SELECT actor_name, target_name, action, item_id, amount, details, created_at FROM store_audit_log ORDER BY id DESC LIMIT %d",
-            limit);
-    }
-
-    DataPack pack = new DataPack();
-    pack.WriteCell((client > 0) ? GetClientUserId(client) : 0);
-    pack.WriteCell(limit);
-    pack.WriteCell(filterByTarget ? 1 : 0);
-    pack.WriteString(targetLabel);
-
-    g_DB.Query(OnStoreAuditLoaded, query, pack);
-    ReplyAuditOutput(client, "[Umbrella Store] Cargando auditoria general...");
+    RequestStoreAudit(client, target, limit, filterByTarget);
     return Plugin_Handled;
 }
 
@@ -12276,6 +14029,11 @@ public any Native_US_IsLoaded(Handle plugin, int numParams)
     return (client >= 1 && client <= MaxClients && g_bIsLoaded[client] && IsStoreEnabled());
 }
 
+public any Native_US_IsEnabled(Handle plugin, int numParams)
+{
+    return IsStoreEnabled();
+}
+
 public any Native_US_GetCredits(Handle plugin, int numParams)
 {
     int client = GetNativeCell(1);
@@ -12290,7 +14048,7 @@ public any Native_US_SetCredits(Handle plugin, int numParams)
 {
     int client = GetNativeCell(1);
     int amount = GetNativeCell(2);
-    if (client < 1 || client > MaxClients || !g_bIsLoaded[client])
+    if (!IsStoreEnabled() || client < 1 || client > MaxClients || !g_bIsLoaded[client])
     {
         return false;
     }
@@ -12306,7 +14064,7 @@ public any Native_US_AddCredits(Handle plugin, int numParams)
     int client = GetNativeCell(1);
     int amount = GetNativeCell(2);
     bool notify = (numParams >= 3) ? view_as<bool>(GetNativeCell(3)) : false;
-    if (client < 1 || client > MaxClients || !g_bIsLoaded[client] || amount <= 0)
+    if (!IsStoreEnabled() || client < 1 || client > MaxClients || !g_bIsLoaded[client] || amount <= 0)
     {
         return false;
     }
@@ -12317,7 +14075,7 @@ public any Native_US_TakeCredits(Handle plugin, int numParams)
 {
     int client = GetNativeCell(1);
     int amount = GetNativeCell(2);
-    if (client < 1 || client > MaxClients || !g_bIsLoaded[client] || amount <= 0 || g_iCredits[client] < amount)
+    if (!IsStoreEnabled() || client < 1 || client > MaxClients || !g_bIsLoaded[client] || amount <= 0 || g_iCredits[client] < amount)
     {
         return false;
     }
@@ -12337,7 +14095,7 @@ public any Native_US_ApplyCreditDelta(Handle plugin, int numParams)
         strcopy(reason, sizeof(reason), "api_delta");
     }
 
-    if (client < 1 || client > MaxClients || !g_bIsLoaded[client] || delta == 0)
+    if (!IsStoreEnabled() || client < 1 || client > MaxClients || !g_bIsLoaded[client] || delta == 0)
     {
         return false;
     }
@@ -12365,7 +14123,7 @@ public any Native_US_ApplyCreditDeltas(Handle plugin, int numParams)
         strcopy(reasonB, sizeof(reasonB), "api_delta");
     }
 
-    if (deltaA == 0 && deltaB == 0)
+    if (!IsStoreEnabled() || (deltaA == 0 && deltaB == 0))
     {
         return false;
     }
@@ -12378,7 +14136,7 @@ public any Native_US_HasItem(Handle plugin, int numParams)
     int client = GetNativeCell(1);
     char itemId[64];
     GetNativeString(2, itemId, sizeof(itemId));
-    if (client < 1 || client > MaxClients || !g_bIsLoaded[client])
+    if (!IsStoreEnabled() || client < 1 || client > MaxClients || !g_bIsLoaded[client])
     {
         return false;
     }
@@ -12511,6 +14269,11 @@ public any Native_US_GetEquippedItem(Handle plugin, int numParams)
     char type[32], itemId[32];
     GetNativeString(2, type, sizeof(type));
 
+    if (!IsStoreEnabled())
+    {
+        return false;
+    }
+
     if (!GetEquippedItemByType(client, type, itemId, sizeof(itemId)))
     {
         return false;
@@ -12526,7 +14289,7 @@ public any Native_US_IsItemEquipped(Handle plugin, int numParams)
     char itemId[64];
     GetNativeString(2, itemId, sizeof(itemId));
 
-    if (client < 1 || client > MaxClients || !g_bIsLoaded[client] || g_hInventory[client] == null)
+    if (!IsStoreEnabled() || client < 1 || client > MaxClients || !g_bIsLoaded[client] || g_hInventory[client] == null)
     {
         return false;
     }
@@ -12545,7 +14308,7 @@ public any Native_US_IsItemEquipped(Handle plugin, int numParams)
 public any Native_US_GetEquippedItemCount(Handle plugin, int numParams)
 {
     int client = GetNativeCell(1);
-    if (client < 1 || client > MaxClients || !g_bIsLoaded[client] || g_hInventory[client] == null)
+    if (!IsStoreEnabled() || client < 1 || client > MaxClients || !g_bIsLoaded[client] || g_hInventory[client] == null)
     {
         return 0;
     }
@@ -12570,7 +14333,7 @@ public any Native_US_GetEquippedItemIdByIndex(Handle plugin, int numParams)
     int targetIndex = GetNativeCell(2);
     int maxlen = GetNativeCell(4);
 
-    if (client < 1 || client > MaxClients || targetIndex < 0 || maxlen <= 0 || !g_bIsLoaded[client] || g_hInventory[client] == null)
+    if (!IsStoreEnabled() || client < 1 || client > MaxClients || targetIndex < 0 || maxlen <= 0 || !g_bIsLoaded[client] || g_hInventory[client] == null)
     {
         return false;
     }
@@ -12636,6 +14399,87 @@ public any Native_US_TryEquipItem(Handle plugin, int numParams)
     bool notify = (numParams >= 3) ? view_as<bool>(GetNativeCell(3)) : true;
     GetNativeString(2, itemId, sizeof(itemId));
     return SetItemEquipped(client, itemId, true, notify, true);
+}
+
+public any Native_US_TryUnequipItem(Handle plugin, int numParams)
+{
+    int client = GetNativeCell(1);
+    char itemId[64];
+    bool notify = (numParams >= 3) ? view_as<bool>(GetNativeCell(3)) : true;
+    GetNativeString(2, itemId, sizeof(itemId));
+    return SetItemEquipped(client, itemId, false, notify, true);
+}
+
+public any Native_US_SetItemEquipped(Handle plugin, int numParams)
+{
+    int client = GetNativeCell(1);
+    char itemId[64];
+    bool equipped = view_as<bool>(GetNativeCell(3));
+    bool notify = (numParams >= 4) ? view_as<bool>(GetNativeCell(4)) : true;
+    GetNativeString(2, itemId, sizeof(itemId));
+    return SetItemEquipped(client, itemId, equipped, notify, false);
+}
+
+public any Native_US_CanUseItem(Handle plugin, int numParams)
+{
+    int client = GetNativeCell(1);
+    char itemId[64], reason[64];
+    GetNativeString(2, itemId, sizeof(itemId));
+    SetReason(reason, sizeof(reason), "");
+
+    if (!IsValidHumanClient(client))
+    {
+        SetReason(reason, sizeof(reason), "invalid_client");
+        SetNativeString(3, reason, GetNativeCell(4), true);
+        return false;
+    }
+
+    if (!EnsureStoreEnabledForClient(client, false))
+    {
+        SetReason(reason, sizeof(reason), "store_disabled");
+        SetNativeString(3, reason, GetNativeCell(4), true);
+        return false;
+    }
+
+    if (!g_bIsLoaded[client] || g_hInventory[client] == null)
+    {
+        SetReason(reason, sizeof(reason), "client_not_loaded");
+        SetNativeString(3, reason, GetNativeCell(4), true);
+        return false;
+    }
+
+    StoreItem item;
+    if (!FindStoreItemById(itemId, item))
+    {
+        SetReason(reason, sizeof(reason), "item_not_found");
+        SetNativeString(3, reason, GetNativeCell(4), true);
+        return false;
+    }
+
+    if (!IsItemActiveForNow(item))
+    {
+        SetReason(reason, sizeof(reason), "item_unavailable");
+        SetNativeString(3, reason, GetNativeCell(4), true);
+        return false;
+    }
+
+    if (!HasAccess(client, item.flag))
+    {
+        SetReason(reason, sizeof(reason), "no_access");
+        SetNativeString(3, reason, GetNativeCell(4), true);
+        return false;
+    }
+
+    if (item.requires_item[0] != '\0' && !PlayerOwnsItem(client, item.requires_item))
+    {
+        SetReason(reason, sizeof(reason), "requires_item");
+        SetNativeString(3, reason, GetNativeCell(4), true);
+        return false;
+    }
+
+    SetReason(reason, sizeof(reason), "ok");
+    SetNativeString(3, reason, GetNativeCell(4), true);
+    return true;
 }
 
 public any Native_US_RegisterItemType(Handle plugin, int numParams)
@@ -12738,7 +14582,7 @@ public any Native_US_ApplyCreditDeltaWithQuery(Handle plugin, int numParams)
         strcopy(reason, sizeof(reason), "api_delta_query");
     }
 
-    if (client < 1 || client > MaxClients || !g_bIsLoaded[client] || delta == 0 || query[0] == '\0')
+    if (!IsStoreEnabled() || client < 1 || client > MaxClients || !g_bIsLoaded[client] || delta == 0 || query[0] == '\0')
     {
         return false;
     }
@@ -12759,6 +14603,10 @@ public any Native_US_AddStat(Handle plugin, int numParams)
     int amount = (numParams >= 3) ? GetNativeCell(3) : 1;
     char statKey[64];
     GetNativeString(2, statKey, sizeof(statKey));
+    if (!IsStoreEnabled())
+    {
+        return false;
+    }
     return UpdatePlayerStat(client, statKey, amount, false);
 }
 
@@ -12768,6 +14616,10 @@ public any Native_US_SetStatMax(Handle plugin, int numParams)
     int value = GetNativeCell(3);
     char statKey[64];
     GetNativeString(2, statKey, sizeof(statKey));
+    if (!IsStoreEnabled())
+    {
+        return false;
+    }
     return UpdatePlayerStat(client, statKey, value, true);
 }
 
@@ -12842,6 +14694,10 @@ public any Native_US_AdvanceQuestProgress(Handle plugin, int numParams)
     int amount = (numParams >= 3) ? GetNativeCell(3) : 1;
     char questId[64];
     GetNativeString(2, questId, sizeof(questId));
+    if (!IsStoreEnabled())
+    {
+        return false;
+    }
     return UpdateQuestProgressInternal(client, questId, amount, false);
 }
 
@@ -12851,6 +14707,10 @@ public any Native_US_SetQuestProgressMax(Handle plugin, int numParams)
     int value = GetNativeCell(3);
     char questId[64];
     GetNativeString(2, questId, sizeof(questId));
+    if (!IsStoreEnabled())
+    {
+        return false;
+    }
     return UpdateQuestProgressInternal(client, questId, value, true);
 }
 

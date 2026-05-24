@@ -6,7 +6,7 @@
 #include <umbrella_store>
 #include <multicolors>
 
-#define US_CHAT_TAG " {purple}[Umbrella Store]{default}"
+#define US_CHAT_TAG " {green}[Umbrella Store]{default}"
 #define GIVEAWAY_MAX_CREDITS 2000000000
 
 public Plugin myinfo =
@@ -14,7 +14,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Giveaway",
     author = "Ayrton09",
     description = "Giveaway global con animacion HUD para Umbrella Store",
-    version = "1.2.2",
+    version = "1.3.0",
     url = ""
 };
 
@@ -820,6 +820,12 @@ public Action Command_Giveaway(int client, int args)
         return Plugin_Handled;
     }
 
+    if (!LibraryExists("umbrella_store") || !US_IsEnabled())
+    {
+        ReplyStoreMessage(client, "%t", "Giveaway Store Missing");
+        return Plugin_Handled;
+    }
+
     if (client > 0 && !HasGiveawayAccess(client))
     {
         ReplyStoreMessage(client, "%t", "Giveaway No Access");
@@ -835,12 +841,6 @@ public Action Command_Giveaway(int client, int args)
     if (g_bGiveawayActive)
     {
         ReplyStoreMessage(client, "%t", "Giveaway Already Active");
-        return Plugin_Handled;
-    }
-
-    if (!LibraryExists("umbrella_store"))
-    {
-        ReplyStoreMessage(client, "%t", "Giveaway Store Missing");
         return Plugin_Handled;
     }
 

@@ -14,7 +14,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Grenade Skins",
     author = "Ayrton09",
     description = "Grenade projectile model item module for Umbrella Store",
-    version = "1.2.2",
+    version = "1.3.0",
     url = ""
 };
 
@@ -29,6 +29,11 @@ public void OnPluginStart()
 }
 
 public void OnMapStart()
+{
+    PrecacheConfiguredGrenadeSkins();
+}
+
+public void US_OnItemsReloaded(int itemCount)
 {
     PrecacheConfiguredGrenadeSkins();
 }
@@ -60,6 +65,11 @@ public Action US_OnEquipPre(int client, const char[] itemId, bool equip)
     for (int i = 0; i < count; i++)
     {
         if (StrEqual(equipped[i], itemId))
+        {
+            continue;
+        }
+
+        if (!USM_ItemTeamsCanConflict(itemId, equipped[i]))
         {
             continue;
         }
@@ -107,7 +117,7 @@ void PrecacheConfiguredGrenadeSkins()
 
 public void OnEntityCreated(int entity, const char[] classname)
 {
-    if (!gCvarEnabled.BoolValue || StrContains(classname, "_projectile", false) == -1)
+    if (!US_IsEnabled() || !gCvarEnabled.BoolValue || StrContains(classname, "_projectile", false) == -1)
     {
         return;
     }
@@ -144,6 +154,11 @@ bool FindGrenadeSkinForProjectile(int client, const char[] projectileName, char[
 
     for (int i = 0; i < count; i++)
     {
+        if (!USM_ItemAllowedForClientTeam(client, equipped[i]))
+        {
+            continue;
+        }
+
         USM_GetMetadata(equipped[i], "grenade", grenade, sizeof(grenade));
         if (GrenadeNameMatches(projectileName, grenade))
         {
@@ -157,7 +172,7 @@ bool FindGrenadeSkinForProjectile(int client, const char[] projectileName, char[
 
 public void OnProjectileSpawned(int entity)
 {
-    if (!IsValidEntity(entity))
+    if (!US_IsEnabled() || !IsValidEntity(entity))
     {
         return;
     }

@@ -19,7 +19,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Sprays",
     author = "Ayrton09",
     description = "Custom wall spray item module for Umbrella Store",
-    version = "1.2.2",
+    version = "1.3.0",
     url = ""
 };
 
@@ -39,6 +39,13 @@ public void OnMapStart()
     g_mSprayDecals = new StringMap();
     PrecacheConfiguredSprays();
     PrecacheSound("player/sprayer.wav", true);
+}
+
+public void US_OnItemsReloaded(int itemCount)
+{
+    delete g_mSprayDecals;
+    g_mSprayDecals = new StringMap();
+    PrecacheConfiguredSprays();
 }
 
 public void OnClientDisconnect(int client)
@@ -194,7 +201,7 @@ void CreateSpray(int client, const char[] itemId)
 
 public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3], float angles[3], int &weapon)
 {
-    if (!gCvarEnabled.BoolValue)
+    if (!US_IsEnabled() || !gCvarEnabled.BoolValue)
     {
         return Plugin_Continue;
     }
@@ -222,7 +229,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
     }
 
     char itemId[64];
-    if (US_GetEquippedItem(client, "spray", itemId, sizeof(itemId)))
+    if (USM_GetEquippedItemForClientTeam(client, "spray", itemId, sizeof(itemId)))
     {
         CreateSpray(client, itemId);
     }

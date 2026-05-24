@@ -7,21 +7,24 @@
 #include <umbrella_store_module_utils>
 
 ConVar gCvarEnabled;
+ArrayList g_aSmokeRefs = null;
 
 public Plugin myinfo =
 {
     name = "[Umbrella Store] Colored Smoke",
     author = "Ayrton09",
     description = "Colored smoke grenade item module for Umbrella Store",
-    version = "1.2.2",
+    version = "1.3.0",
     url = ""
 };
 
 public void OnPluginStart()
 {
     LoadTranslations("umbrella_store.phrases");
+    g_aSmokeRefs = new ArrayList();
 
     gCvarEnabled = CreateConVar("umbrella_store_colored_smoke_enabled", "1", "Enable Umbrella Store colored smoke.", FCVAR_NONE, true, 0.0, true, 1.0);
+    gCvarEnabled.AddChangeHook(Cvar_EnabledChanged);
     AutoExecConfig(true, "umbrella_store_colored_smoke");
 
     US_RegisterItemType("coloredsmoke", "colored_smoke", true, true);
@@ -34,14 +37,42 @@ public void OnMapStart()
     PrecacheConfiguredSmokeMaterials();
 }
 
+public void US_OnItemsReloaded(int itemCount)
+{
+    PrecacheConfiguredSmokeMaterials();
+    RemoveAllColoredSmokes();
+}
+
+public void OnPluginEnd()
+{
+    RemoveAllColoredSmokes();
+    delete g_aSmokeRefs;
+}
+
+public void US_OnStoreEnabledChanged(bool enabled)
+{
+    if (!enabled)
+    {
+        RemoveAllColoredSmokes();
+    }
+}
+
+public void Cvar_EnabledChanged(ConVar convar, const char[] oldValue, const char[] newValue)
+{
+    if (!convar.BoolValue)
+    {
+        RemoveAllColoredSmokes();
+    }
+}
+
 bool GetEquippedSmokeItem(int client, char[] itemId, int maxlen)
 {
-    if (US_GetEquippedItem(client, "coloredsmoke", itemId, maxlen))
+    if (USM_GetEquippedItemForClientTeam(client, "coloredsmoke", itemId, maxlen))
     {
         return true;
     }
 
-    return US_GetEquippedItem(client, "ColoredSmoke", itemId, maxlen);
+    return USM_GetEquippedItemForClientTeam(client, "ColoredSmoke", itemId, maxlen);
 }
 
 void AddSmokeMaterialDownload(const char[] material)
@@ -100,7 +131,7 @@ void GetSmokeKey(const char[] itemId, const char[] key, const char[] defaultValu
 
 public Action Event_SmokeDetonate(Event event, const char[] name, bool dontBroadcast)
 {
-    if (!gCvarEnabled.BoolValue)
+    if (!US_IsEnabled() || !gCvarEnabled.BoolValue)
     {
         return Plugin_Continue;
     }
@@ -161,6 +192,7 @@ public Action Event_SmokeDetonate(Event event, const char[] name, bool dontBroad
     DispatchKeyValue(smoke, "SmokeMaterial", material);
     DispatchSpawn(smoke);
     AcceptEntityInput(smoke, "TurnOn");
+    TrackColoredSmoke(smoke);
 
     float lifetime = USM_GetMetadataFloat(itemId, "lifetime", 10.0);
     if (lifetime > 0.0)
@@ -173,6 +205,37 @@ public Action Event_SmokeDetonate(Event event, const char[] name, bool dontBroad
 
 public Action Timer_RemoveSmoke(Handle timer, any ref)
 {
+    RemoveColoredSmokeByRef(ref);
+
+    return Plugin_Stop;
+}
+
+void TrackColoredSmoke(int entity)
+{
+    if (g_aSmokeRefs == null)
+    {
+        return;
+    }
+
+    g_aSmokeRefs.Push(EntIndexToEntRef(entity));
+}
+
+void UntrackColoredSmoke(int ref)
+{
+    if (g_aSmokeRefs == null)
+    {
+        return;
+    }
+
+    int index = g_aSmokeRefs.FindValue(ref);
+    if (index != -1)
+    {
+        g_aSmokeRefs.Erase(index);
+    }
+}
+
+void RemoveColoredSmokeByRef(int ref, bool untrack = true)
+{
     int entity = EntRefToEntIndex(ref);
     if (entity != INVALID_ENT_REFERENCE && entity > 0 && IsValidEntity(entity))
     {
@@ -180,5 +243,23 @@ public Action Timer_RemoveSmoke(Handle timer, any ref)
         AcceptEntityInput(entity, "Kill");
     }
 
-    return Plugin_Stop;
+    if (untrack)
+    {
+        UntrackColoredSmoke(ref);
+    }
+}
+
+void RemoveAllColoredSmokes()
+{
+    if (g_aSmokeRefs == null)
+    {
+        return;
+    }
+
+    for (int i = 0; i < g_aSmokeRefs.Length; i++)
+    {
+        RemoveColoredSmokeByRef(g_aSmokeRefs.Get(i), false);
+    }
+
+    g_aSmokeRefs.Clear();
 }

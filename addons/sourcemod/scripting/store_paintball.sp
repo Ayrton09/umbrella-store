@@ -17,7 +17,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Paintball",
     author = "Ayrton09",
     description = "Bullet impact decal item module for Umbrella Store",
-    version = "1.2.2",
+    version = "1.3.0",
     url = ""
 };
 
@@ -36,6 +36,13 @@ public void OnPluginStart()
 }
 
 public void OnMapStart()
+{
+    delete g_mPaintballDecals;
+    g_mPaintballDecals = new StringMap();
+    PrecachePaintballDecals();
+}
+
+public void US_OnItemsReloaded(int itemCount)
 {
     delete g_mPaintballDecals;
     g_mPaintballDecals = new StringMap();
@@ -199,7 +206,7 @@ bool PickPaintballDecal(const char[] itemId, char[] decalPath, int maxlen)
 
 public Action Event_BulletImpact(Event event, const char[] name, bool dontBroadcast)
 {
-    if (!gCvarEnabled.BoolValue)
+    if (!US_IsEnabled() || !gCvarEnabled.BoolValue)
     {
         return Plugin_Continue;
     }
@@ -211,7 +218,7 @@ public Action Event_BulletImpact(Event event, const char[] name, bool dontBroadc
     }
 
     char itemId[64], rawDecal[PLATFORM_MAX_PATH], decalPath[PLATFORM_MAX_PATH], downloadPath[PLATFORM_MAX_PATH];
-    if (!US_GetEquippedItem(client, "paintball", itemId, sizeof(itemId)) || !PickPaintballDecal(itemId, rawDecal, sizeof(rawDecal)))
+    if (!USM_GetEquippedItemForClientTeam(client, "paintball", itemId, sizeof(itemId)) || !PickPaintballDecal(itemId, rawDecal, sizeof(rawDecal)))
     {
         return Plugin_Continue;
     }

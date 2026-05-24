@@ -15,7 +15,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Grenade Trails",
     author = "Ayrton09",
     description = "Grenade projectile trail item module for Umbrella Store",
-    version = "1.2.2",
+    version = "1.3.0",
     url = ""
 };
 
@@ -31,6 +31,11 @@ public void OnPluginStart()
 }
 
 public void OnMapStart()
+{
+    PrecacheConfiguredTrailMaterials();
+}
+
+public void US_OnItemsReloaded(int itemCount)
 {
     PrecacheConfiguredTrailMaterials();
 }
@@ -68,7 +73,7 @@ void PrecacheConfiguredTrailMaterials()
 
 public void OnEntityCreated(int entity, const char[] classname)
 {
-    if (!gCvarEnabled.BoolValue || StrContains(classname, "_projectile", false) == -1)
+    if (!US_IsEnabled() || !gCvarEnabled.BoolValue || StrContains(classname, "_projectile", false) == -1)
     {
         return;
     }
@@ -78,7 +83,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 
 public void OnProjectileSpawned(int entity)
 {
-    if (!IsValidEntity(entity))
+    if (!US_IsEnabled() || !IsValidEntity(entity))
     {
         return;
     }
@@ -90,7 +95,7 @@ public void OnProjectileSpawned(int entity)
     }
 
     char itemId[64];
-    if (!US_GetEquippedItem(client, "grenadetrail", itemId, sizeof(itemId)))
+    if (!USM_GetEquippedItemForClientTeam(client, "grenadetrail", itemId, sizeof(itemId)))
     {
         return;
     }

@@ -19,7 +19,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Hats",
     author = "Ayrton09",
     description = "Attached hat model item module for Umbrella Store",
-    version = "1.2.2",
+    version = "1.3.0",
     url = ""
 };
 
@@ -28,6 +28,7 @@ public void OnPluginStart()
     LoadTranslations("umbrella_store.phrases");
 
     gCvarEnabled = CreateConVar("umbrella_store_hats_enabled", "1", "Enable Umbrella Store hats.", FCVAR_NONE, true, 0.0, true, 1.0);
+    gCvarEnabled.AddChangeHook(Cvar_EnabledChanged);
     gCvarHideOwn = CreateConVar("umbrella_store_hats_hide_own", "1", "Hide a player's own hat in first person.", FCVAR_NONE, true, 0.0, true, 1.0);
     AutoExecConfig(true, "umbrella_store_hats");
 
@@ -43,6 +44,12 @@ public void OnMapStart()
 {
     ResetHatRefs();
     PrecacheConfiguredHats();
+}
+
+public void US_OnItemsReloaded(int itemCount)
+{
+    PrecacheConfiguredHats();
+    RecreateAllHats();
 }
 
 public void OnClientDisconnect(int client)
@@ -105,7 +112,7 @@ int GetHatSlot(const char[] itemId)
     return USM_GetMetadataInt(itemId, "slot", -1);
 }
 
-bool FindEquippedHatInSlot(int client, int slot, const char[] ignoreItemId = "")
+bool FindEquippedHatInSlot(int client, int slot, const char[] targetItemId, const char[] ignoreItemId = "")
 {
     if (slot < 0)
     {
@@ -117,6 +124,11 @@ bool FindEquippedHatInSlot(int client, int slot, const char[] ignoreItemId = "")
     for (int i = 0; i < count; i++)
     {
         if (ignoreItemId[0] != '\0' && StrEqual(itemIds[i], ignoreItemId))
+        {
+            continue;
+        }
+
+        if (targetItemId[0] != '\0' && !USM_ItemTeamsCanConflict(targetItemId, itemIds[i]))
         {
             continue;
         }
@@ -138,7 +150,7 @@ public Action US_OnEquipPre(int client, const char[] itemId, bool equip)
     }
 
     int slot = GetHatSlot(itemId);
-    if (slot >= 0 && slot < MAX_CLIENT_HATS && FindEquippedHatInSlot(client, slot, itemId))
+    if (slot >= 0 && slot < MAX_CLIENT_HATS && FindEquippedHatInSlot(client, slot, itemId, itemId))
     {
         PrintToChat(client, "[Umbrella Store] %T", "Hat Slot In Use", client);
         return Plugin_Handled;
@@ -152,6 +164,40 @@ public void US_OnEquipPost(int client, const char[] itemId, bool equip)
     if (USM_ItemMatchesType(itemId, "hat"))
     {
         CreateTimer(0.1, Timer_RecreateHats, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
+    }
+}
+
+public void US_OnStoreEnabledChanged(bool enabled)
+{
+    if (!enabled)
+    {
+        RemoveAllHats();
+        return;
+    }
+
+    RecreateAllHats();
+}
+
+public void Cvar_EnabledChanged(ConVar convar, const char[] oldValue, const char[] newValue)
+{
+    if (convar.BoolValue)
+    {
+        RecreateAllHats();
+    }
+    else
+    {
+        RemoveAllHats();
+    }
+}
+
+void RecreateAllHats()
+{
+    for (int i = 1; i <= MaxClients; i++)
+    {
+        if (USM_IsPlayableClient(i, true))
+        {
+            CreateTimer(0.1, Timer_RecreateHats, GetClientUserId(i), TIMER_FLAG_NO_MAPCHANGE);
+        }
     }
 }
 
@@ -196,9 +242,17 @@ void RemoveHats(int client)
     }
 }
 
+void RemoveAllHats()
+{
+    for (int i = 1; i <= MaxClients; i++)
+    {
+        RemoveHats(i);
+    }
+}
+
 void CreateHats(int client)
 {
-    if (!gCvarEnabled.BoolValue || !USM_IsPlayableClient(client, true))
+    if (!US_IsEnabled() || !gCvarEnabled.BoolValue || !USM_IsPlayableClient(client, true))
     {
         return;
     }
@@ -209,6 +263,11 @@ void CreateHats(int client)
 
     for (int i = 0; i < count; i++)
     {
+        if (!USM_ItemAllowedForClientTeam(client, itemIds[i]))
+        {
+            continue;
+        }
+
         int slot = GetHatSlot(itemIds[i]);
         if (slot < 0 || slot >= MAX_CLIENT_HATS || usedSlots[slot])
         {
@@ -297,11 +356,8 @@ void CreateHat(int client, const char[] itemId, int index)
     SetVariantString("!activator");
     AcceptEntityInput(entity, "SetParent", client, entity);
 
-    if (attachment[0] != '\0')
-    {
-        SetVariantString(attachment);
-        AcceptEntityInput(entity, "SetParentAttachmentMaintainOffset", entity, entity);
-    }
+    SetVariantString(attachment);
+    AcceptEntityInput(entity, "SetParentAttachmentMaintainOffset", entity, entity);
 
     g_iHatEntities[client][index] = EntIndexToEntRef(entity);
     SDKHook(entity, SDKHook_SetTransmit, Hook_HatTransmit);
@@ -315,10 +371,25 @@ public Action Hook_HatTransmit(int entity, int client)
     }
 
     int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-    if (client == owner)
+    if (client == owner && !IsClientViewingOwnModel(client))
     {
         return Plugin_Handled;
     }
 
     return Plugin_Continue;
+}
+
+bool IsClientViewingOwnModel(int client)
+{
+    if (client < 1 || client > MaxClients || !IsClientInGame(client) || !IsPlayerAlive(client))
+    {
+        return false;
+    }
+
+    if (HasEntProp(client, Prop_Send, "m_iObserverMode"))
+    {
+        return GetEntProp(client, Prop_Send, "m_iObserverMode") != 0;
+    }
+
+    return false;
 }

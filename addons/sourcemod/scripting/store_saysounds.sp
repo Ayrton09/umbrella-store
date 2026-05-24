@@ -21,7 +21,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Say Sounds",
     author = "Ayrton09",
     description = "Chat-triggered sound item module for Umbrella Store",
-    version = "1.2.2",
+    version = "1.3.0",
     url = ""
 };
 
@@ -44,6 +44,12 @@ public void OnPluginStart()
 public void OnMapStart()
 {
     ResetUses();
+    RebuildSaySoundCache();
+    PrecacheConfiguredSounds();
+}
+
+public void US_OnItemsReloaded(int itemCount)
+{
     RebuildSaySoundCache();
     PrecacheConfiguredSounds();
 }
@@ -161,6 +167,11 @@ bool FindTriggeredSound(int client, const char[] text, char[] itemId, int itemMa
             continue;
         }
 
+        if (!USM_ItemAllowedForClientTeam(client, currentId))
+        {
+            continue;
+        }
+
         USM_GetMetadata(currentId, "trigger", trigger, sizeof(trigger));
         if (TextMatchesTrigger(text, trigger))
         {
@@ -174,7 +185,7 @@ bool FindTriggeredSound(int client, const char[] text, char[] itemId, int itemMa
 
 public Action Event_PlayerSay(Event event, const char[] name, bool dontBroadcast)
 {
-    if (!gCvarEnabled.BoolValue)
+    if (!US_IsEnabled() || !gCvarEnabled.BoolValue)
     {
         return Plugin_Continue;
     }

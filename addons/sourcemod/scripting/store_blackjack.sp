@@ -132,7 +132,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Blackjack",
     author = "Ayrton09",
     description = "Blackjack module for Umbrella Store",
-    version = "1.2.2",
+    version = "1.3.0",
     url = ""
 };
 
@@ -423,6 +423,12 @@ public Action Cmd_Blackjack(int client, int args)
     if (!LibraryExists("umbrella_store"))
     {
         Chat(client, "%T", "Error Missing Core", client);
+        return Plugin_Handled;
+    }
+
+    if (!US_IsEnabled())
+    {
+        Chat(client, "%T", "Error Store Not Loaded", client);
         return Plugin_Handled;
     }
 

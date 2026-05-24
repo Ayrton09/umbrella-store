@@ -1,16 +1,18 @@
 "Items"
 {
-    "pet_drone"
+    "pet_crow"
     {
-        "name"        "Drone Pet"
+        "name"        "Crow"
         "type"        "pet"
         "category"    "pets"
-        "description" "Example attached pet model."
-        "model"       "models/umbrella_store/pets/drone.mdl"
-        "position"    "40 -48 8"
+        "description" "Crow pet."
+        "model"       "models/crow.mdl"
+        "position"    "50 0 0"
         "angles"      "0 0 0"
-        "idle"        "idle"
-        "price"       "9000"
+        "idle"        "Idle01"
+        "run"         "Run"
+        "scale"       "1.0"
+        "price"       "5000"
         "team"        "0"
     }
 }

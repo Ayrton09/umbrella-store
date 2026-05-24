@@ -20,7 +20,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Trails",
     author = "Ayrton09",
     description = "Player sprite trail item module for Umbrella Store",
-    version = "1.2.2",
+    version = "1.3.0",
     url = ""
 };
 
@@ -29,6 +29,7 @@ public void OnPluginStart()
     LoadTranslations("umbrella_store.phrases");
 
     gCvarEnabled = CreateConVar("umbrella_store_trails_enabled", "1", "Enable Umbrella Store player trails.", FCVAR_NONE, true, 0.0, true, 1.0);
+    gCvarEnabled.AddChangeHook(Cvar_EnabledChanged);
     gCvarDefaultLife = CreateConVar("umbrella_store_trails_default_life", "1.0", "Default trail lifetime in seconds.", FCVAR_NONE, true, 0.1, true, 10.0);
     AutoExecConfig(true, "umbrella_store_trails");
 
@@ -46,6 +47,12 @@ public void OnPluginStart()
 public void OnMapStart()
 {
     PrecacheConfiguredTrails();
+}
+
+public void US_OnItemsReloaded(int itemCount)
+{
+    PrecacheConfiguredTrails();
+    RecreateAllTrails();
 }
 
 public void OnClientDisconnect(int client)
@@ -125,6 +132,40 @@ public void US_OnEquipPost(int client, const char[] itemId, bool equip)
     }
 }
 
+public void US_OnStoreEnabledChanged(bool enabled)
+{
+    if (!enabled)
+    {
+        RemoveAllTrails();
+        return;
+    }
+
+    RecreateAllTrails();
+}
+
+public void Cvar_EnabledChanged(ConVar convar, const char[] oldValue, const char[] newValue)
+{
+    if (convar.BoolValue)
+    {
+        RecreateAllTrails();
+    }
+    else
+    {
+        RemoveAllTrails();
+    }
+}
+
+void RecreateAllTrails()
+{
+    for (int i = 1; i <= MaxClients; i++)
+    {
+        if (USM_IsPlayableClient(i, true))
+        {
+            CreateTimer(0.1, Timer_RecreateTrail, GetClientUserId(i), TIMER_FLAG_NO_MAPCHANGE);
+        }
+    }
+}
+
 public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 {
     CreateTimer(0.2, Timer_RecreateTrail, event.GetInt("userid"), TIMER_FLAG_NO_MAPCHANGE);
@@ -170,15 +211,23 @@ void RemoveTrail(int client)
     }
 }
 
+void RemoveAllTrails()
+{
+    for (int i = 1; i <= MaxClients; i++)
+    {
+        RemoveTrail(i);
+    }
+}
+
 void CreateTrail(int client)
 {
-    if (!gCvarEnabled.BoolValue || !USM_IsPlayableClient(client, true))
+    if (!US_IsEnabled() || !gCvarEnabled.BoolValue || !USM_IsPlayableClient(client, true))
     {
         return;
     }
 
     char itemId[64];
-    if (!US_GetEquippedItem(client, "trail", itemId, sizeof(itemId)))
+    if (!USM_GetEquippedItemForClientTeam(client, "trail", itemId, sizeof(itemId)))
     {
         return;
     }

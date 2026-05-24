@@ -27,7 +27,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Particles",
     author = "Ayrton09",
     description = "Aura, trail, spawn, kill, and hit particle item module for Umbrella Store",
-    version = "1.2.2",
+    version = "1.3.0",
     url = ""
 };
 
@@ -36,6 +36,7 @@ public void OnPluginStart()
     LoadTranslations("umbrella_store.phrases");
 
     gCvarEnabled = CreateConVar("umbrella_store_particles_enabled", "1", "Enable Umbrella Store particles.", FCVAR_NONE, true, 0.0, true, 1.0);
+    gCvarEnabled.AddChangeHook(Cvar_EnabledChanged);
     AutoExecConfig(true, "umbrella_store_particles");
 
     g_hHideCookie = new Cookie("umbrella_store_hide_particles", "Hide Umbrella Store particles", CookieAccess_Private);
@@ -56,6 +57,14 @@ public void OnMapStart()
     delete g_mParticleIndexes;
     g_mParticleIndexes = new StringMap();
     PrecacheConfiguredParticles();
+}
+
+public void US_OnItemsReloaded(int itemCount)
+{
+    delete g_mParticleIndexes;
+    g_mParticleIndexes = new StringMap();
+    PrecacheConfiguredParticles();
+    ReapplyAllAttachedParticles();
 }
 
 public void OnPluginEnd()
@@ -102,7 +111,12 @@ public Action Command_HideParticles(int client, int args)
 
 bool GetParticleEffectName(const char[] itemId, char[] effect, int maxlen)
 {
-    return USM_GetMetadata(itemId, "effect", effect, maxlen) && effect[0] != '\0';
+    if (USM_GetMetadata(itemId, "effect", effect, maxlen) && effect[0] != '\0')
+    {
+        return true;
+    }
+
+    return USM_GetMetadata(itemId, "name", effect, maxlen) && effect[0] != '\0';
 }
 
 bool GetParticleFile(const char[] itemId, char[] file, int maxlen)
@@ -180,6 +194,11 @@ bool GetEquippedParticleForSlot(int client, int slot, char[] itemId, int maxlen)
 
     for (int i = 0; i < count; i++)
     {
+        if (!USM_ItemAllowedForClientTeam(client, items[i]))
+        {
+            continue;
+        }
+
         USM_GetMetadata(items[i], "slot", slotName, sizeof(slotName));
         if (GetParticleSlotFromName(slotName) == slot)
         {
@@ -210,6 +229,11 @@ public Action US_OnEquipPre(int client, const char[] itemId, bool equip)
     for (int i = 0; i < count; i++)
     {
         if (StrEqual(equipped[i], itemId, false))
+        {
+            continue;
+        }
+
+        if (!USM_ItemTeamsCanConflict(itemId, equipped[i]))
         {
             continue;
         }
@@ -248,14 +272,50 @@ public void US_OnEquipPost(int client, const char[] itemId, bool equip)
     }
 }
 
+public void US_OnStoreEnabledChanged(bool enabled)
+{
+    if (!enabled)
+    {
+        RemoveAllAttachedParticles();
+        return;
+    }
+
+    ReapplyAllAttachedParticles();
+}
+
+public void Cvar_EnabledChanged(ConVar convar, const char[] oldValue, const char[] newValue)
+{
+    if (convar.BoolValue)
+    {
+        ReapplyAllAttachedParticles();
+    }
+    else
+    {
+        RemoveAllAttachedParticles();
+    }
+}
+
+void ReapplyAllAttachedParticles()
+{
+    for (int i = 1; i <= MaxClients; i++)
+    {
+        if (USM_IsPlayableClient(i, true))
+        {
+            CreateTimer(0.1, Timer_ApplySpawnParticles, GetClientUserId(i), TIMER_FLAG_NO_MAPCHANGE);
+        }
+    }
+}
+
 public Action Event_PlayerTeam(Event event, const char[] name, bool dontBroadcast)
 {
     int client = GetClientOfUserId(event.GetInt("userid"));
     int team = event.GetInt("team");
-    if (team <= 1)
+    RemoveAttachedParticle(client, PARTICLE_AURA);
+    RemoveAttachedParticle(client, PARTICLE_TRAIL);
+
+    if (team > 1)
     {
-        RemoveAttachedParticle(client, PARTICLE_AURA);
-        RemoveAttachedParticle(client, PARTICLE_TRAIL);
+        CreateTimer(0.2, Timer_ApplySpawnParticles, event.GetInt("userid"), TIMER_FLAG_NO_MAPCHANGE);
     }
 
     return Plugin_Continue;
@@ -267,7 +327,7 @@ public Action Event_PlayerDeath(Event event, const char[] name, bool dontBroadca
     RemoveAttachedParticle(victim, PARTICLE_AURA);
     RemoveAttachedParticle(victim, PARTICLE_TRAIL);
 
-    if (!gCvarEnabled.BoolValue)
+    if (!US_IsEnabled() || !gCvarEnabled.BoolValue)
     {
         return Plugin_Continue;
     }
@@ -293,7 +353,7 @@ public Action Event_PlayerDeath(Event event, const char[] name, bool dontBroadca
 
 public Action Event_BulletImpact(Event event, const char[] name, bool dontBroadcast)
 {
-    if (!gCvarEnabled.BoolValue)
+    if (!US_IsEnabled() || !gCvarEnabled.BoolValue)
     {
         return Plugin_Continue;
     }
@@ -344,7 +404,7 @@ public Action Event_RoundEnd(Event event, const char[] name, bool dontBroadcast)
 public Action Timer_ApplySpawnParticles(Handle timer, any userid)
 {
     int client = GetClientOfUserId(userid);
-    if (!USM_IsPlayableClient(client, true))
+    if (!US_IsEnabled() || !USM_IsPlayableClient(client, true))
     {
         return Plugin_Stop;
     }
@@ -368,7 +428,7 @@ public Action Timer_ApplySpawnParticles(Handle timer, any userid)
 
 void SetAttachedParticle(int client, int slot)
 {
-    if (!gCvarEnabled.BoolValue || (slot != PARTICLE_AURA && slot != PARTICLE_TRAIL) || !USM_IsPlayableClient(client, true))
+    if (!US_IsEnabled() || !gCvarEnabled.BoolValue || (slot != PARTICLE_AURA && slot != PARTICLE_TRAIL) || !USM_IsPlayableClient(client, true))
     {
         return;
     }
@@ -423,8 +483,22 @@ void RemoveAttachedParticle(int client, int slot)
     g_iAttachedParticle[slot][client] = 0;
 }
 
+void RemoveAllAttachedParticles()
+{
+    for (int i = 1; i <= MaxClients; i++)
+    {
+        RemoveAttachedParticle(i, PARTICLE_AURA);
+        RemoveAttachedParticle(i, PARTICLE_TRAIL);
+    }
+}
+
 void SpawnPointParticle(const char[] itemId, float origin[3])
 {
+    if (!US_IsEnabled())
+    {
+        return;
+    }
+
     char effect[64], file[PLATFORM_MAX_PATH];
     if (!GetParticleEffectName(itemId, effect, sizeof(effect)) || !GetParticleFile(itemId, file, sizeof(file)) || !FileExists(file, true))
     {
@@ -462,6 +536,12 @@ public Action Timer_StartParticle(Handle timer, any ref)
     int entity = EntRefToEntIndex(ref);
     if (entity != INVALID_ENT_REFERENCE && entity > 0 && IsValidEdict(entity))
     {
+        if (!US_IsEnabled())
+        {
+            AcceptEntityInput(entity, "Kill");
+            return Plugin_Stop;
+        }
+
         AcceptEntityInput(entity, "Start");
         ClearAlwaysTransmitFlag(entity);
         SDKHook(entity, SDKHook_SetTransmit, Hook_SetTransmit);
@@ -485,6 +565,11 @@ public Action Timer_ClearParticle(Handle timer, any ref)
 public Action Hook_SetTransmit(int entity, int client)
 {
     ClearAlwaysTransmitFlag(entity);
+
+    if (!US_IsEnabled())
+    {
+        return Plugin_Handled;
+    }
 
     if (client < 1 || client > MaxClients || !IsClientInGame(client))
     {

@@ -11,7 +11,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Crash",
     author = "Ayrton09",
     description = "Crash module for Umbrella Store",
-    version = "1.2.2",
+    version = "1.3.0",
     url = ""
 };
 
@@ -250,6 +250,12 @@ public Action Cmd_Crash(int client, int args)
     }
 
     if (!gCvarEnabled.BoolValue)
+    {
+        CrashReply(client, "%T", "Crash Disabled", client);
+        return Plugin_Handled;
+    }
+
+    if (!US_IsEnabled())
     {
         CrashReply(client, "%T", "Crash Disabled", client);
         return Plugin_Handled;

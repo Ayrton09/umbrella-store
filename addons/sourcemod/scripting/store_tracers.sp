@@ -21,7 +21,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Tracers",
     author = "Ayrton09",
     description = "Bullet tracer item module for Umbrella Store",
-    version = "1.2.2",
+    version = "1.3.0",
     url = ""
 };
 
@@ -91,7 +91,7 @@ public Action Command_HideTracer(int client, int args)
 
 public Action Event_BulletImpact(Event event, const char[] name, bool dontBroadcast)
 {
-    if (!gCvarEnabled.BoolValue || g_iBeamModel < 0)
+    if (!US_IsEnabled() || !gCvarEnabled.BoolValue || g_iBeamModel < 0)
     {
         return Plugin_Continue;
     }
@@ -103,7 +103,7 @@ public Action Event_BulletImpact(Event event, const char[] name, bool dontBroadc
     }
 
     char itemId[64];
-    if (!US_GetEquippedItem(client, "tracer", itemId, sizeof(itemId)))
+    if (!USM_GetEquippedItemForClientTeam(client, "tracer", itemId, sizeof(itemId)))
     {
         return Plugin_Continue;
     }

@@ -6,7 +6,7 @@
 #include <umbrella_store>
 #include <multicolors>
 
-#define US_CHAT_TAG " {purple}[Umbrella Store]{default}"
+#define US_CHAT_TAG " {green}[Umbrella Store]{default}"
 
 #define CASINO_ID "coinflip"
 
@@ -22,7 +22,7 @@ public Plugin myinfo =
     name        = "[Umbrella Store] Casino - Coinflip",
     author      = "Ayrton09",
     description = "Coinflip contra la casa y versus jugador para Umbrella Store",
-    version     = "1.2.2",
+    version     = "1.3.0",
     url         = ""
 };
 
@@ -484,6 +484,13 @@ void HandleChallengeResponse(int client, bool accept)
         return;
     }
 
+    if (!US_IsEnabled())
+    {
+        CF_Print(client, "%t", "CF Disabled");
+        ClearIncomingChallenge(client, false);
+        return;
+    }
+
     int challenger = g_iChallengeFrom[client];
     int amount = g_iChallengeAmount[client];
 
@@ -496,6 +503,13 @@ void HandleChallengeResponse(int client, bool accept)
 
     if (!accept)
     {
+        ClearIncomingChallenge(client, true);
+        return;
+    }
+
+    if (!gCvarEnabled.BoolValue || !US_IsLoaded(client) || !US_IsLoaded(challenger))
+    {
+        CF_Print(client, "%t", "CF Disabled");
         ClearIncomingChallenge(client, true);
         return;
     }
@@ -1318,6 +1332,16 @@ bool CanUseCoinflip(int client)
         return false;
     }
     if (!gCvarEnabled.BoolValue)
+    {
+        CF_Print(client, "%t", "CF Disabled");
+        return false;
+    }
+    if (!US_IsEnabled())
+    {
+        CF_Print(client, "%t", "CF Disabled");
+        return false;
+    }
+    if (!US_IsLoaded(client))
     {
         CF_Print(client, "%t", "CF Disabled");
         return false;

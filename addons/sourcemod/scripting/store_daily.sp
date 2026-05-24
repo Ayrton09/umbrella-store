@@ -6,7 +6,7 @@
 #include <umbrella_store>
 #include <multicolors>
 
-#define US_CHAT_TAG " {purple}[Umbrella Store]{default}"
+#define US_CHAT_TAG " {green}[Umbrella Store]{default}"
 #define DAILY_LOG_PREFIX "[Umbrella Daily]"
 #define DAILY_TABLE_ID "umbrella_store_daily_rewards"
 
@@ -35,7 +35,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Daily Reward",
     author = "Ayrton09",
     description = "Daily reward module for Umbrella Store",
-    version = "1.2.2"
+    version = "1.3.0"
 };
 
 public void OnPluginStart()
@@ -251,6 +251,11 @@ public Action Timer_AnnounceDaily(Handle timer, any userid)
         return Plugin_Stop;
     }
 
+    if (!US_IsEnabled() || !gCvarEnabled.BoolValue)
+    {
+        return Plugin_Stop;
+    }
+
     DailyChat(client, "%t", "Daily Announce");
     return Plugin_Stop;
 }
@@ -459,7 +464,12 @@ public void SQL_Callback(Database db, DBResultSet results, const char[] error, a
 
 public Action Cmd_Daily(int client, int args)
 {
-    if (!IsValidHuman(client) || !US_IsLoaded(client))
+    if (!IsValidHuman(client))
+    {
+        return Plugin_Handled;
+    }
+
+    if (!US_IsEnabled() || !US_IsLoaded(client))
     {
         return Plugin_Handled;
     }
