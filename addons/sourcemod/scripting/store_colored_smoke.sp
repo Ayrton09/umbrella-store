@@ -14,7 +14,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Colored Smoke",
     author = "Ayrton09",
     description = "Colored smoke grenade item module for Umbrella Store",
-    version = "1.3.0",
+    version = "1.4.0",
     url = ""
 };
 

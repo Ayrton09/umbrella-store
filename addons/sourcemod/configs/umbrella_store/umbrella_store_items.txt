@@ -5332,7 +5332,7 @@
     }
 
     // -------------------------------------------------------------------------
-    // Umbrella Store 1.3.0 bundled CS:S cosmetic examples
+    // Umbrella Store 1.4.0 bundled CS:S cosmetic examples
     // -------------------------------------------------------------------------
     // -------------------------------------------------------------------------
     // CS:S accessory items imported from the legacy Store package
@@ -5850,7 +5850,7 @@
     // End CS:S accessories
 
     // -------------------------------------------------------------------------
-    // Umbrella Store 1.3.0 pets
+    // Umbrella Store 1.4.0 pets
     // -------------------------------------------------------------------------
     "pet_crow"
     {
@@ -5954,5 +5954,5 @@
         "run" "Fly"
         "scale" "1.0"
     }
-    // End Umbrella Store 1.3.0 pets
+    // End Umbrella Store 1.4.0 pets
 }

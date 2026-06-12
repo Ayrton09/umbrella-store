@@ -14,7 +14,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Giveaway",
     author = "Ayrton09",
     description = "Giveaway global con animacion HUD para Umbrella Store",
-    version = "1.3.0",
+    version = "1.4.0",
     url = ""
 };
 
@@ -706,6 +706,16 @@ void PrecacheIfValid(const char[] path)
 {
     if (path[0] == '\0')
     {
+        return;
+    }
+
+    // Verify the asset exists (under sound/) before precaching, matching the
+    // behaviour of the other sound modules and surfacing missing-file config.
+    char fullPath[PLATFORM_MAX_PATH];
+    Format(fullPath, sizeof(fullPath), "sound/%s", path);
+    if (!FileExists(fullPath, true))
+    {
+        LogError("[Umbrella Store] Giveaway sound not found: %s", path);
         return;
     }
 

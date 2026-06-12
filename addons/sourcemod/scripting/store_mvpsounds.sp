@@ -20,7 +20,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] MVP Sounds",
     author = "Ayrton09",
     description = "Round MVP sound item module for Umbrella Store",
-    version = "1.3.0",
+    version = "1.4.0",
     url = ""
 };
 

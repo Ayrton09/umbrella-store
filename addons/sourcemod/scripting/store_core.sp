@@ -347,7 +347,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Core",
     author = "Ayrton09",
     description = "Core store module for Umbrella Store",
-    version = "1.3.0",
+    version = "1.4.0",
     url = ""
 };
 
@@ -3404,7 +3404,13 @@ void AddCreditsEx(int client, int amount, const char[] reason, bool notify = tru
         return;
     }
 
-    g_iCredits[client] += amount;
+    int newBalance;
+    if (!TryComputeCreditBalance(g_iCredits[client], amount, newBalance))
+    {
+        return;
+    }
+
+    g_iCredits[client] = newBalance;
     ReportCreditsChanged(client, amount, reason, notify, false);
 }
 
@@ -13377,10 +13383,14 @@ bool RedeemVoucherCode(int client, const char[] rawCode)
 
     if (credits > 0)
     {
-        g_iCredits[client] += credits;
-        char reason[96];
-        Format(reason, sizeof(reason), "voucher:%s", code);
-        ReportCreditsChanged(client, credits, reason, true, true);
+        int newBalance;
+        if (TryComputeCreditBalance(g_iCredits[client], credits, newBalance))
+        {
+            g_iCredits[client] = newBalance;
+            char reason[96];
+            Format(reason, sizeof(reason), "voucher:%s", code);
+            ReportCreditsChanged(client, credits, reason, true, true);
+        }
     }
 
     if (givesItem)

@@ -20,7 +20,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Trails",
     author = "Ayrton09",
     description = "Player sprite trail item module for Umbrella Store",
-    version = "1.3.0",
+    version = "1.4.0",
     url = ""
 };
 

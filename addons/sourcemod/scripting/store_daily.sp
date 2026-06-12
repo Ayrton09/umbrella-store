@@ -13,6 +13,9 @@
 Database g_DB = null;
 bool g_bReady = false;
 bool g_bBusy[MAXPLAYERS + 1];
+// In-flight claims keyed by SteamID (not client slot) so a disconnect/reconnect
+// cannot reset the guard and race a second claim against the same pending read.
+StringMap g_hClaimInFlight = null;
 
 ConVar gCvarEnabled;
 ConVar gCvarBaseCredits;
@@ -35,12 +38,14 @@ public Plugin myinfo =
     name = "[Umbrella Store] Daily Reward",
     author = "Ayrton09",
     description = "Daily reward module for Umbrella Store",
-    version = "1.3.0"
+    version = "1.4.0"
 };
 
 public void OnPluginStart()
 {
     LoadTranslations("umbrella_store_daily.phrases");
+
+    g_hClaimInFlight = new StringMap();
 
     RegConsoleCmd("sm_daily", Cmd_Daily);
     RegConsoleCmd("sm_diario", Cmd_Daily);
@@ -504,15 +509,46 @@ public Action Cmd_Daily(int client, int args)
         DailyChat(client, "%t", "Daily Not Ready");
         return Plugin_Handled;
     }
+
+    // Reject if a claim for this SteamID is already being processed, even if the
+    // player reconnected into a different slot (which would have reset g_bBusy).
+    int dummy;
+    if (g_hClaimInFlight != null && g_hClaimInFlight.GetValue(steam, dummy))
+    {
+        DailyChat(client, "%t", "Daily Busy");
+        return Plugin_Handled;
+    }
+
     Format(query, sizeof(query), "SELECT last_claim, streak FROM store_daily_rewards WHERE steamid='%s'", safeSteam);
 
+    if (g_hClaimInFlight != null)
+    {
+        g_hClaimInFlight.SetValue(steam, 1);
+    }
     g_bBusy[client] = true;
-    g_DB.Query(OnDailyLoaded, query, GetClientUserId(client));
+
+    DataPack pack = new DataPack();
+    pack.WriteCell(GetClientUserId(client));
+    pack.WriteString(steam);
+    g_DB.Query(OnDailyLoaded, query, pack);
     return Plugin_Handled;
 }
 
-public void OnDailyLoaded(Database db, DBResultSet results, const char[] error, any userid)
+public void OnDailyLoaded(Database db, DBResultSet results, const char[] error, any data)
 {
+    DataPack pack = view_as<DataPack>(data);
+    pack.Reset();
+    int userid = pack.ReadCell();
+    char guardSteam[32];
+    pack.ReadString(guardSteam, sizeof(guardSteam));
+    delete pack;
+
+    // Always release the per-SteamID guard regardless of how this callback exits.
+    if (g_hClaimInFlight != null)
+    {
+        g_hClaimInFlight.Remove(guardSteam);
+    }
+
     int client = GetClientOfUserId(userid);
     if (!IsValidHuman(client))
     {

@@ -37,7 +37,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Pets",
     author = "Ayrton09",
     description = "Pet model item module for Umbrella Store",
-    version = "1.3.0",
+    version = "1.4.0",
     url = ""
 };
 
@@ -219,6 +219,11 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
 public Action Event_PlayerDeath(Event event, const char[] name, bool dontBroadcast)
 {
     int client = GetClientOfUserId(event.GetInt("userid"));
+    if (client < 1)
+    {
+        return Plugin_Continue;
+    }
+
     PlayDeathAnimationOrRemove(client);
     return Plugin_Continue;
 }
@@ -226,6 +231,11 @@ public Action Event_PlayerDeath(Event event, const char[] name, bool dontBroadca
 public Action Event_PlayerTeam(Event event, const char[] name, bool dontBroadcast)
 {
     int client = GetClientOfUserId(event.GetInt("userid"));
+    if (client < 1)
+    {
+        return Plugin_Continue;
+    }
+
     RemovePet(client);
     return Plugin_Continue;
 }

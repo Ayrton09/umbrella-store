@@ -4,6 +4,7 @@
 #include <sourcemod>
 #include <sdktools>
 #include <umbrella_store>
+#include <umbrella_store_module_utils>
 #include <multicolors>
 
 #define US_CHAT_TAG " {green}[Umbrella Store]{default}"
@@ -31,7 +32,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Casino - Roulette",
     author = "Ayrton09",
     description = "Roulette module for Umbrella Store",
-    version = "1.3.0",
+    version = "1.4.0",
     url = ""
 };
 
@@ -998,15 +999,16 @@ void ResolveSpinResult(int client)
 
     if (win)
     {
-        int payout = RoundToFloor(float(amount) * multiplier);
-        if (payout < amount)
-        {
-            payout = amount;
-        }
+        int payout = USM_SafePayout(amount, multiplier);
 
         if (!US_AddCredits(client, payout, false))
         {
             LogError("[Umbrella Store] Roulette failed to pay %d credits to client %d.", payout, client);
+            // Refund the original stake so a core failure never costs the player their bet.
+            if (!US_AddCredits(client, amount, false))
+            {
+                LogError("[Umbrella Store] Roulette failed to refund stake %d to client %d.", amount, client);
+            }
             RoulettePrint(client, "%t", "Roulette Not Enough Credits");
             return;
         }

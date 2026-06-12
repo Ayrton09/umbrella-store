@@ -11,6 +11,47 @@
 #define USM_TEAM_T 2
 #define USM_TEAM_CT 3
 
+// Mirror of the core's STORE_MAX_CREDITS cap. Payouts are clamped to this so a
+// large bet multiplied by a high multiplier can never overflow a 32-bit cell.
+#define USM_MAX_CREDITS 2000000000
+
+// Returns floor(stake * multiplier) clamped to [stake, USM_MAX_CREDITS].
+// Computing in float and capping before the int conversion prevents the
+// integer overflow that would otherwise produce a negative/wrapped payout
+// when an admin raises the bet limit beyond INT_MAX / multiplier.
+stock int USM_SafePayout(int stake, float multiplier)
+{
+    if (stake <= 0)
+    {
+        return 0;
+    }
+
+    float payout = float(stake) * multiplier;
+    if (payout >= float(USM_MAX_CREDITS))
+    {
+        return USM_MAX_CREDITS;
+    }
+
+    int result = RoundToFloor(payout);
+    return (result < stake) ? stake : result;
+}
+
+// Integer-multiplier variant (e.g. doubling a pot) with the same overflow cap.
+stock int USM_SafeScale(int stake, int factor)
+{
+    if (stake <= 0 || factor <= 0)
+    {
+        return 0;
+    }
+
+    if (stake > USM_MAX_CREDITS / factor)
+    {
+        return USM_MAX_CREDITS;
+    }
+
+    return stake * factor;
+}
+
 stock bool USM_IsValidClient(int client, bool alive = false)
 {
     if (client < 1 || client > MaxClients || !IsClientInGame(client) || IsFakeClient(client))

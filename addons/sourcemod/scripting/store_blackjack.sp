@@ -4,6 +4,7 @@
 #include <sourcemod>
 #include <sdktools>
 #include <umbrella_store>
+#include <umbrella_store_module_utils>
 #include <multicolors>
 
 #define BJ_MAX_HAND_CARDS 12
@@ -132,7 +133,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Blackjack",
     author = "Ayrton09",
     description = "Blackjack module for Umbrella Store",
-    version = "1.3.0",
+    version = "1.4.0",
     url = ""
 };
 
@@ -591,11 +592,18 @@ void HandleClientLeave(int client)
 
         if (IsValidClient(opponent) && g_iMode[opponent] == BJMODE_PVP && g_iPvPOpponent[opponent] == client)
         {
-            int reward = refund * 2;
+            int reward = USM_SafeScale(refund, 2);
             if (reward > 0)
             {
                 if (!TryGiveBlackjackCredits(opponent, reward, true, "pvp_disconnect"))
                 {
+                    // Pot grant failed (core unavailable/cap). Refund the opponent's
+                    // own stake and reset both players so neither stays stuck in PvP.
+                    TryGiveBlackjackCredits(opponent, refund, true, "pvp_disconnect_refund");
+                    Chat(opponent, "%T", "PvP Opponent Left", opponent, client);
+                    ResetBlackjackClient(opponent, false);
+                    ShowMainMenu(opponent);
+                    ResetBlackjackClient(client, true);
                     return;
                 }
                 US_AddStat(opponent, "blackjack_games", 1);
@@ -1459,7 +1467,7 @@ void DealerPlayAndResolve(int client)
 
     if (dealerValue > 21)
     {
-        int payout = GetCurrentBaseBet(client) * 2;
+        int payout = USM_SafeScale(GetCurrentBaseBet(client), 2);
         if (!TryGiveBlackjackCredits(client, payout, true, "single_dealer_bust"))
         {
             ResetBlackjackClient(client, false);
@@ -1473,7 +1481,7 @@ void DealerPlayAndResolve(int client)
 
     if (playerValue > dealerValue)
     {
-        int payout = GetCurrentBaseBet(client) * 2;
+        int payout = USM_SafeScale(GetCurrentBaseBet(client), 2);
         if (!TryGiveBlackjackCredits(client, payout, true, "single_compare"))
         {
             ResetBlackjackClient(client, false);
@@ -1512,7 +1520,11 @@ void ResolveSplitDealer(int client)
         }
         else if (dealerValue > 21 || value > dealerValue)
         {
-            payout += g_iBet[client] * 2;
+            payout += USM_SafeScale(g_iBet[client], 2);
+            if (payout > USM_MAX_CREDITS)
+            {
+                payout = USM_MAX_CREDITS;
+            }
             Format(part, sizeof(part), "%T", "Split Result Win", client, hand + 1, value);
         }
         else if (value == dealerValue)
@@ -1531,6 +1543,11 @@ void ResolveSplitDealer(int client)
             StrCat(result, sizeof(result), " | ");
         }
         StrCat(result, sizeof(result), part);
+    }
+
+    if (payout > USM_MAX_CREDITS)
+    {
+        payout = USM_MAX_CREDITS;
     }
 
     if (payout > 0)
@@ -1738,7 +1755,7 @@ bool ValidateBet(int client, int bet, bool showMenu)
     int minBet = gCvarMinBet.IntValue;
     int maxBet = gCvarMaxBet.IntValue;
 
-    if (bet < minBet)
+    if (bet < minBet || bet <= 0)
     {
         char sMin[32];
         FormatCredits(minBet, sMin, sizeof(sMin));
@@ -1827,8 +1844,6 @@ void TryCreatePvPInviteTarget(int client, int target, int bet)
         return;
     }
 
-    g_iPvPInviteFrom[target] = client;
-    g_iPvPInviteBet[target] = bet;
     ClearInvite(client);
     ClearInvite(target);
     g_iPvPInviteFrom[target] = client;
@@ -2260,7 +2275,8 @@ void ResolvePvPRound(int anyClient)
     BuildVisibleHandString(g_iPvPCards[client], g_iPvPCount[client], true, handA, sizeof(handA));
     BuildVisibleHandString(g_iPvPCards[opponent], g_iPvPCount[opponent], true, handB, sizeof(handB));
 
-    int pot = g_iPvPBet[client] + g_iPvPBet[opponent];
+    int pot = (g_iPvPBet[client] > USM_MAX_CREDITS - g_iPvPBet[opponent])
+        ? USM_MAX_CREDITS : g_iPvPBet[client] + g_iPvPBet[opponent];
     if (winner == 0)
     {
         if (!US_ApplyCreditDeltas(client, g_iPvPBet[client], "blackjack_pvp_push", opponent, g_iPvPBet[opponent], "blackjack_pvp_push", true))
@@ -2411,7 +2427,8 @@ int CalculateBlackjackPayout(int bet)
         den = 2;
     }
 
-    return bet + ((bet * num) / den);
+    // bet * (1 + num/den), computed in float and capped to avoid 32-bit overflow.
+    return USM_SafePayout(bet, 1.0 + (float(num) / float(den)));
 }
 
 int GetBestHandValue(int cards[BJ_MAX_HAND_CARDS], int count)
@@ -3637,7 +3654,7 @@ void ResolveTableRound()
 
         if (dealerValue > 21 || value > dealerValue)
         {
-            if (!TryGiveBlackjackCredits(client, bet * 2, true, "table_win"))
+            if (!TryGiveBlackjackCredits(client, USM_SafeScale(bet, 2), true, "table_win"))
             {
                 continue;
             }

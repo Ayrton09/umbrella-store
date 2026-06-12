@@ -4,6 +4,7 @@
 #include <sourcemod>
 #include <sdktools>
 #include <umbrella_store>
+#include <umbrella_store_module_utils>
 #include <multicolors>
 
 #define US_CHAT_TAG " {green}[Umbrella Store]{default}"
@@ -22,7 +23,7 @@ public Plugin myinfo =
     name        = "[Umbrella Store] Casino - Coinflip",
     author      = "Ayrton09",
     description = "Coinflip contra la casa y versus jugador para Umbrella Store",
-    version     = "1.3.0",
+    version     = "1.4.0",
     url         = ""
 };
 
@@ -362,11 +363,18 @@ void ResolvePvpDisconnect(int client)
     g_bPvpResolved[client] = true;
     g_bPvpResolved[opponent] = true;
 
+    int pot = USM_SafeScale(amount, 2);
     if (amount > 0)
     {
-        if (!US_AddCredits(opponent, amount * 2, false))
+        if (!US_AddCredits(opponent, pot, false))
         {
-            LogError("[Umbrella Store] Coinflip failed to pay disconnected PvP pot %d to client %d.", amount * 2, opponent);
+            LogError("[Umbrella Store] Coinflip failed to pay disconnected PvP pot %d to client %d.", pot, opponent);
+            // Refund the surviving player's own stake so the held bet is never lost.
+            if (!US_AddCredits(opponent, amount, false))
+            {
+                LogError("[Umbrella Store] Coinflip failed to refund stake %d to client %d.", amount, opponent);
+            }
+            ResetAnimState(opponent);
             return;
         }
     }
@@ -374,7 +382,7 @@ void ResolvePvpDisconnect(int client)
     TrackCoinflipResult(opponent, amount, true);
 
     EmitConfiguredSound(opponent, gCvarWinSound);
-    CF_Print(opponent, "%t", "CF PvP Opponent Disconnected", amount * 2);
+    CF_Print(opponent, "%t", "CF PvP Opponent Disconnected", pot);
     g_fNextUse[opponent] = GetGameTime() + gCvarCooldown.FloatValue;
     ResetAnimState(opponent);
 }
@@ -1152,7 +1160,7 @@ void FinishHouseCoinflip(int client)
 
     if (win)
     {
-        int reward = RoundToFloor(float(bet) * gCvarWinMultiplier.FloatValue);
+        int reward = USM_SafePayout(bet, gCvarWinMultiplier.FloatValue);
         if (reward < 1)
         {
             reward = 1;
@@ -1161,6 +1169,11 @@ void FinishHouseCoinflip(int client)
         if (!US_AddCredits(client, reward, false))
         {
             LogError("[Umbrella Store] Coinflip failed to pay %d credits to client %d.", reward, client);
+            // Refund the original stake so a core failure never costs the player their bet.
+            if (!US_AddCredits(client, bet, false))
+            {
+                LogError("[Umbrella Store] Coinflip failed to refund stake %d to client %d.", bet, client);
+            }
             ResetAnimState(client);
             return;
         }
@@ -1205,9 +1218,19 @@ void FinishPvpCoinflip(int clientA, int clientB, int winner, int loser, int amou
         ShowRollText(clientB, g_iAnimStep[clientB], true);
     }
 
-    if (!US_AddCredits(winner, amount * 2, false))
+    int pot = USM_SafeScale(amount, 2);
+    if (!US_AddCredits(winner, pot, false))
     {
-        LogError("[Umbrella Store] Coinflip failed to pay PvP pot %d to client %d.", amount * 2, winner);
+        LogError("[Umbrella Store] Coinflip failed to pay PvP pot %d to client %d.", pot, winner);
+        // Refund both stakes so a core failure never costs either player their bet.
+        if (!US_AddCredits(winner, amount, false))
+        {
+            LogError("[Umbrella Store] Coinflip failed to refund stake %d to winner %d.", amount, winner);
+        }
+        if (!US_AddCredits(loser, amount, false))
+        {
+            LogError("[Umbrella Store] Coinflip failed to refund stake %d to loser %d.", amount, loser);
+        }
         ResetAnimState(clientA);
         if (clientB != clientA)
         {
@@ -1219,7 +1242,7 @@ void FinishPvpCoinflip(int clientA, int clientB, int winner, int loser, int amou
     TrackCoinflipResult(loser, -amount, false);
     EmitConfiguredSound(winner, gCvarWinSound);
     EmitConfiguredSound(loser, gCvarLoseSound);
-    CF_PrintAll("%t", "CF PvP Winner Broadcast", winner, loser, amount * 2);
+    CF_PrintAll("%t", "CF PvP Winner Broadcast", winner, loser, pot);
     g_fNextUse[winner] = GetGameTime() + gCvarCooldown.FloatValue;
     g_fNextUse[loser] = GetGameTime() + gCvarCooldown.FloatValue;
     ResetAnimState(winner);

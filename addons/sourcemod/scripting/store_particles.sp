@@ -27,7 +27,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Particles",
     author = "Ayrton09",
     description = "Aura, trail, spawn, kill, and hit particle item module for Umbrella Store",
-    version = "1.3.0",
+    version = "1.4.0",
     url = ""
 };
 
@@ -309,6 +309,11 @@ void ReapplyAllAttachedParticles()
 public Action Event_PlayerTeam(Event event, const char[] name, bool dontBroadcast)
 {
     int client = GetClientOfUserId(event.GetInt("userid"));
+    if (client < 1)
+    {
+        return Plugin_Continue;
+    }
+
     int team = event.GetInt("team");
     RemoveAttachedParticle(client, PARTICLE_AURA);
     RemoveAttachedParticle(client, PARTICLE_TRAIL);
@@ -324,6 +329,11 @@ public Action Event_PlayerTeam(Event event, const char[] name, bool dontBroadcas
 public Action Event_PlayerDeath(Event event, const char[] name, bool dontBroadcast)
 {
     int victim = GetClientOfUserId(event.GetInt("userid"));
+    if (victim < 1)
+    {
+        return Plugin_Continue;
+    }
+
     RemoveAttachedParticle(victim, PARTICLE_AURA);
     RemoveAttachedParticle(victim, PARTICLE_TRAIL);
 

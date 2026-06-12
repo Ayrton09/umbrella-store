@@ -1,6 +1,7 @@
 #include <sourcemod>
 #include <sdktools>
 #include <umbrella_store>
+#include <umbrella_store_module_utils>
 #include <multicolors>
 
 #pragma semicolon 1
@@ -11,7 +12,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Crash",
     author = "Ayrton09",
     description = "Crash module for Umbrella Store",
-    version = "1.3.0",
+    version = "1.4.0",
     url = ""
 };
 
@@ -810,7 +811,7 @@ void BuildPanelTitle(int client, char[] buffer, int maxlen)
         }
         else if (g_State == CrashState_Running)
         {
-            gained = RoundToFloor(float(g_iBet[client]) * g_fCurrentMultiplier);
+            gained = USM_SafePayout(g_iBet[client], g_fCurrentMultiplier);
         }
     }
     FormatNumberDots(gained, gainedText, sizeof(gainedText));
@@ -1194,15 +1195,16 @@ void DoCrash()
 
 void DoCashout(int client)
 {
-    int payout = RoundToFloor(float(g_iBet[client]) * g_fCurrentMultiplier);
-    if (payout < g_iBet[client])
-    {
-        payout = g_iBet[client];
-    }
+    int payout = USM_SafePayout(g_iBet[client], g_fCurrentMultiplier);
 
     if (!US_AddCredits(client, payout, false))
     {
         LogError("[Umbrella Store] Crash failed to pay %d credits to client %d.", payout, client);
+        // Refund the original stake so a core failure never costs the player their bet.
+        if (!US_AddCredits(client, g_iBet[client], false))
+        {
+            LogError("[Umbrella Store] Crash failed to refund stake %d to client %d.", g_iBet[client], client);
+        }
         CrashReply(client, "Store transaction failed.");
         return;
     }
