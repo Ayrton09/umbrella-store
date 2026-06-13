@@ -17,7 +17,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Paintball",
     author = "Ayrton09",
     description = "Bullet impact decal item module for Umbrella Store",
-    version = "1.4.0",
+    version = "1.5.0",
     url = ""
 };
 

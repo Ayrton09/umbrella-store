@@ -1,0 +1,78 @@
+"Phrases"
+{
+    "HL Casino Title"
+    {
+        "es" "Mayor o Menor"
+        "en" "High or Low"
+    }
+    "HL Disabled"
+    {
+        "es" "Mayor o menor está deshabilitado en este momento."
+        "en" "High or Low is currently disabled."
+    }
+    "HL Bet Title"
+    {
+        "es" "Mayor o Menor - elegí tu apuesta\nCréditos: %d"
+        "en" "High or Low - choose your bet\nCredits: %d"
+    }
+    "HL Guess Title"
+    {
+        "es" "Número actual: %d\nApuesta: %d\n¿El siguiente será mayor o menor?"
+        "en" "Current number: %d\nBet: %d\nWill the next be higher or lower?"
+    }
+    "HL Option Higher"
+    {
+        "es" "Mayor  x%.1f"
+        "en" "Higher  x%.1f"
+    }
+    "HL Option Lower"
+    {
+        "es" "Menor  x%.1f"
+        "en" "Lower  x%.1f"
+    }
+    "HL Min Bet"
+    {
+        "es" "La apuesta mínima es {LIGHTBLUE}%d{DEFAULT}."
+        "en" "The minimum bet is {LIGHTBLUE}%d{DEFAULT}."
+    }
+    "HL Max Bet"
+    {
+        "es" "La apuesta máxima es {LIGHTBLUE}%d{DEFAULT}."
+        "en" "The maximum bet is {LIGHTBLUE}%d{DEFAULT}."
+    }
+    "HL Not Enough"
+    {
+        "es" "No tenés créditos suficientes."
+        "en" "You don't have enough credits."
+    }
+    "HL Cooldown"
+    {
+        "es" "Esperá un momento antes de volver a jugar."
+        "en" "Wait a moment before playing again."
+    }
+    "HL Transaction Failed"
+    {
+        "es" "No se pudo completar la operación. Intentá de nuevo."
+        "en" "The transaction could not be completed. Try again."
+    }
+    "HL Forfeit"
+    {
+        "es" "Saliste sin adivinar. Perdiste tu apuesta de {RED}%d{DEFAULT}."
+        "en" "You left without guessing. You lost your {RED}%d{DEFAULT} bet."
+    }
+    "HL Push"
+    {
+        "es" "Salió {LIGHTBLUE}%d{DEFAULT} → {LIGHTBLUE}%d{DEFAULT}. Empate, te devolvemos la apuesta."
+        "en" "Drew {LIGHTBLUE}%d{DEFAULT} → {LIGHTBLUE}%d{DEFAULT}. Push, your bet was refunded."
+    }
+    "HL Win"
+    {
+        "es" "Salió {LIGHTBLUE}%d{DEFAULT} → {LIGHTBLUE}%d{DEFAULT}. ¡Ganaste {GREEN}%d{DEFAULT} créditos!"
+        "en" "Drew {LIGHTBLUE}%d{DEFAULT} → {LIGHTBLUE}%d{DEFAULT}. You won {GREEN}%d{DEFAULT} credits!"
+    }
+    "HL Lose"
+    {
+        "es" "Salió {LIGHTBLUE}%d{DEFAULT} → {LIGHTBLUE}%d{DEFAULT}. Perdiste {RED}%d{DEFAULT} créditos."
+        "en" "Drew {LIGHTBLUE}%d{DEFAULT} → {LIGHTBLUE}%d{DEFAULT}. You lost {RED}%d{DEFAULT} credits."
+    }
+}

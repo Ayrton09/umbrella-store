@@ -133,6 +133,7 @@ enum struct InventoryItem
 {
     char item_id[32];
     int is_equipped;
+    int expires_at;   // 0 = permanent; otherwise unix time when the rental ends
 }
 
 enum StoreAdminAction
@@ -239,6 +240,7 @@ ConVar gCvarMarketFeePercent;
 
 Handle g_hCreditsTimeTimer = null;
 Handle g_hCreditsAutosaveTimer = null;
+Handle g_hRentalExpireTimer = null;
 Handle g_hCreditNotifyTimer[MAXPLAYERS + 1] = {null, ...};
 Handle g_hPreviewTimer[MAXPLAYERS + 1] = {null, ...};
 Handle g_hAdminMenu = INVALID_HANDLE;
@@ -347,7 +349,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Core",
     author = "Ayrton09",
     description = "Core store module for Umbrella Store",
-    version = "1.4.0",
+    version = "1.5.0",
     url = ""
 };
 
@@ -1178,6 +1180,7 @@ void StoreCommonItemMetadata(KeyValues kv, StoreItem item)
     StoreConfigStringMetadata(kv, item.id, "position", "position");
     StoreConfigStringMetadata(kv, item.id, "angles", "angles");
     StoreConfigStringMetadata(kv, item.id, "slot", "slot");
+    StoreConfigStringMetadata(kv, item.id, "bonemerge", "bonemerge");
     StoreConfigStringMetadata(kv, item.id, "grenade", "grenade");
     StoreConfigStringMetadata(kv, item.id, "sound", "sound");
     StoreConfigStringMetadata(kv, item.id, "effect", "effect");
@@ -3039,6 +3042,13 @@ void StartCreditTimers()
 
     g_hCreditsTimeTimer = CreateTimer(float(gCvarCreditsTimeInterval.IntValue), Timer_GiveTimeCredits, _, TIMER_REPEAT);
     g_hCreditsAutosaveTimer = CreateTimer(gCvarCreditsAutosaveInterval.FloatValue, Timer_AutoSaveCredits, _, TIMER_REPEAT);
+
+    if (g_hRentalExpireTimer != null)
+    {
+        KillTimer(g_hRentalExpireTimer);
+        g_hRentalExpireTimer = null;
+    }
+    g_hRentalExpireTimer = CreateTimer(60.0, Timer_ExpireRentals, _, TIMER_REPEAT);
 }
 
 void MarkClientActive(int client)
@@ -3638,6 +3648,17 @@ bool CanTransferItemToTarget(int sender, int target, const char[] itemId, bool n
         return false;
     }
 
+    // Rentals (timed ownership) are consumed by the renter and cannot be moved
+    // to another player; transferring would not carry the expiry correctly.
+    if (GetInventoryExpiry(sender, item.id) > 0)
+    {
+        if (notify)
+        {
+            PrintStorePhrase(sender, "%T", "Rental Not Transferable", sender);
+        }
+        return false;
+    }
+
     if (PlayerOwnsItem(target, item.id))
     {
         if (notify)
@@ -4018,10 +4039,18 @@ bool CanPurchaseItemEx(int client, const char[] itemId, char[] reason, int maxle
         return false;
     }
 
-    if (PlayerOwnsItem(client, item.id))
+    int ownedIndex = FindInventoryIndexByItemId(client, item.id);
+    if (ownedIndex != -1)
     {
-        SetReason(reason, maxlen, "already_owned");
-        return false;
+        InventoryItem ownedInv;
+        g_hInventory[client].GetArray(ownedIndex, ownedInv, sizeof(InventoryItem));
+        if (ownedInv.expires_at == 0)
+        {
+            // Owned permanently — nothing left to buy.
+            SetReason(reason, maxlen, "already_owned");
+            return false;
+        }
+        // Timed rental: allow re-purchase to renew/extend or upgrade to permanent.
     }
 
     if (item.requires_item[0] != '\0' && !PlayerOwnsItem(client, item.requires_item))
@@ -4030,7 +4059,7 @@ bool CanPurchaseItemEx(int client, const char[] itemId, char[] reason, int maxle
         return false;
     }
 
-    if (g_iCredits[client] < item.price)
+    if (g_iCredits[client] < GetItemMinPlanPrice(item))
     {
         SetReason(reason, maxlen, "not_enough_credits");
         return false;
@@ -5157,7 +5186,7 @@ void CreateTables()
         Format(query1, sizeof(query1),
             "CREATE TABLE IF NOT EXISTS store_players (steamid VARCHAR(32) NOT NULL PRIMARY KEY, name VARCHAR(64) NOT NULL, credits INT NOT NULL DEFAULT 0)");
         Format(query2, sizeof(query2),
-            "CREATE TABLE IF NOT EXISTS store_inventory (steamid VARCHAR(32) NOT NULL, item_id VARCHAR(32) NOT NULL, is_equipped INT NOT NULL DEFAULT 0, PRIMARY KEY (steamid, item_id))");
+            "CREATE TABLE IF NOT EXISTS store_inventory (steamid VARCHAR(32) NOT NULL, item_id VARCHAR(32) NOT NULL, is_equipped INT NOT NULL DEFAULT 0, expires_at INT NOT NULL DEFAULT 0, PRIMARY KEY (steamid, item_id))");
         Format(query4, sizeof(query4),
             "CREATE TABLE IF NOT EXISTS store_credits_ledger (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, steamid VARCHAR(32) NOT NULL, amount INT NOT NULL, reason VARCHAR(64) NOT NULL, balance_after INT NOT NULL, created_at INT NOT NULL, INDEX idx_store_credits_ledger_steamid (steamid), INDEX idx_store_credits_ledger_created (created_at))");
         Format(query6, sizeof(query6),
@@ -5184,7 +5213,7 @@ void CreateTables()
         Format(query1, sizeof(query1),
             "CREATE TABLE IF NOT EXISTS store_players (steamid TEXT NOT NULL PRIMARY KEY, name TEXT NOT NULL, credits INTEGER NOT NULL DEFAULT 0)");
         Format(query2, sizeof(query2),
-            "CREATE TABLE IF NOT EXISTS store_inventory (steamid TEXT NOT NULL, item_id TEXT NOT NULL, is_equipped INTEGER NOT NULL DEFAULT 0, PRIMARY KEY (steamid, item_id))");
+            "CREATE TABLE IF NOT EXISTS store_inventory (steamid TEXT NOT NULL, item_id TEXT NOT NULL, is_equipped INTEGER NOT NULL DEFAULT 0, expires_at INTEGER NOT NULL DEFAULT 0, PRIMARY KEY (steamid, item_id))");
         Format(query3, sizeof(query3),
             "CREATE INDEX IF NOT EXISTS idx_store_inventory_steamid ON store_inventory (steamid)");
         Format(query4, sizeof(query4),
@@ -5394,6 +5423,18 @@ void CreateTables()
     {
         g_DB.Query(OnTableCreated, query23);
     }
+
+    // Best-effort migration for installs created before rental support existed.
+    // On a fresh DB the column already exists (CREATE above) so this no-ops with
+    // a harmless "duplicate column" error that OnRentalQueryDone ignores.
+    g_DB.Query(OnRentalQueryDone, "ALTER TABLE store_inventory ADD COLUMN expires_at INT NOT NULL DEFAULT 0");
+}
+
+// Generic no-op callback for fire-and-forget rental maintenance queries
+// (schema migration, expired-row cleanup). Duplicate-column errors are expected.
+public void OnRentalQueryDone(Database db, DBResultSet results, const char[] error, any data)
+{
+    // Intentionally silent: these queries are best-effort and idempotent.
 }
 
 public void OnTableCreated(Database db, DBResultSet results, const char[] error, any data)
@@ -5513,7 +5554,7 @@ public void OnPlayerLoaded(Database db, DBResultSet results, const char[] error,
     }
 
     EscapeStringSafe(steamid, safeSteamId, sizeof(safeSteamId));
-    Format(queryInv, sizeof(queryInv), "SELECT item_id, is_equipped FROM store_inventory WHERE steamid = '%s'", safeSteamId);
+    Format(queryInv, sizeof(queryInv), "SELECT item_id, is_equipped, expires_at FROM store_inventory WHERE steamid = '%s'", safeSteamId);
     g_DB.Query(OnInventoryLoaded, queryInv, GetClientUserId(client));
 }
 
@@ -6325,12 +6366,29 @@ public void OnInventoryLoaded(Database db, DBResultSet results, const char[] err
     }
 
     InventoryItem inv;
+    int now = GetTime();
+    bool hadExpired = false;
     while (results.FetchRow())
     {
         results.FetchString(0, inv.item_id, sizeof(inv.item_id));
         inv.is_equipped = results.FetchInt(1);
+        inv.expires_at = results.FetchInt(2);
+
+        if (inv.expires_at > 0 && inv.expires_at <= now)
+        {
+            // Rental expired while the player was offline: skip loading it and
+            // flag a one-shot cleanup of all expired rows for this account.
+            hadExpired = true;
+            continue;
+        }
+
         g_hInventory[client].PushArray(inv, sizeof(InventoryItem));
         InventoryOwnedSet(client, inv.item_id, true);
+    }
+
+    if (hadExpired)
+    {
+        DeleteExpiredInventoryRows(client, now);
     }
 
     g_bIsLoaded[client] = true;
@@ -6972,7 +7030,320 @@ void ToggleEquip(int client, const char[] itemId)
     SetItemEquipped(client, itemId, !view_as<bool>(targetInv.is_equipped), true, true);
 }
 
-bool BuyItem(int client, const char[] itemId, bool equipAfterPurchase = false, bool notify = true)
+#define MAX_ITEM_PLANS 6
+
+// Parses an item's rental plans from the "plans" metadata key.
+// Format: "days:price" pairs separated by ';'. days == 0 means permanent.
+// Example: "7:500;30:1500;0:5000". Items without the key get a single
+// permanent plan priced at item.price (fully backward compatible).
+int GetItemPlans(StoreItem item, int planDays[MAX_ITEM_PLANS], int planPrice[MAX_ITEM_PLANS])
+{
+    char raw[192];
+    if (!GetItemMetadataValue(item.id, "plans", raw, sizeof(raw)) || raw[0] == '\0')
+    {
+        planDays[0] = 0;
+        planPrice[0] = item.price;
+        return 1;
+    }
+
+    char parts[MAX_ITEM_PLANS][32];
+    int n = ExplodeString(raw, ";", parts, sizeof(parts), sizeof(parts[]));
+    int count = 0;
+    for (int i = 0; i < n && count < MAX_ITEM_PLANS; i++)
+    {
+        TrimString(parts[i]);
+        if (parts[i][0] == '\0')
+        {
+            continue;
+        }
+
+        char kv[2][16];
+        if (ExplodeString(parts[i], ":", kv, sizeof(kv), sizeof(kv[])) < 2)
+        {
+            continue;
+        }
+
+        TrimString(kv[0]);
+        TrimString(kv[1]);
+        int d = StringToInt(kv[0]);
+        int p = StringToInt(kv[1]);
+        if (d < 0 || p < 0)
+        {
+            continue;
+        }
+        if (d > 3650)
+        {
+            d = 3650;   // cap rental length at 10 years to bound expiry math
+        }
+
+        planDays[count] = d;
+        planPrice[count] = p;
+        count++;
+    }
+
+    if (count == 0)
+    {
+        planDays[0] = 0;
+        planPrice[0] = item.price;
+        return 1;
+    }
+
+    return count;
+}
+
+// True if the item explicitly defines a "plans" key (even a single timed plan),
+// so the UI routes through the plan menu instead of the flat buy button.
+bool ItemHasPlans(StoreItem item)
+{
+    char raw[192];
+    return GetItemMetadataValue(item.id, "plans", raw, sizeof(raw)) && raw[0] != '\0';
+}
+
+int GetItemMinPlanPrice(StoreItem item)
+{
+    int planDays[MAX_ITEM_PLANS], planPrice[MAX_ITEM_PLANS];
+    int count = GetItemPlans(item, planDays, planPrice);
+    int minPrice = planPrice[0];
+    for (int i = 1; i < count; i++)
+    {
+        if (planPrice[i] < minPrice)
+        {
+            minPrice = planPrice[i];
+        }
+    }
+    return minPrice;
+}
+
+// Expiry for a plan: 0 = permanent. For timed plans, extends from the later of
+// "now" and any existing rental so renewals stack instead of resetting.
+int ComputeRentalExpiry(int planDays, int currentExpires)
+{
+    if (planDays <= 0)
+    {
+        return 0;
+    }
+
+    int now = GetTime();
+    int base = (currentExpires > now) ? currentExpires : now;
+    int addSeconds = planDays * 86400;   // planDays capped at 3650, so this fits
+
+    // Clamp the absolute expiry to avoid 32-bit overflow when renewals stack on
+    // top of the current unix time (which is already ~1.7e9).
+    if (base > 2000000000 - addSeconds)
+    {
+        return 2000000000;
+    }
+    return base + addSeconds;
+}
+
+int GetInventoryExpiry(int client, const char[] itemId)
+{
+    int index = FindInventoryIndexByItemId(client, itemId);
+    if (index == -1)
+    {
+        return 0;
+    }
+
+    InventoryItem inv;
+    g_hInventory[client].GetArray(index, inv, sizeof(InventoryItem));
+    return inv.expires_at;
+}
+
+void FormatPlanDuration(int client, int days, char[] buffer, int maxlen)
+{
+    if (days <= 0)
+    {
+        Format(buffer, maxlen, "%T", "Plan Permanent", client);
+    }
+    else
+    {
+        Format(buffer, maxlen, "%T", "Plan Days", client, days);
+    }
+}
+
+void FormatRentalRemaining(int client, int expiresAt, char[] buffer, int maxlen)
+{
+    buffer[0] = '\0';
+    if (expiresAt <= 0)
+    {
+        return;
+    }
+
+    int secondsLeft = expiresAt - GetTime();
+    if (secondsLeft < 0)
+    {
+        secondsLeft = 0;
+    }
+
+    int d = secondsLeft / 86400;
+    int h = (secondsLeft % 86400) / 3600;
+    Format(buffer, maxlen, "%T", "Rental Time Left", client, d, h);
+}
+
+void DeleteExpiredInventoryRows(int client, int now)
+{
+    if (g_DB == null)
+    {
+        return;
+    }
+
+    char steamid[32], safeSteamId[64], query[256];
+    if (!GetClientSteamIdSafe(client, steamid, sizeof(steamid)))
+    {
+        return;
+    }
+
+    EscapeStringSafe(steamid, safeSteamId, sizeof(safeSteamId));
+    Format(query, sizeof(query),
+        "DELETE FROM store_inventory WHERE steamid = '%s' AND expires_at > 0 AND expires_at <= %d",
+        safeSteamId, now);
+    g_DB.Query(OnRentalQueryDone, query);
+}
+
+// Periodic sweep that removes rentals which expired while the player is online.
+public Action Timer_ExpireRentals(Handle timer)
+{
+    int now = GetTime();
+    for (int client = 1; client <= MaxClients; client++)
+    {
+        if (!g_bIsLoaded[client] || g_hInventory[client] == null)
+        {
+            continue;
+        }
+
+        bool changed = false;
+        for (int i = g_hInventory[client].Length - 1; i >= 0; i--)
+        {
+            InventoryItem inv;
+            g_hInventory[client].GetArray(i, inv, sizeof(InventoryItem));
+            if (inv.expires_at <= 0 || inv.expires_at > now)
+            {
+                continue;
+            }
+
+            if (inv.is_equipped)
+            {
+                SetItemEquipped(client, inv.item_id, false, false, false, true);
+            }
+
+            g_hInventory[client].Erase(i);
+            InventoryOwnedSet(client, inv.item_id, false);
+            changed = true;
+
+            if (IsValidHumanClient(client))
+            {
+                StoreItem expiredItem;
+                char displayName[64];
+                if (FindStoreItemById(inv.item_id, expiredItem))
+                {
+                    strcopy(displayName, sizeof(displayName), expiredItem.name);
+                }
+                else
+                {
+                    strcopy(displayName, sizeof(displayName), inv.item_id);
+                }
+                PrintStorePhrase(client, "%T", "Rental Expired Notify", client, displayName);
+            }
+        }
+
+        if (changed)
+        {
+            DeleteExpiredInventoryRows(client, now);
+            MarkInventoryChanged(client);
+        }
+    }
+
+    return Plugin_Continue;
+}
+
+void ShowBuyPlanMenu(int client, const char[] itemId)
+{
+    StoreItem item;
+    if (!FindStoreItemById(itemId, item))
+    {
+        return;
+    }
+
+    int planDays[MAX_ITEM_PLANS], planPrice[MAX_ITEM_PLANS];
+    int count = GetItemPlans(item, planDays, planPrice);
+
+    Menu menu = new Menu(MenuHandler_BuyPlan);
+    char title[128];
+    Format(title, sizeof(title), "%T", "Buy Plan Title", client, item.name);
+    menu.SetTitle(title);
+
+    for (int i = 0; i < count; i++)
+    {
+        char info[64], durText[48], priceText[48], label[160];
+        Format(info, sizeof(info), "bp_%d_%s", i, item.id);
+        FormatPlanDuration(client, planDays[i], durText, sizeof(durText));
+        FormatCreditsAmount(client, planPrice[i], priceText, sizeof(priceText));
+        Format(label, sizeof(label), "%s - %s", durText, priceText);
+        menu.AddItem(info, label);
+    }
+
+    menu.ExitBackButton = true;
+    menu.Display(client, MENU_TIME_FOREVER);
+}
+
+public int MenuHandler_BuyPlan(Menu menu, MenuAction action, int param1, int param2)
+{
+    if (action == MenuAction_End)
+    {
+        delete menu;
+    }
+    else if (action == MenuAction_Cancel)
+    {
+        if (param2 == MenuCancel_ExitBack && g_szLastDetailItem[param1][0] != '\0')
+        {
+            ShowItemDetailsMenu(param1, g_szLastDetailItem[param1]);
+        }
+    }
+    else if (action == MenuAction_Select)
+    {
+        char info[64];
+        menu.GetItem(param2, info, sizeof(info));
+
+        // Format: bp_<idx>_<itemId>
+        char body[64];
+        strcopy(body, sizeof(body), info[3]);
+        int sep = FindCharInString(body, '_');
+        if (sep <= 0)
+        {
+            return 0;
+        }
+
+        char idxStr[8], itemId[32];
+        strcopy(idxStr, sizeof(idxStr), body);
+        if (sep < sizeof(idxStr))
+        {
+            idxStr[sep] = '\0';
+        }
+        strcopy(itemId, sizeof(itemId), body[sep + 1]);
+        int idx = StringToInt(idxStr);
+
+        StoreItem item;
+        if (!FindStoreItemById(itemId, item))
+        {
+            return 0;
+        }
+
+        int planDays[MAX_ITEM_PLANS], planPrice[MAX_ITEM_PLANS];
+        int count = GetItemPlans(item, planDays, planPrice);
+        if (idx >= 0 && idx < count)
+        {
+            if (ValidateInventoryMenuAction(param1, g_iMenuInventoryVersion[param1], itemId, false))
+            {
+                BuyItem(param1, itemId, false, true, planDays[idx], planPrice[idx]);
+            }
+        }
+        ShowItemDetailsMenu(param1, itemId);
+    }
+
+    return 0;
+}
+
+bool BuyItem(int client, const char[] itemId, bool equipAfterPurchase = false, bool notify = true, int planDays = 0, int planPrice = -1)
 {
     if (!IsValidHumanClient(client) || !g_bIsLoaded[client] || g_hInventory[client] == null || g_DB == null)
     {
@@ -7037,7 +7408,38 @@ bool BuyItem(int client, const char[] itemId, bool equipAfterPurchase = false, b
 
     EscapeStringSafe(steamid, safeSteamId, sizeof(safeSteamId));
     EscapeStringSafe(item.id, safeItemId, sizeof(safeItemId));
-    int newCredits = g_iCredits[client] - item.price;
+
+    // Resolve effective price (selected plan or base price) and the new expiry.
+    // Re-buying a timed item the player already owns renews/extends it.
+    // If no explicit plan was passed (e.g. the direct buy button), resolve the
+    // item's canonical plan so a configured single timed plan is honored instead
+    // of silently defaulting to permanent at item.price. With no "plans" key,
+    // GetItemPlans returns one permanent plan at item.price (unchanged behavior).
+    if (planPrice < 0)
+    {
+        int canonDays[MAX_ITEM_PLANS], canonPrice[MAX_ITEM_PLANS];
+        GetItemPlans(item, canonDays, canonPrice);
+        planDays = canonDays[0];
+        planPrice = canonPrice[0];
+    }
+
+    int effectivePrice = (planPrice >= 0) ? planPrice : item.price;
+    if (effectivePrice < 0)
+    {
+        effectivePrice = 0;
+    }
+    bool isRenewal = PlayerOwnsItem(client, item.id);
+    int newExpiry = ComputeRentalExpiry(planDays, GetInventoryExpiry(client, item.id));
+
+    int newCredits = g_iCredits[client] - effectivePrice;
+    if (newCredits < 0)
+    {
+        if (notify)
+        {
+            PrintStorePhrase(client, "%T", "Not Enough Credits", client);
+        }
+        return false;
+    }
 
     if (!BuildPlayerUpsertQueryForCredits(client, newCredits, playerQuery, sizeof(playerQuery)))
     {
@@ -7045,17 +7447,17 @@ bool BuyItem(int client, const char[] itemId, bool equipAfterPurchase = false, b
         return false;
     }
 
-    if (g_bIsMySQL)
+    if (isRenewal)
     {
         Format(query, sizeof(query),
-            "INSERT INTO store_inventory (steamid, item_id, is_equipped) VALUES ('%s', '%s', 0)",
-            safeSteamId, safeItemId);
+            "UPDATE store_inventory SET expires_at = %d WHERE steamid = '%s' AND item_id = '%s'",
+            newExpiry, safeSteamId, safeItemId);
     }
     else
     {
         Format(query, sizeof(query),
-            "INSERT INTO store_inventory (steamid, item_id, is_equipped) VALUES ('%s', '%s', 0)",
-            safeSteamId, safeItemId);
+            "INSERT INTO store_inventory (steamid, item_id, is_equipped, expires_at) VALUES ('%s', '%s', 0, %d)",
+            safeSteamId, safeItemId, newExpiry);
     }
 
     if (!BeginLockedStoreTransaction("BuyItem"))
@@ -7087,13 +7489,28 @@ bool BuyItem(int client, const char[] itemId, bool equipAfterPurchase = false, b
     g_iCredits[client] = newCredits;
     char buyReason[64];
     Format(buyReason, sizeof(buyReason), "buy:%s", item.id);
-    ReportCreditsChanged(client, -item.price, buyReason, false, true);
+    ReportCreditsChanged(client, -effectivePrice, buyReason, false, true);
 
-    InventoryItem newInv;
-    strcopy(newInv.item_id, sizeof(newInv.item_id), item.id);
-    newInv.is_equipped = 0;
-    g_hInventory[client].PushArray(newInv, sizeof(InventoryItem));
-    InventoryOwnedSet(client, item.id, true);
+    if (isRenewal)
+    {
+        int invIndex = FindInventoryIndexByItemId(client, item.id);
+        if (invIndex != -1)
+        {
+            InventoryItem renewInv;
+            g_hInventory[client].GetArray(invIndex, renewInv, sizeof(InventoryItem));
+            renewInv.expires_at = newExpiry;
+            g_hInventory[client].SetArray(invIndex, renewInv, sizeof(InventoryItem));
+        }
+    }
+    else
+    {
+        InventoryItem newInv;
+        strcopy(newInv.item_id, sizeof(newInv.item_id), item.id);
+        newInv.is_equipped = 0;
+        newInv.expires_at = newExpiry;
+        g_hInventory[client].PushArray(newInv, sizeof(InventoryItem));
+        InventoryOwnedSet(client, item.id, true);
+    }
     MarkInventoryChanged(client);
     ForwardInventoryChanged(client, item.id, "purchase");
     UpdatePlayerStat(client, "purchases_total", 1);
@@ -7107,7 +7524,7 @@ bool BuyItem(int client, const char[] itemId, bool equipAfterPurchase = false, b
     if (notify)
     {
         char priceText[32], balanceText[32];
-        FormatNumberDots(item.price, priceText, sizeof(priceText));
+        FormatNumberDots(effectivePrice, priceText, sizeof(priceText));
         FormatNumberDots(g_iCredits[client], balanceText, sizeof(balanceText));
 
         PrintStorePhrase(client, "%T", "Item Bought", client, item.name, priceText);
@@ -7115,8 +7532,8 @@ bool BuyItem(int client, const char[] itemId, bool equipAfterPurchase = false, b
     }
 
     ForwardItemPurchased(client, item.id);
-    ForwardPurchasePost(client, item.id, item.price, equippedAfterPurchase);
-    LogAuditEvent(client, client, "purchase", item.id, -item.price, "");
+    ForwardPurchasePost(client, item.id, effectivePrice, equippedAfterPurchase);
+    LogAuditEvent(client, client, "purchase", item.id, -effectivePrice, "");
     return true;
 }
 
@@ -7138,6 +7555,14 @@ bool SellItem(int client, const char[] itemId)
     if (index == -1)
     {
         PrintStorePhrase(client, "%T", "Item Not Owned", client);
+        return false;
+    }
+
+    // Rentals cannot be sold back — the sell price is based on the permanent
+    // price, which would let a cheap rental be cashed out for full value.
+    if (GetInventoryExpiry(client, item.id) > 0)
+    {
+        PrintStorePhrase(client, "%T", "Rental Not Transferable", client);
         return false;
     }
 
@@ -8408,6 +8833,13 @@ bool CreateMarketplaceListing(int client, const char[] itemId, int price)
     if (view_as<bool>(inv.is_equipped))
     {
         PrintStorePhrase(client, "%T", "Market Item Equipped", client);
+        return false;
+    }
+
+    // Rentals are time-limited and cannot be listed on the marketplace.
+    if (inv.expires_at > 0)
+    {
+        PrintStorePhrase(client, "%T", "Rental Not Transferable", client);
         return false;
     }
 
@@ -9699,6 +10131,7 @@ void ShowItemDetailsMenu(int client, const char[] itemId)
 
     bool owns = false;
     bool isEquipped = false;
+    int ownedExpiry = 0;
     int invIndex = FindInventoryIndexByItemId(client, itemId);
     if (invIndex != -1)
     {
@@ -9706,6 +10139,7 @@ void ShowItemDetailsMenu(int client, const char[] itemId)
         InventoryItem inv;
         g_hInventory[client].GetArray(invIndex, inv, sizeof(InventoryItem));
         isEquipped = view_as<bool>(inv.is_equipped);
+        ownedExpiry = inv.expires_at;
     }
 
     Menu menu = new Menu(MenuHandler_ItemDetails);
@@ -9713,8 +10147,17 @@ void ShowItemDetailsMenu(int client, const char[] itemId)
 
     if (owns)
     {
-        char stateText[64];
+        char stateText[96];
         Format(stateText, sizeof(stateText), "%T", isEquipped ? "Item State Equipped" : "Item State Inventory", client);
+        if (ownedExpiry > 0)
+        {
+            char remainText[48];
+            FormatRentalRemaining(client, ownedExpiry, remainText, sizeof(remainText));
+            if (remainText[0] != '\0')
+            {
+                Format(stateText, sizeof(stateText), "%s (%s)", stateText, remainText);
+            }
+        }
         Format(title, sizeof(title), "%T", "Item Details Owned Title", client, item.name, stateText);
     }
     else
@@ -9730,8 +10173,16 @@ void ShowItemDetailsMenu(int client, const char[] itemId)
     {
         char buyInfo[64];
         char buyLabel[64];
-        Format(buyInfo, sizeof(buyInfo), "buy_%s", item.id);
-        FormatStorePhrase(client, buyLabel, sizeof(buyLabel), "Item Details Buy");
+        if (ItemHasPlans(item))
+        {
+            Format(buyInfo, sizeof(buyInfo), "plans_%s", item.id);
+            FormatStorePhrase(client, buyLabel, sizeof(buyLabel), "Item Details Choose Plan");
+        }
+        else
+        {
+            Format(buyInfo, sizeof(buyInfo), "buy_%s", item.id);
+            FormatStorePhrase(client, buyLabel, sizeof(buyLabel), "Item Details Buy");
+        }
         menu.AddItem(buyInfo, buyLabel);
     }
     else
@@ -9742,21 +10193,33 @@ void ShowItemDetailsMenu(int client, const char[] itemId)
         FormatStorePhrase(client, equipLabel, sizeof(equipLabel), isEquipped ? "Item Details Unequip" : "Item Details Equip");
         menu.AddItem(eqInfo, equipLabel);
 
-        char sellInfo[64], sellText[96];
-        Format(sellInfo, sizeof(sellInfo), "sell_%s", item.id);
-        char refundText[48];
-        FormatCreditsAmount(client, GetItemSellPrice(item), refundText, sizeof(refundText));
-        Format(sellText, sizeof(sellText), "%T", "Item Details Sell", client, refundText);
-        menu.AddItem(sellInfo, sellText);
+        if (ownedExpiry > 0)
+        {
+            char renewInfo[64], renewLabel[64];
+            Format(renewInfo, sizeof(renewInfo), "plans_%s", item.id);
+            FormatStorePhrase(client, renewLabel, sizeof(renewLabel), "Item Details Renew");
+            menu.AddItem(renewInfo, renewLabel);
+        }
 
-        char giftInfo[64], tradeInfo[64];
-        char giftLabel[64], tradeLabel[64];
-        Format(giftInfo, sizeof(giftInfo), "gift_%s", item.id);
-        Format(tradeInfo, sizeof(tradeInfo), "trade_%s", item.id);
-        FormatStorePhrase(client, giftLabel, sizeof(giftLabel), "Item Details Gift");
-        FormatStorePhrase(client, tradeLabel, sizeof(tradeLabel), "Item Details Trade");
-        menu.AddItem(giftInfo, giftLabel);
-        menu.AddItem(tradeInfo, tradeLabel);
+        // Rentals (timed) cannot be sold, gifted or traded — only equipped/renewed.
+        if (ownedExpiry == 0)
+        {
+            char sellInfo[64], sellText[96];
+            Format(sellInfo, sizeof(sellInfo), "sell_%s", item.id);
+            char refundText[48];
+            FormatCreditsAmount(client, GetItemSellPrice(item), refundText, sizeof(refundText));
+            Format(sellText, sizeof(sellText), "%T", "Item Details Sell", client, refundText);
+            menu.AddItem(sellInfo, sellText);
+
+            char giftInfo[64], tradeInfo[64];
+            char giftLabel[64], tradeLabel[64];
+            Format(giftInfo, sizeof(giftInfo), "gift_%s", item.id);
+            Format(tradeInfo, sizeof(tradeInfo), "trade_%s", item.id);
+            FormatStorePhrase(client, giftLabel, sizeof(giftLabel), "Item Details Gift");
+            FormatStorePhrase(client, tradeLabel, sizeof(tradeLabel), "Item Details Trade");
+            menu.AddItem(giftInfo, giftLabel);
+            menu.AddItem(tradeInfo, tradeLabel);
+        }
     }
 
     if (ItemSupportsPreview(item))
@@ -9798,7 +10261,12 @@ public int MenuHandler_ItemDetails(Menu menu, MenuAction action, int param1, int
         char info[64], itemId[32];
         menu.GetItem(param2, info, sizeof(info));
 
-        if (StrContains(info, "buy_") == 0)
+        if (StrContains(info, "plans_") == 0)
+        {
+            strcopy(itemId, sizeof(itemId), info[6]);
+            ShowBuyPlanMenu(param1, itemId);
+        }
+        else if (StrContains(info, "buy_") == 0)
         {
             strcopy(itemId, sizeof(itemId), info[4]);
             if (ValidateInventoryMenuAction(param1, g_iMenuInventoryVersion[param1], itemId, false))

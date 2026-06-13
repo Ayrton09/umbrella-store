@@ -12,7 +12,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Crash",
     author = "Ayrton09",
     description = "Crash module for Umbrella Store",
-    version = "1.4.0",
+    version = "1.5.0",
     url = ""
 };
 

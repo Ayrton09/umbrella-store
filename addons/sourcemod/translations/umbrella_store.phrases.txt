@@ -10,6 +10,86 @@
         "fr" "{GREEN}[Magasin de parapluies]{DEFAULT}"
         "de" "{GREEN}[Umbrella Store]{DEFAULT}"
     }
+    "Plan Permanent"
+    {
+        "es" "Permanente"
+        "en" "Permanent"
+        "ru" "Навсегда"
+        "chi" "永久"
+        "pt" "Permanente"
+        "fr" "Permanent"
+        "de" "Dauerhaft"
+    }
+    "Plan Days"
+    {
+        "es" "%d días"
+        "en" "%d days"
+        "ru" "%d дн."
+        "chi" "%d 天"
+        "pt" "%d dias"
+        "fr" "%d jours"
+        "de" "%d Tage"
+    }
+    "Rental Time Left"
+    {
+        "es" "quedan %dd %dh"
+        "en" "%dd %dh left"
+        "ru" "осталось %dд %dч"
+        "chi" "剩余 %d天 %d时"
+        "pt" "resta %dd %dh"
+        "fr" "%dj %dh restant"
+        "de" "%dT %dStd übrig"
+    }
+    "Rental Expired Notify"
+    {
+        "es" "Tu alquiler de {LIGHTBLUE}%s{DEFAULT} expiró."
+        "en" "Your rental of {LIGHTBLUE}%s{DEFAULT} has expired."
+        "ru" "Срок аренды {LIGHTBLUE}%s{DEFAULT} истёк."
+        "chi" "你租用的 {LIGHTBLUE}%s{DEFAULT} 已到期。"
+        "pt" "Seu aluguel de {LIGHTBLUE}%s{DEFAULT} expirou."
+        "fr" "Votre location de {LIGHTBLUE}%s{DEFAULT} a expiré."
+        "de" "Deine Miete von {LIGHTBLUE}%s{DEFAULT} ist abgelaufen."
+    }
+    "Buy Plan Title"
+    {
+        "es" "Comprar %s - elegí un plan"
+        "en" "Buy %s - choose a plan"
+        "ru" "Купить %s - выберите план"
+        "chi" "购买 %s - 选择套餐"
+        "pt" "Comprar %s - escolha um plano"
+        "fr" "Acheter %s - choisissez un forfait"
+        "de" "%s kaufen - Plan wählen"
+    }
+    "Item Details Choose Plan"
+    {
+        "es" "Comprar (elegir plan)"
+        "en" "Buy (choose plan)"
+        "ru" "Купить (выбрать план)"
+        "chi" "购买（选择套餐）"
+        "pt" "Comprar (escolher plano)"
+        "fr" "Acheter (choisir forfait)"
+        "de" "Kaufen (Plan wählen)"
+    }
+    "Rental Not Transferable"
+    {
+        "es" "No podés vender, regalar, tradear ni publicar un objeto alquilado."
+        "en" "You can't sell, gift, trade or list a rented item."
+        "ru" "Арендованный предмет нельзя продать, подарить, обменять или выставить."
+        "chi" "租用的物品无法出售、赠送、交易或上架。"
+        "pt" "Você não pode vender, presentear, trocar ou listar um item alugado."
+        "fr" "Vous ne pouvez pas vendre, offrir, échanger ni lister un objet loué."
+        "de" "Ein gemietetes Item kann nicht verkauft, verschenkt, getauscht oder gelistet werden."
+    }
+    "Item Details Renew"
+    {
+        "es" "Renovar / extender"
+        "en" "Renew / extend"
+        "ru" "Продлить"
+        "chi" "续费 / 延长"
+        "pt" "Renovar / estender"
+        "fr" "Renouveler / prolonger"
+        "de" "Verlängern"
+    }
     "Menu Main Title"
     {
         "es" "Tienda de Umbrella"

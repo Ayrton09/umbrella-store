@@ -1,0 +1,63 @@
+"Phrases"
+{
+    "JP Casino Title"
+    {
+        "es" "Bote (Jackpot)"
+        "en" "Jackpot"
+    }
+    "JP Disabled"
+    {
+        "es" "El bote está deshabilitado en este momento."
+        "en" "The jackpot is currently disabled."
+    }
+    "JP Menu Title"
+    {
+        "es" "Bote actual: %d\nTu aporte: %d\nTiempo de ronda: %d s\nTus créditos: %d"
+        "en" "Current pot: %d\nYour entry: %d\nRound time: %d s\nYour credits: %d"
+    }
+    "JP Min Entry"
+    {
+        "es" "El aporte mínimo es {LIGHTBLUE}%d{DEFAULT}."
+        "en" "The minimum entry is {LIGHTBLUE}%d{DEFAULT}."
+    }
+    "JP Max Entry"
+    {
+        "es" "El aporte máximo por ronda es {LIGHTBLUE}%d{DEFAULT}."
+        "en" "The maximum entry per round is {LIGHTBLUE}%d{DEFAULT}."
+    }
+    "JP Not Enough"
+    {
+        "es" "No tenés créditos suficientes."
+        "en" "You don't have enough credits."
+    }
+    "JP Transaction Failed"
+    {
+        "es" "No se pudo completar la operación. Intentá de nuevo."
+        "en" "The transaction could not be completed. Try again."
+    }
+    "JP Joined Broadcast"
+    {
+        "es" "{GREEN}%s{DEFAULT} apostó {LIGHTBLUE}%d{DEFAULT} al bote. Bote: {GREEN}%d{DEFAULT}."
+        "en" "{GREEN}%s{DEFAULT} added {LIGHTBLUE}%d{DEFAULT} to the pot. Pot: {GREEN}%d{DEFAULT}."
+    }
+    "JP Round Started"
+    {
+        "es" "¡Se abrió el bote! Tenés {LIGHTBLUE}%d{DEFAULT} segundos para entrar con {GREEN}!jackpot{DEFAULT}."
+        "en" "The jackpot is open! You have {LIGHTBLUE}%d{DEFAULT} seconds to join with {GREEN}!jackpot{DEFAULT}."
+    }
+    "JP Not Enough Players"
+    {
+        "es" "El bote se canceló por falta de jugadores. Se reembolsaron las apuestas."
+        "en" "The jackpot was cancelled due to not enough players. Entries were refunded."
+    }
+    "JP Winner Broadcast"
+    {
+        "es" "¡{GREEN}%s{DEFAULT} ganó el bote de {GREEN}%d{DEFAULT} créditos entre %d jugadores!"
+        "en" "{GREEN}%s{DEFAULT} won the {GREEN}%d{DEFAULT} credit pot among %d players!"
+    }
+    "JP Refunded"
+    {
+        "es" "Se te reembolsaron {LIGHTBLUE}%d{DEFAULT} créditos del bote."
+        "en" "You were refunded {LIGHTBLUE}%d{DEFAULT} credits from the pot."
+    }
+}

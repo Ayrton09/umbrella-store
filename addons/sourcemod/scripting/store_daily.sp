@@ -38,7 +38,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Daily Reward",
     author = "Ayrton09",
     description = "Daily reward module for Umbrella Store",
-    version = "1.4.0"
+    version = "1.5.0"
 };
 
 public void OnPluginStart()

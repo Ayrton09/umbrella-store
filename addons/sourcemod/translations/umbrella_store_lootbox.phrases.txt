@@ -1,0 +1,73 @@
+"Phrases"
+{
+    "Lootbox Menu Title"
+    {
+        "es" "Cajas"
+        "en" "Lootboxes"
+    }
+    "Lootbox Disabled"
+    {
+        "es" "Las cajas están deshabilitadas en este momento."
+        "en" "Lootboxes are currently disabled."
+    }
+    "Lootbox None Available"
+    {
+        "es" "No hay cajas disponibles."
+        "en" "No lootboxes are available."
+    }
+    "Lootbox Busy"
+    {
+        "es" "Ya estás abriendo una caja."
+        "en" "You are already opening a box."
+    }
+    "Lootbox Cooldown"
+    {
+        "es" "Esperá un momento antes de abrir otra caja."
+        "en" "Wait a moment before opening another box."
+    }
+    "Lootbox Not Enough"
+    {
+        "es" "No tenés créditos suficientes (cuesta {LIGHTBLUE}%d{DEFAULT})."
+        "en" "You don't have enough credits (it costs {LIGHTBLUE}%d{DEFAULT})."
+    }
+    "Lootbox Transaction Failed"
+    {
+        "es" "No se pudo completar la operación. Intentá de nuevo."
+        "en" "The transaction could not be completed. Try again."
+    }
+    "Lootbox Reward"
+    {
+        "es" "¡Abriste la caja y obtuviste {LIGHTBLUE}%s{DEFAULT}!"
+        "en" "You opened the box and got {LIGHTBLUE}%s{DEFAULT}!"
+    }
+    "Lootbox Won Credits"
+    {
+        "es" "%d créditos"
+        "en" "%d credits"
+    }
+    "Lootbox Won Item"
+    {
+        "es" "el objeto {GREEN}%s{DEFAULT}"
+        "en" "the item {GREEN}%s{DEFAULT}"
+    }
+    "Lootbox Won Duplicate"
+    {
+        "es" "%s (ya lo tenías) → {LIGHTBLUE}%d{DEFAULT} créditos"
+        "en" "%s (already owned) → {LIGHTBLUE}%d{DEFAULT} credits"
+    }
+    "Lootbox Won Duplicate No Credits"
+    {
+        "es" "%s (ya lo tenías)"
+        "en" "%s (already owned)"
+    }
+    "Lootbox Reveal Spin"
+    {
+        "es" "Abriendo... %s"
+        "en" "Opening... %s"
+    }
+    "Lootbox Reveal Final"
+    {
+        "es" "¡%s!"
+        "en" "%s!"
+    }
+}

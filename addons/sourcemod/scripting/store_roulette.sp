@@ -32,7 +32,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Casino - Roulette",
     author = "Ayrton09",
     description = "Roulette module for Umbrella Store",
-    version = "1.4.0",
+    version = "1.5.0",
     url = ""
 };
 

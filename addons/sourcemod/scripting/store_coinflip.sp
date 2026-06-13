@@ -23,7 +23,7 @@ public Plugin myinfo =
     name        = "[Umbrella Store] Casino - Coinflip",
     author      = "Ayrton09",
     description = "Coinflip contra la casa y versus jugador para Umbrella Store",
-    version     = "1.4.0",
+    version     = "1.5.0",
     url         = ""
 };
 

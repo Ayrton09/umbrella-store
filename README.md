@@ -2,7 +2,7 @@
 
 # Umbrella Store
 
-Current package version: `1.4.0`.
+Current package version: `1.5.0`.
 
 Umbrella Store is a modular and modern SourceMod store suite built from the ground up to work as an extensible platform, not just a fixed set of casino plugins.
 
@@ -73,7 +73,6 @@ This repository now targets three layers:
 - `store_grenade_skins`
 - `store_bulletsparks`
 - `store_lasersight`
-- `store_mvpsounds`
 - `store_sprays`
 - `store_particles`
 

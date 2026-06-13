@@ -1,0 +1,41 @@
+// Example lootbox config showing item rewards mixed with credits.
+// Copy boxes you want into umbrella_store_lootboxes.txt and replace the
+// "item" ids with real item ids from your umbrella_store_items.txt.
+
+"Lootboxes"
+{
+    "cosmetic_box"
+    {
+        "name"      "Cosmetic Box"
+        "price"     "3000"
+
+        "rewards"
+        {
+            // 50%: a credit consolation prize
+            "credits"
+            {
+                "type"      "credits"
+                "weight"    "50"
+                "min"       "500"
+                "max"       "1500"
+            }
+            // 35%: a hat item. If the player already owns it, they get
+            // fallback_credits instead so the open is never wasted.
+            "hat"
+            {
+                "type"              "item"
+                "weight"            "35"
+                "item"              "hat_example_id"
+                "fallback_credits"  "2000"
+            }
+            // 15%: a rarer skin item.
+            "skin"
+            {
+                "type"              "item"
+                "weight"            "15"
+                "item"              "skin_example_id"
+                "fallback_credits"  "4000"
+            }
+        }
+    }
+}

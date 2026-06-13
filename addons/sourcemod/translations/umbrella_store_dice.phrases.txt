@@ -1,0 +1,73 @@
+"Phrases"
+{
+    "Dice Casino Title"
+    {
+        "es" "Dados"
+        "en" "Dice"
+    }
+    "Dice Disabled"
+    {
+        "es" "Los dados están deshabilitados en este momento."
+        "en" "Dice is currently disabled."
+    }
+    "Dice Bet Title"
+    {
+        "es" "Dados - elegí tu apuesta\nCréditos: %d"
+        "en" "Dice - choose your bet\nCredits: %d"
+    }
+    "Dice Predict Title"
+    {
+        "es" "Apuesta: %d\nElegí tu predicción:"
+        "en" "Bet: %d\nChoose your prediction:"
+    }
+    "Dice Option Low"
+    {
+        "es" "Bajo (2-6)  x%.1f"
+        "en" "Low (2-6)  x%.1f"
+    }
+    "Dice Option Seven"
+    {
+        "es" "Siete (7)  x%.1f"
+        "en" "Seven (7)  x%.1f"
+    }
+    "Dice Option High"
+    {
+        "es" "Alto (8-12)  x%.1f"
+        "en" "High (8-12)  x%.1f"
+    }
+    "Dice Min Bet"
+    {
+        "es" "La apuesta mínima es {LIGHTBLUE}%d{DEFAULT}."
+        "en" "The minimum bet is {LIGHTBLUE}%d{DEFAULT}."
+    }
+    "Dice Max Bet"
+    {
+        "es" "La apuesta máxima es {LIGHTBLUE}%d{DEFAULT}."
+        "en" "The maximum bet is {LIGHTBLUE}%d{DEFAULT}."
+    }
+    "Dice Not Enough"
+    {
+        "es" "No tenés créditos suficientes."
+        "en" "You don't have enough credits."
+    }
+    "Dice Cooldown"
+    {
+        "es" "Esperá un momento antes de volver a tirar."
+        "en" "Wait a moment before rolling again."
+    }
+    "Dice Transaction Failed"
+    {
+        "es" "No se pudo completar la operación. Intentá de nuevo."
+        "en" "The transaction could not be completed. Try again."
+    }
+    "Dice Win"
+    {
+        "es" "Salió {LIGHTBLUE}%d + %d = %d{DEFAULT}. ¡Ganaste {GREEN}%d{DEFAULT} créditos!"
+        "en" "Rolled {LIGHTBLUE}%d + %d = %d{DEFAULT}. You won {GREEN}%d{DEFAULT} credits!"
+    }
+    "Dice Lose"
+    {
+        "es" "Salió {LIGHTBLUE}%d + %d = %d{DEFAULT}. Perdiste {RED}%d{DEFAULT} créditos."
+        "en" "Rolled {LIGHTBLUE}%d + %d = %d{DEFAULT}. You lost {RED}%d{DEFAULT} credits."
+    }
+}
