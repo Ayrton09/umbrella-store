@@ -349,7 +349,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Core",
     author = "Ayrton09",
     description = "Core store module for Umbrella Store",
-    version = "1.5.0",
+    version = "1.5.1",
     url = ""
 };
 

@@ -12,7 +12,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Crash",
     author = "Ayrton09",
     description = "Crash module for Umbrella Store",
-    version = "1.5.0",
+    version = "1.5.1",
     url = ""
 };
 
@@ -235,7 +235,14 @@ public void OnClientDisconnect(int client)
 
     if (g_bHasBet[client] && !g_bCashedOut[client])
     {
-        RefundBet(client, false, false);
+        // Only refund while the round hasn't started (Waiting). Disconnecting
+        // during a Running round is a forfeit — otherwise a player could bail out
+        // of a losing round and turn a guaranteed loss into a full refund. This
+        // mirrors the manual cancel command, which also only refunds while Waiting.
+        if (g_State == CrashState_Waiting)
+        {
+            RefundBet(client, false, false);
+        }
     }
 
     g_bPanelOpen[client] = false;
