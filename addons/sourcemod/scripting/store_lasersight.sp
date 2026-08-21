@@ -3,6 +3,7 @@
 
 #include <sourcemod>
 #include <sdktools>
+#include <clientprefs>
 #include <umbrella_store>
 #include <umbrella_store_module_utils>
 
@@ -19,13 +20,17 @@ StringMap g_mSniperWeapons;
 int g_iLaserBeam = -1;
 int g_iLaserDot = -1;
 float g_fNextLaserAt[MAXPLAYERS + 1];
+// Every scoped sniper broadcasts two tempents per update to the whole server;
+// like the other effect modules, players can opt out of receiving them.
+bool g_bHideLaser[MAXPLAYERS + 1];
+Cookie g_hHideCookie;
 
 public Plugin myinfo =
 {
     name = "[Umbrella Store] Laser Sight",
     author = "Ayrton09",
     description = "Scoped sniper laser sight item module for Umbrella Store",
-    version = "1.5.1",
+    version = "1.5.2",
     url = ""
 };
 
@@ -41,8 +46,38 @@ public void OnPluginStart()
     gCvarUpdateInterval = CreateConVar("umbrella_store_lasersight_update_interval", "0.05", "Seconds between laser sight updates per player.", FCVAR_NONE, true, 0.01, true, 0.25);
     AutoExecConfig(true, "umbrella_store_lasersight");
 
+    LoadTranslations("umbrella_store.phrases");
+
+    g_hHideCookie = new Cookie("umbrella_store_hide_lasersight", "Hide Umbrella Store laser sights", CookieAccess_Private);
+    RegConsoleCmd("sm_hidelaser", Command_HideLaser);
+    RegConsoleCmd("sm_hidelasersight", Command_HideLaser);
+
     US_RegisterItemType("lasersight", "laser_sights", true, true);
     BuildSniperWeaponMap();
+}
+
+public void OnClientCookiesCached(int client)
+{
+    char value[8];
+    g_hHideCookie.Get(client, value, sizeof(value));
+    g_bHideLaser[client] = (value[0] != '\0' && StringToInt(value) != 0);
+}
+
+public Action Command_HideLaser(int client, int args)
+{
+    if (!USM_IsValidClient(client))
+    {
+        return Plugin_Handled;
+    }
+
+    g_bHideLaser[client] = !g_bHideLaser[client];
+    if (AreClientCookiesCached(client))
+    {
+        g_hHideCookie.Set(client, g_bHideLaser[client] ? "1" : "0");
+    }
+
+    PrintToChat(client, "[Umbrella Store] %T", g_bHideLaser[client] ? "Module Hidden" : "Module Visible", client, "Laser Sight");
+    return Plugin_Handled;
 }
 
 public void OnMapStart()
@@ -57,6 +92,7 @@ public void OnMapStart()
 
 public void OnClientDisconnect(int client)
 {
+    g_bHideLaser[client] = false;
     g_fNextLaserAt[client] = 0.0;
 }
 
@@ -172,11 +208,28 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
     GetClientEyePosition(client, origin);
     GetClientSightEnd(client, impact);
 
+    int clients[MAXPLAYERS];
+    int count = 0;
+    for (int i = 1; i <= MaxClients; i++)
+    {
+        if (!USM_IsValidClient(i) || g_bHideLaser[i])
+        {
+            continue;
+        }
+
+        clients[count++] = i;
+    }
+
+    if (count <= 0)
+    {
+        return Plugin_Continue;
+    }
+
     TE_SetupBeamPoints(origin, impact, g_iLaserBeam, 0, 0, 0, gCvarBeamLife.FloatValue, gCvarBeamWidth.FloatValue, 0.0, 1, 0.0, color, 0);
-    TE_SendToAll();
+    TE_Send(clients, count);
 
     TE_SetupGlowSprite(impact, g_iLaserDot, gCvarDotLife.FloatValue, gCvarDotSize.FloatValue, color[3]);
-    TE_SendToAll();
+    TE_Send(clients, count);
 
     return Plugin_Continue;
 }

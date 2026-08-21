@@ -14,7 +14,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Colored Smoke",
     author = "Ayrton09",
     description = "Colored smoke grenade item module for Umbrella Store",
-    version = "1.5.1",
+    version = "1.5.2",
     url = ""
 };
 
@@ -34,6 +34,13 @@ public void OnPluginStart()
 
 public void OnMapStart()
 {
+    // Lifetime timers are NO_MAPCHANGE and never run across a level change, so
+    // anything still tracked here belongs to the previous map.
+    if (g_aSmokeRefs != null)
+    {
+        g_aSmokeRefs.Clear();
+    }
+
     PrecacheConfiguredSmokeMaterials();
 }
 
@@ -95,6 +102,16 @@ void AddSmokeMaterialDownload(const char[] material)
     if (FileExists(path, true))
     {
         USM_AddMaterialDownloads(path);
+        PrecacheGeneric(path, true);
+
+        // env_smokestack takes the material without the "materials/" prefix and
+        // resolves it through the model precache table, so register it there too.
+        char smokeMaterial[PLATFORM_MAX_PATH];
+        strcopy(smokeMaterial, sizeof(smokeMaterial), path[10]);
+        if (smokeMaterial[0] != 0)
+        {
+            PrecacheModel(smokeMaterial, true);
+        }
     }
     else
     {
@@ -124,6 +141,15 @@ void PrecacheConfiguredSmokeMaterials()
     }
 }
 
+public void Frame_KillSmokeProjectile(any ref)
+{
+    int entity = EntRefToEntIndex(ref);
+    if (entity != INVALID_ENT_REFERENCE && entity > 0 && IsValidEntity(entity))
+    {
+        AcceptEntityInput(entity, "Kill");
+    }
+}
+
 void GetSmokeKey(const char[] itemId, const char[] key, const char[] defaultValue, char[] buffer, int maxlen)
 {
     USM_GetMetadata(itemId, key, buffer, maxlen, defaultValue);
@@ -148,10 +174,13 @@ public Action Event_SmokeDetonate(Event event, const char[] name, bool dontBroad
         return Plugin_Continue;
     }
 
+    // Defer the removal by a frame: this event is dispatched from inside
+    // CSmokeGrenadeProjectile::Detonate, so the engine still works with the
+    // projectile after this hook returns.
     int oldEntity = event.GetInt("entityid");
     if (oldEntity > MaxClients && IsValidEntity(oldEntity))
     {
-        AcceptEntityInput(oldEntity, "Kill");
+        RequestFrame(Frame_KillSmokeProjectile, EntIndexToEntRef(oldEntity));
     }
 
     float origin[3];

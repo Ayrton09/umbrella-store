@@ -35,7 +35,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Camera",
     author = "Ayrton09",
     description = "Thirdperson and mirror camera for Umbrella Store player inspection",
-    version = "1.5.1",
+    version = "1.5.2",
     url = ""
 };
 
@@ -143,13 +143,23 @@ public void OnPluginStart()
 public void OnConfigsExecuted()
 {
     RefreshStoreEnabledConVar();
-
-    if (gCvarAllowThirdPerson != null)
-    {
-        gCvarAllowThirdPerson.SetInt(1);
-    }
-
+    // sv_allow_thirdperson is raised on demand in SetCssThirdPerson instead of
+    // being forced here, so a disabled module or an excluded map no longer
+    // overrides the server configuration.
     RefreshMapCameraState();
+}
+
+public void OnPluginEnd()
+{
+    // Nothing else restores the view: without this an unload leaves everyone
+    // who is currently in thirdperson stuck there until they die.
+    for (int i = 1; i <= MaxClients; i++)
+    {
+        if (IsValidRealClient(i))
+        {
+            SetCssThirdPerson(i, false);
+        }
+    }
 }
 
 public void OnAllPluginsLoaded()
@@ -314,6 +324,7 @@ public void Event_PlayerDeath(Event event, const char[] name, bool dontBroadcast
     }
 
     g_CameraMode[client] = Camera_FirstPerson;
+    RestoreViewProps(client);
 }
 
 public void Event_PlayerTeam(Event event, const char[] name, bool dontBroadcast)
@@ -507,6 +518,20 @@ void ForceFirstPerson(int client)
     SetCssThirdPerson(client, false);
 }
 
+// Death and spectate leave the observer state to the game, but the FOV and
+// viewmodel overrides are ours and must be undone even while the client is dead
+// (ForceFirstPerson deliberately refuses to touch dead clients).
+void RestoreViewProps(int client)
+{
+    if (!IsValidRealClient(client))
+    {
+        return;
+    }
+
+    SetDrawViewModelSafe(client, true);
+    SetFovSafe(client, DEFAULT_FOV);
+}
+
 void SetCssThirdPerson(int client, bool enable)
 {
     if (!IsValidRealClient(client))
@@ -514,13 +539,13 @@ void SetCssThirdPerson(int client, bool enable)
         return;
     }
 
-    if (gCvarAllowThirdPerson != null)
-    {
-        gCvarAllowThirdPerson.SetInt(1);
-    }
-
     if (enable)
     {
+        if (gCvarAllowThirdPerson != null)
+        {
+            gCvarAllowThirdPerson.SetInt(1);
+        }
+
         SetObserverTargetSafe(client, 0);
         SetObserverModeSafe(client, OBS_MODE_DEATHCAM);
         SetDrawViewModelSafe(client, false);

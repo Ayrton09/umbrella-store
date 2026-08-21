@@ -432,13 +432,13 @@
     }
     "Gift Received"
     {
-        "es" "{LIGHTBLUE}%N{DEFAULT} te regaló {PURPLE}%s{DEFAULT}."
-        "en" "{LIGHTBLUE}%N{DEFAULT} gifted you {PURPLE}%s{DEFAULT}."
-        "ru" "{LIGHTBLUE}%N{DEFAULT} подарил вам {PURPLE}%s{DEFAULT}."
-        "chi" "{LIGHTBLUE}%N{DEFAULT} 送给您 {PURPLE}%s{DEFAULT}。"
-        "pt" "{LIGHTBLUE}%N{DEFAULT} presenteou você com {PURPLE}%s{DEFAULT}."
-        "fr" "{LIGHTBLUE}%N{DEFAULT} vous a offert {PURPLE}%s{DEFAULT}."
-        "de" "{LIGHTBLUE}%N{DEFAULT} hat dir {PURPLE}%s{DEFAULT} geschenkt."
+        "es" "{LIGHTBLUE}%s{DEFAULT} te regaló {PURPLE}%s{DEFAULT}."
+        "en" "{LIGHTBLUE}%s{DEFAULT} gifted you {PURPLE}%s{DEFAULT}."
+        "ru" "{LIGHTBLUE}%s{DEFAULT} подарил вам {PURPLE}%s{DEFAULT}."
+        "chi" "{LIGHTBLUE}%s{DEFAULT} 送给您 {PURPLE}%s{DEFAULT}。"
+        "pt" "{LIGHTBLUE}%s{DEFAULT} presenteou você com {PURPLE}%s{DEFAULT}."
+        "fr" "{LIGHTBLUE}%s{DEFAULT} vous a offert {PURPLE}%s{DEFAULT}."
+        "de" "{LIGHTBLUE}%s{DEFAULT} hat dir {PURPLE}%s{DEFAULT} geschenkt."
     }
     "Trade Request Sent"
     {
@@ -472,23 +472,23 @@
     }
     "Trade Completed Sender"
     {
-        "es" "Trade completado con {LIGHTBLUE}%N{DEFAULT}: entregaste {PURPLE}%s{DEFAULT} y recibiste {PURPLE}%s{DEFAULT}."
-        "en" "Trade completed with {LIGHTBLUE}%N{DEFAULT}: you gave {PURPLE}%s{DEFAULT} and received {PURPLE}%s{DEFAULT}."
-        "ru" "Сделка завершена с помощью {LIGHTBLUE}%N{DEFAULT}: вы отдали {PURPLE}%s{DEFAULT} и получили {PURPLE}%s{DEFAULT}."
-        "chi" "交易已完成，金额为 {LIGHTBLUE}%N{DEFAULT}：您给出了 {PURPLE}%s{DEFAULT}，并收到了 {PURPLE}%s{DEFAULT}。"
-        "pt" "Negociação concluída com {LIGHTBLUE}%N{DEFAULT}: você deu {PURPLE}%s{DEFAULT} e recebeu {PURPLE}%s{DEFAULT}."
-        "fr" "Échange terminé avec {LIGHTBLUE}%N{DEFAULT} : vous avez donné {PURPLE}%s{DEFAULT} et reçu {PURPLE}%s{DEFAULT}."
-        "de" "Der Handel wurde mit {LIGHTBLUE}%N{DEFAULT} abgeschlossen: Sie haben {PURPLE}%s{DEFAULT} gegeben und {PURPLE}%s{DEFAULT} erhalten."
+        "es" "Trade completado con {LIGHTBLUE}%s{DEFAULT}: entregaste {PURPLE}%s{DEFAULT} y recibiste {PURPLE}%s{DEFAULT}."
+        "en" "Trade completed with {LIGHTBLUE}%s{DEFAULT}: you gave {PURPLE}%s{DEFAULT} and received {PURPLE}%s{DEFAULT}."
+        "ru" "Сделка завершена с помощью {LIGHTBLUE}%s{DEFAULT}: вы отдали {PURPLE}%s{DEFAULT} и получили {PURPLE}%s{DEFAULT}."
+        "chi" "交易已完成，金额为 {LIGHTBLUE}%s{DEFAULT}：您给出了 {PURPLE}%s{DEFAULT}，并收到了 {PURPLE}%s{DEFAULT}。"
+        "pt" "Negociação concluída com {LIGHTBLUE}%s{DEFAULT}: você deu {PURPLE}%s{DEFAULT} e recebeu {PURPLE}%s{DEFAULT}."
+        "fr" "Échange terminé avec {LIGHTBLUE}%s{DEFAULT} : vous avez donné {PURPLE}%s{DEFAULT} et reçu {PURPLE}%s{DEFAULT}."
+        "de" "Der Handel wurde mit {LIGHTBLUE}%s{DEFAULT} abgeschlossen: Sie haben {PURPLE}%s{DEFAULT} gegeben und {PURPLE}%s{DEFAULT} erhalten."
     }
     "Trade Completed Target"
     {
-        "es" "Trade completado con {LIGHTBLUE}%N{DEFAULT}: entregaste {PURPLE}%s{DEFAULT} y recibiste {PURPLE}%s{DEFAULT}."
-        "en" "Trade completed with {LIGHTBLUE}%N{DEFAULT}: you gave {PURPLE}%s{DEFAULT} and received {PURPLE}%s{DEFAULT}."
-        "ru" "Сделка завершена с помощью {LIGHTBLUE}%N{DEFAULT}: вы отдали {PURPLE}%s{DEFAULT} и получили {PURPLE}%s{DEFAULT}."
-        "chi" "交易已完成，金额为 {LIGHTBLUE}%N{DEFAULT}：您给出了 {PURPLE}%s{DEFAULT}，并收到了 {PURPLE}%s{DEFAULT}。"
-        "pt" "Negociação concluída com {LIGHTBLUE}%N{DEFAULT}: você deu {PURPLE}%s{DEFAULT} e recebeu {PURPLE}%s{DEFAULT}."
-        "fr" "Échange terminé avec {LIGHTBLUE}%N{DEFAULT} : vous avez donné {PURPLE}%s{DEFAULT} et reçu {PURPLE}%s{DEFAULT}."
-        "de" "Der Handel wurde mit {LIGHTBLUE}%N{DEFAULT} abgeschlossen: Sie haben {PURPLE}%s{DEFAULT} gegeben und {PURPLE}%s{DEFAULT} erhalten."
+        "es" "Trade completado con {LIGHTBLUE}%s{DEFAULT}: entregaste {PURPLE}%s{DEFAULT} y recibiste {PURPLE}%s{DEFAULT}."
+        "en" "Trade completed with {LIGHTBLUE}%s{DEFAULT}: you gave {PURPLE}%s{DEFAULT} and received {PURPLE}%s{DEFAULT}."
+        "ru" "Сделка завершена с помощью {LIGHTBLUE}%s{DEFAULT}: вы отдали {PURPLE}%s{DEFAULT} и получили {PURPLE}%s{DEFAULT}."
+        "chi" "交易已完成，金额为 {LIGHTBLUE}%s{DEFAULT}：您给出了 {PURPLE}%s{DEFAULT}，并收到了 {PURPLE}%s{DEFAULT}。"
+        "pt" "Negociação concluída com {LIGHTBLUE}%s{DEFAULT}: você deu {PURPLE}%s{DEFAULT} e recebeu {PURPLE}%s{DEFAULT}."
+        "fr" "Échange terminé avec {LIGHTBLUE}%s{DEFAULT} : vous avez donné {PURPLE}%s{DEFAULT} et reçu {PURPLE}%s{DEFAULT}."
+        "de" "Der Handel wurde mit {LIGHTBLUE}%s{DEFAULT} abgeschlossen: Sie haben {PURPLE}%s{DEFAULT} gegeben und {PURPLE}%s{DEFAULT} erhalten."
     }
     "Trade Failed"
     {
@@ -502,13 +502,13 @@
     }
     "Trade Rejected Sender"
     {
-        "es" "{LIGHTBLUE}%N{DEFAULT} rechazó tu trade."
-        "en" "{LIGHTBLUE}%N{DEFAULT} rejected your trade."
-        "ru" "{LIGHTBLUE}%N{DEFAULT} отклонил вашу сделку."
-        "chi" "{LIGHTBLUE}%N{DEFAULT} 拒绝了您的交易。"
-        "pt" "{LIGHTBLUE}%N{DEFAULT} rejeitou sua negociação."
-        "fr" "{LIGHTBLUE}%N{DEFAULT} a rejeté votre échange."
-        "de" "{LIGHTBLUE}%N{DEFAULT} hat Ihren Handel abgelehnt."
+        "es" "{LIGHTBLUE}%s{DEFAULT} rechazó tu trade."
+        "en" "{LIGHTBLUE}%s{DEFAULT} rejected your trade."
+        "ru" "{LIGHTBLUE}%s{DEFAULT} отклонил вашу сделку."
+        "chi" "{LIGHTBLUE}%s{DEFAULT} 拒绝了您的交易。"
+        "pt" "{LIGHTBLUE}%s{DEFAULT} rejeitou sua negociação."
+        "fr" "{LIGHTBLUE}%s{DEFAULT} a rejeté votre échange."
+        "de" "{LIGHTBLUE}%s{DEFAULT} hat Ihren Handel abgelehnt."
     }
     "Trade Rejected Target"
     {
@@ -582,13 +582,13 @@
     }
     "Gift Credits Received"
     {
-        "es" "{LIGHTGREEN}%N{DEFAULT} te regaló {LIGHTBLUE}%d{DEFAULT} créditos."
-        "en" "{LIGHTGREEN}%N{DEFAULT} gifted you {LIGHTBLUE}%d{DEFAULT} credits."
-        "ru" "{LIGHTGREEN}%N{DEFAULT} подарил вам кредиты {LIGHTBLUE}%d{DEFAULT}."
-        "chi" "{LIGHTGREEN}%N{DEFAULT} 赠送给您 {LIGHTBLUE}%d{DEFAULT} 积分。"
-        "pt" "{LIGHTGREEN}%N{DEFAULT} presenteou você com {LIGHTBLUE}%d{DEFAULT} créditos."
-        "fr" "{LIGHTGREEN}%N{DEFAULT} vous a offert des crédits {LIGHTBLUE}%d{DEFAULT}."
-        "de" "{LIGHTGREEN}%N{DEFAULT} hat Ihnen {LIGHTBLUE}%d{DEFAULT} Credits geschenkt."
+        "es" "{LIGHTGREEN}%s{DEFAULT} te regaló {LIGHTBLUE}%d{DEFAULT} créditos."
+        "en" "{LIGHTGREEN}%s{DEFAULT} gifted you {LIGHTBLUE}%d{DEFAULT} credits."
+        "ru" "{LIGHTGREEN}%s{DEFAULT} подарил вам кредиты {LIGHTBLUE}%d{DEFAULT}."
+        "chi" "{LIGHTGREEN}%s{DEFAULT} 赠送给您 {LIGHTBLUE}%d{DEFAULT} 积分。"
+        "pt" "{LIGHTGREEN}%s{DEFAULT} presenteou você com {LIGHTBLUE}%d{DEFAULT} créditos."
+        "fr" "{LIGHTGREEN}%s{DEFAULT} vous a offert des crédits {LIGHTBLUE}%d{DEFAULT}."
+        "de" "{LIGHTGREEN}%s{DEFAULT} hat Ihnen {LIGHTBLUE}%d{DEFAULT} Credits geschenkt."
     }
     "Gift Credits Invalid Amount"
     {
@@ -962,13 +962,13 @@
     }
     "Credits Broadcast"
     {
-        "es" "{LIGHTBLUE}%N{DEFAULT} tiene {LIGHTBLUE}%s{DEFAULT} créditos."
-        "en" "{LIGHTBLUE}%N{DEFAULT} has {LIGHTBLUE}%s{DEFAULT} credits."
-        "ru" "{LIGHTBLUE}%N{DEFAULT} имеет кредиты {LIGHTBLUE}%s{DEFAULT}."
-        "chi" "{LIGHTBLUE}%N{DEFAULT} 拥有 {LIGHTBLUE}%s{DEFAULT} 积分。"
-        "pt" "{LIGHTBLUE}%N{DEFAULT} tem {LIGHTBLUE}%s{DEFAULT} créditos."
-        "fr" "{LIGHTBLUE}%N{DEFAULT} dispose de {LIGHTBLUE}%s{DEFAULT} crédits."
-        "de" "{LIGHTBLUE}%N{DEFAULT} hat {LIGHTBLUE}%s{DEFAULT} Credits."
+        "es" "{LIGHTBLUE}%s{DEFAULT} tiene {LIGHTBLUE}%s{DEFAULT} créditos."
+        "en" "{LIGHTBLUE}%s{DEFAULT} has {LIGHTBLUE}%s{DEFAULT} credits."
+        "ru" "{LIGHTBLUE}%s{DEFAULT} имеет кредиты {LIGHTBLUE}%s{DEFAULT}."
+        "chi" "{LIGHTBLUE}%s{DEFAULT} 拥有 {LIGHTBLUE}%s{DEFAULT} 积分。"
+        "pt" "{LIGHTBLUE}%s{DEFAULT} tem {LIGHTBLUE}%s{DEFAULT} créditos."
+        "fr" "{LIGHTBLUE}%s{DEFAULT} dispose de {LIGHTBLUE}%s{DEFAULT} crédits."
+        "de" "{LIGHTBLUE}%s{DEFAULT} hat {LIGHTBLUE}%s{DEFAULT} Credits."
     }
     "Credits Amount"
     {
@@ -1862,13 +1862,13 @@
     }
     "Market Listing Sold Seller"
     {
-        "es" "Vendiste {PURPLE}%s{DEFAULT} y recibiste {LIGHTBLUE}%s{DEFAULT} de {LIGHTGREEN}%N{DEFAULT}."
-        "en" "You sold {PURPLE}%s{DEFAULT} and received {LIGHTBLUE}%s{DEFAULT} from {LIGHTGREEN}%N{DEFAULT}."
-        "ru" "Вы продали {PURPLE}%s{DEFAULT} и получили {LIGHTBLUE}%s{DEFAULT} от {LIGHTGREEN}%N{DEFAULT}."
-        "chi" "你卖出了 {PURPLE}%s{DEFAULT} 并从 {LIGHTGREEN}%N{DEFAULT} 收到了 {LIGHTBLUE}%s{DEFAULT}。"
-        "pt" "Voce vendeu {PURPLE}%s{DEFAULT} e recebeu {LIGHTBLUE}%s{DEFAULT} de {LIGHTGREEN}%N{DEFAULT}."
-        "fr" "Vous avez vendu {PURPLE}%s{DEFAULT} et recu {LIGHTBLUE}%s{DEFAULT} de {LIGHTGREEN}%N{DEFAULT}."
-        "de" "Du hast {PURPLE}%s{DEFAULT} verkauft und {LIGHTBLUE}%s{DEFAULT} von {LIGHTGREEN}%N{DEFAULT} erhalten."
+        "es" "Vendiste {PURPLE}%s{DEFAULT} y recibiste {LIGHTBLUE}%s{DEFAULT} de {LIGHTGREEN}%s{DEFAULT}."
+        "en" "You sold {PURPLE}%s{DEFAULT} and received {LIGHTBLUE}%s{DEFAULT} from {LIGHTGREEN}%s{DEFAULT}."
+        "ru" "Вы продали {PURPLE}%s{DEFAULT} и получили {LIGHTBLUE}%s{DEFAULT} от {LIGHTGREEN}%s{DEFAULT}."
+        "chi" "你卖出了 {PURPLE}%s{DEFAULT} 并从 {LIGHTGREEN}%s{DEFAULT} 收到了 {LIGHTBLUE}%s{DEFAULT}。"
+        "pt" "Voce vendeu {PURPLE}%s{DEFAULT} e recebeu {LIGHTBLUE}%s{DEFAULT} de {LIGHTGREEN}%s{DEFAULT}."
+        "fr" "Vous avez vendu {PURPLE}%s{DEFAULT} et recu {LIGHTBLUE}%s{DEFAULT} de {LIGHTGREEN}%s{DEFAULT}."
+        "de" "Du hast {PURPLE}%s{DEFAULT} verkauft und {LIGHTBLUE}%s{DEFAULT} von {LIGHTGREEN}%s{DEFAULT} erhalten."
     }
     "Market Buy Own"
     {
@@ -1889,6 +1889,16 @@
         "pt" "Voce nao tem creditos suficientes para comprar essa listagem."
         "fr" "Vous n'avez pas assez de credits pour acheter cette offre."
         "de" "Du hast nicht genug Credits, um dieses Angebot zu kaufen."
+    }
+    "Credit Limit Reached"
+    {
+        "es" "Esta operacion superaria el limite maximo de creditos de tu cuenta."
+        "en" "This operation would exceed the maximum credit limit on your account."
+        "ru" "Эта операция превысит максимальный лимит кредитов вашего аккаунта."
+        "chi" "此操作将超出您账户的最大积分上限。"
+        "pt" "Esta operacao ultrapassaria o limite maximo de creditos da sua conta."
+        "fr" "Cette operation depasserait la limite maximale de credits de votre compte."
+        "de" "Dieser Vorgang wuerde das maximale Credit-Limit deines Kontos ueberschreiten."
     }
     "Market Buy Failed"
     {

@@ -84,7 +84,9 @@ stock bool USM_ItemAllowedForClientTeam(int client, const char[] itemId)
     int price, team;
     if (!US_GetItemInfo(itemId, name, sizeof(name), type, sizeof(type), price, team, category, sizeof(category)))
     {
-        return true;
+        // Fail closed: an item that is no longer in the catalog (removed or
+        // renamed after a reload) must not keep working for the wrong team.
+        return false;
     }
 
     return team == 0 || team == 4 || team == GetClientTeam(client);
@@ -328,7 +330,7 @@ stock int USM_ParseModelMaterialFiles(const char[] modelPath, char materials[][P
         return 0;
     }
 
-    File file = OpenFile(modelPath, "rb");
+    File file = OpenFile(modelPath, "rb", true);
     if (file == null)
     {
         return 0;
@@ -341,8 +343,26 @@ stock int USM_ParseModelMaterialFiles(const char[] modelPath, char materials[][P
     int textureDirCount;
     int textureDirOffset;
 
-    ReadFileCell(file, modelId, 4);
-    ReadFileCell(file, version, 4);
+    if (!ReadFileCell(file, modelId, 4) || !ReadFileCell(file, version, 4))
+    {
+        delete file;
+        return 0;
+    }
+
+    // "IDST" little endian. Without this a non-MDL (or truncated) file is parsed
+    // as if its arbitrary bytes were header fields.
+    if (modelId != 0x54534449)
+    {
+        delete file;
+        return 0;
+    }
+
+    int fileSize = FileSize(modelPath, true);
+    if (fileSize <= 0)
+    {
+        delete file;
+        return 0;
+    }
 
     FileSeek(file, 204, SEEK_SET);
     ReadFileCell(file, textureCount, 4);
@@ -354,6 +374,22 @@ stock int USM_ParseModelMaterialFiles(const char[] modelPath, char materials[][P
     {
         delete file;
         return 0;
+    }
+
+    // textureCount comes straight from the file, so a corrupt value could spin
+    // this loop billions of times (each iteration seeking and reading) and hang
+    // the server. Every entry is 64 bytes, so anything past the file cannot be
+    // real.
+    if (textureOffset >= fileSize || textureDirOffset >= fileSize)
+    {
+        delete file;
+        return 0;
+    }
+
+    int maxTextures = (fileSize - textureOffset) / 64;
+    if (textureCount > maxTextures)
+    {
+        textureCount = maxTextures;
     }
 
     int dirStringOffset;
@@ -369,6 +405,15 @@ stock int USM_ParseModelMaterialFiles(const char[] modelPath, char materials[][P
     }
 
     ReplaceString(materialDir, sizeof(materialDir), "\\", "/");
+
+    // The stored directory does not always carry a trailing separator, and the
+    // paths below concatenate it directly with the material name.
+    int dirLength = strlen(materialDir);
+    if (dirLength > 0 && materialDir[dirLength - 1] != '/' && dirLength + 1 < sizeof(materialDir))
+    {
+        materialDir[dirLength] = '/';
+        materialDir[dirLength + 1] = '\0';
+    }
 
     int count = 0;
     char materialName[PLATFORM_MAX_PATH];
@@ -436,7 +481,7 @@ stock bool USM_ExtractVmtMaterialValue(const char[] line, const char[] key, char
 
 stock void USM_AddVmtTextureDownloads(const char[] materialPath)
 {
-    File file = OpenFile(materialPath, "r");
+    File file = OpenFile(materialPath, "r", true);
     if (file == null)
     {
         return;
@@ -482,7 +527,7 @@ stock void USM_AddModelSidecarDownloads(const char[] modelPath)
     char internalName[PLATFORM_MAX_PATH];
     internalName[0] = '\0';
 
-    File file = OpenFile(modelPath, "rb");
+    File file = OpenFile(modelPath, "rb", true);
     if (file != null)
     {
         int ignored;

@@ -32,7 +32,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Casino - Roulette",
     author = "Ayrton09",
     description = "Roulette module for Umbrella Store",
-    version = "1.5.1",
+    version = "1.5.2",
     url = ""
 };
 
@@ -1054,6 +1054,13 @@ void RefundPendingSpin(int client)
     }
 
     int refund = g_iSpinBet[client];
+
+    // Close the pending spin before crediting so this function is idempotent.
+    // Both OnClientDisconnect and the player_disconnect event reach this path,
+    // and US_AddCredits fires store forwards that could re-enter it.
+    g_bSpinning[client] = false;
+    g_iSpinBet[client] = 0;
+
     if (!US_AddCredits(client, refund, false))
     {
         LogError("[Umbrella Store] Roulette failed to refund %d credits for unresolved spin on client %d.", refund, client);

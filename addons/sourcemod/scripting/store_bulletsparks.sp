@@ -8,6 +8,10 @@
 #include <umbrella_store_module_utils>
 
 ConVar gCvarEnabled;
+ConVar gCvarInterval;
+// bullet_impact fires once per pellet, so a shotgun alone would broadcast eight
+// tempents per shot to every client.
+float g_fNextSpark[MAXPLAYERS + 1];
 ConVar gCvarMagnitude;
 ConVar gCvarTrailLength;
 
@@ -19,7 +23,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Bullet Sparks",
     author = "Ayrton09",
     description = "Bullet spark impact item module for Umbrella Store",
-    version = "1.5.1",
+    version = "1.5.2",
     url = ""
 };
 
@@ -28,8 +32,11 @@ public void OnPluginStart()
     LoadTranslations("umbrella_store.phrases");
 
     gCvarEnabled = CreateConVar("umbrella_store_bulletsparks_enabled", "1", "Enable Umbrella Store bullet sparks.", FCVAR_NONE, true, 0.0, true, 1.0);
-    gCvarMagnitude = CreateConVar("umbrella_store_bulletsparks_magnitude", "2500", "Spark magnitude.", FCVAR_NONE, true, 1.0);
-    gCvarTrailLength = CreateConVar("umbrella_store_bulletsparks_trail_length", "5000", "Spark trail length.", FCVAR_NONE, true, 1.0);
+    // 2500/5000 were orders of magnitude above normal spark values and, sent
+    // once per pellet, buried clients in particle overdraw.
+    gCvarMagnitude = CreateConVar("umbrella_store_bulletsparks_magnitude", "250", "Spark magnitude.", FCVAR_NONE, true, 1.0);
+    gCvarTrailLength = CreateConVar("umbrella_store_bulletsparks_trail_length", "500", "Spark trail length.", FCVAR_NONE, true, 1.0);
+    gCvarInterval = CreateConVar("umbrella_store_bulletsparks_interval", "0.1", "Minimum seconds between spark effects from the same player.", FCVAR_NONE, true, 0.0, true, 5.0);
     AutoExecConfig(true, "umbrella_store_bulletsparks");
 
     g_hHideCookie = new Cookie("umbrella_store_hide_bulletsparks", "Hide Umbrella Store bullet sparks", CookieAccess_Private);
@@ -42,6 +49,7 @@ public void OnPluginStart()
 
 public void OnClientDisconnect(int client)
 {
+    g_fNextSpark[client] = 0.0;
     g_bHideBulletSparks[client] = false;
 }
 
@@ -82,11 +90,19 @@ public Action Event_BulletImpact(Event event, const char[] name, bool dontBroadc
         return Plugin_Continue;
     }
 
+    float now = GetGameTime();
+    if (now < g_fNextSpark[client])
+    {
+        return Plugin_Continue;
+    }
+
     char itemId[64];
     if (!USM_GetEquippedItemForClientTeam(client, "bulletsparks", itemId, sizeof(itemId)))
     {
         return Plugin_Continue;
     }
+
+    g_fNextSpark[client] = now + gCvarInterval.FloatValue;
 
     int clients[MAXPLAYERS];
     int clientCount = 0;

@@ -178,6 +178,7 @@ bool g_bItemCacheReady = false;
 Database g_DB = null;
 bool g_bIsMySQL = false;
 bool g_bLateDatabaseReady = false;
+bool g_bTableSetupFailed = false;
 int g_iPendingTableQueries = 0;
 
 int g_iCredits[MAXPLAYERS + 1] = {0, ...};
@@ -186,7 +187,7 @@ bool g_bIsLoading[MAXPLAYERS + 1] = {false, ...};
 bool g_bDetailFromInventory[MAXPLAYERS + 1] = {false, ...};
 bool g_bDetailFromSearch[MAXPLAYERS + 1] = {false, ...};
 int g_iPreviewEntity[MAXPLAYERS + 1] = {INVALID_ENT_REFERENCE, ...};
-char g_szBrowseType[MAXPLAYERS + 1][16];
+char g_szBrowseType[MAXPLAYERS + 1][32];   // must match StoreItem.type
 int g_iBrowseTeam[MAXPLAYERS + 1] = {0, ...};
 char g_szBrowseCategory[MAXPLAYERS + 1][32];
 char g_szInvFilter[MAXPLAYERS + 1][32];
@@ -194,6 +195,10 @@ char g_szSearchQuery[MAXPLAYERS + 1][64];
 char g_szLastDetailItem[MAXPLAYERS + 1][32];
 int g_iTradeSender[MAXPLAYERS + 1] = {0, ...};
 char g_szTradeSenderItem[MAXPLAYERS + 1][32];
+// Incoming-offer state, kept apart from the outgoing browse state above so a
+// received request cannot clobber a trade the player is still composing.
+char g_szPendingTradeSenderItem[MAXPLAYERS + 1][32];
+int g_iPendingTradeTargetInvVersion[MAXPLAYERS + 1] = {0, ...};
 char g_szTradeTargetItem[MAXPLAYERS + 1][32];
 char g_szTradeGiftItem[MAXPLAYERS + 1][32];
 char g_szPendingMarketItem[MAXPLAYERS + 1][32];
@@ -249,8 +254,6 @@ StoreAdminAction g_AdminMenuAction[MAXPLAYERS + 1];
 int g_iAdminMenuTarget[MAXPLAYERS + 1] = {0, ...};
 bool g_bAwaitingAdminCreditAmount[MAXPLAYERS + 1] = {false, ...};
 bool g_bCreditsDirty[MAXPLAYERS + 1] = {false, ...};
-int g_iCreditSaveToken[MAXPLAYERS + 1] = {0, ...};
-int g_iCreditSaveInFlight[MAXPLAYERS + 1] = {0, ...};
 float g_fLastActivity[MAXPLAYERS + 1] = {0.0, ...};
 int g_iCreditReasonTime[MAXPLAYERS + 1] = {0, ...};
 int g_iCreditReasonKill[MAXPLAYERS + 1] = {0, ...};
@@ -349,7 +352,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Core",
     author = "Ayrton09",
     description = "Core store module for Umbrella Store",
-    version = "1.5.1",
+    version = "1.5.2",
     url = ""
 };
 
@@ -511,6 +514,11 @@ public void OnAllPluginsLoaded()
 
 public void OnPluginEnd()
 {
+    // A plugin unload or reload is not a client disconnect, so nothing else
+    // flushes pending balances: without this every credit earned since the last
+    // autosave tick is lost for everyone currently online.
+    SaveDirtyPlayers();
+
     for (int i = 1; i <= MaxClients; i++)
     {
         RemovePreview(i);
@@ -521,6 +529,10 @@ public void OnMapEnd()
 {
     for (int i = 1; i <= MaxClients; i++)
     {
+        // Preview timers are created with TIMER_FLAG_NO_MAPCHANGE, so the timer
+        // system disposes of them itself at level shutdown. Forget the handle
+        // first: calling KillTimer on it here can hit an already-freed handle.
+        g_hPreviewTimer[i] = null;
         RemovePreview(i);
     }
 }
@@ -641,12 +653,12 @@ void ResetClientData(int client, bool clearInventory)
     g_szSearchQuery[client][0] = '\0';
     g_szLastDetailItem[client][0] = '\0';
     g_bCreditsDirty[client] = false;
-    g_iCreditSaveToken[client] = 0;
-    g_iCreditSaveInFlight[client] = 0;
     g_iInventoryVersion[client] = 0;
     g_iMenuInventoryVersion[client] = 0;
     g_iTradeSenderInvVersion[client] = 0;
     g_iTradeTargetInvVersion[client] = 0;
+    g_iPendingTradeTargetInvVersion[client] = 0;
+    g_szPendingTradeSenderItem[client][0] = '\0';
     g_bAwaitingMarketPrice[client] = false;
     g_szPendingMarketItem[client][0] = '\0';
     g_AdminMenuAction[client] = StoreAdminAction_None;
@@ -717,14 +729,25 @@ bool GetClientSteamIdSafe(int client, char[] steamid, int maxlen)
 
 bool EscapeStringSafe(const char[] input, char[] output, int maxlen)
 {
+    // Always leave the destination in a defined state: Escape() writes nothing
+    // when the buffer is too small (it needs 2 * strlen + 1), and callers that
+    // ignored the result would otherwise format uninitialised stack memory
+    // straight into a query.
+    output[0] = '\0';
+
     if (g_DB == null)
     {
-        output[0] = '\0';
         LogError("%s EscapeStringSafe called before database was ready.", STORE_LOG_PREFIX);
         return false;
     }
 
-    g_DB.Escape(input, output, maxlen);
+    if (!g_DB.Escape(input, output, maxlen))
+    {
+        output[0] = '\0';
+        LogError("%s EscapeStringSafe could not escape a %d character value into a %d byte buffer.", STORE_LOG_PREFIX, strlen(input), maxlen);
+        return false;
+    }
+
     return true;
 }
 
@@ -832,6 +855,52 @@ bool HasActiveMarketplaceListing(int client, const char[] itemId)
     }
 
     return HasActiveMarketplaceListingForSteamId(steamid, itemId);
+}
+
+// Menus that need the listing state of a whole inventory must not run one
+// blocking SELECT per item: with a remote MySQL server that stalls the game
+// thread once per owned item every time the menu is opened.
+StringMap GetActiveMarketplaceListingSet(int client)
+{
+    StringMap listed = new StringMap();
+
+    char steamid[32];
+    if (g_DB == null || !GetClientSteamIdSafe(client, steamid, sizeof(steamid)))
+    {
+        return listed;
+    }
+
+    char safeSteamId[80], query[320];
+    if (!EscapeStringSafe(steamid, safeSteamId, sizeof(safeSteamId)))
+    {
+        return listed;
+    }
+
+    Format(query, sizeof(query),
+        "SELECT item_id FROM store_market_listings WHERE seller_steamid = '%s' AND sold_at = 0 AND cancelled_at = 0 AND expires_at > %d",
+        safeSteamId, GetTime());
+
+    SQL_LockDatabase(g_DB);
+    DBResultSet results = SQL_Query(g_DB, query);
+    if (results == null)
+    {
+        char error[256];
+        SQL_GetError(g_DB, error, sizeof(error));
+        LogStoreError("GetActiveMarketplaceListingSet", error);
+        SQL_UnlockDatabase(g_DB);
+        return listed;
+    }
+
+    char itemId[32];
+    while (results.FetchRow())
+    {
+        results.FetchString(0, itemId, sizeof(itemId));
+        listed.SetValue(itemId, 1);
+    }
+
+    delete results;
+    SQL_UnlockDatabase(g_DB);
+    return listed;
 }
 
 bool CancelMarketplaceListingsForSteamIdItem(const char[] steamid, const char[] itemId)
@@ -949,7 +1018,16 @@ void SyncMarketplaceTransferInMemory(const char[] sellerSteamId, int buyer, cons
         g_hInventory[seller].Erase(sellerIndex);
         InventoryOwnedSet(seller, itemId, false);
         MarkInventoryChanged(seller);
-        g_iCredits[seller] += sellerNetCredits;
+
+        // Mirror the capped value the transaction already committed rather than
+        // adding blind, so memory can never drift above STORE_MAX_CREDITS.
+        int sellerNewBalance = 0;
+        if (!TryComputeCreditBalance(g_iCredits[seller], sellerNetCredits, sellerNewBalance))
+        {
+            sellerNewBalance = STORE_MAX_CREDITS;
+            LogError("%s Marketplace sale credited %d to %N above the store maximum; balance clamped.", STORE_LOG_PREFIX, sellerNetCredits, seller);
+        }
+        g_iCredits[seller] = sellerNewBalance;
         ReportCreditsChanged(seller, sellerNetCredits, "market_sale", false, true);
         ForwardInventoryChanged(seller, itemId, "market_sale_out");
     }
@@ -2580,6 +2658,22 @@ void SanitizeChatRenderInput(char[] buffer, int maxlen)
     ReplaceString(buffer, maxlen, "}", ")");
 }
 
+// Player names reach chat through phrases that are colour-tagged afterwards, so
+// a name such as "{green}[ADMIN]{default}" would render as real colours and let
+// a player spoof staff tags in store notifications. Phrases that show one
+// player's name to another take a sanitized name via %s instead of %N.
+void GetSafeClientName(int client, char[] buffer, int maxlen)
+{
+    if (client < 1 || client > MaxClients || !IsClientInGame(client))
+    {
+        strcopy(buffer, maxlen, "?");
+        return;
+    }
+
+    GetClientName(client, buffer, maxlen);
+    SanitizeChatRenderInput(buffer, maxlen);
+}
+
 void ForwardCreditsGiven(int client, int amount, const char[] reason)
 {
     if (g_hFwdCreditsGiven == null)
@@ -3121,9 +3215,13 @@ void LogCreditLedgerBySteamId(const char[] steamid, int balanceAfter, int amount
         return;
     }
 
-    char safeSteamId[64], safeReason[128], query[512];
-    EscapeStringSafe(steamid, safeSteamId, sizeof(safeSteamId));
-    EscapeStringSafe(reason, safeReason, sizeof(safeReason));
+    char safeSteamId[80], safeReason[256], query[768];
+    if (!EscapeStringSafe(steamid, safeSteamId, sizeof(safeSteamId))
+        || !EscapeStringSafe(reason, safeReason, sizeof(safeReason)))
+    {
+        LogError("%s Credit ledger entry was dropped because a value could not be escaped.", STORE_LOG_PREFIX);
+        return;
+    }
 
     Format(query, sizeof(query),
         "INSERT INTO store_credits_ledger (steamid, amount, reason, balance_after, created_at) VALUES ('%s', %d, '%s', %d, %d)",
@@ -3175,14 +3273,21 @@ bool InsertAuditEvent(const char[] actorSteam, const char[] actorName, const cha
         return false;
     }
 
-    char safeActorSteam[64], safeActorName[128], safeTargetSteam[64], safeTargetName[128], safeAction[96], safeItemId[64], safeDetails[256], query[1024];
-    EscapeStringSafe(actorSteam, safeActorSteam, sizeof(safeActorSteam));
-    EscapeStringSafe(actorName, safeActorName, sizeof(safeActorName));
-    EscapeStringSafe(targetSteam, safeTargetSteam, sizeof(safeTargetSteam));
-    EscapeStringSafe(targetName, safeTargetName, sizeof(safeTargetName));
-    EscapeStringSafe(action, safeAction, sizeof(safeAction));
-    EscapeStringSafe(itemId, safeItemId, sizeof(safeItemId));
-    EscapeStringSafe(details, safeDetails, sizeof(safeDetails));
+    // Escaping needs 2 * strlen + 1 bytes: action is char[64] at the native
+    // boundary and details is char[192], so the old 96/256 byte destinations
+    // could not hold a worst-case value and Escape() would refuse to write.
+    char safeActorSteam[80], safeActorName[160], safeTargetSteam[80], safeTargetName[160], safeAction[160], safeItemId[80], safeDetails[512], query[2048];
+    if (!EscapeStringSafe(actorSteam, safeActorSteam, sizeof(safeActorSteam))
+        || !EscapeStringSafe(actorName, safeActorName, sizeof(safeActorName))
+        || !EscapeStringSafe(targetSteam, safeTargetSteam, sizeof(safeTargetSteam))
+        || !EscapeStringSafe(targetName, safeTargetName, sizeof(safeTargetName))
+        || !EscapeStringSafe(action, safeAction, sizeof(safeAction))
+        || !EscapeStringSafe(itemId, safeItemId, sizeof(safeItemId))
+        || !EscapeStringSafe(details, safeDetails, sizeof(safeDetails)))
+    {
+        LogError("%s Audit event '%s' was dropped because a value could not be escaped.", STORE_LOG_PREFIX, action);
+        return false;
+    }
 
     Format(query, sizeof(query),
         "INSERT INTO store_audit_log (actor_steamid, actor_name, target_steamid, target_name, action, item_id, amount, details, created_at) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', %d, '%s', %d)",
@@ -3468,12 +3573,20 @@ public Action Timer_AutoSaveCredits(Handle timer, any data)
 public Action Timer_FlushCreditNotify(Handle timer, any userid)
 {
     int client = GetClientOfUserId(userid);
+
+    // Clear the slot before any early return: this is a one-shot timer, so
+    // leaving the (now dead) handle stored would both block future
+    // notifications from re-arming and make the KillTimer in ResetClientData
+    // throw, aborting the rest of the client cleanup.
+    if (client >= 1 && client <= MaxClients && g_hCreditNotifyTimer[client] == timer)
+    {
+        g_hCreditNotifyTimer[client] = null;
+    }
+
     if (!IsValidHumanClient(client) || !g_bIsLoaded[client])
     {
         return Plugin_Stop;
     }
-
-    g_hCreditNotifyTimer[client] = null;
 
     int total = g_iCreditReasonTime[client] + g_iCreditReasonKill[client] + g_iCreditReasonHeadshot[client] + g_iCreditReasonRoundWin[client] + g_iCreditReasonPlant[client] + g_iCreditReasonDefuse[client];
     if (total <= 0)
@@ -4452,15 +4565,12 @@ int FindStringIndexInTable(int tableidx, const char[] value)
 
 int PrecacheParticleEffectName(const char[] effect)
 {
-    static int particleTable = INVALID_STRING_TABLE;
-
+    // Not cached in a static: string table ids are rebuilt per map, so a stale
+    // id would make later maps read and write the wrong table.
+    int particleTable = FindStringTable("ParticleEffectNames");
     if (particleTable == INVALID_STRING_TABLE)
     {
-        particleTable = FindStringTable("ParticleEffectNames");
-        if (particleTable == INVALID_STRING_TABLE)
-        {
-            return INVALID_STRING_INDEX;
-        }
+        return INVALID_STRING_INDEX;
     }
 
     int index = FindStringIndexInTable(particleTable, effect);
@@ -5048,6 +5158,7 @@ void LoadItemsConfig()
 public Action Cmd_ReloadStore(int client, int args)
 {
     LoadItemsConfig();
+    LoadQuestConfig();
 
     char msg[192];
     Format(msg, sizeof(msg), "%T", "Store Reloaded", client, g_aItems.Length);
@@ -5447,10 +5558,21 @@ public void OnTableCreated(Database db, DBResultSet results, const char[] error,
     if (db == null)
     {
         LogStoreError("OnTableCreated", error);
+        g_bTableSetupFailed = true;
     }
     else if (error[0] != '\0')
     {
         LogStoreError("CreateTables", error);
+        g_bTableSetupFailed = true;
+    }
+
+    if (g_iPendingTableQueries == 0 && g_bTableSetupFailed && !g_bLateDatabaseReady)
+    {
+        // Loading players against a schema that failed to build would make every
+        // later read and write fail one by one and silently, instead of failing
+        // once, loudly, where an operator can see it.
+        SetFailState("%s Store tables could not be created; see the SourceMod error log.", STORE_LOG_PREFIX);
+        return;
     }
 
     if (!g_bLateDatabaseReady && g_iPendingTableQueries == 0)
@@ -5665,6 +5787,14 @@ bool ApplyCreditDeltasAtomic(int clientA, int deltaA, const char[] reasonA, int 
 
     if (clientB == clientA)
     {
+        // Merging must not wrap: two large positive deltas summing past INT_MAX
+        // would turn into a debit that TryComputeCreditBalance happily accepts.
+        if ((deltaB > 0 && deltaA > STORE_MAX_CREDITS - deltaB)
+            || (deltaB < 0 && deltaA < -STORE_MAX_CREDITS - deltaB))
+        {
+            return false;
+        }
+
         deltaA += deltaB;
         deltaB = 0;
         clientB = 0;
@@ -5778,7 +5908,11 @@ bool BeginLockedStoreTransaction(const char[] where)
     return false;
 }
 
-bool ExecuteLockedStoreQuery(const char[] where, const char[] query, int expectedAffected = -1)
+// allowNoChange covers UPDATEs that legitimately rewrite a row with the value
+// it already holds: MySQL reports *changed* rows (CLIENT_FOUND_ROWS is off), so
+// such a statement reports zero even though the row matched and the transaction
+// is perfectly valid.
+bool ExecuteLockedStoreQuery(const char[] where, const char[] query, int expectedAffected = -1, bool allowNoChange = false)
 {
     if (!SQL_FastQuery(g_DB, query))
     {
@@ -5792,7 +5926,7 @@ bool ExecuteLockedStoreQuery(const char[] where, const char[] query, int expecte
     if (expectedAffected >= 0)
     {
         int affected = SQL_GetAffectedRows(g_DB);
-        if (affected != expectedAffected)
+        if (affected != expectedAffected && !(allowNoChange && affected == 0))
         {
             LogError("%s %s unexpected affected rows (%d != %d).", STORE_LOG_PREFIX, where, affected, expectedAffected);
             return false;
@@ -6004,26 +6138,6 @@ bool BuildQuestCompletionCountQuery(int client, const char[] questId, int count,
     return true;
 }
 
-bool PersistQuestCompletionCount(int client, const char[] questId, int count)
-{
-    char query[512];
-    if (!BuildQuestCompletionCountQuery(client, questId, count, query, sizeof(query)))
-    {
-        return false;
-    }
-
-    SQL_LockDatabase(g_DB);
-    bool ok = SQL_FastQuery(g_DB, query);
-    if (!ok)
-    {
-        char error[256];
-        SQL_GetError(g_DB, error, sizeof(error));
-        LogStoreError("PersistQuestCompletionCount", error);
-    }
-    SQL_UnlockDatabase(g_DB);
-    return ok;
-}
-
 bool IsQuestWithinWindow(const StoreQuestDefinition definition, int now)
 {
     if (definition.starts_at > 0 && now < definition.starts_at)
@@ -6155,26 +6269,6 @@ bool BuildQuestProgressStateQuery(int client, const char[] questId, int progress
     return true;
 }
 
-bool PersistQuestProgressState(int client, const char[] questId, int progress, int completedAt, int rewardedAt)
-{
-    char query[512];
-    if (!BuildQuestProgressStateQuery(client, questId, progress, completedAt, rewardedAt, query, sizeof(query)))
-    {
-        return false;
-    }
-
-    SQL_LockDatabase(g_DB);
-    bool ok = SQL_FastQuery(g_DB, query);
-    if (!ok)
-    {
-        char error[256];
-        SQL_GetError(g_DB, error, sizeof(error));
-        LogStoreError("PersistQuestProgressState", error);
-    }
-    SQL_UnlockDatabase(g_DB);
-    return ok;
-}
-
 bool UpdateQuestProgressInternal(int client, const char[] questId, int value, bool setMax = false)
 {
     if (!IsValidHumanClient(client) || !g_bIsLoaded[client] || value <= 0)
@@ -6220,6 +6314,19 @@ bool UpdateQuestProgressInternal(int client, const char[] questId, int value, bo
     }
 
     bool shouldReward = (shouldComplete && rewardedAt <= 0);
+
+    // A player sitting at the credit ceiling must not lose the progress tick.
+    // Resolve the reward balance up front and, if it cannot be applied, defer
+    // the completion (progress is still persisted and the reward is retried on
+    // the next progress event) instead of discarding the whole update.
+    int rewardNewCredits = 0;
+    if (shouldReward && definition.reward_credits > 0
+        && !TryComputeCreditBalance(g_iCredits[client], definition.reward_credits, rewardNewCredits))
+    {
+        LogMessage("%s Quest '%s' reward for client %N deferred: credit balance would exceed the store maximum.", STORE_LOG_PREFIX, questId, client);
+        shouldReward = false;
+    }
+
     if (shouldReward)
     {
         rewardedAt = now;
@@ -6264,59 +6371,44 @@ bool UpdateQuestProgressInternal(int client, const char[] questId, int value, bo
         return false;
     }
 
-    if (shouldReward && definition.reward_credits > 0)
+    // The completion count, the progress state and any credit reward must land
+    // as one transaction. Committing the count without the progress state (the
+    // old non-transactional path for item-only quests) permanently marks a
+    // non-repeatable quest as maxed out while never delivering its reward.
+    char playerQuery[512];
+    playerQuery[0] = '\0';
+    if (shouldReward && definition.reward_credits > 0
+        && !BuildPlayerUpsertQueryForCredits(client, rewardNewCredits, playerQuery, sizeof(playerQuery)))
     {
-        int newCredits = 0;
-        if (!TryComputeCreditBalance(g_iCredits[client], definition.reward_credits, newCredits))
-        {
-            return false;
-        }
-
-        char playerQuery[512];
-        if (!BuildPlayerUpsertQueryForCredits(client, newCredits, playerQuery, sizeof(playerQuery)))
-        {
-            return false;
-        }
-
-        if (!BeginLockedStoreTransaction("AdvanceQuestProgress"))
-        {
-            return false;
-        }
-
-        if (questCountQuery[0] != '\0' && !ExecuteLockedStoreQuery("AdvanceQuestProgress", questCountQuery))
-        {
-            RollbackLockedStoreTransaction("AdvanceQuestProgress");
-            return false;
-        }
-
-        if (!ExecuteLockedStoreQuery("AdvanceQuestProgress", questProgressQuery))
-        {
-            RollbackLockedStoreTransaction("AdvanceQuestProgress");
-            return false;
-        }
-
-        if (!ExecuteLockedStoreQuery("AdvanceQuestProgress", playerQuery))
-        {
-            RollbackLockedStoreTransaction("AdvanceQuestProgress");
-            return false;
-        }
-
-        if (!CommitLockedStoreTransaction("AdvanceQuestProgress"))
-        {
-            return false;
-        }
+        return false;
     }
-    else
-    {
-        if (shouldReward && !PersistQuestCompletionCount(client, questId, completionCount))
-        {
-            return false;
-        }
 
-        if (!PersistQuestProgressState(client, questId, persistedProgress, persistedCompletedAt, persistedRewardedAt))
-        {
-            return false;
-        }
+    if (!BeginLockedStoreTransaction("AdvanceQuestProgress"))
+    {
+        return false;
+    }
+
+    if (questCountQuery[0] != '\0' && !ExecuteLockedStoreQuery("AdvanceQuestProgress", questCountQuery))
+    {
+        RollbackLockedStoreTransaction("AdvanceQuestProgress");
+        return false;
+    }
+
+    if (!ExecuteLockedStoreQuery("AdvanceQuestProgress", questProgressQuery))
+    {
+        RollbackLockedStoreTransaction("AdvanceQuestProgress");
+        return false;
+    }
+
+    if (playerQuery[0] != '\0' && !ExecuteLockedStoreQuery("AdvanceQuestProgress", playerQuery))
+    {
+        RollbackLockedStoreTransaction("AdvanceQuestProgress");
+        return false;
+    }
+
+    if (!CommitLockedStoreTransaction("AdvanceQuestProgress"))
+    {
+        return false;
     }
 
     if (shouldReward)
@@ -6436,38 +6528,6 @@ bool SavePlayer(int client)
     }
 
     return true;
-}
-
-public void OnPlayerSaved(Database db, DBResultSet results, const char[] error, any data)
-{
-    DataPack pack = view_as<DataPack>(data);
-    pack.Reset();
-    int serial = pack.ReadCell();
-    int token = pack.ReadCell();
-    int creditsSnapshot = pack.ReadCell();
-    delete pack;
-
-    int client = GetClientFromSerial(serial);
-    if (client <= 0 || client > MaxClients)
-    {
-        return;
-    }
-
-    if (db == null || error[0] != '\0')
-    {
-        LogStoreError("OnPlayerSaved", error);
-        return;
-    }
-
-    if (token != g_iCreditSaveInFlight[client])
-    {
-        return;
-    }
-
-    if (g_iCredits[client] == creditsSnapshot)
-    {
-        g_bCreditsDirty[client] = false;
-    }
 }
 
 void SaveInventoryEquipState(int client, const char[] itemId, int equipped)
@@ -6886,8 +6946,19 @@ bool CanUseEquipAction(int client)
         return false;
     }
 
-    g_fNextEquipTime[client] = now + cooldown;
     return true;
+}
+
+// Charged only once an equip actually goes through: starting the cooldown in
+// the check above meant a rejected attempt (item not owned, no access, listed
+// on the market) blocked the legitimate equip that followed it.
+void ConsumeEquipCooldown(int client)
+{
+    float cooldown = (gCvarEquipCooldown != null) ? gCvarEquipCooldown.FloatValue : 0.0;
+    if (cooldown > 0.0)
+    {
+        g_fNextEquipTime[client] = GetGameTime() + cooldown;
+    }
 }
 
 bool SetItemEquipped(int client, const char[] itemId, bool equipNow, bool notify = true, bool respectCooldown = true, bool force = false)
@@ -6964,6 +7035,11 @@ bool SetItemEquipped(int client, const char[] itemId, bool equipNow, bool notify
             PrintStorePhrase(client, "%T", "Market Item Listed Already", client);
         }
         return false;
+    }
+
+    if (respectCooldown)
+    {
+        ConsumeEquipCooldown(client);
     }
 
     if (equipNow)
@@ -7193,11 +7269,26 @@ void DeleteExpiredInventoryRows(int client, int now)
         return;
     }
 
-    EscapeStringSafe(steamid, safeSteamId, sizeof(safeSteamId));
+    if (!EscapeStringSafe(steamid, safeSteamId, sizeof(safeSteamId)))
+    {
+        return;
+    }
+
     Format(query, sizeof(query),
         "DELETE FROM store_inventory WHERE steamid = '%s' AND expires_at > 0 AND expires_at <= %d",
         safeSteamId, now);
-    g_DB.Query(OnRentalQueryDone, query);
+    g_DB.Query(OnExpiredRentalDeleted, query);
+}
+
+// Unlike the schema-migration queries, this delete must be reported when it
+// fails: the rows are already gone from memory, so a silent failure means the
+// expired rental comes back on the player's next connect.
+public void OnExpiredRentalDeleted(Database db, DBResultSet results, const char[] error, any data)
+{
+    if (db == null || error[0] != '\0')
+    {
+        LogStoreError("DeleteExpiredInventoryRows", error);
+    }
 }
 
 // Periodic sweep that removes rentals which expired while the player is online.
@@ -7473,7 +7564,7 @@ bool BuyItem(int client, const char[] itemId, bool equipAfterPurchase = false, b
         return false;
     }
 
-    if (!ExecuteLockedStoreQuery("BuyItem", query, 1))
+    if (!ExecuteLockedStoreQuery("BuyItem", query, 1, isRenewal))
     {
         RollbackLockedStoreTransaction("BuyItem");
         PrintStorePhrase(client, "%T", "Store Transaction Failed", client);
@@ -7585,7 +7676,13 @@ bool SellItem(int client, const char[] itemId)
     EscapeStringSafe(steamid, safeSteamId, sizeof(safeSteamId));
     EscapeStringSafe(item.id, safeItemId, sizeof(safeItemId));
     int refund = GetItemSellPrice(item);
-    int newCredits = g_iCredits[client] + refund;
+    int newCredits = 0;
+    if (!TryComputeCreditBalance(g_iCredits[client], refund, newCredits))
+    {
+        PrintStorePhrase(client, "%T", "Credit Limit Reached", client);
+        return false;
+    }
+
     if (!BuildPlayerUpsertQueryForCredits(client, newCredits, playerQuery, sizeof(playerQuery)))
     {
         PrintStorePhrase(client, "%T", "Store Transaction Failed", client);
@@ -8198,6 +8295,15 @@ bool OpenRegisteredLeaderboard(int client, const char[] leaderboardId, bool back
     StoreLeaderboardDefinition definition;
     g_aLeaderboards.GetArray(index, definition, sizeof(StoreLeaderboardDefinition));
 
+    // stat_key is allowlisted by IsSafeStatKey at registration time, but it is
+    // still interpolated into SQL: escape it so a future change to that
+    // allowlist cannot turn this into an injection point.
+    char safeLeaderboardKey[128];
+    if (!EscapeStringSafe(definition.stat_key, safeLeaderboardKey, sizeof(safeLeaderboardKey)))
+    {
+        return false;
+    }
+
     char query[512];
     if (g_bIsMySQL)
     {
@@ -8205,7 +8311,7 @@ bool OpenRegisteredLeaderboard(int client, const char[] leaderboardId, bool back
             "SELECT p.name, s.stat_value FROM store_players p "
             ... "INNER JOIN store_player_stats s ON p.steamid = s.steamid AND s.stat_key = '%s' "
             ... "WHERE s.stat_value <> 0 ORDER BY s.stat_value DESC, p.name ASC LIMIT 10",
-            definition.stat_key);
+            safeLeaderboardKey);
     }
     else
     {
@@ -8213,7 +8319,7 @@ bool OpenRegisteredLeaderboard(int client, const char[] leaderboardId, bool back
             "SELECT p.name, s.stat_value FROM store_players p "
             ... "INNER JOIN store_player_stats s ON p.steamid = s.steamid AND s.stat_key = '%s' "
             ... "WHERE s.stat_value <> 0 ORDER BY s.stat_value DESC, p.name COLLATE NOCASE ASC LIMIT 10",
-            definition.stat_key);
+            safeLeaderboardKey);
     }
 
     RequestLeaderboardMenu(client, query, definition.title, definition.entry_phrase, backToHub);
@@ -8497,13 +8603,17 @@ void ShowQuestMenu(int client)
             g_aQuestDefinitions.GetArray(i, definition, sizeof(StoreQuestDefinition));
             FormatQuestText(client, definition.category, category, sizeof(category));
 
+            // Deduplicate on the raw category, which is what ShowQuestListMenu
+            // filters by. Keying on the translated label instead made two raw
+            // categories that share a translation collapse into one entry, and
+            // the quests behind the second one became unreachable.
             int existing = 0;
-            if (seen.GetValue(category, existing))
+            if (seen.GetValue(definition.category, existing))
             {
                 continue;
             }
 
-            seen.SetValue(category, 1);
+            seen.SetValue(definition.category, 1);
             strcopy(info, sizeof(info), definition.category);
             menu.AddItem(info, category);
         }
@@ -9043,6 +9153,17 @@ bool ExecuteMarketplacePurchase(int buyer, int listingId)
         return false;
     }
 
+    // The marketplace must honour the same access model as buying, gifting and
+    // trading: without this a player could acquire a flag-restricted item they
+    // are not allowed to own (and could never equip) by purchasing a listing.
+    StoreItem listedItem;
+    if (FindStoreItemById(itemId, listedItem) && !HasAccess(buyer, listedItem.flag))
+    {
+        RollbackLockedStoreTransaction("ExecuteMarketplacePurchase");
+        PrintStorePhrase(buyer, "%T", "No Access Item", buyer);
+        return false;
+    }
+
     if (g_iCredits[buyer] < price)
     {
         RollbackLockedStoreTransaction("ExecuteMarketplacePurchase");
@@ -9115,7 +9236,17 @@ bool ExecuteMarketplacePurchase(int buyer, int listingId)
     int feeAmount = RoundToFloor(float(price * feePercent) / 100.0);
     int sellerNet = price - feeAmount;
     int buyerNewCredits = g_iCredits[buyer] - price;
-    int sellerNewCredits = sellerCredits + sellerNet;
+
+    // Pushing the seller past STORE_MAX_CREDITS would make TryComputeCreditBalance
+    // reject every later delta for that account, positive and negative alike,
+    // locking them out of the entire economy until repaired by hand.
+    int sellerNewCredits = 0;
+    if (!TryComputeCreditBalance(sellerCredits, sellerNet, sellerNewCredits))
+    {
+        RollbackLockedStoreTransaction("ExecuteMarketplacePurchase");
+        PrintStorePhrase(buyer, "%T", "Market Buy Failed", buyer);
+        return false;
+    }
 
     char buyerPlayerQuery[512];
     if (!BuildPlayerUpsertQueryForCredits(buyer, buyerNewCredits, buyerPlayerQuery, sizeof(buyerPlayerQuery)))
@@ -9153,7 +9284,7 @@ bool ExecuteMarketplacePurchase(int buyer, int listingId)
     }
 
     Format(query, sizeof(query), "UPDATE store_players SET credits = %d WHERE steamid = '%s'", sellerNewCredits, safeSellerSteamId);
-    if (!ExecuteLockedStoreQuery("ExecuteMarketplacePurchase", query, 1))
+    if (!ExecuteLockedStoreQuery("ExecuteMarketplacePurchase", query, 1, sellerNewCredits == sellerCredits))
     {
         RollbackLockedStoreTransaction("ExecuteMarketplacePurchase");
         PrintStorePhrase(buyer, "%T", "Market Buy Failed", buyer);
@@ -9208,7 +9339,9 @@ bool ExecuteMarketplacePurchase(int buyer, int listingId)
     {
         char sellerNetText[32];
         FormatCreditsAmount(sellerClient, sellerNet, sellerNetText, sizeof(sellerNetText));
-        PrintStorePhrase(sellerClient, "%T", "Market Listing Sold Seller", sellerClient, item.name, sellerNetText, buyer);
+        char safeBuyerName[MAX_NAME_LENGTH];
+        GetSafeClientName(buyer, safeBuyerName, sizeof(safeBuyerName));
+        PrintStorePhrase(sellerClient, "%T", "Market Listing Sold Seller", sellerClient, item.name, sellerNetText, safeBuyerName);
         UpdatePlayerStat(sellerClient, "sales_total", 1);
     }
     else
@@ -9371,10 +9504,19 @@ void ShowMarketplaceSellMenu(int client)
     bool added = false;
     InventoryItem inv;
     StoreItem item;
+    StringMap listed = GetActiveMarketplaceListingSet(client);
+    int ignored = 0;
     for (int i = 0; i < g_hInventory[client].Length; i++)
     {
         g_hInventory[client].GetArray(i, inv, sizeof(InventoryItem));
         if (view_as<bool>(inv.is_equipped))
+        {
+            continue;
+        }
+
+        // Rentals cannot be listed (CreateMarketplaceListing rejects them), so
+        // offering them here only wastes the player's price prompt.
+        if (inv.expires_at > 0)
         {
             continue;
         }
@@ -9384,7 +9526,7 @@ void ShowMarketplaceSellMenu(int client)
             continue;
         }
 
-        if (HasActiveMarketplaceListing(client, inv.item_id))
+        if (listed.GetValue(inv.item_id, ignored))
         {
             continue;
         }
@@ -9395,6 +9537,8 @@ void ShowMarketplaceSellMenu(int client)
         menu.AddItem(item.id, display);
         added = true;
     }
+
+    delete listed;
 
     if (!added)
     {
@@ -9921,7 +10065,7 @@ void ShowItemsListMenu(int client, const char[] targetType, int targetTeam)
 
 void ShowItemsListMenuFiltered(int client, const char[] targetType, int targetTeam, const char[] categoryFilter)
 {
-    strcopy(g_szBrowseType[client], 16, targetType);
+    strcopy(g_szBrowseType[client], sizeof(g_szBrowseType[]), targetType);
     g_iBrowseTeam[client] = targetTeam;
     strcopy(g_szBrowseCategory[client], sizeof(g_szBrowseCategory[]), categoryFilter);
     g_bDetailFromSearch[client] = false;
@@ -10048,7 +10192,10 @@ void ShowSellConfirmMenu(int client, const char[] itemId)
     char receiveLabel[64];
     char yesLabel[64];
     char noLabel[64];
-    FormatCreditsAmount(client, GetSellPrice(item.price), refundText, sizeof(refundText));
+    // Must match what SellItem actually refunds (honours sale_price and
+    // sell_percent_override), otherwise the confirmation quotes a price the
+    // player will not receive.
+    FormatCreditsAmount(client, GetItemSellPrice(item), refundText, sizeof(refundText));
     Format(receiveLabel, sizeof(receiveLabel), "%T", "Sell Receive Label", client);
     Format(title, sizeof(title), "%T", "Sell Confirm Title Menu", client, receiveLabel, refundText);
     menu.SetTitle(title);
@@ -10489,7 +10636,9 @@ public int MenuHandler_GiftConfirm(Menu menu, MenuAction action, int param1, int
                 StoreItem item;
                 FindStoreItemById(parts[0], item);
                 PrintStorePhrase(param1, "%T", "Gift Sent", param1, item.name, target);
-                PrintStorePhrase(target, "%T", "Gift Received", target, param1, item.name);
+                char safeGifterName[MAX_NAME_LENGTH];
+                GetSafeClientName(param1, safeGifterName, sizeof(safeGifterName));
+                PrintStorePhrase(target, "%T", "Gift Received", target, safeGifterName, item.name);
             }
 
             ShowItemDetailsMenu(param1, g_szLastDetailItem[param1]);
@@ -10686,11 +10835,11 @@ public int MenuHandler_TradeTargetItem(Menu menu, MenuAction action, int param1,
             return 0;
         }
 
-        strcopy(g_szTradeSenderItem[target], sizeof(g_szTradeSenderItem[]), parts[1]);
+        strcopy(g_szPendingTradeSenderItem[target], sizeof(g_szPendingTradeSenderItem[]), parts[1]);
         strcopy(g_szTradeTargetItem[target], sizeof(g_szTradeTargetItem[]), parts[2]);
         g_iTradeSender[target] = GetClientUserId(param1);
         g_iTradeSenderInvVersion[target] = g_iInventoryVersion[param1];
-        g_iTradeTargetInvVersion[target] = g_iInventoryVersion[target];
+        g_iPendingTradeTargetInvVersion[target] = g_iInventoryVersion[target];
 
         StoreItem myItem, theirItem;
         FindStoreItemById(parts[1], myItem);
@@ -10714,7 +10863,7 @@ void ShowTradeReceiveMenu(int client)
     }
 
     StoreItem senderItem, targetItem;
-    if (!FindStoreItemById(g_szTradeSenderItem[client], senderItem) || !FindStoreItemById(g_szTradeTargetItem[client], targetItem))
+    if (!FindStoreItemById(g_szPendingTradeSenderItem[client], senderItem) || !FindStoreItemById(g_szTradeTargetItem[client], targetItem))
     {
         return;
     }
@@ -10744,27 +10893,30 @@ public int MenuHandler_TradeReceive(Menu menu, MenuAction action, int param1, in
         {
             PrintStorePhrase(param1, "%T", "Trade Request Invalid", param1);
             g_iTradeSender[param1] = 0;
-            g_szTradeSenderItem[param1][0] = '\0';
+            g_szPendingTradeSenderItem[param1][0] = '\0';
             g_szTradeTargetItem[param1][0] = '\0';
             g_iTradeSenderInvVersion[param1] = 0;
-            g_iTradeTargetInvVersion[param1] = 0;
+            g_iPendingTradeTargetInvVersion[param1] = 0;
             return 0;
         }
 
         if (param2 == 0)
         {
-            if (g_iTradeSenderInvVersion[param1] != g_iInventoryVersion[sender] || g_iTradeTargetInvVersion[param1] != g_iInventoryVersion[param1] || !PlayerOwnsItem(sender, g_szTradeSenderItem[param1]) || !PlayerOwnsItem(param1, g_szTradeTargetItem[param1]))
+            if (g_iTradeSenderInvVersion[param1] != g_iInventoryVersion[sender] || g_iPendingTradeTargetInvVersion[param1] != g_iInventoryVersion[param1] || !PlayerOwnsItem(sender, g_szPendingTradeSenderItem[param1]) || !PlayerOwnsItem(param1, g_szTradeTargetItem[param1]))
             {
                 PrintStorePhrase(sender, "%T", "Trade Request Invalid", sender);
                 PrintStorePhrase(param1, "%T", "Trade Request Invalid", param1);
             }
-            else if (ExecuteTrade(sender, param1, g_szTradeSenderItem[param1], g_szTradeTargetItem[param1]))
+            else if (ExecuteTrade(sender, param1, g_szPendingTradeSenderItem[param1], g_szTradeTargetItem[param1]))
             {
                 StoreItem senderItem, targetItem;
-                FindStoreItemById(g_szTradeSenderItem[param1], senderItem);
+                FindStoreItemById(g_szPendingTradeSenderItem[param1], senderItem);
                 FindStoreItemById(g_szTradeTargetItem[param1], targetItem);
-                PrintStorePhrase(sender, "%T", "Trade Completed Sender", sender, param1, senderItem.name, targetItem.name);
-                PrintStorePhrase(param1, "%T", "Trade Completed Target", param1, sender, targetItem.name, senderItem.name);
+                char safeTargetName[MAX_NAME_LENGTH], safeSenderName[MAX_NAME_LENGTH];
+                GetSafeClientName(param1, safeTargetName, sizeof(safeTargetName));
+                GetSafeClientName(sender, safeSenderName, sizeof(safeSenderName));
+                PrintStorePhrase(sender, "%T", "Trade Completed Sender", sender, safeTargetName, senderItem.name, targetItem.name);
+                PrintStorePhrase(param1, "%T", "Trade Completed Target", param1, safeSenderName, targetItem.name, senderItem.name);
             }
             else
             {
@@ -10774,15 +10926,17 @@ public int MenuHandler_TradeReceive(Menu menu, MenuAction action, int param1, in
         }
         else
         {
-            PrintStorePhrase(sender, "%T", "Trade Rejected Sender", sender, param1);
+            char safeRejectorName[MAX_NAME_LENGTH];
+            GetSafeClientName(param1, safeRejectorName, sizeof(safeRejectorName));
+            PrintStorePhrase(sender, "%T", "Trade Rejected Sender", sender, safeRejectorName);
             PrintStorePhrase(param1, "%T", "Trade Rejected Target", param1, sender);
         }
 
         g_iTradeSender[param1] = 0;
-        g_szTradeSenderItem[param1][0] = '\0';
+        g_szPendingTradeSenderItem[param1][0] = '\0';
         g_szTradeTargetItem[param1][0] = '\0';
         g_iTradeSenderInvVersion[param1] = 0;
-        g_iTradeTargetInvVersion[param1] = 0;
+        g_iPendingTradeTargetInvVersion[param1] = 0;
     }
 
     return 0;
@@ -10855,7 +11009,9 @@ public Action Cmd_Gift(int client, int args)
         LogAuditEvent(client, target, "gift_credits", "", amount, "");
 
         PrintStorePhrase(client, "%T", "Gift Credits Sent", client, amount, target);
-        PrintStorePhrase(target, "%T", "Gift Credits Received", target, client, amount);
+        char safeSenderName[MAX_NAME_LENGTH];
+        GetSafeClientName(client, safeSenderName, sizeof(safeSenderName));
+        PrintStorePhrase(target, "%T", "Gift Credits Received", target, safeSenderName, amount);
         return Plugin_Handled;
     }
 
@@ -12251,6 +12407,26 @@ int AddLoadedPlayersToStoreAdminMenu(Menu menu, int admin, bool showCredits)
     return count;
 }
 
+// g_iAdminMenuTarget stores a userid, not a slot index: admin credit/inventory
+// menus stay open across disconnects, and a raw index would silently retarget
+// whoever takes over the freed slot.
+int ResolveStoreAdminTarget(int admin)
+{
+    if (admin < 1 || admin > MaxClients)
+    {
+        return 0;
+    }
+
+    int userid = g_iAdminMenuTarget[admin];
+    if (userid <= 0)
+    {
+        return 0;
+    }
+
+    int target = GetClientOfUserId(userid);
+    return (target > 0) ? target : 0;
+}
+
 bool IsValidStoreAdminTarget(int admin, int target)
 {
     if (!IsValidHumanClient(target) || !g_bIsLoaded[target])
@@ -12290,7 +12466,7 @@ public int MenuHandler_StoreAdminTarget(Menu menu, MenuAction action, int param1
             return 0;
         }
 
-        g_iAdminMenuTarget[param1] = target;
+        g_iAdminMenuTarget[param1] = GetClientUserId(target);
 
         switch (g_AdminMenuAction[param1])
         {
@@ -12356,7 +12532,7 @@ bool ParseStoreAdminCreditAmountMenuInfo(const char[] info, StoreAdminAction &ac
 
 void ShowStoreAdminCreditAmountMenu(int client, StoreAdminAction action, int firstItem = 0)
 {
-    int target = g_iAdminMenuTarget[client];
+    int target = ResolveStoreAdminTarget(client);
     if (!IsValidStoreAdminTarget(client, target))
     {
         ShowStoreAdminTargetMenu(client, action);
@@ -12459,7 +12635,7 @@ bool ApplyStoreAdminCreditAmount(int admin, int target, StoreAdminAction action,
 
 void PromptStoreAdminCreditAmount(int client, StoreAdminAction action)
 {
-    int target = g_iAdminMenuTarget[client];
+    int target = ResolveStoreAdminTarget(client);
     if (!IsValidStoreAdminTarget(client, target))
     {
         ShowStoreAdminTargetMenu(client, action);
@@ -12487,7 +12663,7 @@ Action HandleStoreAdminCreditAmountInput(int client, const char[] rawText)
     }
 
     StoreAdminAction action = g_AdminMenuAction[client];
-    int target = g_iAdminMenuTarget[client];
+    int target = ResolveStoreAdminTarget(client);
 
     if (StrEqual(text, "cancel", false) || StrEqual(text, "cancelar", false))
     {
@@ -12533,7 +12709,7 @@ public int MenuHandler_StoreAdminCreditAmount(Menu menu, MenuAction action, int 
     else if (action == MenuAction_Select)
     {
         int firstItem = GetMenuSelectionPosition();
-        int target = g_iAdminMenuTarget[param1];
+        int target = ResolveStoreAdminTarget(param1);
         if (!IsValidStoreAdminTarget(param1, target))
         {
             ShowStoreAdminTargetMenu(param1, g_AdminMenuAction[param1]);
@@ -12571,7 +12747,7 @@ void ShowStoreAdminInventoryMenu(int client, int target)
         return;
     }
 
-    g_iAdminMenuTarget[client] = target;
+    g_iAdminMenuTarget[client] = GetClientUserId(target);
 
     Menu menu = new Menu(MenuHandler_StoreAdminInventory);
     char title[192];
@@ -12595,7 +12771,7 @@ void ShowStoreAdminInventorySkinsMenu(int client, int target)
         return;
     }
 
-    g_iAdminMenuTarget[client] = target;
+    g_iAdminMenuTarget[client] = GetClientUserId(target);
 
     Menu menu = new Menu(MenuHandler_StoreAdminInventorySub);
     char title[192];
@@ -12617,7 +12793,7 @@ void ShowStoreAdminInventoryChatMenu(int client, int target)
         return;
     }
 
-    g_iAdminMenuTarget[client] = target;
+    g_iAdminMenuTarget[client] = GetClientUserId(target);
 
     Menu menu = new Menu(MenuHandler_StoreAdminInventorySub);
     char title[192];
@@ -12749,7 +12925,7 @@ void ShowStoreAdminInventoryListMenu(int client, int target, const char[] filter
         return;
     }
 
-    g_iAdminMenuTarget[client] = target;
+    g_iAdminMenuTarget[client] = GetClientUserId(target);
     strcopy(g_szInvFilter[client], sizeof(g_szInvFilter[]), filter);
 
     char filterName[96], title[192];
@@ -12790,15 +12966,15 @@ public int MenuHandler_StoreAdminInventory(Menu menu, MenuAction action, int par
         menu.GetItem(param2, filter, sizeof(filter));
         if (StrEqual(filter, "skins"))
         {
-            ShowStoreAdminInventorySkinsMenu(param1, g_iAdminMenuTarget[param1]);
+            ShowStoreAdminInventorySkinsMenu(param1, ResolveStoreAdminTarget(param1));
         }
         else if (StrEqual(filter, "chat"))
         {
-            ShowStoreAdminInventoryChatMenu(param1, g_iAdminMenuTarget[param1]);
+            ShowStoreAdminInventoryChatMenu(param1, ResolveStoreAdminTarget(param1));
         }
         else
         {
-            ShowStoreAdminInventoryListMenu(param1, g_iAdminMenuTarget[param1], filter);
+            ShowStoreAdminInventoryListMenu(param1, ResolveStoreAdminTarget(param1), filter);
         }
     }
 
@@ -12813,13 +12989,13 @@ public int MenuHandler_StoreAdminInventorySub(Menu menu, MenuAction action, int 
     }
     else if (action == MenuAction_Cancel && param2 == MenuCancel_ExitBack)
     {
-        ShowStoreAdminInventoryMenu(param1, g_iAdminMenuTarget[param1]);
+        ShowStoreAdminInventoryMenu(param1, ResolveStoreAdminTarget(param1));
     }
     else if (action == MenuAction_Select)
     {
         char filter[32];
         menu.GetItem(param2, filter, sizeof(filter));
-        ShowStoreAdminInventoryListMenu(param1, g_iAdminMenuTarget[param1], filter);
+        ShowStoreAdminInventoryListMenu(param1, ResolveStoreAdminTarget(param1), filter);
     }
 
     return 0;
@@ -12850,7 +13026,7 @@ public int MenuHandler_StoreAdminInventoryList(Menu menu, MenuAction action, int
     }
     else if (action == MenuAction_Cancel && param2 == MenuCancel_ExitBack)
     {
-        ShowStoreAdminInventoryParentMenuForFilter(param1, g_iAdminMenuTarget[param1], g_szInvFilter[param1]);
+        ShowStoreAdminInventoryParentMenuForFilter(param1, ResolveStoreAdminTarget(param1), g_szInvFilter[param1]);
     }
     else if (action == MenuAction_Select)
     {
@@ -12858,7 +13034,7 @@ public int MenuHandler_StoreAdminInventoryList(Menu menu, MenuAction action, int
         menu.GetItem(param2, itemId, sizeof(itemId));
         if (!StrEqual(itemId, "empty"))
         {
-            ShowStoreAdminInventoryItemMenu(param1, g_iAdminMenuTarget[param1], itemId);
+            ShowStoreAdminInventoryItemMenu(param1, ResolveStoreAdminTarget(param1), itemId);
         }
     }
 
@@ -12987,7 +13163,7 @@ public int MenuHandler_StoreAdminInventoryItem(Menu menu, MenuAction action, int
     }
     else if (action == MenuAction_Cancel && param2 == MenuCancel_ExitBack)
     {
-        ShowStoreAdminInventoryListMenu(param1, g_iAdminMenuTarget[param1], g_szInvFilter[param1]);
+        ShowStoreAdminInventoryListMenu(param1, ResolveStoreAdminTarget(param1), g_szInvFilter[param1]);
     }
     else if (action == MenuAction_Select)
     {
@@ -12998,7 +13174,7 @@ public int MenuHandler_StoreAdminInventoryItem(Menu menu, MenuAction action, int
             return 0;
         }
 
-        int target = g_iAdminMenuTarget[param1];
+        int target = ResolveStoreAdminTarget(param1);
         if (!IsValidStoreAdminTarget(param1, target))
         {
             return 0;
@@ -13122,8 +13298,9 @@ public Action Cmd_Credits(int client, int args)
 
     if (client > 0 && g_bIsLoaded[client])
     {
-        char creditsText[32];
+        char creditsText[32], broadcastName[MAX_NAME_LENGTH];
         FormatNumberDots(g_iCredits[client], creditsText, sizeof(creditsText));
+        GetSafeClientName(client, broadcastName, sizeof(broadcastName));
 
         for (int i = 1; i <= MaxClients; i++)
         {
@@ -13132,7 +13309,7 @@ public Action Cmd_Credits(int client, int args)
                 continue;
             }
 
-            PrintStorePhrase(i, "%T", "Credits Broadcast", i, client, creditsText);
+            PrintStorePhrase(i, "%T", "Credits Broadcast", i, broadcastName, creditsText);
         }
     }
     return Plugin_Handled;
@@ -13803,8 +13980,20 @@ bool RedeemVoucherCode(int client, const char[] rawCode)
 
     if (credits > 0)
     {
+        // Validate against the cap before writing: persisting an unchecked sum
+        // here while the in-memory update below is guarded would leave the row
+        // and g_iCredits disagreeing, and the next autosave would silently
+        // discard the voucher's credits.
+        int voucherNewCredits = 0;
+        if (!TryComputeCreditBalance(g_iCredits[client], credits, voucherNewCredits))
+        {
+            RollbackLockedStoreTransaction("RedeemVoucher");
+            PrintStorePhrase(client, "%T", "Credit Limit Reached", client);
+            return false;
+        }
+
         char playerQuery[512];
-        if (!BuildPlayerUpsertQueryForCredits(client, g_iCredits[client] + credits, playerQuery, sizeof(playerQuery)) || !ExecuteLockedStoreQuery("RedeemVoucher", playerQuery))
+        if (!BuildPlayerUpsertQueryForCredits(client, voucherNewCredits, playerQuery, sizeof(playerQuery)) || !ExecuteLockedStoreQuery("RedeemVoucher", playerQuery))
         {
             RollbackLockedStoreTransaction("RedeemVoucher");
             PrintStorePhrase(client, "%T", "Store Transaction Failed", client);
@@ -13858,6 +14047,13 @@ bool RedeemVoucherCode(int client, const char[] rawCode)
             char reason[96];
             Format(reason, sizeof(reason), "voucher:%s", code);
             ReportCreditsChanged(client, credits, reason, true, true);
+        }
+        else
+        {
+            // Unreachable: the same check gates the committed row above. Logged
+            // rather than ignored so a future regression cannot silently leave
+            // the database ahead of the in-memory balance.
+            LogError("%s Voucher '%s' committed %d credits for client %N but the in-memory balance could not be updated.", STORE_LOG_PREFIX, code, credits, client);
         }
     }
 
@@ -14087,6 +14283,7 @@ bool RequestStoreAudit(int client, int target, int limit, bool filterByTarget)
     pack.WriteCell((client > 0) ? GetClientUserId(client) : 0);
     pack.WriteCell(limit);
     pack.WriteCell(filterByTarget ? 1 : 0);
+    pack.WriteCell(GetCmdReplySource());
     pack.WriteString(targetLabel);
 
     g_DB.Query(OnStoreAuditLoaded, query, pack);
@@ -14174,6 +14371,7 @@ public void OnStoreAuditLoaded(Database db, DBResultSet results, const char[] er
     int requesterUserId = pack.ReadCell();
     int limit = pack.ReadCell();
     bool filtered = view_as<bool>(pack.ReadCell());
+    ReplySource replySource = view_as<ReplySource>(pack.ReadCell());
     char targetLabel[64];
     pack.ReadString(targetLabel, sizeof(targetLabel));
     delete pack;
@@ -14185,9 +14383,12 @@ public void OnStoreAuditLoaded(Database db, DBResultSet results, const char[] er
         return;
     }
 
+    ReplySource previousSource = SetCmdReplySource(replySource);
+
     if (db == null || results == null || error[0] != '\0')
     {
         ReplyAuditOutput(client, "[Umbrella Store] Error cargando auditoria: %s", error);
+        SetCmdReplySource(previousSource);
         return;
     }
 
@@ -14234,6 +14435,8 @@ public void OnStoreAuditLoaded(Database db, DBResultSet results, const char[] er
     {
         ReplyAuditOutput(client, "[Umbrella Store] No hay registros de auditoria para ese criterio.");
     }
+
+    SetCmdReplySource(previousSource);
 }
 
 public Action Cmd_GiveCredits(int client, int args)
@@ -15022,15 +15225,32 @@ public any Native_US_GetDatabaseHandle(Handle plugin, int numParams)
 
 public any Native_US_DB_Escape(Handle plugin, int numParams)
 {
-    char input[256], output[512];
-    GetNativeString(1, input, sizeof(input));
-
     if (g_DB == null)
     {
         return false;
     }
 
-    g_DB.Escape(input, output, sizeof(output));
+    // Size the buffers from the caller's actual string instead of truncating it
+    // to a fixed 256 bytes: a silently shortened value would be escaped
+    // correctly but store something different from what the caller passed.
+    int length = 0;
+    GetNativeStringLength(1, length);
+    if (length < 0)
+    {
+        return false;
+    }
+
+    int inputSize = length + 1;
+    int outputSize = (length * 2) + 1;
+    char[] input = new char[inputSize];
+    char[] output = new char[outputSize];
+
+    GetNativeString(1, input, inputSize);
+    if (!g_DB.Escape(input, output, outputSize))
+    {
+        return false;
+    }
+
     SetNativeString(2, output, GetNativeCell(3), true);
     return true;
 }
@@ -15144,7 +15364,11 @@ public any Native_US_RegisterQuestEx(Handle plugin, int numParams)
         definition.description[0] = '\0';
     }
     definition.repeatable = (numParams >= 9) ? GetNativeCell(9) : 0;
-    definition.max_completions = (numParams >= 10) ? GetNativeCell(10) : (definition.repeatable ? -1 : 1);
+    // 0 means "let RegisterQuestDefinitionInternal decide" (1 when the quest is
+    // not repeatable, unlimited when it is). numParams is always 13 here because
+    // SourcePawn materialises native defaults at the call site, so this cannot
+    // rely on an argument-count fallback.
+    definition.max_completions = GetNativeCell(10);
     if (numParams >= 11)
     {
         GetNativeString(11, definition.requires_quest, sizeof(definition.requires_quest));

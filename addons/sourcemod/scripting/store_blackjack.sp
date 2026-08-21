@@ -50,6 +50,9 @@ int g_iBestWinStreak[MAXPLAYERS + 1];
 bool g_bRoundFinished[MAXPLAYERS + 1];
 bool g_bCanDouble[MAXPLAYERS + 1];
 bool g_bUsedDouble[MAXPLAYERS + 1];
+// Which of the two split hands the double was placed on. Without this the split
+// payout cannot know that a hand carries twice the stake.
+bool g_bHandDoubled[MAXPLAYERS + 1][2];
 bool g_bCanSplit[MAXPLAYERS + 1];
 bool g_bHasSplit[MAXPLAYERS + 1];
 bool g_bPlayingSplitHand[MAXPLAYERS + 1];
@@ -133,7 +136,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Blackjack",
     author = "Ayrton09",
     description = "Blackjack module for Umbrella Store",
-    version = "1.5.1",
+    version = "1.5.2",
     url = ""
 };
 
@@ -533,6 +536,8 @@ void ResetBlackjackClient(int client, bool fullReset)
     g_bRoundFinished[client] = false;
     g_bCanDouble[client] = false;
     g_bUsedDouble[client] = false;
+    g_bHandDoubled[client][0] = false;
+    g_bHandDoubled[client][1] = false;
     g_bCanSplit[client] = false;
     g_bHasSplit[client] = false;
     g_bPlayingSplitHand[client] = false;
@@ -1118,6 +1123,8 @@ void ResetSingleRoundState(int client)
     g_bRoundFinished[client] = false;
     g_bCanDouble[client] = false;
     g_bUsedDouble[client] = false;
+    g_bHandDoubled[client][0] = false;
+    g_bHandDoubled[client][1] = false;
     g_bCanSplit[client] = false;
     g_bHasSplit[client] = false;
     g_bPlayingSplitHand[client] = false;
@@ -1360,6 +1367,7 @@ void SinglePlayerDouble(int client)
 
     int hand = GetActiveHand(client);
     g_bUsedDouble[client] = true;
+    g_bHandDoubled[client][hand] = true;
     g_bCanDouble[client] = false;
     g_bCanSplit[client] = false;
 
@@ -1514,13 +1522,17 @@ void ResolveSplitDealer(int client)
         int value = GetBestHandValue(g_iPlayerCards[client][hand], g_iPlayerCount[client][hand]);
         char part[96];
 
+        // A doubled hand staked twice the base bet, so both its win payout and
+        // its push refund are on the doubled amount.
+        int handStake = g_bHandDoubled[client][hand] ? USM_SafeScale(g_iBet[client], 2) : g_iBet[client];
+
         if (value > 21)
         {
             Format(part, sizeof(part), "%T", "Split Result Lose", client, hand + 1, value);
         }
         else if (dealerValue > 21 || value > dealerValue)
         {
-            payout += USM_SafeScale(g_iBet[client], 2);
+            payout += USM_SafeScale(handStake, 2);
             if (payout > USM_MAX_CREDITS)
             {
                 payout = USM_MAX_CREDITS;
@@ -1529,7 +1541,7 @@ void ResolveSplitDealer(int client)
         }
         else if (value == dealerValue)
         {
-            payout += g_iBet[client];
+            payout += handStake;
             pushes++;
             Format(part, sizeof(part), "%T", "Split Result Push", client, hand + 1, value);
         }

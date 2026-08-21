@@ -31,7 +31,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Casino - High or Low",
     author = "Ayrton09",
     description = "Mayor o menor contra la casa para Umbrella Store",
-    version = "1.5.1",
+    version = "1.5.2",
     url = ""
 };
 

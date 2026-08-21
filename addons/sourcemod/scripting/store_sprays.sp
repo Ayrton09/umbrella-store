@@ -19,14 +19,14 @@ public Plugin myinfo =
     name = "[Umbrella Store] Sprays",
     author = "Ayrton09",
     description = "Custom wall spray item module for Umbrella Store",
-    version = "1.5.1",
+    version = "1.5.2",
     url = ""
 };
 
 public void OnPluginStart()
 {
     gCvarEnabled = CreateConVar("umbrella_store_sprays_enabled", "1", "Enable Umbrella Store sprays.", FCVAR_NONE, true, 0.0, true, 1.0);
-    gCvarCooldown = CreateConVar("umbrella_store_sprays_cooldown", "30", "Seconds between two sprays per player.", FCVAR_NONE, true, 0.0);
+    gCvarCooldown = CreateConVar("umbrella_store_sprays_cooldown", "30", "Seconds between two sprays per player.", FCVAR_NONE, true, 1.0);
     gCvarDistance = CreateConVar("umbrella_store_sprays_distance", "115.0", "Maximum distance from player eye to spray surface.", FCVAR_NONE, true, 1.0);
     AutoExecConfig(true, "umbrella_store_sprays");
 
@@ -196,7 +196,14 @@ void CreateSpray(int client, const char[] itemId)
     TE_SendToAll();
 
     EmitSoundToAll("player/sprayer.wav", client, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.6);
-    g_iNextSprayTime[client] = GetTime() + gCvarCooldown.IntValue;
+    // Enforced in code as well as by the cvar bound: sprays place a permanent
+    // decal on every client, so there is no valid "no cooldown" configuration.
+    int cooldown = gCvarCooldown.IntValue;
+    if (cooldown < 1)
+    {
+        cooldown = 1;
+    }
+    g_iNextSprayTime[client] = GetTime() + cooldown;
 }
 
 public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3], float angles[3], int &weapon)

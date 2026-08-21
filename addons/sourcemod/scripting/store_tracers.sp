@@ -8,6 +8,10 @@
 #include <umbrella_store_module_utils>
 
 ConVar gCvarEnabled;
+ConVar gCvarInterval;
+// One beam per bullet_impact means eight broadcasts per shotgun shot; combined
+// with the other impact modules that eats into the per-snapshot tempent budget.
+float g_fNextTracer[MAXPLAYERS + 1];
 ConVar gCvarMaterial;
 ConVar gCvarLife;
 ConVar gCvarWidth;
@@ -21,7 +25,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Tracers",
     author = "Ayrton09",
     description = "Bullet tracer item module for Umbrella Store",
-    version = "1.5.1",
+    version = "1.5.2",
     url = ""
 };
 
@@ -33,6 +37,7 @@ public void OnPluginStart()
     gCvarMaterial = CreateConVar("umbrella_store_tracers_material", "materials/sprites/laserbeam.vmt", "Beam material used by tracer items.");
     gCvarLife = CreateConVar("umbrella_store_tracers_life", "0.45", "Tracer lifetime in seconds.", FCVAR_NONE, true, 0.05, true, 5.0);
     gCvarWidth = CreateConVar("umbrella_store_tracers_width", "1.5", "Tracer beam width.", FCVAR_NONE, true, 0.1, true, 32.0);
+    gCvarInterval = CreateConVar("umbrella_store_tracers_interval", "0.05", "Minimum seconds between tracer beams from the same player.", FCVAR_NONE, true, 0.0, true, 5.0);
     AutoExecConfig(true, "umbrella_store_tracers");
 
     g_hHideCookie = new Cookie("umbrella_store_hide_tracers", "Hide Umbrella Store tracers", CookieAccess_Private);
@@ -62,6 +67,7 @@ public void OnMapStart()
 
 public void OnClientDisconnect(int client)
 {
+    g_fNextTracer[client] = 0.0;
     g_bHideTracer[client] = false;
 }
 
@@ -102,11 +108,19 @@ public Action Event_BulletImpact(Event event, const char[] name, bool dontBroadc
         return Plugin_Continue;
     }
 
+    float now = GetGameTime();
+    if (now < g_fNextTracer[client])
+    {
+        return Plugin_Continue;
+    }
+
     char itemId[64];
     if (!USM_GetEquippedItemForClientTeam(client, "tracer", itemId, sizeof(itemId)))
     {
         return Plugin_Continue;
     }
+
+    g_fNextTracer[client] = now + gCvarInterval.FloatValue;
 
     char colorText[64];
     int color[4];

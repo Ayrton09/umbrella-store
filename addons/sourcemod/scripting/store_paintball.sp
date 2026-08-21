@@ -8,6 +8,11 @@
 #include <umbrella_store_module_utils>
 
 ConVar gCvarEnabled;
+ConVar gCvarInterval;
+// One bullet_impact per pellet means a shotgun would place eight permanent
+// decals per shot on every client, and the metadata/FileExists work below is
+// far too expensive to repeat that often.
+float g_fNextPaintball[MAXPLAYERS + 1];
 bool g_bHidePaintball[MAXPLAYERS + 1];
 StringMap g_mPaintballDecals = null;
 Cookie g_hHideCookie;
@@ -17,7 +22,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Paintball",
     author = "Ayrton09",
     description = "Bullet impact decal item module for Umbrella Store",
-    version = "1.5.1",
+    version = "1.5.2",
     url = ""
 };
 
@@ -26,6 +31,7 @@ public void OnPluginStart()
     LoadTranslations("umbrella_store.phrases");
 
     gCvarEnabled = CreateConVar("umbrella_store_paintball_enabled", "1", "Enable Umbrella Store paintball decals.", FCVAR_NONE, true, 0.0, true, 1.0);
+    gCvarInterval = CreateConVar("umbrella_store_paintball_interval", "0.1", "Minimum seconds between paintball decals from the same player.", FCVAR_NONE, true, 0.0, true, 5.0);
     AutoExecConfig(true, "umbrella_store_paintball");
 
     g_hHideCookie = new Cookie("umbrella_store_hide_paintball", "Hide Umbrella Store paintball decals", CookieAccess_Private);
@@ -51,6 +57,7 @@ public void US_OnItemsReloaded(int itemCount)
 
 public void OnClientDisconnect(int client)
 {
+    g_fNextPaintball[client] = 0.0;
     g_bHidePaintball[client] = false;
 }
 
@@ -217,11 +224,19 @@ public Action Event_BulletImpact(Event event, const char[] name, bool dontBroadc
         return Plugin_Continue;
     }
 
+    float now = GetGameTime();
+    if (now < g_fNextPaintball[client])
+    {
+        return Plugin_Continue;
+    }
+
     char itemId[64], rawDecal[PLATFORM_MAX_PATH], decalPath[PLATFORM_MAX_PATH], downloadPath[PLATFORM_MAX_PATH];
     if (!USM_GetEquippedItemForClientTeam(client, "paintball", itemId, sizeof(itemId)) || !PickPaintballDecal(itemId, rawDecal, sizeof(rawDecal)))
     {
         return Plugin_Continue;
     }
+
+    g_fNextPaintball[client] = now + gCvarInterval.FloatValue;
 
     NormalizeDecalPath(rawDecal, decalPath, sizeof(decalPath), downloadPath, sizeof(downloadPath));
     if (decalPath[0] == '\0' || !FileExists(downloadPath, true))

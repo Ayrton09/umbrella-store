@@ -71,7 +71,14 @@ native bool US_RegisterStatKey(const char[] statKey);
 native bool US_AddStat(int client, const char[] statKey, int amount = 1);
 native bool US_SetStatMax(int client, const char[] statKey, int value);
 native bool US_RegisterQuest(const char[] questId, const char[] title, int goal, int rewardCredits = 0);
-native bool US_RegisterQuestEx(const char[] questId, const char[] title, int goal, int rewardCredits = 0, const char[] rewardItem = "", bool equipRewardItem = false, const char[] category = "Quest Category General", const char[] description = "", bool repeatable = false, int maxCompletions = 1, const char[] requiresQuest = "", int startsAt = 0, int endsAt = 0);
+/**
+ * maxCompletions: 0 lets the core pick the natural default (1 for a
+ * non-repeatable quest, unlimited for a repeatable one); a positive value caps
+ * the number of completions. It must not default to 1 here: SourcePawn fills
+ * default arguments in at the call site, so a literal 1 would silently cap
+ * every repeatable quest at a single completion.
+ */
+native bool US_RegisterQuestEx(const char[] questId, const char[] title, int goal, int rewardCredits = 0, const char[] rewardItem = "", bool equipRewardItem = false, const char[] category = "Quest Category General", const char[] description = "", bool repeatable = false, int maxCompletions = 0, const char[] requiresQuest = "", int startsAt = 0, int endsAt = 0);
 native bool US_UnregisterQuest(const char[] questId);
 native bool US_AdvanceQuestProgress(int client, const char[] questId, int amount = 1);
 native bool US_SetQuestProgressMax(int client, const char[] questId, int value);

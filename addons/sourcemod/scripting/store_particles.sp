@@ -16,18 +16,28 @@
 #define PARTICLE_SLOT_COUNT 5
 
 ConVar gCvarEnabled;
+ConVar gCvarHitInterval;
+ConVar gCvarMaxActive;
 
 int g_iAttachedParticle[2][MAXPLAYERS + 1];
 bool g_bHideParticles[MAXPLAYERS + 1];
 Cookie g_hHideCookie;
 StringMap g_mParticleIndexes = null;
+StringMap g_mValidatedParticles = null;
+
+// Point particles are real edicts. Without a per-player interval and a global
+// ceiling, a single shotgun (8 bullet_impact events per shot) or a handful of
+// automatic weapons can allocate hundreds of them per second and exhaust the
+// engine edict limit, which hard-crashes the server.
+float g_fNextHitParticle[MAXPLAYERS + 1];
+int g_iActivePointParticles = 0;
 
 public Plugin myinfo =
 {
     name = "[Umbrella Store] Particles",
     author = "Ayrton09",
     description = "Aura, trail, spawn, kill, and hit particle item module for Umbrella Store",
-    version = "1.5.1",
+    version = "1.5.2",
     url = ""
 };
 
@@ -37,6 +47,8 @@ public void OnPluginStart()
 
     gCvarEnabled = CreateConVar("umbrella_store_particles_enabled", "1", "Enable Umbrella Store particles.", FCVAR_NONE, true, 0.0, true, 1.0);
     gCvarEnabled.AddChangeHook(Cvar_EnabledChanged);
+    gCvarHitInterval = CreateConVar("umbrella_store_particles_hit_interval", "0.15", "Minimum seconds between hit particles spawned by the same player.", FCVAR_NONE, true, 0.0, true, 5.0);
+    gCvarMaxActive = CreateConVar("umbrella_store_particles_max_active", "48", "Maximum simultaneous point particle entities spawned by this module (edict-exhaustion guard).", FCVAR_NONE, true, 1.0, true, 512.0);
     AutoExecConfig(true, "umbrella_store_particles");
 
     g_hHideCookie = new Cookie("umbrella_store_hide_particles", "Hide Umbrella Store particles", CookieAccess_Private);
@@ -56,6 +68,17 @@ public void OnMapStart()
 {
     delete g_mParticleIndexes;
     g_mParticleIndexes = new StringMap();
+    delete g_mValidatedParticles;
+    g_mValidatedParticles = new StringMap();
+
+    // NO_MAPCHANGE clear timers never run across a level change, so the live
+    // counter is rebuilt from scratch here.
+    g_iActivePointParticles = 0;
+    for (int i = 1; i <= MAXPLAYERS; i++)
+    {
+        g_fNextHitParticle[i] = 0.0;
+    }
+
     PrecacheConfiguredParticles();
 }
 
@@ -63,6 +86,8 @@ public void US_OnItemsReloaded(int itemCount)
 {
     delete g_mParticleIndexes;
     g_mParticleIndexes = new StringMap();
+    delete g_mValidatedParticles;
+    g_mValidatedParticles = new StringMap();
     PrecacheConfiguredParticles();
     ReapplyAllAttachedParticles();
 }
@@ -76,6 +101,7 @@ public void OnPluginEnd()
     }
 
     delete g_mParticleIndexes;
+    delete g_mValidatedParticles;
 }
 
 public void OnClientDisconnect(int client)
@@ -374,11 +400,21 @@ public Action Event_BulletImpact(Event event, const char[] name, bool dontBroadc
         return Plugin_Continue;
     }
 
+    // One bullet_impact fires per pellet, so shotguns alone would spawn eight
+    // entities per shot without this interval.
+    float now = GetGameTime();
+    if (now < g_fNextHitParticle[client])
+    {
+        return Plugin_Continue;
+    }
+
     char itemId[64];
     if (!GetEquippedParticleForSlot(client, PARTICLE_HIT, itemId, sizeof(itemId)))
     {
         return Plugin_Continue;
     }
+
+    g_fNextHitParticle[client] = now + gCvarHitInterval.FloatValue;
 
     float origin[3];
     origin[0] = event.GetFloat("x");
@@ -509,14 +545,16 @@ void SpawnPointParticle(const char[] itemId, float origin[3])
         return;
     }
 
-    char effect[64], file[PLATFORM_MAX_PATH];
-    if (!GetParticleEffectName(itemId, effect, sizeof(effect)) || !GetParticleFile(itemId, file, sizeof(file)) || !FileExists(file, true))
+    if (g_iActivePointParticles >= gCvarMaxActive.IntValue)
     {
         return;
     }
 
-    PrecacheParticleSystem(effect);
-    PrecacheGeneric(file, true);
+    char effect[64];
+    if (!GetParticleEffectName(itemId, effect, sizeof(effect)) || !IsParticleItemUsable(itemId))
+    {
+        return;
+    }
 
     int particle = CreateEntityByName("info_particle_system");
     if (particle == -1)
@@ -538,7 +576,40 @@ void SpawnPointParticle(const char[] itemId, float origin[3])
     {
         duration = 1.5;
     }
+    g_iActivePointParticles++;
     CreateTimer(duration, Timer_ClearParticle, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
+}
+
+// Validating (and precaching) a particle item costs a filesystem stat, which is
+// far too expensive to repeat per bullet impact. Configured items are already
+// precached in PrecacheConfiguredParticles; this caches the per-map result so
+// the hot path never touches disk.
+bool IsParticleItemUsable(const char[] itemId)
+{
+    if (g_mValidatedParticles == null)
+    {
+        g_mValidatedParticles = new StringMap();
+    }
+
+    int cached = 0;
+    if (g_mValidatedParticles.GetValue(itemId, cached))
+    {
+        return cached != 0;
+    }
+
+    char effect[64], file[PLATFORM_MAX_PATH];
+    bool usable = GetParticleEffectName(itemId, effect, sizeof(effect))
+        && GetParticleFile(itemId, file, sizeof(file))
+        && FileExists(file, true);
+
+    if (usable)
+    {
+        PrecacheParticleSystem(effect);
+        PrecacheGeneric(file, true);
+    }
+
+    g_mValidatedParticles.SetValue(itemId, usable ? 1 : 0);
+    return usable;
 }
 
 public Action Timer_StartParticle(Handle timer, any ref)
@@ -567,6 +638,11 @@ public Action Timer_ClearParticle(Handle timer, any ref)
     {
         SDKUnhook(entity, SDKHook_SetTransmit, Hook_SetTransmit);
         AcceptEntityInput(entity, "Kill");
+    }
+
+    if (g_iActivePointParticles > 0)
+    {
+        g_iActivePointParticles--;
     }
 
     return Plugin_Stop;

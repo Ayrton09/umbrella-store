@@ -35,7 +35,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Casino - Dice",
     author = "Ayrton09",
     description = "Dados (bajo/siete/alto) contra la casa para Umbrella Store",
-    version = "1.5.1",
+    version = "1.5.2",
     url = ""
 };
 

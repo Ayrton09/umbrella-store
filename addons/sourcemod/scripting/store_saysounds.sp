@@ -10,6 +10,11 @@ ConVar gCvarEnabled;
 ConVar gCvarMaxUses;
 ConVar gCvarResetMode;
 ConVar gCvarDefaultCooldown;
+// Per-item cooldowns come from item metadata, so without a floor an item
+// configured with "cooldown" "0" would let a player play a server-wide sound on
+// every chat message.
+ConVar gCvarMinCooldown;
+ConVar gCvarAliveOnly;
 ConVar gCvarDefaultVolume;
 
 int g_iUses[MAXPLAYERS + 1];
@@ -21,7 +26,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Say Sounds",
     author = "Ayrton09",
     description = "Chat-triggered sound item module for Umbrella Store",
-    version = "1.5.1",
+    version = "1.5.2",
     url = ""
 };
 
@@ -32,7 +37,9 @@ public void OnPluginStart()
     gCvarEnabled = CreateConVar("umbrella_store_saysounds_enabled", "1", "Enable Umbrella Store say sounds.", FCVAR_NONE, true, 0.0, true, 1.0);
     gCvarMaxUses = CreateConVar("umbrella_store_saysounds_max_uses", "3", "Maximum say sound uses per reset window. 0 = unlimited.", FCVAR_NONE, true, 0.0);
     gCvarResetMode = CreateConVar("umbrella_store_saysounds_reset_mode", "1", "0 = reset on map, 1 = reset on round.", FCVAR_NONE, true, 0.0, true, 1.0);
-    gCvarDefaultCooldown = CreateConVar("umbrella_store_saysounds_default_cooldown", "30", "Default per-player cooldown in seconds.", FCVAR_NONE, true, 0.0);
+    gCvarDefaultCooldown = CreateConVar("umbrella_store_saysounds_default_cooldown", "30", "Default per-player cooldown in seconds.", FCVAR_NONE, true, 1.0);
+    gCvarMinCooldown = CreateConVar("umbrella_store_saysounds_min_cooldown", "3", "Lower bound applied to any per-item cooldown.", FCVAR_NONE, true, 1.0);
+    gCvarAliveOnly = CreateConVar("umbrella_store_saysounds_alive_only", "1", "Only living players on a playing team can trigger say sounds.", FCVAR_NONE, true, 0.0, true, 1.0);
     gCvarDefaultVolume = CreateConVar("umbrella_store_saysounds_default_volume", "0.8", "Default say sound volume.", FCVAR_NONE, true, 0.05, true, 1.0);
     AutoExecConfig(true, "umbrella_store_saysounds");
 
@@ -196,6 +203,11 @@ public Action Event_PlayerSay(Event event, const char[] name, bool dontBroadcast
         return Plugin_Continue;
     }
 
+    if (gCvarAliveOnly.BoolValue && !USM_IsPlayableClient(client, true))
+    {
+        return Plugin_Continue;
+    }
+
     char text[192];
     event.GetString("text", text, sizeof(text));
     StripQuotes(text);
@@ -233,6 +245,11 @@ public Action Event_PlayerSay(Event event, const char[] name, bool dontBroadcast
     int originMode = USM_GetMetadataInt(itemId, "origin", 1);
     float volume = USM_GetMetadataFloat(itemId, "volume", gCvarDefaultVolume.FloatValue);
     int cooldown = USM_GetMetadataInt(itemId, "cooldown", gCvarDefaultCooldown.IntValue);
+    int minCooldown = gCvarMinCooldown.IntValue;
+    if (cooldown < minCooldown)
+    {
+        cooldown = minCooldown;
+    }
 
     PrecacheSound(sound, true);
     EmitSoundToAll(sound, originMode > 1 ? client : SOUND_FROM_WORLD, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, volume);
