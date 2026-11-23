@@ -1,6 +1,6 @@
 # Umbrella Store
 
-A modular SourceMod store suite for Source 1 servers — persistent economy, casino games, cosmetics, quests, marketplace, and a public API for third-party modules.
+A modular SourceMod store suite for Source 1 servers: persistent economy, casino games, cosmetics, quests, marketplace, and a public API for third-party modules.
 
 **Current version:** `1.5.3` · **Requires:** SourceMod 1.12+ · **License:** GPLv3
 
@@ -26,7 +26,7 @@ Umbrella Store is not a patched legacy fork. It is built as a framework: `store_
 
 | Module | Game | Commands |
 | --- | --- | --- |
-| `store_blackjack` | Blackjack — single, PvP, and table modes with splits and doubles | `!blackjack` `!bj` |
+| `store_blackjack` | Blackjack: single, PvP, and table modes with splits and doubles | `!blackjack` `!bj` |
 | `store_roulette` | Roulette with animated HUD spin | `!roulette` `!ruleta` `!ru` |
 | `store_crash` | Crash with live multiplier and cash-out | `!crash` |
 | `store_coinflip` | Coinflip vs house or PvP | `!coinflip` `!cf`, `!cfvs` `!cfa` `!cfd` |
@@ -62,7 +62,7 @@ Player skins ship as the built-in `skin` item type inside `store_core`.
 
 ## Requirements
 
-- **SourceMod 1.12 or newer** — the shipped plugins are built with the latest stable 1.12 release, currently build 7260
+- **SourceMod 1.12 or newer** (the shipped plugins are built with the latest stable 1.12 release, currently build 7260)
 - SDKTools, SDKHooks, and ClientPrefs (included with SourceMod)
 - SQLite or MySQL, depending on the database entry you configure in `databases.cfg`
 - Optional: the `adminmenu` plugin adds a Store Admin category to `!admin`; the `cstrike` extension is used for skin model resets on CS:S. The core loads without either.

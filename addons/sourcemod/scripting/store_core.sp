@@ -4161,7 +4161,7 @@ bool CanPurchaseItemEx(int client, const char[] itemId, char[] reason, int maxle
         g_hInventory[client].GetArray(ownedIndex, ownedInv, sizeof(InventoryItem));
         if (ownedInv.expires_at == 0)
         {
-            // Owned permanently — nothing left to buy.
+            // Owned permanently, nothing left to buy.
             SetReason(reason, maxlen, "already_owned");
             return false;
         }
@@ -7651,7 +7651,7 @@ bool SellItem(int client, const char[] itemId)
         return false;
     }
 
-    // Rentals cannot be sold back — the sell price is based on the permanent
+    // Rentals cannot be sold back: the sell price is based on the permanent
     // price, which would let a cheap rental be cashed out for full value.
     if (GetInventoryExpiry(client, item.id) > 0)
     {
@@ -10350,7 +10350,7 @@ void ShowItemDetailsMenu(int client, const char[] itemId)
             menu.AddItem(renewInfo, renewLabel);
         }
 
-        // Rentals (timed) cannot be sold, gifted or traded — only equipped/renewed.
+        // Rentals (timed) cannot be sold, gifted or traded, only equipped/renewed.
         if (ownedExpiry == 0)
         {
             char sellInfo[64], sellText[96];
