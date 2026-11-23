@@ -23,7 +23,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Bullet Sparks",
     author = "Ayrton09",
     description = "Bullet spark impact item module for Umbrella Store",
-    version = "1.5.4",
+    version = "1.5.5",
     url = ""
 };
 

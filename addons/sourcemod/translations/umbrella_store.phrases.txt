@@ -3670,4 +3670,84 @@
         "fr" "Could not change the item state."
         "de" "Could not change the item state."
     }
+    "Audit DB Not Ready"
+    {
+        "es" "La base de datos no está lista."
+        "en" "The database is not ready."
+        "ru" "База данных не готова."
+        "chi" "数据库尚未就绪。"
+        "pt" "O banco de dados não está pronto."
+        "fr" "La base de données n'est pas prête."
+        "de" "Die Datenbank ist nicht bereit."
+    }
+    "Audit Target SteamId Failed"
+    {
+        "es" "No se pudo obtener el SteamID del objetivo."
+        "en" "Could not get the target's SteamID."
+        "ru" "Не удалось получить SteamID цели."
+        "chi" "无法获取目标的 SteamID。"
+        "pt" "Não foi possível obter o SteamID do alvo."
+        "fr" "Impossible d'obtenir le SteamID de la cible."
+        "de" "Die SteamID des Ziels konnte nicht ermittelt werden."
+    }
+    "Audit Loading"
+    {
+        "es" "Cargando auditoría..."
+        "en" "Loading audit log..."
+        "ru" "Загрузка журнала аудита..."
+        "chi" "正在加载审计日志..."
+        "pt" "Carregando auditoria..."
+        "fr" "Chargement du journal d'audit..."
+        "de" "Audit-Protokoll wird geladen..."
+    }
+    "Audit Usage"
+    {
+        "es" "Uso: sm_storeaudit [objetivo|global] [límite]"
+        "en" "Usage: sm_storeaudit [target|global] [limit]"
+        "ru" "Использование: sm_storeaudit [цель|global] [лимит]"
+        "chi" "用法：sm_storeaudit [目标|global] [数量]"
+        "pt" "Uso: sm_storeaudit [alvo|global] [limite]"
+        "fr" "Utilisation : sm_storeaudit [cible|global] [limite]"
+        "de" "Verwendung: sm_storeaudit [Ziel|global] [Limit]"
+    }
+    "Audit Load Error"
+    {
+        "es" "Error al cargar la auditoría: %s"
+        "en" "Error loading the audit log: %s"
+        "ru" "Ошибка загрузки журнала аудита: %s"
+        "chi" "加载审计日志时出错：%s"
+        "pt" "Erro ao carregar a auditoria: %s"
+        "fr" "Erreur lors du chargement du journal d'audit : %s"
+        "de" "Fehler beim Laden des Audit-Protokolls: %s"
+    }
+    "Audit Header Target"
+    {
+        "es" "========== Auditoría de la tienda (%s, últimos %d) =========="
+        "en" "========== Store Audit (%s, last %d) =========="
+        "ru" "========== Аудит магазина (%s, последние %d) =========="
+        "chi" "========== 商店审计（%s，最近 %d 条）=========="
+        "pt" "========== Auditoria da loja (%s, últimos %d) =========="
+        "fr" "========== Audit de la boutique (%s, %d derniers) =========="
+        "de" "========== Store-Audit (%s, letzte %d) =========="
+    }
+    "Audit Header Global"
+    {
+        "es" "========== Auditoría de la tienda (global, últimos %d) =========="
+        "en" "========== Store Audit (global, last %d) =========="
+        "ru" "========== Аудит магазина (global, последние %d) =========="
+        "chi" "========== 商店审计（global，最近 %d 条）=========="
+        "pt" "========== Auditoria da loja (global, últimos %d) =========="
+        "fr" "========== Audit de la boutique (global, %d derniers) =========="
+        "de" "========== Store-Audit (global, letzte %d) =========="
+    }
+    "Audit No Rows"
+    {
+        "es" "No hay registros de auditoría para ese criterio."
+        "en" "No audit entries match that filter."
+        "ru" "Нет записей аудита по этому фильтру."
+        "chi" "没有符合该条件的审计记录。"
+        "pt" "Não há registros de auditoria para esse critério."
+        "fr" "Aucune entrée d'audit ne correspond à ce filtre."
+        "de" "Keine Audit-Einträge für diesen Filter."
+    }
 }

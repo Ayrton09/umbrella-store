@@ -72,7 +72,10 @@ void ReplyStoreText(int client, const char[] text)
 {
     if (client <= 0 || client > MaxClients)
     {
-        ReplyToCommand(client, "%s", text);
+        char plain[640];
+        strcopy(plain, sizeof(plain), text);
+        CRemoveTags(plain, sizeof(plain));
+        ReplyToCommand(client, "%s", plain);
         return;
     }
 

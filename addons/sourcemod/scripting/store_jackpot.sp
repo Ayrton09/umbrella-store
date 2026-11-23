@@ -38,7 +38,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Casino - Jackpot",
     author = "Ayrton09",
     description = "Bote multijugador para Umbrella Store",
-    version = "1.5.4",
+    version = "1.5.5",
     url = ""
 };
 

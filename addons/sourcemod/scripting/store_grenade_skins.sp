@@ -14,7 +14,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Grenade Skins",
     author = "Ayrton09",
     description = "Grenade projectile model item module for Umbrella Store",
-    version = "1.5.4",
+    version = "1.5.5",
     url = ""
 };
 

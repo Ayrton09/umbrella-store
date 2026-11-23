@@ -130,7 +130,7 @@ bool RequestStoreAudit(int client, int target, int limit, bool filterByTarget)
 {
     if (g_DB == null || !g_bLateDatabaseReady)
     {
-        ReplyAuditOutput(client, "[Umbrella Store] Database no lista.");
+        ReplyAuditOutput(client, "[Umbrella Store] %T", "Audit DB Not Ready", client);
         return false;
     }
 
@@ -158,7 +158,7 @@ bool RequestStoreAudit(int client, int target, int limit, bool filterByTarget)
         char targetSteamId[32];
         if (!GetClientSteamIdSafe(target, targetSteamId, sizeof(targetSteamId)))
         {
-            ReplyAuditOutput(client, "[Umbrella Store] No se pudo obtener SteamID del objetivo.");
+            ReplyAuditOutput(client, "[Umbrella Store] %T", "Audit Target SteamId Failed", client);
             return false;
         }
 
@@ -189,7 +189,7 @@ bool RequestStoreAudit(int client, int target, int limit, bool filterByTarget)
     pack.WriteString(targetLabel);
 
     g_DB.Query(OnStoreAuditLoaded, query, pack);
-    ReplyAuditOutput(client, "[Umbrella Store] Cargando auditoria general...");
+    ReplyAuditOutput(client, "[Umbrella Store] %T", "Audit Loading", client);
     return true;
 }
 
@@ -197,7 +197,7 @@ public Action Cmd_StoreAudit(int client, int args)
 {
     if (g_DB == null || !g_bLateDatabaseReady)
     {
-        ReplyAuditOutput(client, "[Umbrella Store] Database no lista.");
+        ReplyAuditOutput(client, "[Umbrella Store] %T", "Audit DB Not Ready", client);
         return Plugin_Handled;
     }
 
@@ -217,7 +217,7 @@ public Action Cmd_StoreAudit(int client, int args)
         GetCmdArg(2, argLimit, sizeof(argLimit));
         if (!TryParseBoundedInt(argLimit, false, 100, limit))
         {
-            ReplyAuditOutput(client, "[Umbrella Store] Uso: sm_storeaudit [target] [limit]");
+            ReplyAuditOutput(client, "[Umbrella Store] %T", "Audit Usage", client);
             return Plugin_Handled;
         }
     }
@@ -289,18 +289,18 @@ public void OnStoreAuditLoaded(Database db, DBResultSet results, const char[] er
 
     if (db == null || results == null || error[0] != '\0')
     {
-        ReplyAuditOutput(client, "[Umbrella Store] Error cargando auditoria: %s", error);
+        ReplyAuditOutput(client, "[Umbrella Store] %T", "Audit Load Error", client, error);
         SetCmdReplySource(previousSource);
         return;
     }
 
     if (filtered)
     {
-        ReplyAuditOutput(client, "========== Store Audit (%s, ultimo %d) ==========", targetLabel, limit);
+        ReplyAuditOutput(client, "%T", "Audit Header Target", client, targetLabel, limit);
     }
     else
     {
-        ReplyAuditOutput(client, "========== Store Audit (global, ultimo %d) ==========", limit);
+        ReplyAuditOutput(client, "%T", "Audit Header Global", client, limit);
     }
 
     bool hasRows = false;
@@ -335,7 +335,7 @@ public void OnStoreAuditLoaded(Database db, DBResultSet results, const char[] er
 
     if (!hasRows)
     {
-        ReplyAuditOutput(client, "[Umbrella Store] No hay registros de auditoria para ese criterio.");
+        ReplyAuditOutput(client, "[Umbrella Store] %T", "Audit No Rows", client);
     }
 
     SetCmdReplySource(previousSource);
