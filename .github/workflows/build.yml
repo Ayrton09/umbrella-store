@@ -1,0 +1,40 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  compile:
+    name: Compile plugins
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download latest stable SourceMod 1.12
+        run: |
+          file=$(curl -fsSL https://sm.alliedmods.net/smdrop/1.12/sourcemod-latest-linux)
+          echo "SourceMod package: $file"
+          curl -fsSL "https://sm.alliedmods.net/smdrop/1.12/$file" -o sourcemod.tar.gz
+          mkdir sourcemod
+          tar -xzf sourcemod.tar.gz -C sourcemod
+
+      - name: Compile with warnings as errors
+        working-directory: addons/sourcemod/scripting
+        run: |
+          sm="$GITHUB_WORKSPACE/sourcemod/addons/sourcemod/scripting"
+          chmod +x "$sm/spcomp64"
+          "$sm/spcomp64" 2>&1 | head -n 1 || true
+          out="$RUNNER_TEMP/plugins"
+          mkdir -p "$out"
+          for f in store_*.sp; do
+            echo "::group::$f"
+            "$sm/spcomp64" -E -i "$sm/include" -i include -o "$out/${f%.sp}.smx" "$f"
+            echo "::endgroup::"
+          done
+          echo "Compiled $(ls "$out" | wc -l) plugins"

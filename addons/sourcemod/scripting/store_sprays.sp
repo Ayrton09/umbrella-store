@@ -19,7 +19,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Sprays",
     author = "Ayrton09",
     description = "Custom wall spray item module for Umbrella Store",
-    version = "1.5.3",
+    version = "1.5.4",
     url = ""
 };
 

@@ -30,7 +30,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Laser Sight",
     author = "Ayrton09",
     description = "Scoped sniper laser sight item module for Umbrella Store",
-    version = "1.5.3",
+    version = "1.5.4",
     url = ""
 };
 

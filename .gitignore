@@ -6,6 +6,13 @@
 !README.md
 !LICENSE
 
+# Keep the CI workflow.
+!.github/
+.github/*
+!.github/workflows/
+.github/workflows/*
+!.github/workflows/*.yml
+
 # Keep curated drag-and-drop CS:S cosmetic assets.
 !models/
 !models/**/
@@ -31,6 +38,8 @@ addons/sourcemod/plugins/*
 !addons/sourcemod/scripting/
 addons/sourcemod/scripting/*
 !addons/sourcemod/scripting/store_*.sp
+!addons/sourcemod/scripting/store_core/
+!addons/sourcemod/scripting/store_core/*.sp
 !addons/sourcemod/scripting/include/
 addons/sourcemod/scripting/include/*
 !addons/sourcemod/scripting/include/umbrella_store.inc

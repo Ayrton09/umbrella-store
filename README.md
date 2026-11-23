@@ -1,6 +1,7 @@
 # Umbrella Store
 
 [![Release](https://img.shields.io/github/v/release/Ayrton09/umbrella-store?label=release&color=blue)](https://github.com/Ayrton09/umbrella-store/releases/latest)
+[![Build](https://github.com/Ayrton09/umbrella-store/actions/workflows/build.yml/badge.svg)](https://github.com/Ayrton09/umbrella-store/actions/workflows/build.yml)
 [![Downloads](https://img.shields.io/github/downloads/Ayrton09/umbrella-store/total?color=brightgreen)](https://github.com/Ayrton09/umbrella-store/releases)
 ![SourceMod](https://img.shields.io/badge/SourceMod-1.12%2B-orange)
 ![Game](https://img.shields.io/badge/game-CS%3AS-orange)
@@ -92,7 +93,7 @@ Umbrella Store is not a patched legacy fork. `store_core` provides the economy, 
 3. Start the server once. Each plugin writes its cfg to `cfg/sourcemod/` (see [ConVars](#convars)).
 4. Replace the examples in `configs/umbrella_store/umbrella_store_items.txt` with your items. Per-module examples live in `config_examples/`; files placed in `items.d/*.txt` are loaded too.
 5. Upload the shipped models and materials, plus any your items reference, to your FastDL. The release includes `umbrella_store_X.Y.Z_fastdl.zip` with every file already `.bz2`-compressed.
-6. Optionally define quests in `configs/umbrella_store/umbrella_store_quests.txt`.
+6. Optionally define quests in `configs/umbrella_store/umbrella_store_quests.txt`. Lootboxes live in `configs/umbrella_store/umbrella_store_lootboxes.txt`, which `store_lootbox` creates with a starter credit box on first start; see `config_examples/store_lootbox.txt` for item rewards.
 7. Restart the server, or run `sm_reloadstore` after editing items or quests.
 
 ## Configuration
@@ -221,7 +222,7 @@ Every plugin generates its own file in `cfg/sourcemod/`. Click a module to expan
 | `store_credits_notify_delay` | `2.0` | Delay in seconds to group credit messages and reduce spam. |
 | `store_credits_autosave_interval` | `120.0` | Auto-save interval for credits in seconds. |
 | `store_admin_flag` | `z` | SourceMod admin flag required for the Umbrella Store admin menu. Default z = root. |
-| `store_initial_credits` | `50000` | Initial credits for new players. |
+| `store_initial_credits` | `1000` | Initial credits for new players. |
 | `store_sell_percent` | `50` | Refund percentage when selling items. |
 | `store_preview_lifetime` | `15.0` | Preview lifetime in seconds. |
 | `store_preview_distance` | `100.0` | Distance at which preview appears. |
@@ -229,7 +230,6 @@ Every plugin generates its own file in `cfg/sourcemod/`. Click a module to expan
 | `store_enable_player_skins` | `1` | Enable or disable store player skins. |
 | `store_preview_cooldown` | `3.0` | Cooldown between skin previews in seconds. |
 | `store_equip_cooldown` | `0.35` | Cooldown between equip and unequip actions in seconds. |
-| `store_chat_extended_colors` | `1` | Legacy compatibility cvar. Umbrella Store now renders chat through the Multi-Colors backend. |
 | `umbrella_store_market_enabled` | `1` | Enable or disable the Umbrella Store marketplace. |
 | `umbrella_store_market_min_price` | `50` | Minimum price for marketplace listings. |
 | `umbrella_store_market_max_price` | `1000000` | Maximum price for marketplace listings. 0 disables the cap. |
@@ -596,11 +596,6 @@ Every plugin generates its own file in `cfg/sourcemod/`. Click a module to expan
 | --- | --- | --- |
 | `umbrella_store_camera_enabled` | `1` | Enable or disable the camera system. |
 | `umbrella_store_camera_disabled_maps` | `de_,cs_,fy_,awp_,aim_` | Map prefixes where !tp and !mirror are disabled. |
-| `umbrella_store_camera_tp_distance` | `120` | Legacy compatibility only. CS:S blocks server-side cam_* camera commands. |
-| `umbrella_store_camera_mirror_distance` | `100` | Legacy compatibility only. CS:S blocks server-side cam_* camera commands. |
-| `umbrella_store_camera_tp_pitch` | `0` | Legacy compatibility only. CS:S blocks server-side cam_* camera commands. |
-| `umbrella_store_camera_mirror_pitch` | `0` | Legacy compatibility only. CS:S blocks server-side cam_* camera commands. |
-| `umbrella_store_camera_mirror_yaw` | `0` | Legacy compatibility only. CS:S blocks server-side cam_* camera commands. |
 | `umbrella_store_camera_announce` | `1` | If 1, announce camera commands on join. |
 | `umbrella_store_camera_reset_on_death` | `1` | If 1, force firstperson on death or spectator. |
 
@@ -648,7 +643,7 @@ To make the store an optional dependency of your plugin, include it with `REQUIR
 
 ## Building from source
 
-Only the SourceMod compiler is needed; [MultiColors](https://github.com/Bara/Multi-Colors) is bundled under `scripting/include`.
+Only the SourceMod compiler is needed; [MultiColors](https://github.com/Bara/Multi-Colors) is bundled under `scripting/include`. Every push is compiled by GitHub Actions against the latest stable SourceMod 1.12 with warnings treated as errors.
 
 ```
 cd addons/sourcemod/scripting
@@ -660,7 +655,8 @@ spcomp64 -i <sourcemod>/scripting/include -i include store_core.sp -o ../plugins
 | Path | Contents |
 | --- | --- |
 | `addons/sourcemod/plugins` | Compiled plugins |
-| `addons/sourcemod/scripting` | SourcePawn sources |
+| `addons/sourcemod/scripting` | SourcePawn sources, one file per plugin |
+| `addons/sourcemod/scripting/store_core` | Core sources split by area (database, credits, marketplace, quests, admin, natives, ...), included by `store_core.sp` |
 | `addons/sourcemod/scripting/include` | Public API include, module helpers, bundled MultiColors |
 | `addons/sourcemod/configs/umbrella_store` | Items, quests, `items.d/`, and `config_examples/` |
 | `addons/sourcemod/translations` | Phrase files |

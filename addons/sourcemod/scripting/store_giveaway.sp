@@ -14,7 +14,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Giveaway",
     author = "Ayrton09",
     description = "Giveaway global con animacion HUD para Umbrella Store",
-    version = "1.5.3",
+    version = "1.5.4",
     url = ""
 };
 

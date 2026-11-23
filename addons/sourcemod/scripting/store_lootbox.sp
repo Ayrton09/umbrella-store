@@ -64,7 +64,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Lootbox",
     author = "Ayrton09",
     description = "Cajas con premios de creditos e items para Umbrella Store",
-    version = "1.5.3",
+    version = "1.5.4",
     url = ""
 };
 
@@ -202,6 +202,43 @@ void EmitConfiguredSound(int client, ConVar cvar)
 // =========================
 // Config
 // =========================
+void AddDefaultCreditReward(KeyValues kv, const char[] key, int weight, int minCredits, int maxCredits)
+{
+    kv.JumpToKey(key, true);
+    kv.SetString("type", "credits");
+    kv.SetNum("weight", weight);
+    kv.SetNum("min", minCredits);
+    kv.SetNum("max", maxCredits);
+    kv.GoBack();
+}
+
+// Writes a credits-only starter box the first time the module runs, so
+// !lootbox works out of the box. An existing file is never overwritten.
+bool WriteDefaultLootboxConfig(const char[] path)
+{
+    KeyValues kv = new KeyValues("Lootboxes");
+    kv.JumpToKey("credit_box", true);
+    kv.SetString("name", "Credit Box");
+    kv.SetNum("price", 1000);
+    kv.JumpToKey("rewards", true);
+    AddDefaultCreditReward(kv, "small", 60, 200, 700);
+    AddDefaultCreditReward(kv, "medium", 30, 800, 1400);
+    AddDefaultCreditReward(kv, "big", 10, 2000, 4000);
+    kv.Rewind();
+
+    bool written = kv.ExportToFile(path);
+    delete kv;
+
+    if (!written)
+    {
+        LogError("[Umbrella Store] Could not create the default lootbox config: %s", path);
+        return false;
+    }
+
+    LogMessage("[Umbrella Store] Created default lootbox config: %s", path);
+    return true;
+}
+
 void LoadLootboxConfig()
 {
     g_aBoxes.Clear();
@@ -209,7 +246,7 @@ void LoadLootboxConfig()
 
     char path[PLATFORM_MAX_PATH];
     BuildPath(Path_SM, path, sizeof(path), "configs/umbrella_store/umbrella_store_lootboxes.txt");
-    if (!FileExists(path))
+    if (!FileExists(path) && !WriteDefaultLootboxConfig(path))
     {
         return;
     }

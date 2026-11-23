@@ -35,7 +35,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Camera",
     author = "Ayrton09",
     description = "Thirdperson and mirror camera for Umbrella Store player inspection",
-    version = "1.5.3",
+    version = "1.5.4",
     url = ""
 };
 
@@ -71,51 +71,6 @@ public void OnPluginStart()
         "de_,cs_,fy_,awp_,aim_",
         "Map prefixes where !tp and !mirror are disabled.",
         FCVAR_NOTIFY
-    );
-
-    CreateConVar(
-        "umbrella_store_camera_tp_distance",
-        "120",
-        "Legacy compatibility only. CS:S blocks server-side cam_* camera commands.",
-        FCVAR_NOTIFY,
-        true, 40.0,
-        true, 300.0
-    );
-
-    CreateConVar(
-        "umbrella_store_camera_mirror_distance",
-        "100",
-        "Legacy compatibility only. CS:S blocks server-side cam_* camera commands.",
-        FCVAR_NOTIFY,
-        true, 40.0,
-        true, 300.0
-    );
-
-    CreateConVar(
-        "umbrella_store_camera_tp_pitch",
-        "0",
-        "Legacy compatibility only. CS:S blocks server-side cam_* camera commands.",
-        FCVAR_NOTIFY,
-        true, -89.0,
-        true, 89.0
-    );
-
-    CreateConVar(
-        "umbrella_store_camera_mirror_pitch",
-        "0",
-        "Legacy compatibility only. CS:S blocks server-side cam_* camera commands.",
-        FCVAR_NOTIFY,
-        true, -89.0,
-        true, 89.0
-    );
-
-    CreateConVar(
-        "umbrella_store_camera_mirror_yaw",
-        "0",
-        "Legacy compatibility only. CS:S blocks server-side cam_* camera commands.",
-        FCVAR_NOTIFY,
-        true, -180.0,
-        true, 180.0
     );
 
     gCvarAnnounceCommands = CreateConVar(
