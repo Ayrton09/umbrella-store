@@ -4,14 +4,7 @@
 # Keep Git metadata and public root files.
 !.gitignore
 !README.md
-!MIGRATION.md
-
-# Keep public assets used by the README.
-!assets/
-assets/*
-!assets/github/
-assets/github/*
-!assets/github/umbrella-store-cover.png
+!LICENSE
 
 # Keep curated drag-and-drop CS:S cosmetic assets.
 !models/
@@ -74,3 +67,22 @@ SMOKE_TEST_GUIDE.md
 image.jpg
 image (1).jpg
 image (2).jpg
+
+# Never commit secrets, databases, or local tool folders, even inside whitelisted paths.
+*.pem
+*.key
+*.pfx
+*.p12
+*.ppk
+id_rsa*
+id_ed25519*
+.env
+.env.*
+*.db
+*.sqlite
+*.sqlite3
+*.sq3
+*.log
+.claude/
+.vs/
+.idea/

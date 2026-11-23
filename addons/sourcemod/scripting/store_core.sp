@@ -2,8 +2,12 @@
 #pragma newdecls required
 
 #include <sourcemod>
+#undef REQUIRE_PLUGIN
 #include <adminmenu>
+#define REQUIRE_PLUGIN
+#undef REQUIRE_EXTENSIONS
 #include <cstrike>
+#define REQUIRE_EXTENSIONS
 #include <sdktools>
 #include <sdkhooks>
 #include <multicolors>
@@ -285,8 +289,6 @@ Handle g_hFwdItemsReloaded = null;
 // =========================================================================
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 {
-    MarkNativeAsOptional("CS_UpdateClientModel");
-
     RegPluginLibrary("umbrella_store");
     CreateNative("US_GetApiVersion", Native_US_GetApiVersion);
     CreateNative("US_IsLoaded", Native_US_IsLoaded);
@@ -352,7 +354,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Core",
     author = "Ayrton09",
     description = "Core store module for Umbrella Store",
-    version = "1.5.2",
+    version = "1.5.3",
     url = ""
 };
 

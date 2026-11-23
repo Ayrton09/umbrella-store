@@ -136,7 +136,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Blackjack",
     author = "Ayrton09",
     description = "Blackjack module for Umbrella Store",
-    version = "1.5.2",
+    version = "1.5.3",
     url = ""
 };
 

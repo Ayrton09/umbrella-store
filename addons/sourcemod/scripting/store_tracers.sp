@@ -25,7 +25,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Tracers",
     author = "Ayrton09",
     description = "Bullet tracer item module for Umbrella Store",
-    version = "1.5.2",
+    version = "1.5.3",
     url = ""
 };
 

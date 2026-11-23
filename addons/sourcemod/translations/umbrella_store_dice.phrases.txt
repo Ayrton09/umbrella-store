@@ -4,70 +4,140 @@
     {
         "es" "Dados"
         "en" "Dice"
+        "ru" "Кости"
+        "chi" "骰子"
+        "pt" "Dados"
+        "fr" "Dés"
+        "de" "Würfel"
     }
     "Dice Disabled"
     {
         "es" "Los dados están deshabilitados en este momento."
         "en" "Dice is currently disabled."
+        "ru" "Кости сейчас отключены."
+        "chi" "骰子目前已禁用。"
+        "pt" "Os dados estão desativados no momento."
+        "fr" "Les dés sont actuellement désactivés."
+        "de" "Würfel ist derzeit deaktiviert."
     }
     "Dice Bet Title"
     {
         "es" "Dados - elegí tu apuesta\nCréditos: %d"
         "en" "Dice - choose your bet\nCredits: %d"
+        "ru" "Кости - выберите ставку\nКредиты: %d"
+        "chi" "骰子 - 选择你的下注\n积分：%d"
+        "pt" "Dados - escolha sua aposta\nCréditos: %d"
+        "fr" "Dés - choisissez votre mise\nCrédits : %d"
+        "de" "Würfel - wähle deinen Einsatz\nCredits: %d"
     }
     "Dice Predict Title"
     {
         "es" "Apuesta: %d\nElegí tu predicción:"
         "en" "Bet: %d\nChoose your prediction:"
+        "ru" "Ставка: %d\nВыберите прогноз:"
+        "chi" "下注：%d\n选择你的预测："
+        "pt" "Aposta: %d\nEscolha sua previsão:"
+        "fr" "Mise : %d\nChoisissez votre prédiction :"
+        "de" "Einsatz: %d\nWähle deine Vorhersage:"
     }
     "Dice Option Low"
     {
         "es" "Bajo (2-6)  x%.1f"
         "en" "Low (2-6)  x%.1f"
+        "ru" "Низко (2-6)  x%.1f"
+        "chi" "小 (2-6)  x%.1f"
+        "pt" "Baixo (2-6)  x%.1f"
+        "fr" "Bas (2-6)  x%.1f"
+        "de" "Niedrig (2-6)  x%.1f"
     }
     "Dice Option Seven"
     {
         "es" "Siete (7)  x%.1f"
         "en" "Seven (7)  x%.1f"
+        "ru" "Семь (7)  x%.1f"
+        "chi" "七 (7)  x%.1f"
+        "pt" "Sete (7)  x%.1f"
+        "fr" "Sept (7)  x%.1f"
+        "de" "Sieben (7)  x%.1f"
     }
     "Dice Option High"
     {
         "es" "Alto (8-12)  x%.1f"
         "en" "High (8-12)  x%.1f"
+        "ru" "Высоко (8-12)  x%.1f"
+        "chi" "大 (8-12)  x%.1f"
+        "pt" "Alto (8-12)  x%.1f"
+        "fr" "Haut (8-12)  x%.1f"
+        "de" "Hoch (8-12)  x%.1f"
     }
     "Dice Min Bet"
     {
         "es" "La apuesta mínima es {LIGHTBLUE}%d{DEFAULT}."
         "en" "The minimum bet is {LIGHTBLUE}%d{DEFAULT}."
+        "ru" "Минимальная ставка: {LIGHTBLUE}%d{DEFAULT}."
+        "chi" "最低下注为 {LIGHTBLUE}%d{DEFAULT}。"
+        "pt" "A aposta mínima é {LIGHTBLUE}%d{DEFAULT}."
+        "fr" "La mise minimale est de {LIGHTBLUE}%d{DEFAULT}."
+        "de" "Der Mindesteinsatz beträgt {LIGHTBLUE}%d{DEFAULT}."
     }
     "Dice Max Bet"
     {
         "es" "La apuesta máxima es {LIGHTBLUE}%d{DEFAULT}."
         "en" "The maximum bet is {LIGHTBLUE}%d{DEFAULT}."
+        "ru" "Максимальная ставка: {LIGHTBLUE}%d{DEFAULT}."
+        "chi" "最高下注为 {LIGHTBLUE}%d{DEFAULT}。"
+        "pt" "A aposta máxima é {LIGHTBLUE}%d{DEFAULT}."
+        "fr" "La mise maximale est de {LIGHTBLUE}%d{DEFAULT}."
+        "de" "Der Höchsteinsatz beträgt {LIGHTBLUE}%d{DEFAULT}."
     }
     "Dice Not Enough"
     {
         "es" "No tenés créditos suficientes."
         "en" "You don't have enough credits."
+        "ru" "У вас недостаточно кредитов."
+        "chi" "你的积分不足。"
+        "pt" "Você não tem créditos suficientes."
+        "fr" "Vous n'avez pas assez de crédits."
+        "de" "Du hast nicht genug Credits."
     }
     "Dice Cooldown"
     {
         "es" "Esperá un momento antes de volver a tirar."
         "en" "Wait a moment before rolling again."
+        "ru" "Подождите немного, прежде чем бросать снова."
+        "chi" "请稍候再掷骰子。"
+        "pt" "Espere um momento antes de jogar de novo."
+        "fr" "Attendez un instant avant de relancer."
+        "de" "Warte einen Moment, bevor du erneut würfelst."
     }
     "Dice Transaction Failed"
     {
         "es" "No se pudo completar la operación. Intentá de nuevo."
         "en" "The transaction could not be completed. Try again."
+        "ru" "Не удалось завершить операцию. Попробуйте ещё раз."
+        "chi" "交易无法完成，请重试。"
+        "pt" "A transação não pôde ser concluída. Tente novamente."
+        "fr" "La transaction n'a pas pu être effectuée. Réessayez."
+        "de" "Die Transaktion konnte nicht abgeschlossen werden. Versuche es erneut."
     }
     "Dice Win"
     {
         "es" "Salió {LIGHTBLUE}%d + %d = %d{DEFAULT}. ¡Ganaste {GREEN}%d{DEFAULT} créditos!"
         "en" "Rolled {LIGHTBLUE}%d + %d = %d{DEFAULT}. You won {GREEN}%d{DEFAULT} credits!"
+        "ru" "Выпало {LIGHTBLUE}%d + %d = %d{DEFAULT}. Вы выиграли {GREEN}%d{DEFAULT} кредитов!"
+        "chi" "掷出 {LIGHTBLUE}%d + %d = %d{DEFAULT}。你赢得了 {GREEN}%d{DEFAULT} 积分！"
+        "pt" "Saiu {LIGHTBLUE}%d + %d = %d{DEFAULT}. Você ganhou {GREEN}%d{DEFAULT} créditos!"
+        "fr" "Résultat {LIGHTBLUE}%d + %d = %d{DEFAULT}. Vous avez gagné {GREEN}%d{DEFAULT} crédits !"
+        "de" "Gewürfelt {LIGHTBLUE}%d + %d = %d{DEFAULT}. Du hast {GREEN}%d{DEFAULT} Credits gewonnen!"
     }
     "Dice Lose"
     {
         "es" "Salió {LIGHTBLUE}%d + %d = %d{DEFAULT}. Perdiste {RED}%d{DEFAULT} créditos."
         "en" "Rolled {LIGHTBLUE}%d + %d = %d{DEFAULT}. You lost {RED}%d{DEFAULT} credits."
+        "ru" "Выпало {LIGHTBLUE}%d + %d = %d{DEFAULT}. Вы проиграли {RED}%d{DEFAULT} кредитов."
+        "chi" "掷出 {LIGHTBLUE}%d + %d = %d{DEFAULT}。你输掉了 {RED}%d{DEFAULT} 积分。"
+        "pt" "Saiu {LIGHTBLUE}%d + %d = %d{DEFAULT}. Você perdeu {RED}%d{DEFAULT} créditos."
+        "fr" "Résultat {LIGHTBLUE}%d + %d = %d{DEFAULT}. Vous avez perdu {RED}%d{DEFAULT} crédits."
+        "de" "Gewürfelt {LIGHTBLUE}%d + %d = %d{DEFAULT}. Du hast {RED}%d{DEFAULT} Credits verloren."
     }
 }

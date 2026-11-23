@@ -4,60 +4,120 @@
     {
         "es" "Bote (Jackpot)"
         "en" "Jackpot"
+        "ru" "Джекпот"
+        "chi" "头奖"
+        "pt" "Jackpot"
+        "fr" "Jackpot"
+        "de" "Jackpot"
     }
     "JP Disabled"
     {
         "es" "El bote está deshabilitado en este momento."
         "en" "The jackpot is currently disabled."
+        "ru" "Джекпот сейчас отключён."
+        "chi" "头奖目前已禁用。"
+        "pt" "O jackpot está desativado no momento."
+        "fr" "Le jackpot est actuellement désactivé."
+        "de" "Der Jackpot ist derzeit deaktiviert."
     }
     "JP Menu Title"
     {
         "es" "Bote actual: %d\nTu aporte: %d\nTiempo de ronda: %d s\nTus créditos: %d"
         "en" "Current pot: %d\nYour entry: %d\nRound time: %d s\nYour credits: %d"
+        "ru" "Текущий банк: %d\nВаш взнос: %d\nВремя раунда: %d с\nВаши кредиты: %d"
+        "chi" "当前奖池：%d\n你的投入：%d\n回合时间：%d 秒\n你的积分：%d"
+        "pt" "Pote atual: %d\nSua entrada: %d\nTempo da rodada: %d s\nSeus créditos: %d"
+        "fr" "Cagnotte actuelle : %d\nVotre mise : %d\nTemps de la manche : %d s\nVos crédits : %d"
+        "de" "Aktueller Pot: %d\nDein Einsatz: %d\nRundenzeit: %d s\nDeine Credits: %d"
     }
     "JP Min Entry"
     {
         "es" "El aporte mínimo es {LIGHTBLUE}%d{DEFAULT}."
         "en" "The minimum entry is {LIGHTBLUE}%d{DEFAULT}."
+        "ru" "Минимальный взнос: {LIGHTBLUE}%d{DEFAULT}."
+        "chi" "最低投入为 {LIGHTBLUE}%d{DEFAULT}。"
+        "pt" "A entrada mínima é {LIGHTBLUE}%d{DEFAULT}."
+        "fr" "La mise minimale est de {LIGHTBLUE}%d{DEFAULT}."
+        "de" "Der Mindesteinsatz beträgt {LIGHTBLUE}%d{DEFAULT}."
     }
     "JP Max Entry"
     {
         "es" "El aporte máximo por ronda es {LIGHTBLUE}%d{DEFAULT}."
         "en" "The maximum entry per round is {LIGHTBLUE}%d{DEFAULT}."
+        "ru" "Максимальный взнос за раунд: {LIGHTBLUE}%d{DEFAULT}."
+        "chi" "每回合最高投入为 {LIGHTBLUE}%d{DEFAULT}。"
+        "pt" "A entrada máxima por rodada é {LIGHTBLUE}%d{DEFAULT}."
+        "fr" "La mise maximale par manche est de {LIGHTBLUE}%d{DEFAULT}."
+        "de" "Der Höchsteinsatz pro Runde beträgt {LIGHTBLUE}%d{DEFAULT}."
     }
     "JP Not Enough"
     {
         "es" "No tenés créditos suficientes."
         "en" "You don't have enough credits."
+        "ru" "У вас недостаточно кредитов."
+        "chi" "你的积分不足。"
+        "pt" "Você não tem créditos suficientes."
+        "fr" "Vous n'avez pas assez de crédits."
+        "de" "Du hast nicht genug Credits."
     }
     "JP Transaction Failed"
     {
         "es" "No se pudo completar la operación. Intentá de nuevo."
         "en" "The transaction could not be completed. Try again."
+        "ru" "Не удалось завершить операцию. Попробуйте ещё раз."
+        "chi" "交易无法完成，请重试。"
+        "pt" "A transação não pôde ser concluída. Tente novamente."
+        "fr" "La transaction n'a pas pu être effectuée. Réessayez."
+        "de" "Die Transaktion konnte nicht abgeschlossen werden. Versuche es erneut."
     }
     "JP Joined Broadcast"
     {
         "es" "{GREEN}%s{DEFAULT} apostó {LIGHTBLUE}%d{DEFAULT} al bote. Bote: {GREEN}%d{DEFAULT}."
         "en" "{GREEN}%s{DEFAULT} added {LIGHTBLUE}%d{DEFAULT} to the pot. Pot: {GREEN}%d{DEFAULT}."
+        "ru" "{GREEN}%s{DEFAULT} добавил {LIGHTBLUE}%d{DEFAULT} в банк. Банк: {GREEN}%d{DEFAULT}."
+        "chi" "{GREEN}%s{DEFAULT} 向奖池投入了 {LIGHTBLUE}%d{DEFAULT}。奖池：{GREEN}%d{DEFAULT}。"
+        "pt" "{GREEN}%s{DEFAULT} adicionou {LIGHTBLUE}%d{DEFAULT} ao pote. Pote: {GREEN}%d{DEFAULT}."
+        "fr" "{GREEN}%s{DEFAULT} a ajouté {LIGHTBLUE}%d{DEFAULT} à la cagnotte. Cagnotte : {GREEN}%d{DEFAULT}."
+        "de" "{GREEN}%s{DEFAULT} hat {LIGHTBLUE}%d{DEFAULT} in den Pot gelegt. Pot: {GREEN}%d{DEFAULT}."
     }
     "JP Round Started"
     {
         "es" "¡Se abrió el bote! Tenés {LIGHTBLUE}%d{DEFAULT} segundos para entrar con {GREEN}!jackpot{DEFAULT}."
         "en" "The jackpot is open! You have {LIGHTBLUE}%d{DEFAULT} seconds to join with {GREEN}!jackpot{DEFAULT}."
+        "ru" "Джекпот открыт! У вас {LIGHTBLUE}%d{DEFAULT} секунд, чтобы присоединиться через {GREEN}!jackpot{DEFAULT}."
+        "chi" "头奖已开启！你有 {LIGHTBLUE}%d{DEFAULT} 秒可通过 {GREEN}!jackpot{DEFAULT} 加入。"
+        "pt" "O jackpot está aberto! Você tem {LIGHTBLUE}%d{DEFAULT} segundos para entrar com {GREEN}!jackpot{DEFAULT}."
+        "fr" "Le jackpot est ouvert ! Vous avez {LIGHTBLUE}%d{DEFAULT} secondes pour participer avec {GREEN}!jackpot{DEFAULT}."
+        "de" "Der Jackpot ist offen! Du hast {LIGHTBLUE}%d{DEFAULT} Sekunden, um mit {GREEN}!jackpot{DEFAULT} beizutreten."
     }
     "JP Not Enough Players"
     {
         "es" "El bote se canceló por falta de jugadores. Se reembolsaron las apuestas."
         "en" "The jackpot was cancelled due to not enough players. Entries were refunded."
+        "ru" "Джекпот отменён: недостаточно игроков. Взносы возвращены."
+        "chi" "由于玩家不足，头奖已取消。投入已退还。"
+        "pt" "O jackpot foi cancelado por falta de jogadores. As entradas foram devolvidas."
+        "fr" "Le jackpot a été annulé faute de joueurs. Les mises ont été remboursées."
+        "de" "Der Jackpot wurde mangels Spielern abgebrochen. Die Einsätze wurden erstattet."
     }
     "JP Winner Broadcast"
     {
         "es" "¡{GREEN}%s{DEFAULT} ganó el bote de {GREEN}%d{DEFAULT} créditos entre %d jugadores!"
         "en" "{GREEN}%s{DEFAULT} won the {GREEN}%d{DEFAULT} credit pot among %d players!"
+        "ru" "{GREEN}%s{DEFAULT} выиграл банк в {GREEN}%d{DEFAULT} кредитов среди %d игроков!"
+        "chi" "{GREEN}%s{DEFAULT} 赢得了 {GREEN}%d{DEFAULT} 积分的奖池，共 %d 名玩家参与！"
+        "pt" "{GREEN}%s{DEFAULT} ganhou o pote de {GREEN}%d{DEFAULT} créditos entre %d jogadores!"
+        "fr" "{GREEN}%s{DEFAULT} a remporté la cagnotte de {GREEN}%d{DEFAULT} crédits parmi %d joueurs !"
+        "de" "{GREEN}%s{DEFAULT} hat den Pot von {GREEN}%d{DEFAULT} Credits unter %d Spielern gewonnen!"
     }
     "JP Refunded"
     {
         "es" "Se te reembolsaron {LIGHTBLUE}%d{DEFAULT} créditos del bote."
         "en" "You were refunded {LIGHTBLUE}%d{DEFAULT} credits from the pot."
+        "ru" "Вам возвращено {LIGHTBLUE}%d{DEFAULT} кредитов из банка."
+        "chi" "已从奖池退还你 {LIGHTBLUE}%d{DEFAULT} 积分。"
+        "pt" "Você recebeu de volta {LIGHTBLUE}%d{DEFAULT} créditos do pote."
+        "fr" "Vous avez été remboursé de {LIGHTBLUE}%d{DEFAULT} crédits de la cagnotte."
+        "de" "Dir wurden {LIGHTBLUE}%d{DEFAULT} Credits aus dem Pot erstattet."
     }
 }

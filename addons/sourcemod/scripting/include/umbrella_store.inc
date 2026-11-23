@@ -116,5 +116,71 @@ public SharedPlugin __pl_umbrella_store =
 {
     name = "umbrella_store",
     file = "store_core.smx",
-    required = 1
+#if defined REQUIRE_PLUGIN
+    required = 1,
+#else
+    required = 0,
+#endif
 };
+
+#if !defined REQUIRE_PLUGIN
+public void __pl_umbrella_store_SetNTVOptionals()
+{
+    MarkNativeAsOptional("US_IsLoaded");
+    MarkNativeAsOptional("US_IsEnabled");
+    MarkNativeAsOptional("US_GetCredits");
+    MarkNativeAsOptional("US_SetCredits");
+    MarkNativeAsOptional("US_AddCredits");
+    MarkNativeAsOptional("US_TakeCredits");
+    MarkNativeAsOptional("US_ApplyCreditDelta");
+    MarkNativeAsOptional("US_ApplyCreditDeltas");
+    MarkNativeAsOptional("US_HasItem");
+    MarkNativeAsOptional("US_GiveItem");
+    MarkNativeAsOptional("US_RemoveItem");
+    MarkNativeAsOptional("US_Casino_Register");
+    MarkNativeAsOptional("US_Casino_Unregister");
+    MarkNativeAsOptional("US_OpenCasinoMenu");
+    MarkNativeAsOptional("US_GetApiVersion");
+    MarkNativeAsOptional("US_OpenStoreMenu");
+    MarkNativeAsOptional("US_RegisterMenuSection");
+    MarkNativeAsOptional("US_UnregisterMenuSection");
+    MarkNativeAsOptional("US_GetItemCount");
+    MarkNativeAsOptional("US_GetItemIdByIndex");
+    MarkNativeAsOptional("US_GetItemInfo");
+    MarkNativeAsOptional("US_GetItemType");
+    MarkNativeAsOptional("US_GetItemPrice");
+    MarkNativeAsOptional("US_GetEquippedItem");
+    MarkNativeAsOptional("US_IsItemEquipped");
+    MarkNativeAsOptional("US_GetEquippedItemCount");
+    MarkNativeAsOptional("US_GetEquippedItemIdByIndex");
+    MarkNativeAsOptional("US_CanPurchaseItem");
+    MarkNativeAsOptional("US_TryPurchaseItem");
+    MarkNativeAsOptional("US_CanEquipItem");
+    MarkNativeAsOptional("US_TryEquipItem");
+    MarkNativeAsOptional("US_TryUnequipItem");
+    MarkNativeAsOptional("US_SetItemEquipped");
+    MarkNativeAsOptional("US_CanUseItem");
+    MarkNativeAsOptional("US_RegisterItemType");
+    MarkNativeAsOptional("US_UnregisterItemType");
+    MarkNativeAsOptional("US_GetItemMetadata");
+    MarkNativeAsOptional("US_IsDatabaseReady");
+    MarkNativeAsOptional("US_GetDatabaseConfig");
+    MarkNativeAsOptional("US_IsMySQL");
+    MarkNativeAsOptional("US_GetDatabaseHandle");
+    MarkNativeAsOptional("US_DB_Escape");
+    MarkNativeAsOptional("US_DB_EnsureTable");
+    MarkNativeAsOptional("US_ApplyCreditDeltaWithQuery");
+    MarkNativeAsOptional("US_RegisterStatKey");
+    MarkNativeAsOptional("US_AddStat");
+    MarkNativeAsOptional("US_SetStatMax");
+    MarkNativeAsOptional("US_RegisterQuest");
+    MarkNativeAsOptional("US_RegisterQuestEx");
+    MarkNativeAsOptional("US_UnregisterQuest");
+    MarkNativeAsOptional("US_AdvanceQuestProgress");
+    MarkNativeAsOptional("US_SetQuestProgressMax");
+    MarkNativeAsOptional("US_GetQuestProgress");
+    MarkNativeAsOptional("US_RegisterLeaderboard");
+    MarkNativeAsOptional("US_UnregisterLeaderboard");
+    MarkNativeAsOptional("US_LogAuditEvent");
+}
+#endif

@@ -4,70 +4,140 @@
     {
         "es" "Cajas"
         "en" "Lootboxes"
+        "ru" "Лутбоксы"
+        "chi" "战利品箱"
+        "pt" "Caixas de recompensa"
+        "fr" "Coffres à butin"
+        "de" "Lootboxen"
     }
     "Lootbox Disabled"
     {
         "es" "Las cajas están deshabilitadas en este momento."
         "en" "Lootboxes are currently disabled."
+        "ru" "Лутбоксы сейчас отключены."
+        "chi" "战利品箱目前已禁用。"
+        "pt" "As caixas de recompensa estão desativadas no momento."
+        "fr" "Les coffres à butin sont actuellement désactivés."
+        "de" "Lootboxen sind derzeit deaktiviert."
     }
     "Lootbox None Available"
     {
         "es" "No hay cajas disponibles."
         "en" "No lootboxes are available."
+        "ru" "Нет доступных лутбоксов."
+        "chi" "没有可用的战利品箱。"
+        "pt" "Não há caixas de recompensa disponíveis."
+        "fr" "Aucun coffre à butin disponible."
+        "de" "Keine Lootboxen verfügbar."
     }
     "Lootbox Busy"
     {
         "es" "Ya estás abriendo una caja."
         "en" "You are already opening a box."
+        "ru" "Вы уже открываете ящик."
+        "chi" "你已经在开箱了。"
+        "pt" "Você já está abrindo uma caixa."
+        "fr" "Vous ouvrez déjà un coffre."
+        "de" "Du öffnest bereits eine Box."
     }
     "Lootbox Cooldown"
     {
         "es" "Esperá un momento antes de abrir otra caja."
         "en" "Wait a moment before opening another box."
+        "ru" "Подождите немного, прежде чем открыть следующий ящик."
+        "chi" "请稍候再开下一个箱子。"
+        "pt" "Espere um momento antes de abrir outra caixa."
+        "fr" "Attendez un instant avant d'ouvrir un autre coffre."
+        "de" "Warte einen Moment, bevor du eine weitere Box öffnest."
     }
     "Lootbox Not Enough"
     {
         "es" "No tenés créditos suficientes (cuesta {LIGHTBLUE}%d{DEFAULT})."
         "en" "You don't have enough credits (it costs {LIGHTBLUE}%d{DEFAULT})."
+        "ru" "У вас недостаточно кредитов (стоимость {LIGHTBLUE}%d{DEFAULT})."
+        "chi" "你的积分不足（需要 {LIGHTBLUE}%d{DEFAULT}）。"
+        "pt" "Você não tem créditos suficientes (custa {LIGHTBLUE}%d{DEFAULT})."
+        "fr" "Vous n'avez pas assez de crédits (coût : {LIGHTBLUE}%d{DEFAULT})."
+        "de" "Du hast nicht genug Credits (kostet {LIGHTBLUE}%d{DEFAULT})."
     }
     "Lootbox Transaction Failed"
     {
         "es" "No se pudo completar la operación. Intentá de nuevo."
         "en" "The transaction could not be completed. Try again."
+        "ru" "Не удалось завершить операцию. Попробуйте ещё раз."
+        "chi" "交易无法完成，请重试。"
+        "pt" "A transação não pôde ser concluída. Tente novamente."
+        "fr" "La transaction n'a pas pu être effectuée. Réessayez."
+        "de" "Die Transaktion konnte nicht abgeschlossen werden. Versuche es erneut."
     }
     "Lootbox Reward"
     {
         "es" "¡Abriste la caja y obtuviste {LIGHTBLUE}%s{DEFAULT}!"
         "en" "You opened the box and got {LIGHTBLUE}%s{DEFAULT}!"
+        "ru" "Вы открыли ящик и получили {LIGHTBLUE}%s{DEFAULT}!"
+        "chi" "你打开箱子获得了 {LIGHTBLUE}%s{DEFAULT}！"
+        "pt" "Você abriu a caixa e ganhou {LIGHTBLUE}%s{DEFAULT}!"
+        "fr" "Vous avez ouvert le coffre et obtenu {LIGHTBLUE}%s{DEFAULT} !"
+        "de" "Du hast die Box geöffnet und {LIGHTBLUE}%s{DEFAULT} erhalten!"
     }
     "Lootbox Won Credits"
     {
         "es" "%d créditos"
         "en" "%d credits"
+        "ru" "%d кредитов"
+        "chi" "%d 积分"
+        "pt" "%d créditos"
+        "fr" "%d crédits"
+        "de" "%d Credits"
     }
     "Lootbox Won Item"
     {
         "es" "el objeto {GREEN}%s{DEFAULT}"
         "en" "the item {GREEN}%s{DEFAULT}"
+        "ru" "предмет {GREEN}%s{DEFAULT}"
+        "chi" "物品 {GREEN}%s{DEFAULT}"
+        "pt" "o item {GREEN}%s{DEFAULT}"
+        "fr" "l'objet {GREEN}%s{DEFAULT}"
+        "de" "den Gegenstand {GREEN}%s{DEFAULT}"
     }
     "Lootbox Won Duplicate"
     {
         "es" "%s (ya lo tenías) → {LIGHTBLUE}%d{DEFAULT} créditos"
         "en" "%s (already owned) → {LIGHTBLUE}%d{DEFAULT} credits"
+        "ru" "%s (уже есть) → {LIGHTBLUE}%d{DEFAULT} кредитов"
+        "chi" "%s（已拥有）→ {LIGHTBLUE}%d{DEFAULT} 积分"
+        "pt" "%s (já possui) → {LIGHTBLUE}%d{DEFAULT} créditos"
+        "fr" "%s (déjà possédé) → {LIGHTBLUE}%d{DEFAULT} crédits"
+        "de" "%s (bereits vorhanden) → {LIGHTBLUE}%d{DEFAULT} Credits"
     }
     "Lootbox Won Duplicate No Credits"
     {
         "es" "%s (ya lo tenías)"
         "en" "%s (already owned)"
+        "ru" "%s (уже есть)"
+        "chi" "%s（已拥有）"
+        "pt" "%s (já possui)"
+        "fr" "%s (déjà possédé)"
+        "de" "%s (bereits vorhanden)"
     }
     "Lootbox Reveal Spin"
     {
         "es" "Abriendo... %s"
         "en" "Opening... %s"
+        "ru" "Открытие... %s"
+        "chi" "正在开启... %s"
+        "pt" "Abrindo... %s"
+        "fr" "Ouverture... %s"
+        "de" "Öffne... %s"
     }
     "Lootbox Reveal Final"
     {
         "es" "¡%s!"
         "en" "%s!"
+        "ru" "%s!"
+        "chi" "%s！"
+        "pt" "%s!"
+        "fr" "%s !"
+        "de" "%s!"
     }
 }

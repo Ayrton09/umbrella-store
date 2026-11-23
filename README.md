@@ -2,7 +2,7 @@
 
 A modular SourceMod store suite for Source 1 servers — persistent economy, casino games, cosmetics, quests, marketplace, and a public API for third-party modules.
 
-**Current version:** `1.5.2` · **Requires:** SourceMod 1.12+ · **License:** GPLv3
+**Current version:** `1.5.3` · **Requires:** SourceMod 1.12+ · **License:** GPLv3
 
 Umbrella Store is not a patched legacy fork. It is built as a framework: `store_core` provides the economy, inventory, storage, and extension backbone, and every game or cosmetic feature ships as an independent module on top of it.
 
@@ -24,18 +24,18 @@ Umbrella Store is not a patched legacy fork. It is built as a framework: `store_
 
 ### Casino modules
 
-| Module | Game |
-| --- | --- |
-| `store_blackjack` | Blackjack — single, PvP, and table modes with splits and doubles |
-| `store_roulette` | Roulette with animated HUD spin |
-| `store_crash` | Crash with live multiplier and cash-out |
-| `store_coinflip` | Coinflip vs house or PvP |
-| `store_dice` | Dice |
-| `store_highlow` | High-Low |
-| `store_jackpot` | Pooled jackpot |
-| `store_lootbox` | Lootboxes |
-| `store_daily` | Daily reward with streaks |
-| `store_giveaway` | Admin-run giveaways |
+| Module | Game | Commands |
+| --- | --- | --- |
+| `store_blackjack` | Blackjack — single, PvP, and table modes with splits and doubles | `!blackjack` `!bj` |
+| `store_roulette` | Roulette with animated HUD spin | `!roulette` `!ruleta` `!ru` |
+| `store_crash` | Crash with live multiplier and cash-out | `!crash` |
+| `store_coinflip` | Coinflip vs house or PvP | `!coinflip` `!cf`, `!cfvs` `!cfa` `!cfd` |
+| `store_dice` | Dice | `!dice` `!dados` |
+| `store_highlow` | High-Low | `!highlow` `!hilo` |
+| `store_jackpot` | Pooled jackpot | `!jackpot` `!jp` `!bote` |
+| `store_lootbox` | Lootboxes | `!lootbox` `!cajas` `!case` |
+| `store_daily` | Daily reward with streaks | `!daily` `!diario` |
+| `store_giveaway` | Admin-run giveaways | `!giveaway` `!giveawaycancel` |
 
 ### Cosmetic modules (Source 1 / CS:S style)
 
@@ -54,7 +54,7 @@ Umbrella Store is not a patched legacy fork. It is built as a framework: `store_
 | `store_lasersight` | Scoped sniper laser sight |
 | `store_sprays` | Custom sprays (use key) |
 | `store_saysounds` | Chat-triggered sounds |
-| `store_camera` | Thirdperson / mirror camera |
+| `store_camera` | Thirdperson / mirror camera (`!tp`, `!mirror`, `!fp`) |
 
 Player skins ship as the built-in `skin` item type inside `store_core`.
 
@@ -62,9 +62,12 @@ Player skins ship as the built-in `skin` item type inside `store_core`.
 
 ## Requirements
 
-- **SourceMod 1.12 or newer** — the shipped plugins are built with the latest stable 1.12 release, currently build 7249
-- SDKTools and SDKHooks (included with SourceMod)
+- **SourceMod 1.12 or newer** — the shipped plugins are built with the latest stable 1.12 release, currently build 7260
+- SDKTools, SDKHooks, and ClientPrefs (included with SourceMod)
 - SQLite or MySQL, depending on the database entry you configure in `databases.cfg`
+- Optional: the `adminmenu` plugin adds a Store Admin category to `!admin`; the `cstrike` extension is used for skin model resets on CS:S. The core loads without either.
+
+Building from source only needs the SourceMod compiler: [MultiColors](https://github.com/Bara/Multi-Colors) is bundled under `scripting/include`.
 
 ## Installation
 
@@ -82,7 +85,11 @@ Player skins ship as the built-in `skin` item type inside `store_core`.
 
 | Command | Description |
 | --- | --- |
-| `!store` | Open the store menu |
+| `!store` / `!tienda` | Open the store menu |
+| `!inv` / `!inventory` / `!inventario` | Open your inventory |
+| `!credits` / `!creditos` | Show your credit balance |
+| `!gift` / `!regalar` | Gift an item or credits to another player |
+| `!trade` / `!tradear` | Propose an item trade to another player |
 | `!market` / `!mercado` | Player marketplace: browse, list, buy, cancel |
 | `!redeem` / `!voucher` / `!codigo <code>` | Redeem a voucher code |
 | `!storesearch` / `!buscar <text>` | Search the item catalog |
@@ -100,7 +107,9 @@ Say sounds trigger from chat text; equipped sprays are placed with the use key w
 | Command | Description |
 | --- | --- |
 | `sm_storeadmin` | Admin menu: credits, inventory, config reload |
-| `sm_storeaudit [target\|global] [limit]` | Recent audit events from `store_audit_log` |
+| `sm_givecredits <target> <amount>` | Give credits (`@all`, `@t`, `@ct`, `@me` supported) |
+| `sm_setcredits <target> <amount>` | Set a credit balance |
+| `sm_storeaudit` / `sm_storelogs [target\|global] [limit]` | Recent audit events from `store_audit_log` |
 | `sm_storedebug <player>` | Economy/profile snapshot to console |
 | `sm_storequestsdebug <player>` | Quest state, completions, and lock reasons |
 | `sm_storeexport <player>` | Export another player's snapshot |

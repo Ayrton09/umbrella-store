@@ -64,7 +64,7 @@ public Plugin myinfo =
     name = "[Umbrella Store] Lootbox",
     author = "Ayrton09",
     description = "Cajas con premios de creditos e items para Umbrella Store",
-    version = "1.5.2",
+    version = "1.5.3",
     url = ""
 };
 
